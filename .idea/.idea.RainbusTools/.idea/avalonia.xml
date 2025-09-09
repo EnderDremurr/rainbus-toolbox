@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="App.axaml" value="RainbusTools.csproj" />
+        <entry key="SettingsWindow.axaml" value="RainbusTools.csproj" />
+        <entry key="Views/MainWindow.axaml" value="RainbusTools.csproj" />
+        <entry key="Views/ReleaseTab.axaml" value="RainbusTools.csproj" />
+        <entry key="Views/SettingsWindow.axaml" value="RainbusTools.csproj" />
+        <entry key="Views/UpdaterTab.axaml" value="RainbusTools.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

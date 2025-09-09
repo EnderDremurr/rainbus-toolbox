@@ -1,0 +1,215 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="RainbusTools.App"
+             xmlns:local="using:RainbusTools"
+             RequestedThemeVariant="Default">
+
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+
+    <Application.Resources>
+        <!-- Converter instance for checkbox images -->
+        <local:CheckedToImageConverter x:Key="CheckedToImageConverter"/>
+        <!-- Custom font registration -->
+        <FontFamily x:Key="MikodacsFont">avares://RainbusTools/Assets/Fonts/Mikodacs.ttf#Mikodacs Regular</FontFamily>
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+        
+        <Style Selector="TextBlock">
+            <Setter Property="FontFamily" Value="avares://RainbusTools/Assets/Fonts/Pretendard.ttf#Pretendard"/>
+        </Style>
+        <Style Selector="TextBox">
+            <Setter Property="FontFamily" Value="avares://RainbusTools/Assets/Fonts/Pretendard.ttf#Pretendard"/>
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="FontFamily" Value="avares://RainbusTools/Assets/Fonts/Pretendard.ttf#Pretendard"/>
+        </Style>
+        <Style Selector="TextBlock.header">
+            <Setter Property="FontFamily" Value="avares://RainbusTools/Assets/Fonts/Mikodacs.ttf#Mikodacs"/>
+            <Setter Property="FontSize" Value="30"/>
+        </Style>
+        <Style Selector="Button.header">
+            <Setter Property="FontFamily" Value="avares://RainbusTools/Assets/Fonts/Mikodacs.ttf#Mikodacs"/>
+            <Setter Property="FontSize" Value="24"/>
+        </Style>
+        <Style Selector="Button TextBlock.header">
+        </Style>
+        
+        <!-- Global CheckBox style using custom images and font -->
+        <Style Selector="CheckBox">
+            <Setter Property="Template">
+                <ControlTemplate TargetType="CheckBox">
+                    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <!-- Checkbox image (bigger) -->
+                        <Image Width="30" Height="30"
+                               Source="{Binding IsChecked,
+                                        RelativeSource={RelativeSource TemplatedParent},
+                                        Converter={StaticResource CheckedToImageConverter}}"/>
+
+                        <!-- Checkbox label (bigger) -->
+                        <TextBlock Text="{TemplateBinding Content}"
+                                   FontFamily="{StaticResource MikodacsFont}"
+                                   FontSize="18"
+                                   TextWrapping="Wrap"
+                                   Foreground="White"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        
+        <!-- Generic Button template -->
+<Style Selector="Button">
+    <Setter Property="Template">
+        <ControlTemplate TargetType="Button">
+            <Grid>
+                <Image Source="avares://RainbusTools/Assets/Button.png" Stretch="Fill"/>
+                <TextBlock Text="{TemplateBinding Content}"
+                           FontFamily="{StaticResource MikodacsFont}"
+                           FontSize="22"
+                           Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           TextWrapping="Wrap"/>
+            </Grid>
+        </ControlTemplate>
+    </Setter>
+</Style>
+
+<!-- Base navigation button class -->
+<Style Selector="Button.navigation">
+    <Setter Property="Width" Value="60"/>
+    <Setter Property="Height" Value="60"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="Padding" Value="0"/>
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Template">
+        <ControlTemplate TargetType="Button">
+            <Grid>
+                <!-- Image Source will be set per-button style -->
+                <Image Name="btnImage" Stretch="Uniform"/>
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+        </ControlTemplate>
+    </Setter>
+</Style>
+
+<!-- Close button -->
+<Style Selector="Button#CloseButton.navigation Image#btnImage">
+    <Setter Property="Source" Value="/Assets/NavButtonClose.png"/>
+</Style>
+<Style Selector="Button#CloseButton.navigation:pointerover Image#btnImage">
+    <Setter Property="Source" Value="/Assets/NavButtonCloseHov.png"/>
+</Style>
+
+<!-- Min button -->
+<Style Selector="Button#MinButton.navigation Image#btnImage">
+    <Setter Property="Source" Value="/Assets/NavButtonMin.png"/>
+</Style>
+<Style Selector="Button#MinButton.navigation:pointerover Image#btnImage">
+    <Setter Property="Source" Value="/Assets/NavButtonMinHov.png"/>
+</Style>
+
+<!-- Max button -->
+<Style Selector="Button#MaxButton.navigation Image#btnImage">
+    <Setter Property="Source" Value="/Assets/NavButtonMax.png"/>
+</Style>
+<Style Selector="Button#MaxButton.navigation:pointerover Image#btnImage">
+    <Setter Property="Source" Value="/Assets/NavButtonMaxHov.png"/>
+</Style>
+
+<!-- Settings button -->
+<Style Selector="Button#SettingsButton.navigation Image#btnImage">
+    <Setter Property="Source" Value="/Assets/NavButtonSettings.png"/>
+</Style>
+<Style Selector="Button#SettingsButton.navigation:pointerover Image#btnImage">
+    <Setter Property="Source" Value="/Assets/NavButtonSettingsHov.png"/>
+</Style>
+
+        
+    <Style Selector="TextBox.framed">
+  <!-- defaults you can override per control -->
+  <Setter Property="Foreground" Value="White"/>
+  <Setter Property="CaretBrush" Value="White"/>
+  <!-- use a visible semi-transparent blue by default; change it to suit your art -->
+  <Setter Property="SelectionBrush" Value="#66007ACC"/>
+  <Setter Property="SelectionForegroundBrush" Value="Black"/>
+  <Setter Property="Padding" Value="4"/>
+  <Setter Property="Template">
+    <ControlTemplate>
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="20"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="20"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="20"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- draw the 9-slice images first (so they're behind the text)-->
+        <!-- Corners -->
+        <Image Grid.Row="0" Grid.Column="0" Source="/Assets/TextEditorTopLeft.png"/>
+        <Image Grid.Row="0" Grid.Column="2" Source="/Assets/TextEditorTopRight.png"/>
+        <Image Grid.Row="2" Grid.Column="0" Source="/Assets/TextEditorBottomLeft.png"/>
+        <Image Grid.Row="2" Grid.Column="2" Source="/Assets/TextEditorBottomRight.png"/>
+
+        <!-- Edges -->
+        <Image Grid.Row="0" Grid.Column="1" Source="/Assets/TextEditorTop.png" Stretch="Fill"/>
+        <Image Grid.Row="2" Grid.Column="1" Source="/Assets/TextEditorBottom.png" Stretch="Fill"/>
+        <Image Grid.Row="1" Grid.Column="0" Source="/Assets/TextEditorLeft.png" Stretch="Fill"/>
+        <Image Grid.Row="1" Grid.Column="2" Source="/Assets/TextEditorRight.png" Stretch="Fill"/>
+
+        <!-- Center -->
+        <Image Grid.Row="1" Grid.Column="1" Source="/Assets/TextEditorCenter.png" Stretch="Fill"/>
+
+        <!--then place the ScrollViewer last so text + selection are on top -->
+        <ScrollViewer Name="PART_ScrollViewer"
+                      Grid.Row="1" Grid.Column="1"
+                      Background="Transparent"
+                      BorderThickness="0"
+                      HorizontalScrollBarVisibility="Hidden"
+                      VerticalScrollBarVisibility="Hidden"
+                      Padding="{TemplateBinding Padding}">
+
+          <!-- A host panel so the TextBox internals can inject selection visuals -->
+          <Grid Name="PART_ContentPresenterHost">
+            <!-- TextPresenter: do NOT set Foreground here (TextPresenter doesn't accept TemplateBinding for Foreground),
+                 and use TemplateBindings for the supported properties. -->
+            <TextPresenter Name="PART_TextPresenter"
+                           Text="{TemplateBinding Text, Mode=TwoWay}"
+                           CaretIndex="{TemplateBinding CaretIndex}"
+                           SelectionStart="{TemplateBinding SelectionStart}"
+                           SelectionEnd="{TemplateBinding SelectionEnd}"
+                           TextAlignment="{TemplateBinding TextAlignment}"
+                           TextWrapping="{TemplateBinding TextWrapping}"
+                           LineHeight="{TemplateBinding LineHeight}"
+                           LetterSpacing="{TemplateBinding LetterSpacing}"
+                           PasswordChar="{TemplateBinding PasswordChar}"
+                           RevealPassword="{TemplateBinding RevealPassword}"
+                           SelectionBrush="{TemplateBinding SelectionBrush}"
+                           SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                           CaretBrush="{TemplateBinding CaretBrush}"
+                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                           Margin="0"/>
+          </Grid>
+        </ScrollViewer>
+      </Grid>
+    </ControlTemplate>
+  </Setter>
+</Style>
+
+
+
+
+
+        
+
+    </Application.Styles>
+</Application>
