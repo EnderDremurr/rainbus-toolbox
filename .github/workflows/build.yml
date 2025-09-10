@@ -39,16 +39,21 @@ jobs:
 
       - name: Package artifacts (Windows)
         if: matrix.os == 'windows-latest'
-        run: Compress-Archive -Path out/${{ matrix.rid }}/* -DestinationPath RainbusToolbox-${{ matrix.rid }}-${{ github.event.release.tag_name }}.${{ matrix.ext }}
+        run: |
+          VERSION=${{ github.event.release.tag_name || github.ref_name || 'manual' }}
+          Compress-Archive -Path out/${{ matrix.rid }}/* -DestinationPath RainbusToolbox-${{ matrix.rid }}-$VERSION.${{ matrix.ext }}
 
       - name: Package artifacts (Linux/macOS)
         if: matrix.os != 'windows-latest'
-        run: tar -czf RainbusToolbox-${{ matrix.rid }}-${{ github.event.release.tag_name }}.${{ matrix.ext }} -C out/${{ matrix.rid }} .
+        run: |
+          VERSION=${{ github.event.release.tag_name || github.ref_name || 'manual' }}
+          tar -czf RainbusToolbox-${{ matrix.rid }}-$VERSION.${{ matrix.ext }} -C out/${{ matrix.rid }} .
 
       - name: Upload release asset
         uses: softprops/action-gh-release@v1
         with:
-          files: RainbusToolbox-${{ matrix.rid }}-${{ github.event.release.tag_name }}.${{ matrix.ext }}
+          files: |
+            RainbusToolbox-${{ matrix.rid }}-${{ github.event.release.tag_name || github.ref_name || 'manual' }}.${{ matrix.ext }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -99,4 +104,3 @@ jobs:
                (При первом запуске, возможно, нужно будет разрешить запуск в *Системные настройки → Защита и безопасность*)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
