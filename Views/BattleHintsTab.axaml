@@ -55,7 +55,8 @@
                                         Foreground="White"
                                         Text="{Binding Content}"
                                         TextWrapping="Wrap"
-                                        VerticalAlignment="Center" />
+                                        VerticalAlignment="Center"
+                                        Width="900" />
                                 </StackPanel>
 
                                 <!--  Delete button  -->

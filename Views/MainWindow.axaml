@@ -43,6 +43,7 @@
                 <Button
                     Classes="navigation"
                     Command="{Binding OpenSettingsCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                     Grid.Column="0"
                     Margin="15,5,15,0"
                     ToolTip.Tip="Открыть настройки"
@@ -64,6 +65,7 @@
                     <Button
                         Classes="navigation"
                         Command="{Binding SynchronizeCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                         Margin="5,0,0,0"
                         ToolTip.Tip="Синхронизировать изменения"
                         x:Name="SynchronizeButton" />
@@ -71,6 +73,7 @@
                     <Button
                         Classes="navigation"
                         Command="{Binding CommitCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                         Margin="5,0,0,0"
                         ToolTip.Tip="Сохранить изменения в гит (коммит)"
                         x:Name="CommitButton" />
@@ -78,6 +81,7 @@
                     <Button
                         Classes="navigation"
                         Command="{Binding HistoryCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                         Margin="5,0,0,0"
                         ToolTip.Tip="Просмотреть историю гит"
                         x:Name="HistoryButton" />
@@ -92,35 +96,35 @@
                     <Button
                         Classes="navigation"
                         Command="{Binding MinimizeCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                         ToolTip.Tip="Сворачивает прогу"
                         x:Name="MinButton" />
                     <Button
                         Classes="navigation"
                         Command="{Binding MaximizeCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                         ToolTip.Tip="Изменяет размер окна"
                         x:Name="MaxButton" />
                     <Button
                         Classes="navigation"
                         Command="{Binding CloseCommand}"
-                        ToolTip.Tip="Закрывает прогу к хуям"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                        ToolTip.Tip="Закрывает прогу"
                         x:Name="CloseButton" />
                 </StackPanel>
             </Grid>
 
-
             <!--  Tabs  -->
             <TabControl Grid.Row="1" Margin="0,10,0,10">
-
 
                 <TabItem
                     FontFamily="avares://RainbusTools/Assets/Fonts/Mikodacs.ttf#Mikodacs"
                     FontSize="20"
                     Foreground="White"
                     Header="Перевоз">
-
-
                     <TextBlock Foreground="White" Text="Здесь пока пусто" />
                 </TabItem>
+
                 <TabItem
                     FontFamily="avares://RainbusTools/Assets/Fonts/Mikodacs.ttf#Mikodacs"
                     FontSize="20"
@@ -128,6 +132,7 @@
                     Header="Баттл хинты">
                     <views:BattleHintsTab />
                 </TabItem>
+
                 <TabItem
                     FontFamily="avares://RainbusTools/Assets/Fonts/Mikodacs.ttf#Mikodacs"
                     FontSize="20"
@@ -136,6 +141,7 @@
                     Margin="800,0,0,0">
                     <TextBlock Foreground="White" Text="Здесь пока пусто" />
                 </TabItem>
+
                 <TabItem
                     FontFamily="avares://RainbusTools/Assets/Fonts/Mikodacs.ttf#Mikodacs"
                     FontSize="20"

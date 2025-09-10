@@ -1,12 +1,119 @@
 <Window
+    Background="Transparent"
+    CanResize="False"
+    Height="566"
+    PointerPressed="Window_OnPointerPressed"
+    SystemDecorations="None"
     Title="InitializationWindow"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    TransparencyLevelHint="Transparent"
+    Width="888"
     mc:Ignorable="d"
     x:Class="RainbusTools.Views.InitializationWindow"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    Welcome to Avalonia!
+
+    <Grid>
+        <!--  Background  -->
+        <Image
+            HorizontalAlignment="Center"
+            Source="/Assets/Init.png"
+            Stretch="UniformToFill"
+            VerticalAlignment="Center" />
+
+        <!--  Independent Close Button  -->
+        <Button
+            Classes="navigation"
+            Click="CloseButton_Click"
+            Content="X"
+            HorizontalAlignment="Right"
+            Margin="0,75,75,0"
+            ToolTip.Tip="Закрыть окно"
+            VerticalAlignment="Top"
+            x:Name="CloseButton" />
+
+        <!--  Main content  -->
+        <Grid Margin="20,233,40,23">
+            <StackPanel
+                Margin="20"
+                Spacing="15"
+                VerticalAlignment="Stretch">
+
+                <!--  GitHub token button + status  -->
+                <StackPanel
+                    Orientation="Horizontal"
+                    Spacing="10"
+                    VerticalAlignment="Center">
+                    <Button
+                        Click="SetGitHubToken_Click"
+                        Content="Залогиниться на GitHub"
+                        Width="200" />
+                    <TextBlock
+                        Foreground="White"
+                        Text="Ты не залогинен"
+                        VerticalAlignment="Center"
+                        x:Name="GitHubTokenStatusTextBlock" />
+                </StackPanel>
+
+                <!--  Path to localization's repo  -->
+                <StackPanel
+                    Orientation="Horizontal"
+                    Spacing="10"
+                    VerticalAlignment="Center">
+                    <TextBlock
+                        Text="Путь к файлам перевода:"
+                        TextWrapping="Wrap"
+                        VerticalAlignment="Center"
+                        Width="150" />
+                    <TextBox
+                        Classes="framed"
+                        Height="60"
+                        IsReadOnly="True"
+                        Text="C:\Path\To\Repo"
+                        Width="300"
+                        x:Name="RepoPathTextBox" />
+                    <Button
+                        Click="BrowseFolder_Click"
+                        Content="Выбрать"
+                        Height="60"
+                        Width="120" />
+                </StackPanel>
+
+                <!--  Path to limbus company files  -->
+                <StackPanel
+                    Orientation="Horizontal"
+                    Spacing="10"
+                    VerticalAlignment="Center">
+                    <TextBlock
+                        Text="Путь к файлам игры:"
+                        TextWrapping="Wrap"
+                        VerticalAlignment="Center"
+                        Width="150" />
+                    <TextBox
+                        Classes="framed"
+                        Height="60"
+                        IsReadOnly="True"
+                        Text="C:\Path\To\Limbus"
+                        Width="300"
+                        x:Name="LimbusPathTextBox" />
+                    <Button
+                        Click="BrowseLimbusFolder_Click"
+                        Content="Выбрать"
+                        Height="60"
+                        Width="120" />
+                </StackPanel>
+
+                <!--  Restart / continue button  -->
+                <Button
+                    Click="RestartApp_Click"
+                    Content="Продолжить"
+                    Height="60"
+                    HorizontalAlignment="Center"
+                    Margin="0,50,0,0"
+                    VerticalAlignment="Bottom"
+                    Width="200" />
+            </StackPanel>
+        </Grid>
+    </Grid>
 </Window>

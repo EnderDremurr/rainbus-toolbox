@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using RainbusTools.Converters.Managers;
+using RainbusTools.Models.Managers;
 using RainbusTools.Utilities.Data;
 using Avalonia.Threading;
 

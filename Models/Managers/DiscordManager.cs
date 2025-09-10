@@ -10,20 +10,20 @@ using MsBox.Avalonia;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Enums;
 
-namespace RainbusTools.Converters.Managers;
+namespace RainbusTools.Models.Managers;
 
 public class DiscordManager
 {
     private PersistentDataManager _dataManager;
     public DiscordWebhookClient? Client { get; private set; }
-    public DiscordManager(PersistentDataManager manager, Window mainWindow)
+    public DiscordManager(PersistentDataManager manager)
     {
         _dataManager = manager;
         
-        TryInitialize(mainWindow);
+        TryInitialize();
     }
 
-    public void TryInitialize(Window window)
+    public void TryInitialize(Window window = null)
     {
         var webhookUrl = _dataManager.Settings.DiscordWebHook;
 

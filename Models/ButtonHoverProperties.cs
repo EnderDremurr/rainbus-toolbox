@@ -1,7 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 
-namespace RainbusTools.Converters
+namespace RainbusTools.Models
 {
     public static class ButtonHoverProperties
     {

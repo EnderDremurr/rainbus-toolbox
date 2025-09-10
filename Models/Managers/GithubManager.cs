@@ -20,7 +20,7 @@ using MsBox.Avalonia.Enums;
 using MsBox.Avalonia.Models; // for IClipboard
 
 
-namespace RainbusTools.Converters.Managers;
+namespace RainbusTools.Models.Managers;
 
 public class GithubManager
 {

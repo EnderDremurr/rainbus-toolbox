@@ -1,51 +1,74 @@
+using System;
+using System.Linq;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using Microsoft.Extensions.DependencyInjection;
+using RainbusTools.Models.Managers;
 using RainbusTools.ViewModels;
 using RainbusTools.Views;
-using System.Linq;
-using Microsoft.Extensions.DependencyInjection;
-using RainbusTools.Converters;
-using RainbusTools.Converters.Managers;
 
 namespace RainbusTools;
 
 public partial class App : Application
 {
-    public static RepositoryManager RepositoryManager { get; private set; }
-    
-    
+    private IServiceProvider _serviceProvider;
+    public IServiceProvider ServiceProvider => _serviceProvider;
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
     }
-
+    
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             DisableAvaloniaDataAnnotationValidation();
 
-            var collection = new ServiceCollection();
-            collection.AddCommonServices();
-            var services = collection.BuildServiceProvider();
-            
+            // Set up DI container
+            var services = new ServiceCollection();
 
-            // Create main window
-            
-            var data = new PersistentDataManager();
-            var repo = new RepositoryManager(data);
-            RepositoryManager = repo;
-            var mainWindow = new MainWindow();
-            var discord = new DiscordManager(data, mainWindow);
-            
-            var github = new GithubManager(data,repo);
-            // Pass the window instance to the ViewModel
-            mainWindow.DataContext = new MainWindowViewModel(mainWindow, data, discord, github, repo);
+            // Singletons for managers
+            services.AddSingleton<PersistentDataManager>();
+            services.AddSingleton<RepositoryManager>();
+            services.AddSingleton<DiscordManager>();
+            services.AddSingleton<GithubManager>();
 
-            desktop.MainWindow = mainWindow;
+            // Transient windows and their ViewModels
+            services.AddTransient<MainWindow>();
+            services.AddTransient<MainWindowViewModel>();
+            services.AddTransient<InitializationWindow>();
+            services.AddTransient<InitializationWindowViewModel>();
+            services.AddTransient<SettingsWindow>();
+
+            // Build service provider
+            _serviceProvider = services.BuildServiceProvider();
+
+            // Resolve RepositoryManager first to check validity
+            var repoManager = _serviceProvider.GetRequiredService<RepositoryManager>();
+
+            Window windowToShow;
+
+            if (repoManager.IsValid)
+            {
+                // Repository valid → show MainWindow
+                var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+                mainWindow.DataContext = _serviceProvider.GetRequiredService<MainWindowViewModel>();
+                windowToShow = mainWindow;
+            }
+            else
+            {
+                // Repository invalid → show InitializationWindow
+                var initWindow = _serviceProvider.GetRequiredService<InitializationWindow>();
+                initWindow.DataContext = _serviceProvider.GetRequiredService<InitializationWindowViewModel>();
+                windowToShow = initWindow;
+            }
+
+            desktop.MainWindow = windowToShow;
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -59,6 +82,15 @@ public partial class App : Application
         foreach (var plugin in dataValidationPluginsToRemove)
             BindingPlugins.DataValidators.Remove(plugin);
     }
-    
-}
 
+    // Helper method to open windows via DI anywhere in the app
+    public TWindow OpenWindow<TWindow, TViewModel>()
+        where TWindow : Window
+        where TViewModel : class
+    {
+        var window = _serviceProvider.GetRequiredService<TWindow>();
+        window.DataContext = _serviceProvider.GetRequiredService<TViewModel>();
+        window.Show();
+        return window;
+    }
+}

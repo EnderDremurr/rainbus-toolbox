@@ -1,4 +1,4 @@
-namespace RainbusTools.Converters;
+namespace RainbusTools.Models;
 
 public class NavButtonImages
 {

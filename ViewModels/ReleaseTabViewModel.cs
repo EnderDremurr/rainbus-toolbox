@@ -7,7 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
-using RainbusTools.Converters.Managers;
+using RainbusTools.Models.Managers;
 
 namespace RainbusTools.ViewModels;
 

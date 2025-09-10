@@ -11,7 +11,6 @@
 
     <ItemGroup>
         <Folder Include="Assets\Fonts\" />
-        <Folder Include="Models\"/>
         <AvaloniaResource Include="Assets\**"/>
         <AvaloniaResource Include="Assets\Fonts\Pretendard.ttf" />
         <AvaloniaResource Include="Assets\Fonts\Mikodacs.ttf" />

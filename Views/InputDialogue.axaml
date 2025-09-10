@@ -1,0 +1,31 @@
+<Window
+    Height="200"
+    Title="Ура коммит"
+    Width="400"
+    x:Class="RainbusTools.Views.InputDialog"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Margin="20">
+        <TextBlock Margin="0,0,0,10" Text="Введи комментарий для коммита:" />
+        <TextBox
+            AcceptsReturn="True"
+            Height="100"
+            x:Name="CommitMessageTextBox" />
+        <StackPanel
+            HorizontalAlignment="Right"
+            Margin="0,10,0,0"
+            Orientation="Horizontal">
+            <Button
+                Click="CancelButton_Click"
+                Content="Отмена"
+                Height="40"
+                Margin="0,0,10,0"
+                Width="150" />
+            <Button
+                Click="OkButton_Click"
+                Content="Создать коммит"
+                Height="40"
+                Width="150" />
+        </StackPanel>
+    </StackPanel>
+</Window>

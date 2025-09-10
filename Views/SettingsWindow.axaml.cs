@@ -4,7 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using System.Threading.Tasks;
-using RainbusTools.Converters.Managers;
+using RainbusTools.Models.Managers;
 
 namespace RainbusTools;
 

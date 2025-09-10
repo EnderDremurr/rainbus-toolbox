@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Text.Json;
 
-namespace RainbusTools.Converters.Managers;
+namespace RainbusTools.Models.Managers;
 
 public class PersistentDataManager
 {

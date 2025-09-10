@@ -1,7 +1,8 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using RainbusTools.Converters.Managers;
+using Microsoft.Extensions.DependencyInjection;
+using RainbusTools.Models.Managers;
 using RainbusTools.ViewModels;
 
 namespace RainbusTools.Views;
@@ -11,12 +12,14 @@ public partial class BattleHintsTab : UserControl
     public BattleHintsTab()
     {
         InitializeComponent();
-        var vm = new BattleHintsTabViewModel(App.RepositoryManager);
+
+        // Resolve RepositoryManager via DI
+        var repoManager = ((App)Application.Current).ServiceProvider.GetRequiredService<RepositoryManager>();
+        var vm = new BattleHintsTabViewModel(repoManager);
         DataContext = vm;
-        
+
         vm.HintsUpdated += () =>
         {
-            // Scroll to bottom
             BattleHintsScrollViewer.ScrollToEnd();
         };
     }
