@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ["self-hosted", "Linux", "X64"]  # Your self-hosted Linux runner labels
+    runs-on: ["self-hosted", "Linux", "X64"]
 
     steps:
       - name: Checkout code
@@ -17,7 +17,9 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 8.0.x
-          installation-path: $HOME/.dotnet
+        env:
+          DOTNET_INSTALL_DIR: $HOME/.dotnet
+          DOTNET_ROOT: $HOME/.dotnet
 
       - name: Add dotnet to PATH
         run: echo "$HOME/.dotnet:$HOME/.dotnet/tools:$PATH" >> $GITHUB_ENV
