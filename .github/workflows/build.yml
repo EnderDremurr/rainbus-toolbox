@@ -67,11 +67,12 @@ jobs:
           gh release upload "$VERSION" RainbusToolbox-win-x64-${VERSION}.zip --clobber
           gh release upload "$VERSION" RainbusToolbox-osx-x64-${VERSION}.tar.gz --clobber
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}  # <-- Use your PAT here
 
       - name: Update release notes
         uses: softprops/action-gh-release@v1
         with:
+          token: ${{ secrets.GH_PAT }}          # <-- Must use PAT, not GITHUB_TOKEN
           body: |
             ## How to Run
 
@@ -90,6 +91,3 @@ jobs:
             2. Extract: `tar -xzf RainbusToolbox-osx-x64-<version>.tar.gz`  
             3. Run: `./RainbusToolbox`  
                (May require *System Preferences → Security & Privacy*)
-
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
