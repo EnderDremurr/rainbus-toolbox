@@ -16,9 +16,6 @@ jobs:
       - name: Add preinstalled .NET to PATH
         run: echo "$HOME/dotnet:$HOME/dotnet/tools:$PATH" >> $GITHUB_PATH
 
-      - name: Ensure zip is installed
-        run: sudo apt-get update && sudo apt-get install -y zip
-
       - name: Set version
         id: version
         run: |
