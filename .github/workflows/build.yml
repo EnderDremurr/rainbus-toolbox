@@ -7,10 +7,10 @@ on:
 
 jobs:
   build:
-    runs-on: ["self-hosted", "Linux", "X64"]  # Match your runner labels
+    runs-on: ["self-hosted", "Linux", "X64"]  # Your self-hosted Linux runner labels
 
     steps:
-      - name: Get code
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Setup .NET
@@ -18,19 +18,48 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
+      - name: Set version
+        id: version
+        run: |
+          echo "VERSION=${GITHUB_REF##refs/tags/}" >> $GITHUB_ENV
+          if [ -z "$VERSION" ]; then
+            echo "VERSION=manual" >> $GITHUB_ENV
+          fi
+
       - name: Build Linux
         run: |
-          dotnet publish -c Release -r linux-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeAllContentForSelfExtract=true /p:AssemblyName=RainbusToolbox -o out/linux-x64
+          dotnet publish -c Release -r linux-x64 --self-contained true \
+            /p:PublishSingleFile=true \
+            /p:IncludeAllContentForSelfExtract=true \
+            /p:AssemblyName=RainbusToolbox \
+            -o out/linux-x64
           chmod +x out/linux-x64/RainbusToolbox
-          VERSION="${GITHUB_REF##refs/tags/}"
-          VERSION="${VERSION:-manual}"
-          tar -czf RainbusToolbox-linux-x64-$VERSION.tar.gz -C out/linux-x64 .
+          tar -czf RainbusToolbox-linux-x64-${VERSION}.tar.gz -C out/linux-x64 .
 
-      - name: Upload Linux release asset
+      - name: Build Windows (experimental)
         run: |
-          VERSION="${GITHUB_REF##refs/tags/}"
-          VERSION="${VERSION:-manual}"
-          gh release upload "$VERSION" RainbusToolbox-linux-x64-$VERSION.tar.gz
+          dotnet publish -c Release -r win-x64 --self-contained true \
+            /p:PublishSingleFile=true \
+            /p:IncludeAllContentForSelfExtract=true \
+            /p:AssemblyName=RainbusToolbox \
+            -o out/win-x64
+          powershell Compress-Archive -Path out/win-x64/* -DestinationPath RainbusToolbox-win-x64-${VERSION}.zip || true
+
+      - name: Build macOS (experimental)
+        run: |
+          dotnet publish -c Release -r osx-x64 --self-contained true \
+            /p:PublishSingleFile=true \
+            /p:IncludeAllContentForSelfExtract=true \
+            /p:AssemblyName=RainbusToolbox \
+            -o out/osx-x64
+          chmod +x out/osx-x64/RainbusToolbox
+          tar -czf RainbusToolbox-osx-x64-${VERSION}.tar.gz -C out/osx-x64 . || true
+
+      - name: Upload release assets
+        run: |
+          gh release upload "$VERSION" RainbusToolbox-linux-x64-${VERSION}.tar.gz
+          gh release upload "$VERSION" RainbusToolbox-win-x64-${VERSION}.zip || true
+          gh release upload "$VERSION" RainbusToolbox-osx-x64-${VERSION}.tar.gz || true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -45,6 +74,17 @@ jobs:
             2. Extract: `tar -xzf RainbusToolbox-linux-x64-<version>.tar.gz`  
             3. Run: `./RainbusToolbox`
 
+            **Windows** (experimental)  
+            1. Download `RainbusToolbox-win-x64-<version>.zip`  
+            2. Extract the archive  
+            3. Double-click `RainbusToolbox.exe`
+
+            **macOS** (experimental)  
+            1. Download `RainbusToolbox-osx-x64-<version>.tar.gz`  
+            2. Extract: `tar -xzf RainbusToolbox-osx-x64-<version>.tar.gz`  
+            3. Run: `./RainbusToolbox`  
+               (May require *System Preferences → Security & Privacy*)
+
             ---
 
             ## Как запустить
@@ -53,5 +93,16 @@ jobs:
             1. Скачайте `RainbusToolbox-linux-x64-<версия>.tar.gz`  
             2. Распакуйте: `tar -xzf RainbusToolbox-linux-x64-<версия>.tar.gz`  
             3. Запустите: `./RainbusToolbox`
+
+            **Windows** (experimental)  
+            1. Скачайте `RainbusToolbox-win-x64-<версия>.zip`  
+            2. Распакуйте архив  
+            3. Дважды кликните `RainbusToolbox.exe`
+
+            **macOS** (experimental)  
+            1. Скачайте `RainbusToolbox-osx-x64-<версия>.tar.gz`  
+            2. Распакуйте: `tar -xzf RainbusToolbox-osx-x64-<версия>.tar.gz`  
+            3. Запустите: `./RainbusToolbox`  
+               (При первом запуске, возможно, нужно будет разрешить запуск в *Системные настройки → Защита и безопасность*)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
