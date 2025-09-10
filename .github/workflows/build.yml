@@ -19,10 +19,20 @@ jobs:
       - name: Set version
         id: version
         run: |
+          # Extract tag name
           VERSION="${GITHUB_REF##refs/tags/}"
+          
+          # Fallback for manual runs
           if [ -z "$VERSION" ]; then
-            VERSION="manual"
+            VERSION="0.0.0-local"
           fi
+      
+          # Remove leading 'v' if present
+          VERSION="${VERSION#v}"
+      
+          # Replace any invalid characters with '-' (just in case)
+          VERSION=$(echo "$VERSION" | tr -c '[:alnum:].+-' '-')
+      
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Build Linux
