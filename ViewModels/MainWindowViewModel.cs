@@ -10,11 +10,11 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
-using RainbusTools.Models.Managers;
 using Microsoft.Extensions.DependencyInjection;
-using RainbusTools.Views;
+using RainbusToolbox.Models.Managers;
+using RainbusToolbox.Views;
 
-namespace RainbusTools.ViewModels;
+namespace RainbusToolbox.ViewModels;
 
 public partial class MainWindowViewModel : ObservableObject
 {

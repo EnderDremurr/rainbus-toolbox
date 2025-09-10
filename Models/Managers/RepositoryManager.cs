@@ -4,9 +4,9 @@ using System.IO.Compression;
 using System.Linq;
 using LibGit2Sharp;
 using Newtonsoft.Json;
-using RainbusTools.Utilities.Data;
+using RainbusToolbox.Utilities.Data;
 
-namespace RainbusTools.Models.Managers
+namespace RainbusToolbox.Models.Managers
 {
     public class RepositoryManager
     {
@@ -138,7 +138,7 @@ namespace RainbusTools.Models.Managers
 {
     FetchFromOrigin();
     MergeWithOrigin();      
-    CommitLocalChanges("Synchronization of local and remote changes [RainbusTools]");   
+    CommitLocalChanges("Synchronization of local and remote changes [RainbusToolbox]");   
     PushToOrigin();
 }
 

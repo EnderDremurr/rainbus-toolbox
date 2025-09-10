@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace RainbusTools.ViewModels;
+namespace RainbusToolbox.ViewModels;
 
 public partial class InitializationWindowViewModel : ObservableObject
 {

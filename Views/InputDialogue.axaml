@@ -2,7 +2,7 @@
     Height="200"
     Title="Ура коммит"
     Width="400"
-    x:Class="RainbusTools.Views.InputDialog"
+    x:Class="RainbusToolbox.Views.InputDialog"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <StackPanel Margin="20">

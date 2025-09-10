@@ -2,7 +2,7 @@ using Avalonia.Data.Converters;
 using System;
 using System.Globalization;
 
-namespace RainbusTools.Models;
+namespace RainbusToolbox.Models;
 
 public class HoverImageConverter : IValueConverter
 {

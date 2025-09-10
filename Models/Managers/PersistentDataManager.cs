@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Text.Json;
 
-namespace RainbusTools.Models.Managers;
+namespace RainbusToolbox.Models.Managers;
 
 public class PersistentDataManager
 {
@@ -11,7 +11,7 @@ public class PersistentDataManager
     
     public PersistentDataManager()
     {
-        var folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RainbusTools");
+        var folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RainbusToolbox");
         Directory.CreateDirectory(folder);
         _filePath = Path.Combine(folder, "settings.json");
 

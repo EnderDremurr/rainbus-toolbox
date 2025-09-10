@@ -8,52 +8,51 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36589d51-c3de-47ed-a239-82856c604bc7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.RainbusTools/.idea/projectSettingsUpdater.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.RainbusTools/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/NavButtonCloseHov.png~" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/NavButtonCommit.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/NavButtonCommitHov.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/NavButtonHistory.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/NavButtonHistoryHov.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/NavButtonMaxHov.png~" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/NavButtonMinHov.png~" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/NavButtonSettingsHov.png~" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/NavButtonSynchronize.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/NavButtonSynchronizeHov.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Tab.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/TabHover.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/TabSelected.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Models/Managers/RepositoryManager.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ViewModels/InitializationWindowViewModel.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Views/InputDialogue.axaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Views/InputDialogue.axaml.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.RainbusTools/.idea/avalonia.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.RainbusTools/.idea/avalonia.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Init.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.ru-ru.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.RainbusTools/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.RainbusTools/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/App.axaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/App.axaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/App.axaml.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/BooleanToOpacityConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/BooleanToOpacityConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RainbusTools.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/RainbusTools.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utilities/ButtonHoverProperties.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/ButtonHoverProperties.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utilities/CheckedToImageConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/CheckedToImageConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utilities/Data/BattleHints.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Data/BattleHints.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utilities/HoverImageConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/HoverImageConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utilities/HoverImageData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/HoverImageData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utilities/HoverImageMultiConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/HoverImageMultiConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utilities/InverseBoolConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/InverseBoolConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utilities/Managers/DiscordManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Managers/DiscordManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utilities/Managers/GithubManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Managers/GithubManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utilities/Managers/PersistentDataManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Managers/PersistentDataManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utilities/Managers/RepositoryManager.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utilities/NavButtonImages.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/NavButtonImages.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utilities/ServiceCollectionExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/ServiceCollectionExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utilities/SettingsData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/SettingsData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/ButtonHoverProperties.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/ButtonHoverProperties.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/CheckedToImageConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/CheckedToImageConverter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Data/BattleHints.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Data/BattleHints.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/HoverImageConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/HoverImageConverter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/HoverImageMultiConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/HoverImageMultiConverter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Managers/DiscordManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Managers/DiscordManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Managers/GithubManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Managers/GithubManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Managers/PersistentDataManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Managers/PersistentDataManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Managers/RepositoryManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Managers/RepositoryManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/NavButtonImages.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/NavButtonImages.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/ServiceCollectionExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/ServiceCollectionExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RainbusTools.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/RainbusToolbox.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RainbusTools.sln" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RainbusTools.sln.DotSettings.user" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ViewLocator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ViewLocator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ViewModels/BattleHintsTabViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ViewModels/BattleHintsTabViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ViewModels/InitializationWindowViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ViewModels/InitializationWindowViewModel.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ViewModels/MainWindowViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ViewModels/MainWindowViewModel.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ViewModels/ReleaseTabViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ViewModels/ReleaseTabViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ViewModels/ViewModelBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ViewModels/ViewModelBase.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Views/BattleHintsTab.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/BattleHintsTab.axaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Views/BattleHintsTab.axaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Views/BattleHintsTab.axaml.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Views/InitializationWindow.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/InitializationWindow.axaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Views/InitializationWindow.axaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Views/InitializationWindow.axaml.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/InputDialogue.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/InputDialogue.axaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/InputDialogue.axaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Views/InputDialogue.axaml.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Views/MainWindow.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/MainWindow.axaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/MainWindow.axaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Views/MainWindow.axaml.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/ReleaseTab.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/ReleaseTab.axaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/ReleaseTab.axaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Views/ReleaseTab.axaml.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/SettingsWindow.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/SettingsWindow.axaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Views/SettingsWindow.axaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Views/SettingsWindow.axaml.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/TranslationTab.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/TranslationTab.axaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/TranslationTab.axaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Views/TranslationTab.axaml.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/UpdaterTab.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/UpdaterTab.axaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/UpdaterTab.axaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Views/UpdaterTab.axaml.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,6 +69,9 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/f9a9b383c2994f6996f4a2d2aff2509e8e600/f2/6d763fe3/Socket.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="Toolset" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -139,7 +141,9 @@
       <workItem from="1757422940115" duration="11201000" />
       <workItem from="1757435748237" duration="4890000" />
       <workItem from="1757441946716" duration="314000" />
-      <workItem from="1757504025368" duration="10631000" />
+      <workItem from="1757504025368" duration="10815000" />
+      <workItem from="1757514926483" duration="36000" />
+      <workItem from="1757522355270" duration="127000" />
     </task>
     <task id="LOCAL-00001" summary="Init">
       <option name="closed" value="true" />
@@ -165,7 +169,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757506602870</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Dependency Injection + A bit of git">
+      <option name="closed" value="true" />
+      <created>1757514772099</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1757514772099</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -178,7 +190,8 @@
     <MESSAGE value="Init" />
     <MESSAGE value="Battle hints" />
     <MESSAGE value="Before DI" />
-    <option name="LAST_COMMIT_MESSAGE" value="Before DI" />
+    <MESSAGE value="Dependency Injection + A bit of git" />
+    <option name="LAST_COMMIT_MESSAGE" value="Dependency Injection + A bit of git" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

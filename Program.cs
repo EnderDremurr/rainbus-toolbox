@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using System;
 
-namespace RainbusTools;
+namespace RainbusToolbox;
 
 sealed class Program
 {

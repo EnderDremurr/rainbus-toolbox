@@ -20,7 +20,7 @@ using MsBox.Avalonia.Enums;
 using MsBox.Avalonia.Models; // for IClipboard
 
 
-namespace RainbusTools.Models.Managers;
+namespace RainbusToolbox.Models.Managers;
 
 public class GithubManager
 {
@@ -162,7 +162,7 @@ public async Task CreateReleaseAsync(string releaseName, string releaseDescripti
 
     using var http = new HttpClient();
     http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
-    http.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RainbusTools", "1.0"));
+    http.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RainbusToolbox", "1.0"));
     http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("token", _dataManager.Settings.GitHubToken);
 
     // 2. Check if release/tag already exists
@@ -248,7 +248,7 @@ public async Task CreateReleaseAsync(string releaseName, string releaseDescripti
     
         var token = _dataManager.Settings.GitHubToken;
         // GitHub requires a User-Agent header
-        http.DefaultRequestHeaders.UserAgent.ParseAdd("RainbusTools/1.0");
+        http.DefaultRequestHeaders.UserAgent.ParseAdd("RainbusToolbox/1.0");
 
         // Add the OAuth token
         http.DefaultRequestHeaders.Authorization =

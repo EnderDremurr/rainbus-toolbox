@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace RainbusTools.Views;
+namespace RainbusToolbox.Views;
 
 public partial class UpdaterTab : UserControl
 {

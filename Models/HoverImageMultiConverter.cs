@@ -4,7 +4,7 @@ using System.Globalization;
 using Avalonia.Data.Converters;
 using Avalonia.Media.Imaging;
 
-namespace RainbusTools.Models
+namespace RainbusToolbox.Models
 {
     public class HoverImageMultiConverter : IMultiValueConverter
     {

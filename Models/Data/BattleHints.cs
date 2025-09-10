@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace RainbusTools.Utilities.Data;
+namespace RainbusToolbox.Utilities.Data;
 
 public class BattleHint
 {

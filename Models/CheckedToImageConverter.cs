@@ -4,12 +4,12 @@ using Avalonia.Media.Imaging;
 using Avalonia;
 using Avalonia.Platform;
 
-namespace RainbusTools
+namespace RainbusToolbox
 {
     public class CheckedToImageConverter : IValueConverter
     {
-        private static readonly Bitmap Checked = new Bitmap(AssetLoader.Open(new Uri("avares://RainbusTools/Assets/Checked.png")));
-        private static readonly Bitmap Unchecked = new Bitmap(AssetLoader.Open(new Uri("avares://RainbusTools/Assets/Unchecked.png")));
+        private static readonly Bitmap Checked = new Bitmap(AssetLoader.Open(new Uri("avares://RainbusToolbox/Assets/Checked.png")));
+        private static readonly Bitmap Unchecked = new Bitmap(AssetLoader.Open(new Uri("avares://RainbusToolbox/Assets/Unchecked.png")));
 
         public object? Convert(object? value, Type targetType, object? parameter, System.Globalization.CultureInfo culture)
         {

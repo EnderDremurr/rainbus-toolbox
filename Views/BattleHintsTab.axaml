@@ -1,14 +1,14 @@
 <UserControl
     d:DataContext="{d:DesignInstance Type=vm:BattleHintsTabViewModel}"
     mc:Ignorable="d"
-    x:Class="RainbusTools.Views.BattleHintsTab"
+    x:Class="RainbusToolbox.Views.BattleHintsTab"
     x:DataType="vm:BattleHintsTabViewModel"
     x:Name="Root"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:data="clr-namespace:RainbusTools.Utilities.Data"
+    xmlns:data="clr-namespace:RainbusToolbox.Utilities.Data"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:RainbusTools.ViewModels"
+    xmlns:vm="clr-namespace:RainbusToolbox.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 
@@ -56,7 +56,7 @@
                                         Text="{Binding Content}"
                                         TextWrapping="Wrap"
                                         VerticalAlignment="Center"
-                                        Width="900" />
+                                        Width="1800" />
                                 </StackPanel>
 
                                 <!--  Delete button  -->

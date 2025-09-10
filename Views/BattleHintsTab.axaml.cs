@@ -2,10 +2,10 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
-using RainbusTools.Models.Managers;
-using RainbusTools.ViewModels;
+using RainbusToolbox.Models.Managers;
+using RainbusToolbox.ViewModels;
 
-namespace RainbusTools.Views;
+namespace RainbusToolbox.Views;
 
 public partial class BattleHintsTab : UserControl
 {

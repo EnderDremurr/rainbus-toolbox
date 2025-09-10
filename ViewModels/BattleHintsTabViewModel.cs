@@ -3,11 +3,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using RainbusTools.Models.Managers;
-using RainbusTools.Utilities.Data;
 using Avalonia.Threading;
+using RainbusToolbox.Models.Managers;
+using RainbusToolbox.Utilities.Data;
 
-namespace RainbusTools.ViewModels;
+namespace RainbusToolbox.ViewModels;
 
 public partial class BattleHintsTabViewModel : ObservableObject
 {

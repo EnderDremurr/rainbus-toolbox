@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
-using RainbusTools.Models.Managers;
+using RainbusToolbox.Models.Managers;
 
-namespace RainbusTools.Models;
+namespace RainbusToolbox.Models;
 
 public static class ServiceCollectionExtensions
 {

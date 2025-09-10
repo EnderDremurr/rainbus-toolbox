@@ -7,11 +7,11 @@ using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
-using RainbusTools.Models.Managers;
-using RainbusTools.ViewModels;
-using RainbusTools.Views;
+using RainbusToolbox.Models.Managers;
+using RainbusToolbox.ViewModels;
+using RainbusToolbox.Views;
 
-namespace RainbusTools;
+namespace RainbusToolbox;
 
 public partial class App : Application
 {

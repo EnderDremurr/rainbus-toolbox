@@ -4,9 +4,9 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using System.Threading.Tasks;
-using RainbusTools.Models.Managers;
+using RainbusToolbox.Models.Managers;
 
-namespace RainbusTools;
+namespace RainbusToolbox;
 
 public partial class SettingsWindow : Window
 {

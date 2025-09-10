@@ -8,7 +8,7 @@
     TransparencyLevelHint="Transparent"
     Width="888"
     mc:Ignorable="d"
-    x:Class="RainbusTools.Views.InitializationWindow"
+    x:Class="RainbusToolbox.Views.InitializationWindow"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"

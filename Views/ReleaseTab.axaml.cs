@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 
-namespace RainbusTools.Views;
+namespace RainbusToolbox.Views;
 
 public partial class ReleaseTab : UserControl
 {

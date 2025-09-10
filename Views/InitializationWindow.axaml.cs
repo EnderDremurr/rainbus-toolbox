@@ -3,16 +3,16 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using RainbusTools.Models.Managers;
 using System.Diagnostics;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using RainbusTools.ViewModels;
 using Avalonia.Platform;
 using Avalonia.Media.Imaging;
 using System;
+using RainbusToolbox.Models.Managers;
+using RainbusToolbox.ViewModels;
 
-namespace RainbusTools.Views;
+namespace RainbusToolbox.Views;
 
 public partial class InitializationWindow : Window
 {
@@ -44,7 +44,7 @@ public partial class InitializationWindow : Window
         AvaloniaXamlLoader.Load(this);
         
         // Load the image to get its size
-        var bitmap = new Bitmap(AssetLoader.Open(new Uri("avares://RainbusTools/Assets/Init.png")));
+        var bitmap = new Bitmap(AssetLoader.Open(new Uri("avares://RainbusToolbox/Assets/Init.png")));
 
         this.Width = bitmap.PixelSize.Width/1.5f;
         this.Height = bitmap.PixelSize.Height/1.5f;

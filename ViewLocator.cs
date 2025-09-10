@@ -1,9 +1,9 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using RainbusTools.ViewModels;
+using RainbusToolbox.ViewModels;
 
-namespace RainbusTools;
+namespace RainbusToolbox;
 
 public class ViewLocator : IDataTemplate
 {

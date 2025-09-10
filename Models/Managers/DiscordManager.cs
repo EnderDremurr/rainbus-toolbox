@@ -10,7 +10,7 @@ using MsBox.Avalonia;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Enums;
 
-namespace RainbusTools.Models.Managers;
+namespace RainbusToolbox.Models.Managers;
 
 public class DiscordManager
 {

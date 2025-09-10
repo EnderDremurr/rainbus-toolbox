@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 
-namespace RainbusTools.Views
+namespace RainbusToolbox.Views
 {
     public partial class InputDialog : Window
     {
@@ -12,7 +12,6 @@ namespace RainbusTools.Views
         public InputDialog()
         {
             InitializeComponent();
-            this.AttachDevTools();
         }
 
         private void InitializeComponent()
