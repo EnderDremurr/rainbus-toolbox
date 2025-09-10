@@ -13,13 +13,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: 8.0.x
-
-      - name: Add .NET to PATH
-        run: echo "$HOME/.dotnet:$HOME/.dotnet/tools" >> $GITHUB_PATH
+      - name: Add preinstalled .NET to PATH
+        run: echo "$HOME/dotnet:$HOME/dotnet/tools:$PATH" >> $GITHUB_PATH
 
       - name: Ensure zip is installed
         run: sudo apt-get update && sudo apt-get install -y zip
@@ -86,24 +81,5 @@ jobs:
             3. Run: `./RainbusToolbox`  
                (May require *System Preferences → Security & Privacy*)
 
-            ---
-
-            ## Как запустить
-
-            **Linux**  
-            1. Скачайте `RainbusToolbox-linux-x64-<версия>.tar.gz`  
-            2. Распакуйте: `tar -xzf RainbusToolbox-linux-x64-<версия>.tar.gz`  
-            3. Запустите: `./RainbusToolbox`
-
-            **Windows**  
-            1. Скачайте `RainbusToolbox-win-x64-<версия>.zip`  
-            2. Распакуйте архив  
-            3. Дважды кликните `RainbusToolbox.exe`
-
-            **macOS**  
-            1. Скачайте `RainbusToolbox-osx-x64-<версия>.tar.gz`  
-            2. Распакуйте: `tar -xzf RainbusToolbox-osx-x64-<версия>.tar.gz`  
-            3. Запустите: `./RainbusToolbox`  
-               (При первом запуске, возможно, нужно будет разрешить запуск в *Системные настройки → Защита и безопасность*)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
