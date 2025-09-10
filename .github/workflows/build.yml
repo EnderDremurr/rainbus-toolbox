@@ -7,21 +7,19 @@ on:
 
 jobs:
   build:
-    runs-on: ["self-hosted", "Linux", "X64"]  # Your self-hosted Linux runner labels
+    runs-on: ["self-hosted", "Linux", "X64"]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup .NET (user-local)
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 8.0.x
-          installation-path: $HOME/.dotnet
 
       - name: Add .NET to PATH
-        run: |
-          echo "$HOME/.dotnet:$HOME/.dotnet/tools" >> $GITHUB_PATH
+        run: echo "$HOME/.dotnet:$HOME/.dotnet/tools" >> $GITHUB_PATH
 
       - name: Ensure zip is installed
         run: sudo apt-get update && sudo apt-get install -y zip
@@ -29,7 +27,6 @@ jobs:
       - name: Set version
         id: version
         run: |
-          set -e
           VERSION="${GITHUB_REF##refs/tags/}"
           if [ -z "$VERSION" ]; then
             VERSION="manual"
@@ -38,39 +35,29 @@ jobs:
 
       - name: Build Linux
         run: |
-          set -e
           dotnet publish -c Release -r linux-x64 --self-contained true \
-            /p:PublishSingleFile=true \
-            /p:IncludeAllContentForSelfExtract=true \
-            /p:AssemblyName=RainbusToolbox \
-            -o out/linux-x64
+            /p:PublishSingleFile=true /p:IncludeAllContentForSelfExtract=true \
+            /p:AssemblyName=RainbusToolbox -o out/linux-x64
           chmod +x out/linux-x64/RainbusToolbox
           tar -czf RainbusToolbox-linux-x64-${VERSION}.tar.gz -C out/linux-x64 .
 
       - name: Build Windows
         run: |
-          set -e
           dotnet publish -c Release -r win-x64 --self-contained true \
-            /p:PublishSingleFile=true \
-            /p:IncludeAllContentForSelfExtract=true \
-            /p:AssemblyName=RainbusToolbox \
-            -o out/win-x64
+            /p:PublishSingleFile=true /p:IncludeAllContentForSelfExtract=true \
+            /p:AssemblyName=RainbusToolbox -o out/win-x64
           (cd out/win-x64 && zip -r ../../RainbusToolbox-win-x64-${VERSION}.zip .)
 
       - name: Build macOS
         run: |
-          set -e
           dotnet publish -c Release -r osx-x64 --self-contained true \
-            /p:PublishSingleFile=true \
-            /p:IncludeAllContentForSelfExtract=true \
-            /p:AssemblyName=RainbusToolbox \
-            -o out/osx-x64
+            /p:PublishSingleFile=true /p:IncludeAllContentForSelfExtract=true \
+            /p:AssemblyName=RainbusToolbox -o out/osx-x64
           chmod +x out/osx-x64/RainbusToolbox
           tar -czf RainbusToolbox-osx-x64-${VERSION}.tar.gz -C out/osx-x64 .
 
       - name: Upload release assets
         run: |
-          set -e
           gh release upload "$VERSION" RainbusToolbox-linux-x64-${VERSION}.tar.gz --clobber
           gh release upload "$VERSION" RainbusToolbox-win-x64-${VERSION}.zip --clobber
           gh release upload "$VERSION" RainbusToolbox-osx-x64-${VERSION}.tar.gz --clobber
