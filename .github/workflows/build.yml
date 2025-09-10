@@ -67,7 +67,7 @@ jobs:
           gh release upload "$VERSION" RainbusToolbox-win-x64-${VERSION}.zip --clobber
           gh release upload "$VERSION" RainbusToolbox-osx-x64-${VERSION}.tar.gz --clobber
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
       - name: Update release notes
         uses: softprops/action-gh-release@v1
