@@ -6,6 +6,7 @@
         <entry key="App.axaml" value="RainbusTools.csproj" />
         <entry key="SettingsWindow.axaml" value="RainbusTools.csproj" />
         <entry key="Views/BattleHintsTab.axaml" value="RainbusTools.csproj" />
+        <entry key="Views/InitializationWindow.axaml" value="RainbusTools.csproj" />
         <entry key="Views/MainWindow.axaml" value="RainbusTools.csproj" />
         <entry key="Views/ReleaseTab.axaml" value="RainbusTools.csproj" />
         <entry key="Views/SettingsWindow.axaml" value="RainbusTools.csproj" />

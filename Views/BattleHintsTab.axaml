@@ -1,35 +1,100 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:RainbusTools.ViewModels"
-             mc:Ignorable="d"
-             x:Class="RainbusTools.Views.BattleHintsTab"
-             x:DataType="vm:BattleHintsTabViewModel">
+<UserControl
+    d:DataContext="{d:DesignInstance Type=vm:BattleHintsTabViewModel}"
+    mc:Ignorable="d"
+    x:Class="RainbusTools.Views.BattleHintsTab"
+    x:DataType="vm:BattleHintsTabViewModel"
+    x:Name="Root"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:data="clr-namespace:RainbusTools.Utilities.Data"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:RainbusTools.ViewModels"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <Grid RowDefinitions="8*,2*" ColumnDefinitions="*">
-        <!-- Battle hints display -->
-        <ScrollViewer Grid.Row="0" Margin="10" x:Name="BattleHintsScrollViewer">
-            <TextBlock Text="{Binding BattleHintsText}" 
-                       TextWrapping="Wrap"
-                       
-                       Foreground="White"
-                       FontSize="18"/>
+
+    <Grid ColumnDefinitions="*" RowDefinitions="8*,2*">
+
+        <!--  Battle hints list  -->
+        <ScrollViewer
+            Grid.Row="0"
+            Margin="10"
+            x:Name="BattleHintsScrollViewer">
+            <ItemsControl ItemsSource="{Binding Hints}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="data:BattleHint">
+                        <Border
+                            BorderBrush="Gray"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Margin="0,0,0,10"
+                            Padding="8">
+                            <Grid VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <!--  TextBlock (or StackPanel) takes all available space  -->
+                                    <ColumnDefinition Width="*" />
+                                    <!--  Button stays at its natural width  -->
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!--  Hint ID + Text  -->
+                                <StackPanel
+                                    Grid.Column="0"
+                                    Orientation="Horizontal"
+                                    Spacing="5"
+                                    VerticalAlignment="Center">
+                                    <!--  ID label  -->
+                                    <TextBlock
+                                        FontSize="18"
+                                        Foreground="LightGray"
+                                        Text="{Binding Id}"
+                                        VerticalAlignment="Center" />
+
+                                    <!--  Hint text  -->
+                                    <TextBlock
+                                        FontSize="18"
+                                        Foreground="White"
+                                        Text="{Binding Content}"
+                                        TextWrapping="Wrap"
+                                        VerticalAlignment="Center" />
+                                </StackPanel>
+
+                                <!--  Delete button  -->
+                                <Button
+                                    Command="{Binding DataContext.DeleteHintCommand, ElementName=Root}"
+                                    CommandParameter="{Binding Id}"
+                                    Content="✖"
+                                    Grid.Column="1"
+                                    Height="40"
+                                    VerticalAlignment="Center"
+                                    Width="40" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </ScrollViewer>
 
-        <!-- Input + button row -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10" Spacing="10">
-            <TextBox Text="{Binding NewHintText, Mode=TwoWay}" 
-                     Width="900"
-                     Classes="framed"
-                     Height="180"
-                     AcceptsReturn="True"             
-                     TextWrapping="Wrap"             
-                     VerticalAlignment="Center"/>
-            <Button Content="Добавить" 
-                    Width="150"
-                    Height="60"
-                    Command="{Binding AddHintCommand}"/>
+        <!--  Input + button row  -->
+        <StackPanel
+            Grid.Row="1"
+            Margin="10"
+            Orientation="Horizontal"
+            Spacing="10">
+            <TextBox
+                AcceptsReturn="True"
+                Classes="framed"
+                Height="180"
+                Text="{Binding NewHintText, Mode=TwoWay}"
+                TextWrapping="Wrap"
+                VerticalAlignment="Center"
+                Width="900" />
+            <Button
+                Command="{Binding AddHintCommand}"
+                Content="Добавить"
+                Height="60"
+                Width="150" />
         </StackPanel>
+
     </Grid>
 </UserControl>

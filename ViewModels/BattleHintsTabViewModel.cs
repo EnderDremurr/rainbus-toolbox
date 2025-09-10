@@ -1,8 +1,10 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RainbusTools.Converters.Managers;
+using RainbusTools.Utilities.Data;
 using Avalonia.Threading;
 
 namespace RainbusTools.ViewModels;
@@ -10,42 +12,43 @@ namespace RainbusTools.ViewModels;
 public partial class BattleHintsTabViewModel : ObservableObject
 {
     private readonly RepositoryManager _repositoryManager;
-    
+
     public BattleHintsTabViewModel(RepositoryManager repositoryManager)
     {
         _repositoryManager = repositoryManager;
-        LoadHints(); // Initial load
+        Hints = new ObservableCollection<BattleHint>();
+        LoadHints();
     }
 
-    [ObservableProperty]
-    private string _battleHintsText;
+    public ObservableCollection<BattleHint> Hints { get; }
 
     [ObservableProperty]
     private string _newHintText;
 
     /// <summary>
-    /// Loads BattleHints from the repository and updates BattleHintsText.
+    /// Loads BattleHints from the repository and updates the observable collection.
     /// </summary>
     private void LoadHints()
     {
-        // Ensure we are on the UI thread
         Dispatcher.UIThread.InvokeAsync(() =>
         {
             var battleHints = _repositoryManager.GetBattleHints();
 
+            Hints.Clear();
+
             if (battleHints?.DataList == null)
-            {
-                BattleHintsText = string.Empty;
                 return;
+
+            foreach (var hint in battleHints.DataList)
+            {
+                Hints.Add(hint);
             }
 
-            BattleHintsText = string.Join("\n", battleHints.DataList.Select(h => $"{h.Id} : {h.Content}"));
             HintsUpdated?.Invoke();
         });
     }
-    
-    public event Action? HintsUpdated;
 
+    public event Action? HintsUpdated;
 
     [RelayCommand]
     private void AddHint()
@@ -53,13 +56,25 @@ public partial class BattleHintsTabViewModel : ObservableObject
         if (string.IsNullOrWhiteSpace(NewHintText))
             return;
 
-        // Add hint to JSON
         _repositoryManager.AddHint(NewHintText);
 
-        // Refresh BattleHintsText from latest file
         LoadHints();
 
-        // Clear input box
         NewHintText = string.Empty;
+    }
+
+    [RelayCommand]
+    private void DeleteHint(string id)
+    {
+        if (string.IsNullOrWhiteSpace(id))
+            return;
+
+        // Delete from repository
+        _repositoryManager.DeleteHintAtId(int.Parse(id));
+
+        // Remove from observable collection
+        var toRemove = Hints.FirstOrDefault(h => h.Id == id);
+        if (toRemove != null)
+            Hints.Remove(toRemove);
     }
 }

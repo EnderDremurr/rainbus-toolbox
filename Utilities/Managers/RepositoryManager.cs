@@ -26,22 +26,34 @@ public class RepositoryManager
         TryInitialize();
     }
     
-    
+    public bool IsValid { get; private set; }
     public void TryInitialize()
     {
         var path = _dataManager.Settings.RepositoryPath;
 
-        if (!Repository.IsValid(path))
+        try
         {
-            return;
+            if (!Repository.IsValid(path))
+            {
+                IsValid = false;
+                return;
+            }
+
+            Repository = new Repository(path);
+
+            // Ensure .dist folder exists
+            Directory.CreateDirectory(Path.Combine(path, _distPath));
+
+            _pathToReference = Path.Combine(_dataManager.Settings.PathToLimbus, _referenceLangAppendage);
+
+            // If we got this far, repository is valid
+            IsValid = true;
         }
-
-        Repository = new Repository(path);
-
-        // Ensure .dist folder exists
-        Directory.CreateDirectory(Path.Combine(path, _distPath));
-        
-        _pathToReference = Path.Combine(_dataManager.Settings.PathToLimbus, _referenceLangAppendage);
+        catch
+        {
+            // Any exception means repository is not valid
+            IsValid = false;
+        }
     }
 
 
@@ -143,8 +155,34 @@ public class RepositoryManager
 
     public void DeleteHintAtId(int id)
     {
-        
+        var path = Path.Combine(_dataManager.Settings.RepositoryPath, _localizationFolder, "BattleHint.json");
+
+        // Load existing hints
+        var hints = GetBattleHints();
+
+        // Remove the hint with the matching ID
+        var hintToRemove = hints.DataList.FirstOrDefault(h => int.TryParse(h.Id, out var hId) && hId == id);
+        if (hintToRemove == null)
+        {
+            Console.WriteLine($"Hint with ID {id} not found.");
+            return;
+        }
+
+        hints.DataList.Remove(hintToRemove);
+
+        // Reassign IDs sequentially starting from 1
+        for (int i = 0; i < hints.DataList.Count; i++)
+        {
+            hints.DataList[i].Id = (i + 1).ToString();
+        }
+
+        // Save back to JSON file
+        var json = JsonConvert.SerializeObject(hints, Formatting.Indented);
+        File.WriteAllText(path, json);
+
+        Console.WriteLine($"Hint with original ID {id} deleted. IDs updated sequentially.");
     }
+
 
     public void FetchMergeAndPushToOrigin()
     {
