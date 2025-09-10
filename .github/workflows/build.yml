@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ["self-hosted", "Linux", "X64"]
+    runs-on: ["self-hosted", "Linux", "X64"]  # Your self-hosted Linux runner labels
 
     steps:
       - name: Checkout code
@@ -17,18 +17,19 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 8.0.x
-        env:
-          DOTNET_INSTALL_DIR: $HOME/.dotnet
-          DOTNET_ROOT: $HOME/.dotnet
+          installation-path: $HOME/.dotnet
 
-      - name: Add dotnet to PATH
+      - name: Add .NET to PATH
         run: |
-          echo "DOTNET_ROOT=$HOME/.dotnet" >> $GITHUB_ENV
-          echo "PATH=$HOME/.dotnet:$HOME/.dotnet/tools:$PATH" >> $GITHUB_ENV
+          echo "$HOME/.dotnet:$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+      - name: Ensure zip is installed
+        run: sudo apt-get update && sudo apt-get install -y zip
 
       - name: Set version
         id: version
         run: |
+          set -e
           VERSION="${GITHUB_REF##refs/tags/}"
           if [ -z "$VERSION" ]; then
             VERSION="manual"
@@ -37,6 +38,7 @@ jobs:
 
       - name: Build Linux
         run: |
+          set -e
           dotnet publish -c Release -r linux-x64 --self-contained true \
             /p:PublishSingleFile=true \
             /p:IncludeAllContentForSelfExtract=true \
@@ -45,17 +47,19 @@ jobs:
           chmod +x out/linux-x64/RainbusToolbox
           tar -czf RainbusToolbox-linux-x64-${VERSION}.tar.gz -C out/linux-x64 .
 
-      - name: Build Windows (zip on Linux)
+      - name: Build Windows
         run: |
+          set -e
           dotnet publish -c Release -r win-x64 --self-contained true \
             /p:PublishSingleFile=true \
             /p:IncludeAllContentForSelfExtract=true \
             /p:AssemblyName=RainbusToolbox \
             -o out/win-x64
-          zip -r RainbusToolbox-win-x64-${VERSION}.zip out/win-x64/*
+          (cd out/win-x64 && zip -r ../../RainbusToolbox-win-x64-${VERSION}.zip .)
 
       - name: Build macOS
         run: |
+          set -e
           dotnet publish -c Release -r osx-x64 --self-contained true \
             /p:PublishSingleFile=true \
             /p:IncludeAllContentForSelfExtract=true \
@@ -66,9 +70,10 @@ jobs:
 
       - name: Upload release assets
         run: |
-          gh release upload "$VERSION" RainbusToolbox-linux-x64-${VERSION}.tar.gz
-          gh release upload "$VERSION" RainbusToolbox-win-x64-${VERSION}.zip
-          gh release upload "$VERSION" RainbusToolbox-osx-x64-${VERSION}.tar.gz
+          set -e
+          gh release upload "$VERSION" RainbusToolbox-linux-x64-${VERSION}.tar.gz --clobber
+          gh release upload "$VERSION" RainbusToolbox-win-x64-${VERSION}.zip --clobber
+          gh release upload "$VERSION" RainbusToolbox-osx-x64-${VERSION}.tar.gz --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
