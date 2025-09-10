@@ -38,6 +38,50 @@
         <Style Selector="Button TextBlock.header">
         </Style>
         
+        
+        <!-- Default TabItem style -->
+        <Style Selector="TabItem">
+            <Setter Property="FontFamily" Value="avares://RainbusTools/Assets/Fonts/Mikodacs.ttf#Mikodacs"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <ImageBrush Source="avares://RainbusTools/Assets/Tab.png" Stretch="Fill"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+        </Style>
+
+        <!-- Hovered TabItem -->
+        <Style Selector="TabItem:pointerover">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <ImageBrush Source="avares://RainbusTools/Assets/TabHover.png" Stretch="Fill"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <!-- Selected TabItem -->
+        <Style Selector="TabItem:selected">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <ImageBrush Source="avares://RainbusTools/Assets/TabSelected.png" Stretch="Fill"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="#FFA500"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+        </Style>
+        
+        <Style Selector="TabItem:selected /template/ Border#PART_SelectedPipe">
+            <Setter Property="Background" Value="#00000000"/>
+        </Style>
+
+
+
+        
         <!-- Global CheckBox style using custom images and font -->
         <Style Selector="CheckBox">
             <Setter Property="Template">
@@ -128,6 +172,30 @@
 <Style Selector="Button#SettingsButton.navigation:pointerover Image#btnImage">
     <Setter Property="Source" Value="/Assets/NavButtonSettingsHov.png"/>
 </Style>
+        
+        <!-- Synchronize button -->
+        <Style Selector="Button#SynchronizeButton.navigation Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonSynchronize.png"/>
+        </Style>
+        <Style Selector="Button#SynchronizeButton.navigation:pointerover Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonSynchronizeHov.png"/>
+        </Style>
+        
+        <!-- Commit button -->
+        <Style Selector="Button#CommitButton.navigation Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonCommit.png"/>
+        </Style>
+        <Style Selector="Button#CommitButton.navigation:pointerover Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonCommitHov.png"/>
+        </Style>
+        
+        <!-- History button -->
+        <Style Selector="Button#HistoryButton.navigation Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonHistory.png"/>
+        </Style>
+        <Style Selector="Button#HistoryButton.navigation:pointerover Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonHistoryHov.png"/>
+        </Style>
 
         
     <Style Selector="TextBox.framed">

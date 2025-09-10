@@ -14,6 +14,9 @@ namespace RainbusTools;
 
 public partial class App : Application
 {
+    public static RepositoryManager RepositoryManager { get; private set; }
+    
+    
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -31,10 +34,13 @@ public partial class App : Application
             
 
             // Create main window
-            var mainWindow = new MainWindow();
+            
             var data = new PersistentDataManager();
-            var discord = new DiscordManager(data, mainWindow);
             var repo = new RepositoryManager(data);
+            RepositoryManager = repo;
+            var mainWindow = new MainWindow();
+            var discord = new DiscordManager(data, mainWindow);
+            
             var github = new GithubManager(data,repo);
             // Pass the window instance to the ViewModel
             mainWindow.DataContext = new MainWindowViewModel(mainWindow, data, discord, github, repo);
@@ -53,4 +59,6 @@ public partial class App : Application
         foreach (var plugin in dataValidationPluginsToRemove)
             BindingPlugins.DataValidators.Remove(plugin);
     }
+    
 }
+

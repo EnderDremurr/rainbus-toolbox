@@ -1,19 +1,17 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Avalonia.Controls;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using RainbusTools.Converters.Managers;
 
-
 namespace RainbusTools.ViewModels;
 
-public partial class MainWindowViewModel : ObservableObject
+public partial class ReleaseTabViewModel : ObservableObject
 {
     private readonly Window _window;
     private PersistentDataManager _dataManager;
@@ -22,8 +20,7 @@ public partial class MainWindowViewModel : ObservableObject
     private RepositoryManager _repositoryManager;
     private string _username = "Unknown";
     private string _repoName = "Unknown";
-    private string _gitStatus = "";
-    public MainWindowViewModel(Window window, PersistentDataManager dataManager, DiscordManager discordManager, GithubManager githubManager, RepositoryManager repositoryManager)
+    public ReleaseTabViewModel(Window window, PersistentDataManager dataManager, DiscordManager discordManager, GithubManager githubManager, RepositoryManager repositoryManager)
     {
         _window = window;
         _dataManager = dataManager;
@@ -40,25 +37,6 @@ public partial class MainWindowViewModel : ObservableObject
         var remoteUrl = _repositoryManager.Repository.Network.Remotes["origin"].Url;
         string repoName = Path.GetFileNameWithoutExtension(remoteUrl);
         RepoName = repoName;
-
-        var repoChanges = _repositoryManager.CheckRepositoryChanges();
-        GitStatus = (repoChanges[0] == 0 && repoChanges[1] == 0) ? "" : $" {repoChanges[0]}↓ {repoChanges[1]}↑";
-
-    }
-
-    
-
-    public string GitStatus
-    {
-        get => _gitStatus;
-        set
-        {
-            if (value != _gitStatus)
-            {
-                _gitStatus = value;
-                OnPropertyChanged(nameof(UserRepoDisplay));
-            }
-        }
     }
     
     // Bindable Username
@@ -92,7 +70,7 @@ public partial class MainWindowViewModel : ObservableObject
     
 
     // Combined property for UI
-    public string UserRepoDisplay => $"{Username} : [{RepoName} {GitStatus}] ";
+    public string UserRepoDisplay => $"{Username} : [{RepoName}]";
 
     // Text editor
     [ObservableProperty]
@@ -193,17 +171,5 @@ public partial class MainWindowViewModel : ObservableObject
     private void Close()
     {
         _window.Close();
-    }
-    [RelayCommand]
-    private void Synchronize()
-    {
-    }
-    [RelayCommand]
-    private void Commit()
-    {
-    }
-    [RelayCommand]
-    private void History()
-    {
     }
 }

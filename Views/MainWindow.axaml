@@ -1,161 +1,150 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:md="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
-        xmlns:vm="clr-namespace:RainbusTools.ViewModels"
-        mc:Ignorable="d"
-        x:Class="RainbusTools.Views.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
-        Title="Username"
-        WindowState="Maximized"
-        SystemDecorations="None">
-
+<Window
+    SystemDecorations="None"
+    Title="Username"
+    WindowState="Maximized"
+    mc:Ignorable="d"
+    x:Class="RainbusTools.Views.MainWindow"
+    x:DataType="vm:MainWindowViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:RainbusTools.Views"
+    xmlns:vm="clr-namespace:RainbusTools.ViewModels"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Grid>
-        <!-- Background -->
-        <Image Source="/Assets/ReleaseBG.png"
-               Stretch="UniformToFill"
-               HorizontalAlignment="Center"
-               VerticalAlignment="Center"/>
+        <!--  Background  -->
+        <Image
+            HorizontalAlignment="Center"
+            Source="/Assets/ReleaseBG.png"
+            Stretch="UniformToFill"
+            VerticalAlignment="Center" />
 
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="60"/>   <!-- Title bar -->
-                <RowDefinition Height="*"/>    <!-- Main content scales -->
-                <RowDefinition Height="Auto"/> <!-- Bottom row -->
+                <RowDefinition Height="60" />
+                <!--  Title bar  -->
+                <RowDefinition Height="*" />
+                <!--  Tabs  -->
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/> <!-- Editor -->
-                <ColumnDefinition Width="1*"/> <!-- Checkboxes -->
-                <ColumnDefinition Width="2*"/> <!-- Markdown -->
-            </Grid.ColumnDefinitions>
 
-            <!-- Title bar -->
-            <Grid Grid.Row="0" Grid.ColumnSpan="3"
-                  Background="Transparent"
-                  PointerPressed="TitleBar_OnPointerPressed"
-                  Height="60">
+            <Grid
+                Background="Transparent"
+                Grid.Row="0"
+                Height="60"
+                PointerPressed="TitleBar_OnPointerPressed">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/> <!-- Settings -->
-                    <ColumnDefinition Width="*"/>    <!-- Username -->
-                    <ColumnDefinition Width="Auto"/> <!-- Window buttons -->
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <!-- Settings button -->
-                <Button x:Name="SettingsButton" Classes="navigation"
-                        Grid.Column="0"
-                        Margin="15,5,15,0"
-                        Command="{Binding OpenSettingsCommand}"/>
+                <!--  Settings Button  -->
+                <Button
+                    Classes="navigation"
+                    Command="{Binding OpenSettingsCommand}"
+                    Grid.Column="0"
+                    Margin="15,5,15,0"
+                    ToolTip.Tip="Открыть настройки"
+                    x:Name="SettingsButton" />
 
-                <!-- Username -->
-                <TextBlock Text="{Binding UserRepoDisplay}"
-                           Grid.Column="1"
-                           VerticalAlignment="Center"
-                           Foreground="White"
-                           Classes="header"
-                           Margin="15,0,0,0"/>
+                <!--  Text + Buttons in center  -->
+                <StackPanel
+                    Grid.Column="1"
+                    Margin="15,0,0,0"
+                    Orientation="Horizontal"
+                    VerticalAlignment="Center">
 
-                <!-- Window buttons -->
-                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center"
-                            Margin="0,5,15,0">
-                    <Button x:Name="MinButton" Classes="navigation" Command="{Binding MinimizeCommand}"/>
-                    <Button x:Name="MaxButton" Classes="navigation" Command="{Binding MaximizeCommand}"/>
-                    <Button x:Name="CloseButton" Classes="navigation" Command="{Binding CloseCommand}"/>
-                </StackPanel>
-            </Grid>
-
-            <!-- Text editor 9-grid -->
-            <Grid Grid.Row="1" Grid.Column="0" Margin="10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="20"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="20"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="20"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="20"/>
-                </Grid.ColumnDefinitions>
-                
-
-                <!-- TextBox -->
-                <TextBox Grid.Row="1" Grid.Column="1"
-                         AcceptsReturn="True"
-                         TextWrapping="Wrap"
-                         Classes="framed"
-                         ScrollViewer.VerticalScrollBarVisibility="Auto"
-                         ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                         Background="Transparent"
-                         BorderBrush="Transparent"
-                         CaretBrush="White"
-                         SelectionBrush="#44FFFFFF"
-                         Text="{Binding EditorText, Mode=TwoWay}">
-                    
-                </TextBox>
-            </Grid>
-
-            <!-- Checkboxes + ListBox -->
-            <StackPanel Grid.Row="1" Grid.Column="1"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        Margin="10">
-                <CheckBox Content="Оставить ссылку на релиз" IsChecked="{Binding Option1}" Margin="5"/>
-                <CheckBox Content="Пингануть роль ниже (Впиши айди)" IsChecked="{Binding Option2}" Margin="5"/>
-                <TextBox AcceptsTab="False"  AcceptsReturn="False" Classes="framed" Text="{Binding RoleToPing, Mode=TwoWay}"
-                         Height="60" />
-                
-            </StackPanel>
-
-            <!-- Markdown -->
-            <md:MarkdownScrollViewer Grid.Row="1" Grid.Column="2"
-                                     Margin="10"
-                                     Markdown="{Binding EditorText}"/>
-
-            <!-- Bottom row: Version + Submit -->
-            <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Margin="10" Spacing="10">
-
-                <!-- Version label + textbox -->
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="5">
-                    <TextBlock Text="Выпустить версию:"
-                               VerticalAlignment="Center"
-                               Foreground="White"
-                               FontFamily="{StaticResource MikodacsFont}"
-                               FontSize="22"/>
-                    <TextBox
-                            Classes="framed"
-                            Width="200"
-                            Height="60"
-                             Text="{Binding Version, Mode=TwoWay}"
-                             HorizontalAlignment="Left"
-                             VerticalAlignment="Center"
-                             TextInput="VersionTextBox_OnTextInput"/>
-                </StackPanel>
-
-                <!-- Submit button -->
-                <Button Content="Заебашить"
+                    <TextBlock
                         Classes="header"
-                        Width="200"
-                        Height="60"
-                        HorizontalAlignment="Center"
-                        Command="{Binding SubmitCommand}"/>
-            </StackPanel>
+                        Foreground="White"
+                        Text="{Binding UserRepoDisplay}"
+                        VerticalAlignment="Center" />
+
+                    <Button
+                        Classes="navigation"
+                        Command="{Binding SynchronizeCommand}"
+                        Margin="5,0,0,0"
+                        ToolTip.Tip="Синхронизировать изменения"
+                        x:Name="SynchronizeButton" />
+
+                    <Button
+                        Classes="navigation"
+                        Command="{Binding CommitCommand}"
+                        Margin="5,0,0,0"
+                        ToolTip.Tip="Сохранить изменения в гит (коммит)"
+                        x:Name="CommitButton" />
+
+                    <Button
+                        Classes="navigation"
+                        Command="{Binding HistoryCommand}"
+                        Margin="5,0,0,0"
+                        ToolTip.Tip="Просмотреть историю гит"
+                        x:Name="HistoryButton" />
+                </StackPanel>
+
+                <!--  Window control buttons  -->
+                <StackPanel
+                    Grid.Column="2"
+                    Margin="0,5,15,0"
+                    Orientation="Horizontal"
+                    VerticalAlignment="Center">
+                    <Button
+                        Classes="navigation"
+                        Command="{Binding MinimizeCommand}"
+                        ToolTip.Tip="Сворачивает прогу"
+                        x:Name="MinButton" />
+                    <Button
+                        Classes="navigation"
+                        Command="{Binding MaximizeCommand}"
+                        ToolTip.Tip="Изменяет размер окна"
+                        x:Name="MaxButton" />
+                    <Button
+                        Classes="navigation"
+                        Command="{Binding CloseCommand}"
+                        ToolTip.Tip="Закрывает прогу к хуям"
+                        x:Name="CloseButton" />
+                </StackPanel>
+            </Grid>
+
+
+            <!--  Tabs  -->
+            <TabControl Grid.Row="1" Margin="0,10,0,10">
+
+
+                <TabItem
+                    FontFamily="avares://RainbusTools/Assets/Fonts/Mikodacs.ttf#Mikodacs"
+                    FontSize="20"
+                    Foreground="White"
+                    Header="Перевоз">
+
+
+                    <TextBlock Foreground="White" Text="Здесь пока пусто" />
+                </TabItem>
+                <TabItem
+                    FontFamily="avares://RainbusTools/Assets/Fonts/Mikodacs.ttf#Mikodacs"
+                    FontSize="20"
+                    Foreground="White"
+                    Header="Баттл хинты">
+                    <views:BattleHintsTab />
+                </TabItem>
+                <TabItem
+                    FontFamily="avares://RainbusTools/Assets/Fonts/Mikodacs.ttf#Mikodacs"
+                    FontSize="20"
+                    Foreground="White"
+                    Header="Добавить файлы"
+                    Margin="800,0,0,0">
+                    <TextBlock Foreground="White" Text="Здесь пока пусто" />
+                </TabItem>
+                <TabItem
+                    FontFamily="avares://RainbusTools/Assets/Fonts/Mikodacs.ttf#Mikodacs"
+                    FontSize="20"
+                    Foreground="White"
+                    Header="Выложить релиз">
+                    <views:ReleaseTab />
+                </TabItem>
+
+            </TabControl>
         </Grid>
-        
-        <Border Background="#80000000" 
-                IsVisible="{Binding IsLoading}" 
-                HorizontalAlignment="Stretch" 
-                VerticalAlignment="Stretch">
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Text="ЕБАШИМ РЕЛИЗ!!!!!!!!!!!!!!!!!!!!!!!!!!" Foreground="White" FontSize="20" Margin="0,0,0,10"/>
-            
-            
-                <ProgressBar IsIndeterminate="True" Width="200" Margin="0,10,0,0"/>
-            </StackPanel>
-        </Border>
     </Grid>
 </Window>

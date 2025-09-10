@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:RainbusTools.ViewModels"
+             mc:Ignorable="d"
+             x:Class="RainbusTools.Views.BattleHintsTab"
+             x:DataType="vm:BattleHintsTabViewModel">
+
+    <Grid RowDefinitions="8*,2*" ColumnDefinitions="*">
+        <!-- Battle hints display -->
+        <ScrollViewer Grid.Row="0" Margin="10" x:Name="BattleHintsScrollViewer">
+            <TextBlock Text="{Binding BattleHintsText}" 
+                       TextWrapping="Wrap"
+                       
+                       Foreground="White"
+                       FontSize="18"/>
+        </ScrollViewer>
+
+        <!-- Input + button row -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10" Spacing="10">
+            <TextBox Text="{Binding NewHintText, Mode=TwoWay}" 
+                     Width="900"
+                     Classes="framed"
+                     Height="180"
+                     AcceptsReturn="True"             
+                     TextWrapping="Wrap"             
+                     VerticalAlignment="Center"/>
+            <Button Content="Добавить" 
+                    Width="150"
+                    Height="60"
+                    Command="{Binding AddHintCommand}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

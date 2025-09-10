@@ -2,7 +2,112 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="RainbusTools.Views.ReleaseTab">
-    Welcome to Avalonia!
+             xmlns:md="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
+             xmlns:vm="clr-namespace:RainbusTools.ViewModels"
+             mc:Ignorable="d"
+             x:Class="RainbusTools.Views.ReleaseTab"
+             x:DataType="vm:MainWindowViewModel">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/> <!-- Editor -->
+            <ColumnDefinition Width="1*"/> <!-- Checkboxes -->
+            <ColumnDefinition Width="2*"/> <!-- Markdown -->
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>    <!-- Main content -->
+            <RowDefinition Height="Auto"/> <!-- Bottom row -->
+        </Grid.RowDefinitions>
+
+        <!-- Text editor -->
+        <Grid Grid.Row="0" Grid.Column="0" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="20"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBox Grid.Row="1" Grid.Column="1"
+                     AcceptsReturn="True"
+                     TextWrapping="Wrap"
+                     Classes="framed"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                     Background="Transparent"
+                     BorderBrush="Transparent"
+                     CaretBrush="White"
+                     SelectionBrush="#44FFFFFF"
+                     Text="{Binding EditorText, Mode=TwoWay}" />
+        </Grid>
+
+        <!-- Checkboxes + Role box -->
+        <StackPanel Grid.Row="0" Grid.Column="1"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Margin="10">
+            <CheckBox Content="Оставить ссылку на релиз" IsChecked="{Binding Option1}" Margin="5"/>
+            <CheckBox Content="Пингануть роль ниже (Впиши айди)" IsChecked="{Binding Option2}" Margin="5"/>
+            <TextBox AcceptsTab="False"
+                     AcceptsReturn="False"
+                     Classes="framed"
+                     Text="{Binding RoleToPing, Mode=TwoWay}"
+                     Height="60"/>
+        </StackPanel>
+
+        <!-- Markdown preview -->
+        <md:MarkdownScrollViewer Grid.Row="0" Grid.Column="2"
+                                 Margin="10"
+                                 Markdown="{Binding EditorText}"/>
+
+        <!-- Bottom row: Version + Submit -->
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Margin="10" Spacing="10">
+
+            <!-- Version label + textbox -->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="5">
+                <TextBlock Text="Выпустить версию:"
+                           VerticalAlignment="Center"
+                           Foreground="White"
+                           FontFamily="{StaticResource MikodacsFont}"
+                           FontSize="22"/>
+                <TextBox Classes="framed"
+                         Width="200"
+                         Height="60"
+                         Text="{Binding Version, Mode=TwoWay}"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Center"
+                         TextInput="VersionTextBox_OnTextInput"/>
+            </StackPanel>
+
+            <!-- Submit button -->
+            <Button Content="Заебашить"
+                    Classes="header"
+                    Width="200"
+                    Height="60"
+                    HorizontalAlignment="Center"
+                    Command="{Binding SubmitCommand}"/>
+        </StackPanel>
+
+        <!-- Loading overlay -->
+        <Border Background="#80000000"
+                IsVisible="{Binding IsLoading}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="ЕБАШИМ РЕЛИЗ!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                           Foreground="White"
+                           FontSize="20"
+                           Margin="0,0,0,10"/>
+                <ProgressBar IsIndeterminate="True" Width="200" Margin="0,10,0,0"/>
+            </StackPanel>
+        </Border>
+    </Grid>
 </UserControl>

@@ -9,11 +9,13 @@ namespace RainbusTools.Views
         public MainWindow()
         {
             InitializeComponent();
+            
         }
 
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
+            
         }
 
         // Make entire title bar draggable

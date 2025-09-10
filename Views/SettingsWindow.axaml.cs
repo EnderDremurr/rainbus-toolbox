@@ -18,6 +18,7 @@ public partial class SettingsWindow : Window
     private TextBox _discordWebHookBox;
     private TextBox _repoPathTextBox;
     private TextBlock _gitHubTokenStatusTextBlock;
+    private TextBox _pathToLimbus;
 
     public SettingsWindow(PersistentDataManager manager, DiscordManager discordManager, GithubManager githubManager, RepositoryManager repositoryManager)
     {
@@ -31,6 +32,8 @@ public partial class SettingsWindow : Window
         _discordWebHookBox = this.FindControl<TextBox>("DiscordWebHookBox");
         _repoPathTextBox = this.FindControl<TextBox>("RepoPathTextBox");
         _gitHubTokenStatusTextBlock = this.FindControl<TextBlock>("GitHubTokenStatusTextBlock");
+        _pathToLimbus = this.FindControl<TextBox>("LimbusPathTextBox");
+        
 
         LoadSettings();
 
@@ -59,6 +62,14 @@ public partial class SettingsWindow : Window
         if (!string.IsNullOrEmpty(result))
             _repoPathTextBox.Text = result;
     }
+    
+    private async void BrowseLimbusFolder_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFolderDialog { Title = "Выбери папку с бимбус кемпани МЕНЕДЖЕР ЭСКВАЕР!!!" };
+        var result = await dialog.ShowAsync(this);
+        if (!string.IsNullOrEmpty(result))
+            LimbusPathTextBox.Text = result;
+    }
 
     // GitHub token button
     private async void SetGitHubToken_Click(object sender, RoutedEventArgs e)
@@ -74,6 +85,7 @@ public partial class SettingsWindow : Window
         // Always read the current value of the webhook box
         _dataManager.Settings.DiscordWebHook = _discordWebHookBox.Text;
         _dataManager.Settings.RepositoryPath = _repoPathTextBox.Text;
+        _dataManager.Settings.PathToLimbus = LimbusPathTextBox.Text;
         _dataManager.Save();
         _discordManager.TryInitialize(this);
         _repositoryManager.TryInitialize();
@@ -100,6 +112,7 @@ public partial class SettingsWindow : Window
             var data = _dataManager.Settings;
             _discordWebHookBox.Text = data.DiscordWebHook ?? "";
             _repoPathTextBox.Text = data.RepositoryPath ?? "";
+            LimbusPathTextBox.Text = data.PathToLimbus ?? "";
 
             _gitHubTokenStatusTextBlock.Text = string.IsNullOrEmpty(data.GitHubToken)
                 ? "Ты не залогинен"
