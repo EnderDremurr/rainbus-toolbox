@@ -3,6 +3,7 @@ name: Release Rainbus Toolbox
 on:
   release:
     types: [created]
+  workflow_dispatch:
 
 jobs:
   build:
