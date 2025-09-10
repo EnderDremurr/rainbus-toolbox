@@ -33,6 +33,9 @@ jobs:
           # Replace any invalid characters with '-' (just in case)
           VERSION=$(echo "$VERSION" | tr -c '[:alnum:].+-' '-')
       
+          # Remove trailing '-' if any
+          VERSION="${VERSION%-}"
+      
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Build Linux
