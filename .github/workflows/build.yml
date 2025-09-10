@@ -17,12 +17,15 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 8.0.x
+          # installation-path is optional, we enforce DOTNET_ROOT below
         env:
           DOTNET_INSTALL_DIR: $HOME/.dotnet
           DOTNET_ROOT: $HOME/.dotnet
 
       - name: Add dotnet to PATH
-        run: echo "$HOME/.dotnet:$HOME/.dotnet/tools:$PATH" >> $GITHUB_ENV
+        run: |
+          echo "DOTNET_ROOT=$HOME/.dotnet" >> $GITHUB_ENV
+          echo "PATH=$HOME/.dotnet:$HOME/.dotnet/tools:$PATH" >> $GITHUB_ENV
 
       - name: Set version
         id: version
