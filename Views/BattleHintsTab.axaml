@@ -5,12 +5,16 @@
     x:DataType="vm:BattleHintsTabViewModel"
     x:Name="Root"
     xmlns="https://github.com/avaloniaui"
+    xmlns:converters="clr-namespace:RainbusToolbox.Models"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:data="clr-namespace:RainbusToolbox.Utilities.Data"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:RainbusToolbox.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+    <UserControl.Resources>
+        <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+    </UserControl.Resources>
 
     <Grid ColumnDefinitions="*" RowDefinitions="8*,2*">
 
@@ -23,33 +27,28 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="data:BattleHint">
                         <Border
-                            BorderBrush="Gray"
+                            Background="#1E1E1E"
+                            BorderBrush="#666666"
                             BorderThickness="1"
-                            CornerRadius="6"
+                            CornerRadius="0"
                             Margin="0,0,0,10"
                             Padding="8">
                             <Grid VerticalAlignment="Center">
                                 <Grid.ColumnDefinitions>
-                                    <!--  TextBlock (or StackPanel) takes all available space  -->
                                     <ColumnDefinition Width="*" />
-                                    <!--  Button stays at its natural width  -->
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <!--  Hint ID + Text  -->
                                 <StackPanel
                                     Grid.Column="0"
                                     Orientation="Horizontal"
                                     Spacing="5"
                                     VerticalAlignment="Center">
-                                    <!--  ID label  -->
                                     <TextBlock
                                         FontSize="18"
                                         Foreground="LightGray"
                                         Text="{Binding Id}"
                                         VerticalAlignment="Center" />
-
-                                    <!--  Hint text  -->
                                     <TextBlock
                                         FontSize="18"
                                         Foreground="White"
@@ -59,7 +58,6 @@
                                         Width="1800" />
                                 </StackPanel>
 
-                                <!--  Delete button  -->
                                 <Button
                                     Command="{Binding DataContext.DeleteHintCommand, ElementName=Root}"
                                     CommandParameter="{Binding Id}"
@@ -71,12 +69,11 @@
                             </Grid>
                         </Border>
                     </DataTemplate>
-
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
 
-        <!--  Input + button row  -->
+        <!--  Input + button + radio row  -->
         <StackPanel
             Grid.Row="1"
             Margin="10"
@@ -90,12 +87,37 @@
                 TextWrapping="Wrap"
                 VerticalAlignment="Center"
                 Width="900" />
+
             <Button
                 Command="{Binding AddHintCommand}"
                 Content="Добавить"
                 Height="60"
                 Width="150" />
-        </StackPanel>
 
+            <!--  Radio buttons  -->
+            <StackPanel
+                Orientation="Horizontal"
+                Spacing="10"
+                VerticalAlignment="Center">
+                <RadioButton
+                    Checked="RadioButton_Checked"
+                    Content="Loading"
+                    GroupName="HintTypes"
+                    Tag="Loading" />
+
+                <RadioButton
+                    Checked="RadioButton_Checked"
+                    Content="Battle"
+                    GroupName="HintTypes"
+                    Tag="Battle" />
+
+                <RadioButton
+                    Checked="RadioButton_Checked"
+                    Content="Abnormality"
+                    GroupName="HintTypes"
+                    Tag="Abnormality" />
+
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </UserControl>

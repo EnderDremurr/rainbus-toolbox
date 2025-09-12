@@ -3,9 +3,349 @@
     d:DesignWidth="800"
     mc:Ignorable="d"
     x:Class="RainbusToolbox.Views.TranslationTab"
+    x:DataType="views:TranslationTab"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:RainbusToolbox.Views"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    Welcome to Avalonia!
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  File Selection  -->
+        <StackPanel
+            Grid.Row="0"
+            Margin="10"
+            Orientation="Horizontal">
+            <Button
+                Click="OnSelectFileClick"
+                Content="Select Story File"
+                Margin="0,0,10,0"
+                Name="SelectFileButton" />
+            <TextBlock
+                Name="FilePathText"
+                Text="No file selected"
+                VerticalAlignment="Center" />
+        </StackPanel>
+
+        <!--  Reference Section (Top - Read-only)  -->
+        <Border
+            BorderBrush="DarkBlue"
+            BorderThickness="2"
+            Grid.Row="1"
+            IsVisible="{Binding IsStoryLoaded}"
+            Margin="10,0,10,5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!--  Reference Header  -->
+                <TextBlock
+                    Background="LightBlue"
+                    FontWeight="Bold"
+                    Grid.Row="0"
+                    Margin="5"
+                    Padding="5"
+                    Text="Reference (Read-only)" />
+
+                <!--  Reference Item Info  -->
+                <Grid Grid.Row="1" Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Grid.Column="0"
+                        Grid.Row="0"
+                        Margin="0,0,10,5"
+                        Text="ID:"
+                        VerticalAlignment="Center" />
+                    <TextBox
+                        Background="LightGray"
+                        Grid.Column="1"
+                        Grid.Row="0"
+                        IsReadOnly="True"
+                        Margin="0,0,20,5"
+                        Text="{Binding ReferenceItem.Id}" />
+
+                    <TextBlock
+                        Grid.Column="2"
+                        Grid.Row="0"
+                        Margin="0,0,10,5"
+                        Text="Model:"
+                        VerticalAlignment="Center" />
+                    <TextBox
+                        Background="LightGray"
+                        Grid.Column="3"
+                        Grid.Row="0"
+                        IsReadOnly="True"
+                        Margin="0,0,0,5"
+                        Text="{Binding ReferenceItem.Model}" />
+
+                    <TextBlock
+                        Grid.Column="0"
+                        Grid.Row="1"
+                        Margin="0,0,10,5"
+                        Text="Teller:"
+                        VerticalAlignment="Center" />
+                    <TextBox
+                        Background="LightGray"
+                        Grid.Column="1"
+                        Grid.Row="1"
+                        IsReadOnly="True"
+                        Margin="0,0,20,5"
+                        Text="{Binding ReferenceItem.Teller}" />
+
+                    <TextBlock
+                        Grid.Column="2"
+                        Grid.Row="1"
+                        Margin="0,0,10,5"
+                        Text="Title:"
+                        VerticalAlignment="Center" />
+                    <TextBox
+                        Background="LightGray"
+                        Grid.Column="3"
+                        Grid.Row="1"
+                        IsReadOnly="True"
+                        Margin="0,0,0,5"
+                        Text="{Binding ReferenceItem.Title}" />
+
+                    <TextBlock
+                        Grid.Column="0"
+                        Grid.Row="2"
+                        Margin="0,0,10,5"
+                        Text="Place:"
+                        VerticalAlignment="Center" />
+                    <TextBox
+                        Background="LightGray"
+                        Grid.Column="1"
+                        Grid.ColumnSpan="3"
+                        Grid.Row="2"
+                        IsReadOnly="True"
+                        Margin="0,0,0,5"
+                        Text="{Binding ReferenceItem.Place}" />
+                </Grid>
+
+                <!--  Reference Content Editor  -->
+                <Border
+                    BorderBrush="Gray"
+                    BorderThickness="1"
+                    Grid.Row="2"
+                    Margin="5">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            FontWeight="Bold"
+                            Grid.Row="0"
+                            Margin="5"
+                            Text="Reference Content:" />
+                        <TextBox
+                            AcceptsReturn="True"
+                            Background="LightGray"
+                            Grid.Row="1"
+                            IsReadOnly="True"
+                            Margin="5"
+                            Name="ReferenceContentEditor"
+                            ScrollViewer.VerticalScrollBarVisibility="Auto"
+                            Text="{Binding ReferenceItem.Content}"
+                            TextWrapping="Wrap" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!--  Splitter  -->
+        <GridSplitter
+            Background="Gray"
+            Grid.Row="2"
+            HorizontalAlignment="Stretch" />
+
+        <!--  Editable Section (Bottom)  -->
+        <Border
+            BorderBrush="DarkGreen"
+            BorderThickness="2"
+            Grid.Row="3"
+            IsVisible="{Binding IsStoryLoaded}"
+            Margin="10,5,10,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!--  Editable Header  -->
+                <TextBlock
+                    Background="LightGreen"
+                    FontWeight="Bold"
+                    Grid.Row="0"
+                    Margin="5"
+                    Padding="5"
+                    Text="Translation (Editable)" />
+
+                <!--  Editable Item Info  -->
+                <Grid Grid.Row="1" Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Grid.Column="0"
+                        Grid.Row="0"
+                        Margin="0,0,10,5"
+                        Text="ID:"
+                        VerticalAlignment="Center" />
+                    <TextBox
+                        Grid.Column="1"
+                        Grid.Row="0"
+                        IsReadOnly="True"
+                        Margin="0,0,20,5"
+                        Text="{Binding CurrentItem.Id}" />
+
+                    <TextBlock
+                        Grid.Column="2"
+                        Grid.Row="0"
+                        Margin="0,0,10,5"
+                        Text="Model:"
+                        VerticalAlignment="Center" />
+                    <TextBox
+                        Grid.Column="3"
+                        Grid.Row="0"
+                        Margin="0,0,0,5"
+                        Text="{Binding CurrentItem.Model}" />
+
+                    <TextBlock
+                        Grid.Column="0"
+                        Grid.Row="1"
+                        Margin="0,0,10,5"
+                        Text="Teller:"
+                        VerticalAlignment="Center" />
+                    <TextBox
+                        Grid.Column="1"
+                        Grid.Row="1"
+                        Margin="0,0,20,5"
+                        Text="{Binding CurrentItem.Teller}" />
+
+                    <TextBlock
+                        Grid.Column="2"
+                        Grid.Row="1"
+                        Margin="0,0,10,5"
+                        Text="Title:"
+                        VerticalAlignment="Center" />
+                    <TextBox
+                        Grid.Column="3"
+                        Grid.Row="1"
+                        Margin="0,0,0,5"
+                        Text="{Binding CurrentItem.Title}" />
+
+                    <TextBlock
+                        Grid.Column="0"
+                        Grid.Row="2"
+                        Margin="0,0,10,5"
+                        Text="Place:"
+                        VerticalAlignment="Center" />
+                    <TextBox
+                        Grid.Column="1"
+                        Grid.ColumnSpan="3"
+                        Grid.Row="2"
+                        Margin="0,0,0,5"
+                        Text="{Binding CurrentItem.Place}" />
+                </Grid>
+
+                <!--  Editable Content Editor  -->
+                <Border
+                    BorderBrush="Gray"
+                    BorderThickness="1"
+                    Grid.Row="2"
+                    Margin="5">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            FontWeight="Bold"
+                            Grid.Row="0"
+                            Margin="5"
+                            Text="Translation Content:" />
+                        <TextBox
+                            AcceptsReturn="True"
+                            Grid.Row="1"
+                            Margin="5"
+                            Name="ContentEditor"
+                            ScrollViewer.VerticalScrollBarVisibility="Auto"
+                            Text="{Binding CurrentItem.Content}"
+                            TextWrapping="Wrap" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!--  Navigation  -->
+        <StackPanel
+            Grid.Row="4"
+            HorizontalAlignment="Center"
+            IsVisible="{Binding IsStoryLoaded}"
+            Margin="10"
+            Orientation="Horizontal">
+            <Button
+                Click="OnPreviousClick"
+                Content="◀ Previous"
+                IsEnabled="{Binding CanGoPrevious}"
+                Margin="0,0,10,0"
+                Name="PreviousButton" />
+            <TextBlock
+                Margin="10,0"
+                Text="{Binding NavigationText}"
+                VerticalAlignment="Center" />
+            <Button
+                Click="OnNextClick"
+                Content="Next ▶"
+                IsEnabled="{Binding CanGoNext}"
+                Margin="10,0,0,0"
+                Name="NextButton" />
+        </StackPanel>
+
+        <!--  No Data Message  -->
+        <TextBlock
+            FontSize="16"
+            Foreground="Gray"
+            Grid.Row="1"
+            Grid.RowSpan="3"
+            HorizontalAlignment="Center"
+            IsVisible="{Binding !IsStoryLoaded}"
+            Text="Please select a story file to begin editing"
+            VerticalAlignment="Center" />
+    </Grid>
 </UserControl>

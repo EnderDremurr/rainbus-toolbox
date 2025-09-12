@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -19,6 +20,27 @@ public partial class BattleHintsTabViewModel : ObservableObject
         Hints = new ObservableCollection<BattleHint>();
         LoadHints();
     }
+    
+    private BattleHintTypes _selectedType;
+    public BattleHintTypes SelectedType
+    {
+        get => _selectedType;
+        set
+        {
+            if (_selectedType != value)
+            {
+                _selectedType = value;
+                OnPropertyChanged(nameof(SelectedType));
+
+                // Call your method when value changes
+                LoadHints();
+            }
+        }
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    protected virtual void OnPropertyChanged(string propertyName) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
     public ObservableCollection<BattleHint> Hints { get; }
 
@@ -32,7 +54,7 @@ public partial class BattleHintsTabViewModel : ObservableObject
     {
         Dispatcher.UIThread.InvokeAsync(() =>
         {
-            var battleHints = _repositoryManager.GetBattleHints();
+            var battleHints = _repositoryManager.GetBattleHints(_selectedType);
 
             Hints.Clear();
 
@@ -56,7 +78,7 @@ public partial class BattleHintsTabViewModel : ObservableObject
         if (string.IsNullOrWhiteSpace(NewHintText))
             return;
 
-        _repositoryManager.AddHint(NewHintText);
+        _repositoryManager.AddHint(NewHintText, _selectedType);
 
         LoadHints();
 
@@ -70,7 +92,7 @@ public partial class BattleHintsTabViewModel : ObservableObject
             return;
 
         // Delete from repository
-        _repositoryManager.DeleteHintAtId(int.Parse(id));
+        _repositoryManager.DeleteHintAtId(int.Parse(id), _selectedType);
 
         // Remove from observable collection
         var toRemove = Hints.FirstOrDefault(h => h.Id == id);

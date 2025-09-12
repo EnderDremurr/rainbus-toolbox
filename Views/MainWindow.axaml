@@ -122,7 +122,7 @@
                     FontSize="20"
                     Foreground="White"
                     Header="Перевоз">
-                    <TextBlock Foreground="White" Text="Здесь пока пусто" />
+                    <views:TranslationTab />
                 </TabItem>
 
                 <TabItem
@@ -139,7 +139,7 @@
                     Foreground="White"
                     Header="Добавить файлы"
                     Margin="800,0,0,0">
-                    <TextBlock Foreground="White" Text="Здесь пока пусто" />
+                    <views:UpdaterTab />
                 </TabItem>
 
                 <TabItem
