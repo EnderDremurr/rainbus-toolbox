@@ -1,5 +1,5 @@
 <UserControl
-    d:DesignHeight="450"
+    d:DesignHeight="800"
     d:DesignWidth="800"
     mc:Ignorable="d"
     x:Class="RainbusToolbox.Views.TranslationTab"
@@ -10,20 +10,11 @@
     xmlns:views="clr-namespace:RainbusToolbox.Views"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <Grid RowDefinitions="Auto,*,*">
-
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="5" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-
+    <Grid RowDefinitions="Auto,*,Auto,*,Auto">
         <!--  File selection  -->
         <StackPanel
             Grid.Row="0"
-            Margin="10,10,10,50"
+            Margin="10,10,10,10"
             Orientation="Horizontal">
             <Button
                 Click="OnSelectFileClick"
@@ -36,27 +27,24 @@
                 VerticalAlignment="Center" />
         </StackPanel>
 
-
-
-
         <!--  Reference Section  -->
         <Border
             Grid.Row="1"
             IsVisible="{Binding IsStoryLoaded}"
-            Margin="10,120,10,5">
+            Margin="10,10,10,5">
             <Grid>
                 <!--  Background  -->
                 <Image
                     Height="250"
-                    Margin="240,0,0,0"
-                    Source="avares://RainbusToolbox/Assets/StoryBG.png"
-                    Width="1536" />
+                    HorizontalAlignment="Stretch"
+                    Margin="250,0,0,0"
+                    Source="avares://RainbusToolbox/Assets/StoryBG.png" />
 
                 <Grid Margin="20">
-                    <!--  Story Text (shifted right to avoid overlay)  -->
+                    <!--  Story Text  -->
                     <TextBlock
                         HorizontalAlignment="Stretch"
-                        Margin="0,0,0,0"
+                        Margin="150,0,15,40"
                         Text="{Binding ReferenceItem.Content}"
                         TextWrapping="Wrap"
                         VerticalAlignment="Stretch" />
@@ -72,7 +60,7 @@
                     <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
                         <Image
                             Height="225"
-                            Margin="0,-145,0,0"
+                            Margin="0,-45,0,0"
                             Source="avares://RainbusToolbox/Assets/StoryBGName.png"
                             Width="450" />
 
@@ -92,42 +80,25 @@
             </Grid>
         </Border>
 
-        <StackPanel
-            Grid.Row="4"
-            HorizontalAlignment="Center"
-            IsVisible="{Binding IsStoryLoaded}"
-            Margin="10,200,10,10"
-            Orientation="Horizontal">
-            <Button
-                Click="OnPreviousClick"
-                Content="◀ Previous"
-                IsEnabled="{Binding CanGoPrevious}"
-                Margin="0,0,10,0"
-                Name="PreviousButton" />
-            <TextBlock
-                Margin="10,0"
-                Text="{Binding NavigationText}"
-                VerticalAlignment="Center" />
-            <Button
-                Click="OnNextClick"
-                Content="Next ▶"
-                IsEnabled="{Binding CanGoNext}"
-                Margin="10,0,0,0"
-                Name="NextButton" />
-        </StackPanel>
+        <!--  Separator  -->
+        <Border
+            Background="Transparent"
+            Grid.Row="2"
+            Height="5"
+            Margin="10,0" />
 
         <!--  Editor Section  -->
         <Border
-            Grid.Row="2"
+            Grid.Row="3"
             IsVisible="{Binding IsStoryLoaded}"
-            Margin="10,300,10,10">
+            Margin="10,5,10,10">
             <Grid>
                 <!--  Background  -->
                 <Image
                     Height="250"
-                    Margin="240,0,0,0"
-                    Source="avares://RainbusToolbox/Assets/StoryBG.png"
-                    Width="1536" />
+                    HorizontalAlignment="Stretch"
+                    Margin="250,0,0,0"
+                    Source="avares://RainbusToolbox/Assets/StoryBG.png" />
 
                 <Grid Margin="20">
                     <!--  Editable Story Text  -->
@@ -154,7 +125,7 @@
                     <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
                         <Image
                             Height="225"
-                            Margin="0,-170,0,0"
+                            Margin="0,-45,0,0"
                             Source="avares://RainbusToolbox/Assets/StoryBGName.png"
                             Width="450" />
 
@@ -182,7 +153,30 @@
                 </Grid>
             </Grid>
         </Border>
-        <!--  Navigation  -->
 
+        <!--  Navigation  -->
+        <StackPanel
+            Grid.Row="4"
+            HorizontalAlignment="Center"
+            IsVisible="{Binding IsStoryLoaded}"
+            Margin="10,10,10,10"
+            Orientation="Horizontal">
+            <Button
+                Click="OnPreviousClick"
+                Content="◀ Previous"
+                IsEnabled="{Binding CanGoPrevious}"
+                Margin="0,0,10,0"
+                Name="PreviousButton" />
+            <TextBlock
+                Margin="10,0"
+                Text="{Binding NavigationText}"
+                VerticalAlignment="Center" />
+            <Button
+                Click="OnNextClick"
+                Content="Next ▶"
+                IsEnabled="{Binding CanGoNext}"
+                Margin="10,0,0,0"
+                Name="NextButton" />
+        </StackPanel>
     </Grid>
 </UserControl>
