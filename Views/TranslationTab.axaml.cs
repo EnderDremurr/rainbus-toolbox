@@ -20,8 +20,12 @@ namespace RainbusToolbox.Views
         private int _currentIndex = 0;
         private string _filePath = string.Empty;
         private string _referenceFilePath = string.Empty;
-        
+
         private PersistentDataManager _dataManager;
+
+        // caches for non-null persistence
+        private string? _lastModel, _lastTeller, _lastTitle, _lastPlace, _lastContent;
+        private string? _lastRefModel, _lastRefTeller, _lastRefTitle, _lastRefPlace, _lastRefContent;
 
         public TranslationTab()
         {
@@ -37,18 +41,64 @@ namespace RainbusToolbox.Views
 
         public bool IsStoryLoaded => _storyDataFile?.DataList?.Any() == true;
 
-        public StoryDataItem? CurrentItem => IsStoryLoaded ? _storyDataFile!.DataList[_currentIndex] : null;
+        // Editable
+        public StoryDataItem? CurrentItem
+        {
+            get
+            {
+                if (!IsStoryLoaded) return null;
+                var item = _storyDataFile!.DataList[_currentIndex];
 
-        public StoryDataItem? ReferenceItem => _referenceDataFile?.DataList?.Count > _currentIndex ? 
-            _referenceDataFile.DataList[_currentIndex] : null;
+                if (!string.IsNullOrEmpty(item.Model)) _lastModel = item.Model;
+                if (!string.IsNullOrEmpty(item.Teller)) _lastTeller = item.Teller;
+                if (!string.IsNullOrEmpty(item.Title)) _lastTitle = item.Title;
+                if (!string.IsNullOrEmpty(item.Place)) _lastPlace = item.Place;
+                if (!string.IsNullOrEmpty(item.Content)) _lastContent = item.Content;
+
+                // Push fallback values back into item so editing works
+                item.Model ??= _lastModel;
+                item.Teller ??= _lastTeller;
+                item.Title ??= _lastTitle;
+                item.Place ??= _lastPlace;
+                if (string.IsNullOrEmpty(item.Content) && _lastContent != null)
+                    item.Content = _lastContent;
+
+                return item;
+            }
+        }
+
+        // Reference
+        public StoryDataItem? ReferenceItem
+        {
+            get
+            {
+                if (_referenceDataFile?.DataList?.Count > _currentIndex)
+                {
+                    var item = _referenceDataFile.DataList[_currentIndex];
+
+                    if (!string.IsNullOrEmpty(item.Model)) _lastRefModel = item.Model;
+                    if (!string.IsNullOrEmpty(item.Teller)) _lastRefTeller = item.Teller;
+                    if (!string.IsNullOrEmpty(item.Title)) _lastRefTitle = item.Title;
+                    if (!string.IsNullOrEmpty(item.Place)) _lastRefPlace = item.Place;
+                    if (!string.IsNullOrEmpty(item.Content)) _lastRefContent = item.Content;
+
+                    return new StoryDataItem
+                    {
+                        Id = item.Id,
+                        Model = item.Model ?? _lastRefModel,
+                        Teller = item.Teller ?? _lastRefTeller,
+                        Title = item.Title ?? _lastRefTitle,
+                        Place = item.Place ?? _lastRefPlace,
+                        Content = !string.IsNullOrEmpty(item.Content) ? item.Content : _lastRefContent ?? string.Empty
+                    };
+                }
+                return null;
+            }
+        }
 
         public bool CanGoPrevious => IsStoryLoaded && _currentIndex > 0;
-
         public bool CanGoNext => IsStoryLoaded && _currentIndex < _storyDataFile!.DataList.Count - 1;
-
-        public string NavigationText => IsStoryLoaded ? 
-            $"{_currentIndex + 1} of {_storyDataFile!.DataList.Count}" : 
-            string.Empty;
+        public string NavigationText => IsStoryLoaded ? $"{_currentIndex + 1} of {_storyDataFile!.DataList.Count}" : string.Empty;
 
         #endregion
 
@@ -65,28 +115,20 @@ namespace RainbusToolbox.Views
                 AllowMultiple = false,
                 FileTypeFilter = new[]
                 {
-                    new FilePickerFileType("JSON Files")
-                    {
-                        Patterns = new[] { "*.json" }
-                    },
-                    new FilePickerFileType("All Files")
-                    {
-                        Patterns = new[] { "*.*" }
-                    }
+                    new FilePickerFileType("JSON Files"){ Patterns = new[] { "*.json" } },
+                    new FilePickerFileType("All Files"){ Patterns = new[] { "*.*" } }
                 }
             });
 
             if (files.Count > 0)
-            {
                 await LoadStoryFile(files[0].Path.LocalPath);
-            }
         }
 
         private void OnPreviousClick(object? sender, RoutedEventArgs e)
         {
             if (CanGoPrevious)
             {
-                SaveCurrentItem(); // Save changes before navigating
+                SaveCurrentItem();
                 _currentIndex--;
                 UpdateCurrentItemProperties();
             }
@@ -96,7 +138,7 @@ namespace RainbusToolbox.Views
         {
             if (CanGoNext)
             {
-                SaveCurrentItem(); // Save changes before navigating
+                SaveCurrentItem();
                 _currentIndex++;
                 UpdateCurrentItemProperties();
             }
@@ -116,14 +158,10 @@ namespace RainbusToolbox.Views
                 _currentIndex = 0;
 
                 if (_storyDataFile?.DataList?.Any() != true)
-                {
                     throw new InvalidOperationException("No story data found in the file or invalid format.");
-                }
 
-                // Load reference file
                 await LoadReferenceFile(filePath);
 
-                // Update file path display
                 if (this.FindControl<TextBlock>("FilePathText") is TextBlock filePathText)
                 {
                     var fileName = Path.GetFileName(filePath);
@@ -131,18 +169,13 @@ namespace RainbusToolbox.Views
                     filePathText.Text = fileName + referenceStatus;
                 }
 
-                // Notify all properties that depend on the loaded data
                 UpdateAllProperties();
             }
             catch (Exception ex)
             {
-                // You might want to show a message box here
                 Console.WriteLine($"Error loading story file: {ex.Message}");
-                
                 if (this.FindControl<TextBlock>("FilePathText") is TextBlock filePathText)
-                {
                     filePathText.Text = $"Error loading file: {ex.Message}";
-                }
             }
         }
 
@@ -151,16 +184,12 @@ namespace RainbusToolbox.Views
             try
             {
                 _referenceFilePath = GetReferenceFile(currentFilePath);
-                
                 if (!string.IsNullOrEmpty(_referenceFilePath) && File.Exists(_referenceFilePath))
                 {
                     var json = await File.ReadAllTextAsync(_referenceFilePath);
                     _referenceDataFile = JsonConvert.DeserializeObject<StoryDataFile>(json);
                 }
-                else
-                {
-                    _referenceDataFile = null;
-                }
+                else _referenceDataFile = null;
             }
             catch (Exception ex)
             {
@@ -169,11 +198,12 @@ namespace RainbusToolbox.Views
             }
         }
 
-        // This method should be implemented by the user
         private string GetReferenceFile(string pathToCurrentFile)
         {
             var filename = Path.GetFileName(pathToCurrentFile);
-            var newPath = Path.Join(_dataManager.Settings.PathToLimbus, "LimbusCompany_Data/Assets/Resources_moved/Localize/en/StoryData", "EN_" + filename);
+            var newPath = Path.Join(_dataManager.Settings.PathToLimbus,
+                "LimbusCompany_Data/Assets/Resources_moved/Localize/en/StoryData",
+                "EN_" + filename);
             Console.WriteLine(newPath);
             return newPath;
         }
@@ -181,16 +211,12 @@ namespace RainbusToolbox.Views
         private void SaveCurrentItem()
         {
             if (!IsStoryLoaded || CurrentItem == null) return;
-
-            // The data binding should handle most updates automatically,
-            // but we can explicitly save the file here if needed
             SaveToFile();
         }
 
         private async void SaveToFile()
         {
             if (_storyDataFile == null || string.IsNullOrEmpty(_filePath)) return;
-
             try
             {
                 var json = JsonConvert.SerializeObject(_storyDataFile, Formatting.Indented);
@@ -226,16 +252,12 @@ namespace RainbusToolbox.Views
         #region INotifyPropertyChanged
 
         public event PropertyChangedEventHandler? PropertyChanged;
-
         protected virtual void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         #endregion
     }
 
-    // Data classes (include these in your project if they're not already defined)
     public class StoryDataFile
     {
         [JsonProperty("dataList")]
@@ -252,52 +274,25 @@ namespace RainbusToolbox.Views
         private string _content = string.Empty;
 
         [JsonProperty("id")]
-        public int Id 
-        { 
-            get => _id; 
-            set { _id = value; OnPropertyChanged(); }
-        }
+        public int Id { get => _id; set { _id = value; OnPropertyChanged(); } }
 
         [JsonProperty("model")]
-        public string? Model 
-        { 
-            get => _model; 
-            set { _model = value; OnPropertyChanged(); }
-        }
+        public string? Model { get => _model; set { _model = value; OnPropertyChanged(); } }
 
         [JsonProperty("teller")]
-        public string? Teller 
-        { 
-            get => _teller; 
-            set { _teller = value; OnPropertyChanged(); }
-        }
+        public string? Teller { get => _teller; set { _teller = value; OnPropertyChanged(); } }
 
         [JsonProperty("title")]
-        public string? Title 
-        { 
-            get => _title; 
-            set { _title = value; OnPropertyChanged(); }
-        }
+        public string? Title { get => _title; set { _title = value; OnPropertyChanged(); } }
 
         [JsonProperty("place")]
-        public string? Place 
-        { 
-            get => _place; 
-            set { _place = value; OnPropertyChanged(); }
-        }
+        public string? Place { get => _place; set { _place = value; OnPropertyChanged(); } }
 
         [JsonProperty("content")]
-        public string Content 
-        { 
-            get => _content; 
-            set { _content = value; OnPropertyChanged(); }
-        }
+        public string Content { get => _content; set { _content = value; OnPropertyChanged(); } }
 
         public event PropertyChangedEventHandler? PropertyChanged;
-
         protected virtual void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
