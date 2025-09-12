@@ -195,7 +195,7 @@ public async Task CreateReleaseAsync(string releaseName, string releaseDescripti
     var uploadUrlTemplate = releaseData.RootElement.GetProperty("upload_url").GetString();
     var uploadUrl = uploadUrlTemplate.Substring(0, uploadUrlTemplate.IndexOf("{")); // Remove template part
 
-    // 4. Upload asset (ZIP)
+    // 4. Upload ZIP asset
     using var fileStream = File.OpenRead(pathToZip);
     using var content = new StreamContent(fileStream);
     content.Headers.ContentType = new MediaTypeHeaderValue("application/zip");
@@ -204,7 +204,84 @@ public async Task CreateReleaseAsync(string releaseName, string releaseDescripti
     var assetBody = await assetResponse.Content.ReadAsStringAsync();
     if (!assetResponse.IsSuccessStatusCode)
     {
-        throw new Exception($"Failed to upload asset: {assetBody}");
+        throw new Exception($"Failed to upload ZIP asset: {assetBody}");
+    }
+
+    // 5. Upload README.md if it exists (with HTML stripped and release description prepended)
+    var readmePath = Path.Combine(repoPath, "README.md");
+    if (File.Exists(readmePath))
+    {
+        try
+        {
+            // Read the original README content
+            var originalReadmeContent = await File.ReadAllTextAsync(readmePath);
+            
+            // Strip HTML tags using regex
+            var htmlStrippedContent = Regex.Replace(originalReadmeContent, @"<[^>]*>", string.Empty);
+            
+            // Remove specific sections: "## Полезные ссылки" and "## Установка"
+            // Split content by lines to process section by section
+            var lines = htmlStrippedContent.Split('\n');
+            var filteredLines = new List<string>();
+            bool skipSection = false;
+            
+            foreach (var line in lines)
+            {
+                var trimmedLine = line.Trim();
+                
+                // Check if we're starting a section to skip
+                if (trimmedLine == "## Полезные ссылки" || trimmedLine == "## Установка")
+                {
+                    skipSection = true;
+                    continue;
+                }
+                
+                // Check if we're starting a new ## section (end of section to skip)
+                if (trimmedLine.StartsWith("## ") && skipSection)
+                {
+                    skipSection = false;
+                    // Don't skip this line, it's a new section
+                }
+                
+                // Add line if we're not skipping
+                if (!skipSection)
+                {
+                    filteredLines.Add(line);
+                }
+            }
+            
+            htmlStrippedContent = string.Join('\n', filteredLines);
+            
+            // Clean up extra whitespace that might be left after HTML removal and section removal
+            htmlStrippedContent = Regex.Replace(htmlStrippedContent, @"\n\s*\n\s*\n", "\n\n"); // Replace multiple empty lines with double newline
+            htmlStrippedContent = htmlStrippedContent.Trim();
+            
+            // Prepend release description
+            var modifiedReadmeContent = $"# Release: {releaseName}\n\n{releaseDescription}\n\n---\n\n{htmlStrippedContent}";
+            
+            // Convert to byte array for upload
+            var readmeBytes = Encoding.UTF8.GetBytes(modifiedReadmeContent);
+            using var readmeStream = new MemoryStream(readmeBytes);
+            using var readmeContent = new StreamContent(readmeStream);
+            readmeContent.Headers.ContentType = new MediaTypeHeaderValue("text/markdown");
+
+            var readmeResponse = await http.PostAsync($"{uploadUrl}?name=README.md", readmeContent);
+            var readmeResponseBody = await readmeResponse.Content.ReadAsStringAsync();
+            if (!readmeResponse.IsSuccessStatusCode)
+            {
+                // Log warning but don't fail the entire operation
+                Console.WriteLine($"Warning: Failed to upload README.md: {readmeResponseBody}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Warning: Error processing README.md: {ex.Message}");
+        }
+    }
+    else
+    {
+        // Log info that README.md was not found
+        Console.WriteLine("README.md not found in repository root, skipping upload.");
     }
 }
 

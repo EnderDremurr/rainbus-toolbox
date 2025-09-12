@@ -112,8 +112,9 @@
                     Classes="framed"
                     Height="60"
                     HorizontalAlignment="Left"
+                    LostFocus="VersionTextBox_OnLostFocus"
                     Text="{Binding Version, Mode=TwoWay}"
-                    TextInput="VersionTextBox_OnTextInput"
+                    TextChanging="VersionTextBox_OnTextChanging"
                     VerticalAlignment="Center"
                     Width="200" />
             </StackPanel>

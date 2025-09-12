@@ -13,6 +13,7 @@
         <!--  Converter instance for checkbox images  -->
         <local:CheckedToImageConverter x:Key="CheckedToImageConverter" />
         <!--  Custom font registration  -->
+        <FontFamily x:Key="PretendardFont">avares://RainbusToolbox/Assets/Fonts/Pretendard.ttf#Pretendard</FontFamily>
         <FontFamily x:Key="MikodacsFont">avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs Regular</FontFamily>
     </Application.Resources>
 
@@ -32,12 +33,17 @@
             <Setter Property="FontFamily" Value="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs" />
             <Setter Property="FontSize" Value="30" />
         </Style>
+        <Style Selector="TextBox.header">
+            <Setter Property="FontFamily" Value="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs" />
+            <Setter Property="FontSize" Value="30" />
+        </Style>
         <Style Selector="Button.header">
             <Setter Property="FontFamily" Value="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs" />
             <Setter Property="FontSize" Value="24" />
         </Style>
         <Style Selector="Button TextBlock.header" />
 
+        <!--  region Tab styles  -->
 
         <!--  Default TabItem style  -->
         <Style Selector="TabItem">
@@ -79,7 +85,7 @@
             <Setter Property="Background" Value="#00000000" />
         </Style>
 
-
+        <!--  endregion  -->
 
 
         <!--  Global CheckBox style using custom images and font  -->

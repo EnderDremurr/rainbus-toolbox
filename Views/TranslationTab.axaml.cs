@@ -23,10 +23,6 @@ namespace RainbusToolbox.Views
 
         private PersistentDataManager _dataManager;
 
-        // caches for non-null persistence
-        private string? _lastModel, _lastTeller, _lastTitle, _lastPlace, _lastContent;
-        private string? _lastRefModel, _lastRefTeller, _lastRefTitle, _lastRefPlace, _lastRefContent;
-
         public TranslationTab()
         {
             InitializeComponent();
@@ -47,23 +43,7 @@ namespace RainbusToolbox.Views
             get
             {
                 if (!IsStoryLoaded) return null;
-                var item = _storyDataFile!.DataList[_currentIndex];
-
-                if (!string.IsNullOrEmpty(item.Model)) _lastModel = item.Model;
-                if (!string.IsNullOrEmpty(item.Teller)) _lastTeller = item.Teller;
-                if (!string.IsNullOrEmpty(item.Title)) _lastTitle = item.Title;
-                if (!string.IsNullOrEmpty(item.Place)) _lastPlace = item.Place;
-                if (!string.IsNullOrEmpty(item.Content)) _lastContent = item.Content;
-
-                // Push fallback values back into item so editing works
-                item.Model ??= _lastModel;
-                item.Teller ??= _lastTeller;
-                item.Title ??= _lastTitle;
-                item.Place ??= _lastPlace;
-                if (string.IsNullOrEmpty(item.Content) && _lastContent != null)
-                    item.Content = _lastContent;
-
-                return item;
+                return _storyDataFile!.DataList[_currentIndex];
             }
         }
 
@@ -74,23 +54,7 @@ namespace RainbusToolbox.Views
             {
                 if (_referenceDataFile?.DataList?.Count > _currentIndex)
                 {
-                    var item = _referenceDataFile.DataList[_currentIndex];
-
-                    if (!string.IsNullOrEmpty(item.Model)) _lastRefModel = item.Model;
-                    if (!string.IsNullOrEmpty(item.Teller)) _lastRefTeller = item.Teller;
-                    if (!string.IsNullOrEmpty(item.Title)) _lastRefTitle = item.Title;
-                    if (!string.IsNullOrEmpty(item.Place)) _lastRefPlace = item.Place;
-                    if (!string.IsNullOrEmpty(item.Content)) _lastRefContent = item.Content;
-
-                    return new StoryDataItem
-                    {
-                        Id = item.Id,
-                        Model = item.Model ?? _lastRefModel,
-                        Teller = item.Teller ?? _lastRefTeller,
-                        Title = item.Title ?? _lastRefTitle,
-                        Place = item.Place ?? _lastRefPlace,
-                        Content = !string.IsNullOrEmpty(item.Content) ? item.Content : _lastRefContent ?? string.Empty
-                    };
+                    return _referenceDataFile.DataList[_currentIndex];
                 }
                 return null;
             }
