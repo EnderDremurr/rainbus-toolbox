@@ -7,6 +7,7 @@
     x:DataType="vm:MainWindowViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:RainbusToolbox"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="clr-namespace:RainbusToolbox.Views"
     xmlns:vm="clr-namespace:RainbusToolbox.ViewModels"
@@ -147,7 +148,9 @@
                     FontSize="20"
                     Foreground="White"
                     Header="Выложить релиз">
-                    <views:ReleaseTab />
+                    <views:ReleaseTab>
+                        <views:ReleaseTab DataContext="{Binding ReleaseTabViewModel}" />
+                    </views:ReleaseTab>
                 </TabItem>
 
             </TabControl>

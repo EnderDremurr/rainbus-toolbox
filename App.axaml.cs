@@ -17,6 +17,7 @@ public partial class App : Application
 {
     private IServiceProvider _serviceProvider;
     public IServiceProvider ServiceProvider => _serviceProvider;
+    public static ViewModelLocator Locator { get; private set; }
 
     public override void Initialize()
     {
@@ -44,12 +45,15 @@ public partial class App : Application
             services.AddTransient<InitializationWindow>();
             services.AddTransient<InitializationWindowViewModel>();
             services.AddTransient<SettingsWindow>();
+            services.AddTransient<ReleaseTabViewModel>();
+            services.AddSingleton<ViewModelLocator>();
 
             // Build service provider
             _serviceProvider = services.BuildServiceProvider();
 
             // Resolve RepositoryManager first to check validity
             var repoManager = _serviceProvider.GetRequiredService<RepositoryManager>();
+            Locator = _serviceProvider.GetRequiredService<ViewModelLocator>();
 
             Window windowToShow;
 

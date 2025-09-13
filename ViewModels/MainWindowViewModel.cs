@@ -25,6 +25,8 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly RepositoryManager _repositoryManager;
     private readonly IServiceProvider _serviceProvider;
     
+    public ReleaseTabViewModel ReleaseTabViewModel { get; }
+    
     private Timer? _reparseTimer;
 
     private string _username = "Unknown";
@@ -54,13 +56,18 @@ public partial class MainWindowViewModel : ObservableObject
     public string UserRepoDisplay => $"{Username} : [{RepoName} {GitStatus}] ";
 
     [ObservableProperty] private string _editorText = string.Empty;
+    
+    // General section checkboxes
+    [ObservableProperty] private bool _appendLauncherLink = true; // Default checked
+    [ObservableProperty] private bool _mergeWithReadme = true;    // Default checked
+    
+    // Discord section checkboxes
+    [ObservableProperty] private bool _sendToDiscord;
     [ObservableProperty] private bool _option1;
     [ObservableProperty] private bool _option2;
     [ObservableProperty] private string _roleToPing = string.Empty;
-    [ObservableProperty] private bool _isLoading;
-    [ObservableProperty] private string _version = string.Empty;
-    public ObservableCollection<string> Choices { get; } = new() { "RCR папищеки", "Choice B", "Choice C" };
-    [ObservableProperty] private ObservableCollection<string> _selectedChoices = new();
+    
+    
     #endregion
 
     #region Constructor
@@ -69,13 +76,16 @@ public partial class MainWindowViewModel : ObservableObject
         DiscordManager discordManager,
         GithubManager githubManager,
         RepositoryManager repositoryManager,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider,
+        ReleaseTabViewModel releaseTabViewModel)
     {
         _dataManager = dataManager;
         _discordManager = discordManager;
         _githubManager = githubManager;
         _repositoryManager = repositoryManager;
         _serviceProvider = serviceProvider;
+        
+        ReleaseTabViewModel = releaseTabViewModel;
 
         // Initial parse
         ReparseUserDataAsync();
@@ -118,43 +128,6 @@ public partial class MainWindowViewModel : ObservableObject
     {
         var settingsWindow = _serviceProvider.GetRequiredService<SettingsWindow>();
         await settingsWindow.ShowDialog(ownerWindow);
-    }
-
-    [RelayCommand]
-    private async Task Submit(Window ownerWindow)
-    {
-        if (string.IsNullOrEmpty(_dataManager.Settings.GitHubToken))
-        {
-            var messageBox = MessageBoxManager.GetMessageBoxStandard("Error",
-                "You must log in to GitHub first", ButtonEnum.Ok);
-            await messageBox.ShowAsync();
-            return;
-        }
-
-        try
-        {
-            IsLoading = true;
-
-            var package = await Task.Run(() => _repositoryManager.PackageLocalization(Version));
-            await _githubManager.CreateReleaseAsync($"RCR v{Version}", EditorText, package);
-
-            var discordMessage = $"# v{Version}\n\n" + EditorText;
-            if (Option1)
-                discordMessage += "\n\n[Link to Release](https://github.com/enqenqenqenqenq/RCR/releases/latest)";
-            if (Option2)
-                discordMessage += $"\n\n\n\n<@&{RoleToPing}>";
-
-            await _discordManager.SendMessageAsync(discordMessage);
-        }
-        catch (Exception ex)
-        {
-            var messageBox = MessageBoxManager.GetMessageBoxStandard("Error", ex.Message, ButtonEnum.Ok);
-            await messageBox.ShowAsync();
-        }
-        finally
-        {
-            IsLoading = false;
-        }
     }
 
     [RelayCommand]

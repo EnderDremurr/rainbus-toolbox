@@ -1,7 +1,7 @@
 <UserControl
     mc:Ignorable="d"
     x:Class="RainbusToolbox.Views.ReleaseTab"
-    x:DataType="vm:MainWindowViewModel"
+    x:DataType="vm:ReleaseTabViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -11,18 +11,16 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" />
-            <!--  Editor  -->
             <ColumnDefinition Width="1*" />
-            <!--  Checkboxes  -->
-            <ColumnDefinition Width="2*" />
-            <!--  Markdown  -->
+            <!--  Text Editor (1/3)  -->
+            <ColumnDefinition Width="1*" />
+            <!--  Markdown Preview (1/3)  -->
+            <ColumnDefinition Width="1*" />
+            <!--  Checkboxes (1/3)  -->
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <!--  Main content  -->
-            <RowDefinition Height="Auto" />
-            <!--  Bottom row  -->
+            <!--  Main content only  -->
         </Grid.RowDefinitions>
 
         <!--  Text editor  -->
@@ -56,82 +54,131 @@
                 TextWrapping="Wrap" />
         </Grid>
 
-        <!--  Checkboxes + Role box  -->
-        <StackPanel
-            Grid.Column="1"
-            Grid.Row="0"
-            HorizontalAlignment="Center"
-            Margin="10"
-            VerticalAlignment="Center">
-            <CheckBox
-                Content="Оставить ссылку на релиз"
-                IsChecked="{Binding Option1}"
-                Margin="5" />
-            <CheckBox
-                Content="Пингануть роль ниже (Впиши айди)"
-                IsChecked="{Binding Option2}"
-                Margin="5" />
-            <TextBox
-                AcceptsReturn="False"
-                AcceptsTab="False"
-                Classes="framed"
-                Height="60"
-                Text="{Binding RoleToPing, Mode=TwoWay}" />
-        </StackPanel>
-
         <!--  Markdown preview  -->
         <md:MarkdownScrollViewer
-            Grid.Column="2"
+            Grid.Column="1"
             Grid.Row="0"
             Margin="10"
             Markdown="{Binding EditorText}" />
 
-        <!--  Bottom row: Version + Submit  -->
-        <StackPanel
-            Grid.Column="0"
-            Grid.ColumnSpan="3"
-            Grid.Row="1"
-            HorizontalAlignment="Center"
-            Margin="10"
-            Orientation="Horizontal"
-            Spacing="10"
-            VerticalAlignment="Center">
+        <!--  Checkboxes section with version and submit at bottom  -->
+        <Grid
+            Grid.Column="2"
+            Grid.Row="0"
+            Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <!--  Checkboxes take remaining space  -->
+                <RowDefinition Height="Auto" />
+                <!--  Version + button at bottom  -->
+            </Grid.RowDefinitions>
 
-            <!--  Version label + textbox  -->
+            <!--  Checkboxes ScrollViewer  -->
+            <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+                <StackPanel Spacing="15">
+
+                    <!--  General section  -->
+                    <Border Classes="section-border" Padding="10">
+                        <StackPanel Spacing="10">
+                            <TextBlock
+                                FontFamily="{StaticResource MikodacsFont}"
+                                FontSize="18"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="General" />
+
+                            <CheckBox
+                                Content="Добавить README.md с описанием обновления"
+                                IsChecked="{Binding MergeWithReadme}"
+                                Margin="5,0" />
+                        </StackPanel>
+                    </Border>
+
+                    <!--  Discord section  -->
+                    <Border Classes="section-border" Padding="10">
+                        <StackPanel Spacing="10">
+                            <TextBlock
+                                FontFamily="{StaticResource MikodacsFont}"
+                                FontSize="18"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="Discord" />
+
+                            <CheckBox
+                                Content="Отправить описание релиза в дискорд"
+                                IsChecked="{Binding SendToDiscord}"
+                                Margin="5,0" />
+
+                            <CheckBox
+                                Content="Оставить ссылку на лаунчер"
+                                IsChecked="{Binding AppendLauncherLink}"
+                                Margin="5,0" />
+                            <CheckBox
+                                Content="Оставить ссылку на релиз"
+                                IsChecked="{Binding Option1}"
+                                Margin="5,0" />
+
+                            <CheckBox
+                                Content="Пингануть роль ниже (Впиши айди)"
+                                IsChecked="{Binding Option2}"
+                                Margin="5,0" />
+
+                            <TextBox
+                                AcceptsReturn="False"
+                                AcceptsTab="False"
+                                Classes="framed"
+                                Height="60"
+                                Margin="5,0"
+                                Text="{Binding RoleToPing, Mode=TwoWay}" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!--  Version + Submit at bottom of checkboxes column  -->
             <StackPanel
-                Orientation="Horizontal"
-                Spacing="5"
-                VerticalAlignment="Center">
-                <TextBlock
-                    FontFamily="{StaticResource MikodacsFont}"
-                    FontSize="22"
-                    Foreground="White"
-                    Text="Выпустить версию:"
-                    VerticalAlignment="Center" />
-                <TextBox
-                    Classes="framed"
-                    Height="60"
-                    HorizontalAlignment="Left"
-                    LostFocus="VersionTextBox_OnLostFocus"
-                    Text="{Binding Version, Mode=TwoWay}"
-                    TextChanging="VersionTextBox_OnTextChanging"
-                    VerticalAlignment="Center"
-                    Width="200" />
-            </StackPanel>
+                Grid.Row="1"
+                Margin="0,15,0,0"
+                Spacing="10"
+                VerticalAlignment="Bottom">
 
-            <!--  Submit button  -->
-            <Button
-                Classes="header"
-                Command="{Binding SubmitCommand}"
-                Content="Заебашить"
-                Height="60"
-                HorizontalAlignment="Center"
-                Width="200" />
-        </StackPanel>
+                <!--  Version label + textbox  -->
+                <StackPanel
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal"
+                    Spacing="5">
+                    <TextBlock
+                        FontFamily="{StaticResource MikodacsFont}"
+                        FontSize="32"
+                        Foreground="White"
+                        Text="Выпустить версию:"
+                        VerticalAlignment="Center" />
+                    <TextBox
+                        Classes="framed"
+                        Height="60"
+                        LostFocus="VersionTextBox_OnLostFocus"
+                        Text="{Binding Version, Mode=TwoWay}"
+                        TextChanging="VersionTextBox_OnTextChanging"
+                        VerticalAlignment="Center"
+                        Width="160" />
+                </StackPanel>
+
+                <!--  Submit button  -->
+                <Button
+                    Classes="header"
+                    Command="{Binding SubmitCommand}"
+                    Content="В РЕЛИЗ!!!"
+                    Height="80"
+                    HorizontalAlignment="Center"
+                    Width="360" />
+            </StackPanel>
+        </Grid>
 
         <!--  Loading overlay  -->
         <Border
             Background="#80000000"
+            Grid.ColumnSpan="3"
+            Grid.RowSpan="1"
             HorizontalAlignment="Stretch"
             IsVisible="{Binding IsLoading}"
             VerticalAlignment="Stretch">

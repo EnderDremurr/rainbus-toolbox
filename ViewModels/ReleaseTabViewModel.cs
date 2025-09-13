@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MsBox.Avalonia;
@@ -13,33 +14,43 @@ namespace RainbusToolbox.ViewModels;
 
 public partial class ReleaseTabViewModel : ObservableObject
 {
-    private readonly Window _window;
-    private PersistentDataManager _dataManager;
-    private DiscordManager _discordManager;
-    private GithubManager _githubManager;
-    private RepositoryManager _repositoryManager;
+    #region Fields
+    private readonly PersistentDataManager _dataManager;
+    private readonly DiscordManager _discordManager;
+    private readonly GithubManager _githubManager;
+    private readonly RepositoryManager _repositoryManager;
+    
     private string _username = "Unknown";
     private string _repoName = "Unknown";
-    public ReleaseTabViewModel(Window window, PersistentDataManager dataManager, DiscordManager discordManager, GithubManager githubManager, RepositoryManager repositoryManager)
+    #endregion
+
+    #region Constructor
+    public ReleaseTabViewModel(
+        PersistentDataManager dataManager, 
+        DiscordManager discordManager, 
+        GithubManager githubManager, 
+        RepositoryManager repositoryManager)
     {
-        _window = window;
         _dataManager = dataManager;
         _discordManager = discordManager;
         _githubManager = githubManager;
         _repositoryManager = repositoryManager;
 
-        ReparseUserDataAsync();
-    }
+        // Set default values for checkboxes
+        AppendLauncherLink = true;
+        MergeWithReadme = true;
+        SendToDiscord = false;
+        Option1 = false;
+        Option2 = false;
+        
+        // Explicitly ensure loading is false on startup
+        IsLoading = false;
 
-    public async Task ReparseUserDataAsync()
-    {
-        Username = await _githubManager.GetGithubDisplayNameAsync();
-        var remoteUrl = _repositoryManager.Repository.Network.Remotes["origin"].Url;
-        string repoName = Path.GetFileNameWithoutExtension(remoteUrl);
-        RepoName = repoName;
     }
-    
-    // Bindable Username
+    #endregion
+
+    #region Properties
+    // User and repo information
     public string Username
     {
         get => _username;
@@ -48,12 +59,11 @@ public partial class ReleaseTabViewModel : ObservableObject
             if (_username != value)
             {
                 _username = value;
-                OnPropertyChanged(nameof(UserRepoDisplay)); // Update combined property
+                OnPropertyChanged(nameof(UserRepoDisplay));
             }
         }
     }
 
-    // Bindable RepoName
     public string RepoName
     {
         get => _repoName;
@@ -62,58 +72,81 @@ public partial class ReleaseTabViewModel : ObservableObject
             if (_repoName != value)
             {
                 _repoName = value;
-                OnPropertyChanged(nameof(UserRepoDisplay)); // Update combined property
+                OnPropertyChanged(nameof(UserRepoDisplay));
             }
         }
     }
-    
-    
 
-    // Combined property for UI
     public string UserRepoDisplay => $"{Username} : [{RepoName}]";
 
     // Text editor
     [ObservableProperty]
     private string _editorText = string.Empty;
 
-    // Checkboxes
+    // General section checkboxes
+    [ObservableProperty]
+    private bool _appendLauncherLink;
+
+    [ObservableProperty]
+    private bool _mergeWithReadme;
+
+    // Discord section checkboxes
+    [ObservableProperty]
+    private bool _sendToDiscord;
+
     [ObservableProperty]
     private bool _option1;
 
     [ObservableProperty]
-    private string _roleToPing;
-    
-    [RelayCommand]
-    private async Task OpenSettings()
-    {
-        var settingsWindow = new SettingsWindow(_dataManager,_discordManager, _githubManager,_repositoryManager);
-        await settingsWindow.ShowDialog(_window);
-    }
-
-
-    [ObservableProperty]
     private bool _option2;
-    
-    [ObservableProperty]
-    private bool _isLoading;
 
-    // Version field
+    [ObservableProperty]
+    private string _roleToPing = string.Empty;
+
+    // Version and loading
     [ObservableProperty]
     private string _version = string.Empty;
 
-    // ListBox items and selection
-    public ObservableCollection<string> Choices { get; } = new()
-    {
-        "RCR папищеки", "Choice B", "Choice C"
-    };
-
     [ObservableProperty]
-    private ObservableCollection<string> _selectedChoices = new();
+    private bool _isLoading;
 
-    // Submit button
-    [RelayCommand]
-    private async void Submit()
+    // Debug tracking for loading state
+    partial void OnIsLoadingChanged(bool value)
     {
+        System.Diagnostics.Debug.WriteLine($"ReleaseTabViewModel: IsLoading changed to: {value} at {DateTime.Now}");
+        if (value)
+        {
+            System.Diagnostics.Debug.WriteLine($"Stack trace: {Environment.StackTrace}");
+        }
+    }
+
+    #endregion
+
+    private Window GetMainWindow()
+    {
+        if (Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            return desktop.MainWindow;
+        }
+        return null;
+    }
+
+
+    #region Commands
+
+    [RelayCommand]
+    private async Task Submit()
+    {
+        System.Diagnostics.Debug.WriteLine("ReleaseTabViewModel: Submit method called!");
+
+        if (string.IsNullOrWhiteSpace(Version))
+        {
+            var messageBox = MessageBoxManager.GetMessageBoxStandard("Ошибка",
+                "Необходимо указать версию релиза", ButtonEnum.Ok);
+            await messageBox.ShowAsync();
+            return;
+        }
+
         if (string.IsNullOrEmpty(_dataManager.Settings.GitHubToken))
         {
             var messageBox = MessageBoxManager.GetMessageBoxStandard("Ошибка",
@@ -124,52 +157,58 @@ public partial class ReleaseTabViewModel : ObservableObject
 
         try
         {
-            IsLoading = true; // Show loading screen
+            IsLoading = true;
 
-            // Offload packaging to background thread
+            // Handle General section options
+            if (MergeWithReadme)
+            {
+                // TODO: Implement README.md merging logic
+                System.Diagnostics.Debug.WriteLine("TODO: Implement README.md merging");
+            }
+
+            // Package the localization
             var package = await Task.Run(() => _repositoryManager.PackageLocalization(Version));
 
+            // Create GitHub release
             await _githubManager.CreateReleaseAsync($"RCR v{Version}", EditorText, package);
 
-            var discordMessage = $"# v{Version}\n\n" + EditorText;
-            if (Option1)
-                discordMessage += "\n\n[Ссылка на релиз](https://github.com/enqenqenqenqenq/RCR/releases/latest)";
-            if (Option2)
-                discordMessage += $"\n\n\n\n<@&{RoleToPing}>";
-            
-            
-            await _discordManager.SendMessageAsync(discordMessage);
+            // Handle Discord section options - only send if SendToDiscord is checked
+            if (SendToDiscord)
+            {
+                var discordMessage = $"# v{Version}\n\n" + EditorText;
+
+                if (Option1)
+                    discordMessage += "\n\n[Ссылка на релиз](https://github.com/enqenqenqenqenq/RCR/releases/latest)";
+
+                if (Option2 && !string.IsNullOrWhiteSpace(RoleToPing))
+                    discordMessage += $"\n\n\n\n<@&{RoleToPing}>";
+
+                if (AppendLauncherLink)
+                {
+                    // TODO: Implement launcher link appending logic
+                    System.Diagnostics.Debug.WriteLine("TODO: Implement launcher link appending");
+                    // discordMessage += "\n\n[Launcher Download Link]";
+                }
+
+                await _discordManager.SendMessageAsync(discordMessage);
+            }
+
+            // Success message
+            var successBox = MessageBoxManager.GetMessageBoxStandard("Успех",
+                $"Релиз v{Version} успешно создан!", ButtonEnum.Ok);
+            await successBox.ShowAsync();
         }
         catch (Exception ex)
         {
-            var messageBox = MessageBoxManager.GetMessageBoxStandard("Ошибка", ex.Message, ButtonEnum.Ok);
+            var messageBox = MessageBoxManager.GetMessageBoxStandard("Ошибка", 
+                $"Ошибка при создании релиза: {ex.Message}", ButtonEnum.Ok);
             await messageBox.ShowAsync();
         }
         finally
         {
-            IsLoading = false; // Hide loading screen
+            IsLoading = false;
         }
     }
-
-
-    // Window commands
-    [RelayCommand]
-    private void Minimize()
-    {
-        _window.WindowState = WindowState.Minimized;
-    }
-
-    [RelayCommand]
-    private void Maximize()
-    {
-        _window.WindowState = _window.WindowState == WindowState.Maximized
-            ? WindowState.Normal
-            : WindowState.Maximized;
-    }
-
-    [RelayCommand]
-    private void Close()
-    {
-        _window.Close();
-    }
+    
+    #endregion
 }
