@@ -5,8 +5,10 @@
       <map>
         <entry key="App.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/BattleHintsTab.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/ExceptionDialog.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/MainWindow.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/ReleaseTab.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/SkillsTranslationTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/TranslationTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/UpdaterTab.axaml" value="RainbusToolbox.csproj" />
       </map>

@@ -1,0 +1,141 @@
+<Window
+    Height="600"
+    Icon="avares://RainbusToolbox/Assets/app-icon.ico"
+    MinHeight="400"
+    MinWidth="600"
+    Title="Unexpected Error"
+    Width="800"
+    WindowStartupLocation="CenterOwner"
+    x:Class="RainbusToolbox.ExceptionDialog"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Window.Styles>
+        <Style Selector="Button">
+            <Setter Property="Padding" Value="12,6" />
+            <Setter Property="Margin" Value="5" />
+        </Style>
+        <Style Selector="TextBox">
+            <Setter Property="Background" Value="#F8F8F8" />
+            <Setter Property="BorderBrush" Value="#CCCCCC" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+    </Window.Styles>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  Header  -->
+        <StackPanel
+            Grid.Row="0"
+            Margin="0,0,0,15"
+            Orientation="Horizontal">
+            <Viewbox
+                Height="48"
+                Margin="0,0,15,0"
+                Width="48">
+                <Canvas Height="24" Width="24">
+                    <!--  Error icon  -->
+                    <Path Data="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z" Fill="#DC3545" />
+                </Canvas>
+            </Viewbox>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock
+                    FontSize="24"
+                    FontWeight="Bold"
+                    Foreground="#DC3545"
+                    Text="Unexpected Error" />
+                <TextBlock
+                    FontSize="14"
+                    Foreground="#6C757D"
+                    Margin="0,5,0,0"
+                    Text="An unexpected error has occurred in the application." />
+            </StackPanel>
+        </StackPanel>
+
+        <!--  Instructions  -->
+        <Border
+            Background="#FFE6E6"
+            BorderBrush="#DC3545"
+            BorderThickness="1"
+            CornerRadius="4"
+            Grid.Row="1"
+            Margin="0,0,0,15"
+            Padding="15">
+            <StackPanel>
+                <TextBlock
+                    FontSize="14"
+                    FontWeight="Bold"
+                    Foreground="#DC3545"
+                    Margin="0,0,0,8"
+                    Text="⚠️ Application will close after this dialog" />
+                <TextBlock
+                    FontSize="14"
+                    FontWeight="Bold"
+                    Margin="0,0,0,8"
+                    Text="How to report this error:" />
+                <TextBlock
+                    FontSize="13"
+                    Margin="0,0,0,3"
+                    Text="1. Click 'Copy Error Details' to copy the error information to your clipboard" />
+                <TextBlock
+                    FontSize="13"
+                    Margin="0,0,0,3"
+                    Text="2. Send the copied information to the developer for assistance" />
+                <TextBlock
+                    FontSize="13"
+                    Margin="0,0,0,3"
+                    Text="3. Include any steps you were taking when the error occurred" />
+                <TextBlock
+                    FontSize="13"
+                    FontWeight="Bold"
+                    Foreground="#DC3545"
+                    Text="4. Restart the application to continue using it" />
+            </StackPanel>
+        </Border>
+
+        <!--  Error details  -->
+        <Border
+            BorderBrush="#CCCCCC"
+            BorderThickness="1"
+            CornerRadius="4"
+            Grid.Row="2">
+            <ScrollViewer>
+                <TextBox
+                    AcceptsReturn="True"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    FontFamily="Consolas,Monaco,monospace"
+                    FontSize="12"
+                    IsReadOnly="True"
+                    Padding="10"
+                    TextWrapping="Wrap"
+                    x:Name="ErrorTextBox" />
+            </ScrollViewer>
+        </Border>
+
+        <!--  Buttons  -->
+        <StackPanel
+            Grid.Row="3"
+            HorizontalAlignment="Right"
+            Margin="0,15,0,0"
+            Orientation="Horizontal">
+            <Button
+                Classes="accent"
+                Click="OnCopyButtonClick"
+                Content="Copy Error Details"
+                x:Name="CopyButton" />
+            <Button
+                Background="#DC3545"
+                Click="OnCloseButtonClick"
+                Content="Close Application"
+                Foreground="White"
+                x:Name="CloseButton" />
+        </StackPanel>
+    </Grid>
+</Window>

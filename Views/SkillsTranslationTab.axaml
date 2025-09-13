@@ -1,0 +1,252 @@
+<UserControl
+    d:DesignHeight="800"
+    d:DesignWidth="800"
+    mc:Ignorable="d"
+    x:Class="RainbusToolbox.Views.SkillsTranslationTab"
+    x:DataType="views:SkillsTranslationTab"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:RainbusToolbox.Views"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid RowDefinitions="Auto,*,Auto,*,Auto">
+        <!--  File selection  -->
+        <StackPanel
+            Grid.Row="0"
+            Margin="20,15,20,15"
+            Orientation="Horizontal">
+            <Button
+                Click="OnSelectFileClick"
+                Content="Select Skills File"
+                Margin="0,0,15,0"
+                MinWidth="120"
+                Name="SelectFileButton" />
+            <TextBlock
+                Margin="10,0,0,0"
+                Name="FilePathText"
+                Text="No file selected"
+                VerticalAlignment="Center" />
+        </StackPanel>
+
+        <!--  Reference Section  -->
+        <Border
+            BorderBrush="LightGray"
+            BorderThickness="1"
+            Grid.Row="1"
+            IsVisible="{Binding IsSkillsLoaded}"
+            Margin="20,0,20,10">
+            <ScrollViewer>
+                <StackPanel Margin="15">
+                    <TextBlock
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Margin="0,0,0,10"
+                        Text="Reference" />
+
+                    <!--  Skill Info  -->
+                    <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Text="Skill ID: "
+                            Width="80" />
+                        <TextBlock Text="{Binding ReferenceSkill.Id}" />
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Margin="20,0,0,0"
+                            Text="Level: "
+                            Width="60" />
+                        <TextBlock Text="{Binding ReferenceLevel.Level}" />
+                    </StackPanel>
+
+                    <!--  Skill Name  -->
+                    <StackPanel Margin="0,0,0,10">
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Margin="0,0,0,5"
+                            Text="Name:" />
+                        <TextBox
+                            Background="LightGray"
+                            IsReadOnly="True"
+                            Text="{Binding ReferenceLevel.Name}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+
+                    <!--  Skill Description  -->
+                    <StackPanel Margin="0,0,0,10">
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Margin="0,0,0,5"
+                            Text="Description:" />
+                        <TextBox
+                            Background="LightGray"
+                            IsReadOnly="True"
+                            MinHeight="60"
+                            Text="{Binding ReferenceLevel.Desc}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+
+                    <!--  Coin Descriptions  -->
+                    <StackPanel>
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Margin="0,0,0,5"
+                            Text="Coin Descriptions:" />
+                        <ItemsControl ItemsSource="{Binding ReferenceCoinDescs}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0,0,0,5">
+                                        <TextBox
+                                            Background="LightGray"
+                                            IsReadOnly="True"
+                                            MinHeight="40"
+                                            Text="{Binding Desc}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!--  Separator  -->
+        <Border
+            Background="Gray"
+            Grid.Row="2"
+            Height="1"
+            Margin="30,5,30,5" />
+
+        <!--  Editor Section  -->
+        <Border
+            BorderBrush="LightBlue"
+            BorderThickness="1"
+            Grid.Row="3"
+            IsVisible="{Binding IsSkillsLoaded}"
+            Margin="20,10,20,15">
+            <ScrollViewer>
+                <StackPanel Margin="15">
+                    <TextBlock
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Margin="0,0,0,10"
+                        Text="Editor" />
+
+                    <!--  Skill Info  -->
+                    <Grid ColumnDefinitions="Auto,*,Auto,*" Margin="0,0,0,10">
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Grid.Column="0"
+                            Text="Skill ID: " />
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="5,0,20,0"
+                            Text="{Binding CurrentSkill.Id}" />
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Grid.Column="2"
+                            Text="Level: " />
+                        <TextBlock
+                            Grid.Column="3"
+                            Margin="5,0,0,0"
+                            Text="{Binding CurrentLevel.Level}" />
+                    </Grid>
+
+                    <!--  Skill Name  -->
+                    <StackPanel Margin="0,0,0,10">
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Margin="0,0,0,5"
+                            Text="Name:" />
+                        <TextBox Text="{Binding CurrentLevel.Name, Mode=TwoWay}" TextWrapping="Wrap" />
+                    </StackPanel>
+
+                    <!--  Skill Description  -->
+                    <StackPanel Margin="0,0,0,10">
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Margin="0,0,0,5"
+                            Text="Description:" />
+                        <TextBox
+                            AcceptsReturn="True"
+                            MinHeight="60"
+                            Text="{Binding CurrentLevel.Desc, Mode=TwoWay}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+
+                    <!--  Coin Descriptions  -->
+                    <StackPanel>
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Margin="0,0,0,5"
+                            Text="Coin Descriptions:" />
+                        <ItemsControl ItemsSource="{Binding CurrentCoinDescs}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0,0,0,5">
+                                        <TextBox
+                                            AcceptsReturn="True"
+                                            MinHeight="40"
+                                            Text="{Binding Desc, Mode=TwoWay}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!--  Navigation  -->
+        <StackPanel
+            Grid.Row="4"
+            HorizontalAlignment="Center"
+            IsVisible="{Binding IsSkillsLoaded}"
+            Margin="20,15,20,20"
+            Orientation="Horizontal">
+            <!--  Skill Navigation  -->
+            <StackPanel Margin="0,0,20,0" Orientation="Horizontal">
+                <Button
+                    Click="OnPreviousSkillClick"
+                    Content="◀ Prev Skill"
+                    IsEnabled="{Binding CanGoPreviousSkill}"
+                    Margin="0,0,10,0"
+                    MinWidth="100" />
+                <TextBlock
+                    FontWeight="SemiBold"
+                    Margin="10,0"
+                    Text="{Binding SkillNavigationText}"
+                    VerticalAlignment="Center" />
+                <Button
+                    Click="OnNextSkillClick"
+                    Content="Next Skill ▶"
+                    IsEnabled="{Binding CanGoNextSkill}"
+                    Margin="10,0,0,0"
+                    MinWidth="100" />
+            </StackPanel>
+
+            <!--  Level Navigation  -->
+            <StackPanel Orientation="Horizontal">
+                <Button
+                    Click="OnPreviousLevelClick"
+                    Content="◀ Prev Level"
+                    IsEnabled="{Binding CanGoPreviousLevel}"
+                    Margin="0,0,10,0"
+                    MinWidth="100" />
+                <TextBlock
+                    FontWeight="SemiBold"
+                    Margin="10,0"
+                    Text="{Binding LevelNavigationText}"
+                    VerticalAlignment="Center" />
+                <Button
+                    Click="OnNextLevelClick"
+                    Content="Next Level ▶"
+                    IsEnabled="{Binding CanGoNextLevel}"
+                    Margin="10,0,0,0"
+                    MinWidth="100" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

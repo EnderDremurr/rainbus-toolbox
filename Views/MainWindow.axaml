@@ -122,8 +122,16 @@
                     FontFamily="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs"
                     FontSize="20"
                     Foreground="White"
-                    Header="Перевоз">
+                    Header="Сюжет">
                     <views:TranslationTab />
+                </TabItem>
+
+                <TabItem
+                    FontFamily="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs"
+                    FontSize="20"
+                    Foreground="White"
+                    Header="Скиллы">
+                    <views:SkillsTranslationTab />
                 </TabItem>
 
                 <TabItem
