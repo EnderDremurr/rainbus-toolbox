@@ -409,6 +409,25 @@ namespace RainbusToolbox.Models.Managers
             File.WriteAllText(path, json);
             Console.WriteLine($"Hint with original ID {id} deleted. IDs updated sequentially.");
         }
+        
+        public void UpdateHint(int id, string newContent, BattleHintTypes hintType)
+        {
+            var path = GetBattleHintPath(hintType);
+            var hints = GetBattleHints(hintType);
+
+            var hintToUpdate = hints.DataList.FirstOrDefault(h => int.TryParse(h.Id, out var hId) && hId == id);
+            if (hintToUpdate == null)
+            {
+                Console.WriteLine($"Hint with ID {id} not found.");
+                return;
+            }
+
+            hintToUpdate.Content = newContent;
+
+            var json = JsonConvert.SerializeObject(hints, Formatting.Indented);
+            File.WriteAllText(path, json);
+            Console.WriteLine($"Hint with ID {id} updated successfully.");
+        }
 
         public void AddHint(string text, BattleHintTypes hintType)
         {
@@ -417,7 +436,7 @@ namespace RainbusToolbox.Models.Managers
 
             int nextId = hints.DataList.Any() ? hints.DataList.Max(h => int.TryParse(h.Id, out var id) ? id : 0) + 1 : 1;
 
-            hints.DataList.Add(new BattleHint
+            hints.DataList.Add(new GenericIdContent()
             {
                 Id = nextId.ToString(),
                 Content = text

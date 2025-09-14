@@ -50,18 +50,16 @@ public enum BattleHintTypes
     Battle,
     Abnormality,
 }
-public class BattleHint
-{
-    [JsonProperty("id")]
-    public string Id { get; set; }
-    [JsonProperty("content")]
-    public string Content { get; set; }
-}
 
+
+
+
+
+// BattleHint*
 public class BattleHintsFile
 {
     [JsonProperty("dataList")]
-    public List<BattleHint> DataList { get; set; } = new List<BattleHint>();
+    public List<GenericIdContent> DataList { get; set; } = new List<GenericIdContent>();
 }
 
 
@@ -199,16 +197,7 @@ public class StoryTextItem
 public class StoryTheaterFile
 {
     [JsonProperty("dataList")]
-    public List<StoryTheaterItem> DataList { get; set; }
-}
-
-public class StoryTheaterItem
-{
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
-    [JsonProperty("content")]
-    public string Content { get; set; } = string.Empty;
+    public List<GenericIdContent> DataList { get; set; }
 }
 
 //StoryTheater*Detail (Story theater UI and notes with details)+
@@ -321,20 +310,9 @@ public class CoinDesc
 public class PassivesFile
 {
     [JsonProperty("dataList")]
-    public List<PassiveAbility> DataList { get; set; }
+    public List<GenericIdNameDesc> DataList { get; set; }
 }
 
-public class PassiveAbility
-{
-    [JsonProperty("id")]
-    public int Id { get; set; }
-
-    [JsonProperty("name")]
-    public string Name { get; set; } = string.Empty;
-
-    [JsonProperty("desc")]
-    public string Desc { get; set; } = string.Empty;
-}
 
 //Buffs* (Buff descriptions)
 public class BuffsFile
@@ -364,19 +342,7 @@ public class Buff
 public class EGOGiftFile
 {
     [JsonProperty("dataList")]
-    public List<EGOGift> DataList { get; set; }
-}
-
-public class EGOGift
-{
-    [JsonProperty("id")]
-    public int Id { get; set; }
-
-    [JsonProperty("name")]
-    public string Name { get; set; } = string.Empty;
-
-    [JsonProperty("desc")]
-    public string Desc { get; set; } = string.Empty;
+    public List<GenericIdNameDesc> DataList { get; set; }
 }
 
 //AbnormalityGuides* (Abnormality descriptions)
@@ -417,19 +383,7 @@ public class AbnormalityStory
 public class EnemyFile
 {
     [JsonProperty("dataList")]
-    public List<Enemy> DataList { get; set; }
-}
-
-public class Enemy
-{
-    [JsonProperty("id")]
-    public int Id { get; set; }
-
-    [JsonProperty("name")]
-    public string Name { get; set; } = string.Empty;
-
-    [JsonProperty("desc")]
-    public string Description { get; set; } = string.Empty;  // "Ядро" or "Часть"
+    public List<GenericIdNameDesc> DataList { get; set; }
 }
 
 //BattleKeywords* (Battle terminology)
@@ -483,33 +437,17 @@ public class PanicInfo
 public class MainUITextFile
 {
     [JsonProperty("dataList")]
-    public List<MainUIText> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; }
 }
 
-public class MainUIText
-{
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
-    [JsonProperty("content")]
-    public string Content { get; set; } = string.Empty;
-}
 //BattleUIText.json
 
 public class BattleUITextFile
 {
     [JsonProperty("dataList")]
-    public List<BattleUIText> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; }
 }
 
-public class BattleUIText
-{
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
-    [JsonProperty("content")]
-    public string Content { get; set; } = string.Empty;
-}
 //
 //
 /*** TODO:
@@ -550,9 +488,10 @@ public class BattleUIText
    
    Event* (Various event types - MOWE, TKT, YCGD, etc.)
    
-   CultivationEvent.json
+   *EventText
+ 
+    *Event
    
-   NightCleanUpEvent.json
    
    RailwayDungeon* (Railway dungeon events)
    
@@ -590,7 +529,6 @@ public class BattleUIText
    
    RailwayDungeon* (Railway dungeon content)
    
-   HellsChicken* (Hell's Chicken game mode)
    
    ProjectGS* (Project GS content)
    

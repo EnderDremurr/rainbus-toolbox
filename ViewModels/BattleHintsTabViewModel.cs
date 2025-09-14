@@ -17,7 +17,7 @@ public partial class BattleHintsTabViewModel : ObservableObject
     public BattleHintsTabViewModel(RepositoryManager repositoryManager)
     {
         _repositoryManager = repositoryManager;
-        Hints = new ObservableCollection<BattleHint>();
+        Hints = new ObservableCollection<EditableGenericIdContent>();
         LoadHints();
     }
     
@@ -42,7 +42,7 @@ public partial class BattleHintsTabViewModel : ObservableObject
     protected virtual void OnPropertyChanged(string propertyName) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-    public ObservableCollection<BattleHint> Hints { get; }
+    public ObservableCollection<EditableGenericIdContent> Hints { get; }
 
     [ObservableProperty]
     private string _newHintText;
@@ -63,7 +63,7 @@ public partial class BattleHintsTabViewModel : ObservableObject
 
             foreach (var hint in battleHints.DataList)
             {
-                Hints.Add(hint);
+                Hints.Add(new EditableGenericIdContent(hint));
             }
 
             HintsUpdated?.Invoke();
@@ -98,5 +98,34 @@ public partial class BattleHintsTabViewModel : ObservableObject
         var toRemove = Hints.FirstOrDefault(h => h.Id == id);
         if (toRemove != null)
             Hints.Remove(toRemove);
+    }
+
+    [RelayCommand]
+    private void EditHint(EditableGenericIdContent hint)
+    {
+        if (hint == null)
+            return;
+
+        // Cancel any other editing hints
+        foreach (var h in Hints.Where(x => x != hint && x.IsEditing))
+        {
+            h.CancelEdit();
+        }
+
+        // Start editing this hint
+        hint.StartEdit();
+    }
+
+    [RelayCommand]
+    private void SaveHint(EditableGenericIdContent hint)
+    {
+        if (hint == null || string.IsNullOrWhiteSpace(hint.EditContent))
+            return;
+
+        // Update in repository
+        _repositoryManager.UpdateHint(int.Parse(hint.Id), hint.EditContent, _selectedType);
+
+        // Update the local object
+        hint.SaveEdit();
     }
 }
