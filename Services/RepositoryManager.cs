@@ -22,7 +22,7 @@ namespace RainbusToolbox.Models.Managers
         private readonly PersistentDataManager _dataManager;
         public bool IsValid { get; private set; }
         
-        private static readonly Dictionary<string, System.Type> FileTypeMap = new Dictionary<string, System.Type>
+        private static readonly Dictionary<string, Type> FileTypeMap = new Dictionary<string, Type>
         {
             { "*AbDlg*", typeof(DialogueFile) },
             { "EGOgift*", typeof(EGOGiftFile) },

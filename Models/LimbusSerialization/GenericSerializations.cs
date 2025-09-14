@@ -30,3 +30,24 @@ public class GenericIdName
     [JsonProperty("name")]
     public string Name { get; set; } = string.Empty;
 }
+
+public class GenericIdTitleDesc
+{
+    [JsonProperty("id")]
+    public string Id { get; set; } = string.Empty;
+
+    [JsonProperty("title")]
+    public string Title { get; set; } = string.Empty;
+
+    [JsonProperty("desc")]
+    public string Desc { get; set; } = string.Empty;
+}
+
+public class GenericIdTitle
+{
+    [JsonProperty("id")]
+    public string Id { get; set; } = string.Empty;
+
+    [JsonProperty("title")]
+    public string Title { get; set; } = string.Empty;
+}

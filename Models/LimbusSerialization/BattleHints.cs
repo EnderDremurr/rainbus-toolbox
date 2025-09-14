@@ -4,45 +4,6 @@ using Newtonsoft.Json;
 
 namespace RainbusToolbox.Utilities.Data;
 
-public abstract class LocalizationFileBase
-{
-    [JsonIgnore]
-    public string PathTo { get; private set; }
-
-    [JsonIgnore]
-    public string FileName { get; private set; }
-
-    [JsonIgnore]
-    public string FullPath { get; private set; }
-
-    // Protected constructor for inheritance
-    protected LocalizationFileBase(string filePath)
-    {
-        if (string.IsNullOrEmpty(filePath))
-            throw new System.ArgumentException("File path cannot be null or empty", nameof(filePath));
-
-        FullPath = filePath;
-        PathTo = Path.GetDirectoryName(filePath) ?? string.Empty;
-        FileName = Path.GetFileNameWithoutExtension(filePath) ?? string.Empty;
-    }
-
-    // Parameterless constructor for JSON deserialization
-    protected LocalizationFileBase()
-    {
-        // Will be populated later by deserializer
-    }
-
-    // Method to set path info after JSON deserialization
-    internal void SetPathInfo(string filePath)
-    {
-        if (string.IsNullOrEmpty(filePath))
-            throw new System.ArgumentException("File path cannot be null or empty", nameof(filePath));
-
-        FullPath = filePath;
-        PathTo = Path.GetDirectoryName(filePath) ?? string.Empty;
-        FileName = Path.GetFileNameWithoutExtension(filePath) ?? string.Empty;
-    }
-}
 
 public enum BattleHintTypes
 {
@@ -52,11 +13,8 @@ public enum BattleHintTypes
 }
 
 
-
-
-
 // BattleHint*
-public class BattleHintsFile
+public class BattleHintsFile : LocalizationFileBase
 {
     [JsonProperty("dataList")]
     public List<GenericIdContent> DataList { get; set; } = new List<GenericIdContent>();
@@ -64,13 +22,13 @@ public class BattleHintsFile
 
 
 // AbDlg* (Character dialogue files - DonQuixote, Faust, Gregor, etc.) +
-public class DialogueFile
+public class DialogueFile : LocalizationFileBase
 {
     [JsonProperty("dataList")]
     public List<DialogueEntry> DataList { get; set; }
 }
 
-public class DialogueEntry
+public class DialogueEntry : LocalizationFileBase
 {
     [JsonProperty("id")]
     public int Id { get; set; }
@@ -93,7 +51,7 @@ public class DialogueEntry
 }
 
 // BattleAnnouncerDlg/Announcer* (Battle announcer dialogue) +
-public class BattleAnnouncerFile
+public class BattleAnnouncerFile : LocalizationFileBase
 {
     [JsonProperty("dataList")]
     public List<BattleAnnouncerEntry> DataList { get; set; }
@@ -110,7 +68,7 @@ public class BattleAnnouncerEntry
 
 //PersonalityVoiceDlg/Voice_* (Character personality voice lines)+
 
-public class PersonalityVoiceFile
+public class PersonalityVoiceFile : LocalizationFileBase
 {
     [JsonProperty("dataList")]
     public List<PersonalityVoiceEntry> DataList { get; set; }
@@ -129,7 +87,7 @@ public class PersonalityVoiceEntry
 }
 
 //EGOVoiceDig/VoiceEGO* (EGO ability voice lines) +
-public class EGOVoiceFile
+public class EGOVoiceFile : LocalizationFileBase
 {
     [JsonProperty("dataList")]
     public List<EGOVoiceEntry> DataList { get; set; }
@@ -148,7 +106,7 @@ public class EGOVoiceEntry
 }
 
 //StoryData/* (Individual story scene files)+
-public class StoryDataFile
+public class StoryDataFile : LocalizationFileBase
 {
     [JsonProperty("dataList")]
     public List<StoryDataItem> DataList { get; set; }
@@ -176,7 +134,7 @@ public class StoryDataItem
 }
 
 //StoryText.json +
-public class StoryTextFile
+public class StoryTextFile : LocalizationFileBase
 {
     [JsonProperty("dataList")]
     public List<StoryTextItem> DataList { get; set; }
@@ -194,14 +152,14 @@ public class StoryTextItem
     public string Desc { get; set; } = string.Empty;
 }
 //StoryTheater* (Story theater UI and notes)+
-public class StoryTheaterFile
+public class StoryTheaterFile : LocalizationFileBase
 {
     [JsonProperty("dataList")]
     public List<GenericIdContent> DataList { get; set; }
 }
 
 //StoryTheater*Detail (Story theater UI and notes with details)+
-public class StoryTheaterDetailFile
+public class StoryTheaterDetailFile : LocalizationFileBase
 {
     [JsonProperty("dataList")]
     public List<StoryTheaterDetailItem> DataList { get; set; }
@@ -220,7 +178,7 @@ public class StoryTheaterDetailItem
 }
 
 // StageNode* (Stage narrative content)+
-public class StageNodeFile
+public class StageNodeFile : LocalizationFileBase
 {
     [JsonProperty("dataList")]
     public List<StageNodeItem> DataList { get; set; }
@@ -236,7 +194,7 @@ public class StageNodeItem
 }
 
 //DungeonNode* (Dungeon narrative content)
-public class DungeonNodeFile
+public class DungeonNodeFile : LocalizationFileBase
 {
     [JsonProperty("dataList")]
     public List<DungeonNodeItem> DataList { get; set; }
@@ -263,51 +221,9 @@ public class DungeonStage
     public string Desc { get; set; } = string.Empty;
 }
 
-//Skills* (Character and enemy skills)
-public class SkillsFile
-{
-    [JsonProperty("dataList")]
-    public List<Skill> DataList { get; set; }
-}
-
-public class Skill
-{
-    [JsonProperty("id")]
-    public int Id { get; set; }
-
-    [JsonProperty("levelList")]
-    public List<SkillLevel> LevelList { get; set; }
-}
-
-public class SkillLevel
-{
-    [JsonProperty("level")]
-    public int Level { get; set; }
-
-    [JsonProperty("name")]
-    public string Name { get; set; } = string.Empty;
-
-    [JsonProperty("desc")]
-    public string Desc { get; set; } = string.Empty;
-
-    [JsonProperty("coinlist")]
-    public List<CoinListItem> CoinList { get; set; } = new List<CoinListItem>();
-}
-
-public class CoinListItem
-{
-    [JsonProperty("coindescs")]
-    public List<CoinDesc> CoinDescs { get; set; } = new List<CoinDesc>();
-}
-
-public class CoinDesc
-{
-    [JsonProperty("desc")]
-    public string Desc { get; set; } = string.Empty;
-}
 
 //Passives* (Passive abilities)
-public class PassivesFile
+public class PassivesFile : LocalizationFileBase
 {
     [JsonProperty("dataList")]
     public List<GenericIdNameDesc> DataList { get; set; }
@@ -433,20 +349,14 @@ public class PanicInfo
     public string PanicDescription { get; set; } = string.Empty;
 }
 
-//MainUIText* (Main UI elements)
-public class MainUITextFile
+//*UIText* (UI elements)
+public class UITextFile
 {
     [JsonProperty("dataList")]
     public List<GenericIdContent> DataList { get; set; }
 }
 
-//BattleUIText.json
 
-public class BattleUITextFile
-{
-    [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
-}
 
 //
 //
