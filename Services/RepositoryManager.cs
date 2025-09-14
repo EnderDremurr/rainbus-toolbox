@@ -400,10 +400,25 @@ namespace RainbusToolbox.Models.Managers
             if (remoteBranch == null)
                 throw new Exception($"Remote branch origin/{currentBranch.FriendlyName} not found.");
 
-            var merger = Repository.Merge(remoteBranch, GetLocalSignature(Repository));
+            // Fetch the latest changes from origin
+            var remote = Repository.Network.Remotes["origin"];
+            var refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);
+            Commands.Fetch(Repository, remote.Name, refSpecs, null, null);
 
-            if (merger.Status == MergeStatus.Conflicts)
-                throw new Exception("Merge conflicts occurred. Please resolve manually.");
+            // Perform the pull operation
+            var pullOptions = new PullOptions
+            {
+                FetchOptions = new FetchOptions(),
+                MergeOptions = new MergeOptions
+                {
+                    FastForwardStrategy = FastForwardStrategy.Default
+                }
+            };
+
+            var mergeResult = Commands.Pull(Repository, GetLocalSignature(Repository), pullOptions);
+    
+            if (mergeResult.Status == MergeStatus.Conflicts)
+                throw new Exception("Pull conflicts occurred. Please resolve manually.");
         }
 
         public void CommitLocalChanges(string comment)
