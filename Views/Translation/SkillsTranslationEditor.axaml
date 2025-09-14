@@ -57,7 +57,7 @@
                                 <!--  Section Title  -->
                                 <TextBlock
                                     FontFamily="{StaticResource MikodacsFont}"
-                                    FontSize="16"
+                                    FontSize="18"
                                     FontWeight="Bold"
                                     Foreground="White"
                                     HorizontalAlignment="Center"
@@ -68,25 +68,34 @@
                                 <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
                                     <TextBlock
                                         FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
                                         FontWeight="SemiBold"
                                         Foreground="White"
                                         Text="Skill ID: "
                                         Width="80" />
-                                    <TextBlock Foreground="White" Text="{Binding ReferenceSkill.Id}" />
+                                    <TextBlock
+                                        FontSize="28"
+                                        Foreground="White"
+                                        Text="{Binding ReferenceSkill.Id}" />
                                     <TextBlock
                                         FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
                                         FontWeight="SemiBold"
                                         Foreground="White"
                                         Margin="20,0,0,0"
                                         Text="Level: "
                                         Width="60" />
-                                    <TextBlock Foreground="White" Text="{Binding ReferenceLevel.Level}" />
+                                    <TextBlock
+                                        FontSize="28"
+                                        Foreground="White"
+                                        Text="{Binding ReferenceLevel.Level}" />
                                 </StackPanel>
 
                                 <!--  Skill Name  -->
                                 <StackPanel Margin="0,0,0,10">
                                     <TextBlock
                                         FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
                                         FontWeight="SemiBold"
                                         Foreground="White"
                                         Margin="0,0,0,5"
@@ -102,6 +111,7 @@
                                 <StackPanel Margin="0,0,0,10">
                                     <TextBlock
                                         FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
                                         FontWeight="SemiBold"
                                         Foreground="White"
                                         Margin="0,0,0,5"
@@ -118,6 +128,7 @@
                                 <StackPanel>
                                     <TextBlock
                                         FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
                                         FontWeight="SemiBold"
                                         Foreground="White"
                                         Margin="0,0,0,5"
@@ -164,7 +175,7 @@
                                 <!--  Section Title  -->
                                 <TextBlock
                                     FontFamily="{StaticResource MikodacsFont}"
-                                    FontSize="16"
+                                    FontSize="18"
                                     FontWeight="Bold"
                                     Foreground="White"
                                     HorizontalAlignment="Center"
@@ -175,22 +186,26 @@
                                 <Grid ColumnDefinitions="Auto,*,Auto,*" Margin="0,0,0,10">
                                     <TextBlock
                                         FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
                                         FontWeight="SemiBold"
                                         Foreground="White"
                                         Grid.Column="0"
                                         Text="Skill ID: " />
                                     <TextBlock
+                                        FontSize="28"
                                         Foreground="White"
                                         Grid.Column="1"
                                         Margin="5,0,20,0"
                                         Text="{Binding CurrentSkill.Id}" />
                                     <TextBlock
                                         FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
                                         FontWeight="SemiBold"
                                         Foreground="White"
                                         Grid.Column="2"
                                         Text="Level: " />
                                     <TextBlock
+                                        FontSize="28"
                                         Foreground="White"
                                         Grid.Column="3"
                                         Margin="5,0,0,0"
@@ -201,6 +216,7 @@
                                 <StackPanel Margin="0,0,0,10">
                                     <TextBlock
                                         FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
                                         FontWeight="SemiBold"
                                         Foreground="White"
                                         Margin="0,0,0,5"
@@ -215,6 +231,7 @@
                                 <StackPanel Margin="0,0,0,10">
                                     <TextBlock
                                         FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
                                         FontWeight="SemiBold"
                                         Foreground="White"
                                         Margin="0,0,0,5"
@@ -231,6 +248,7 @@
                                 <StackPanel>
                                     <TextBlock
                                         FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
                                         FontWeight="SemiBold"
                                         Foreground="White"
                                         Margin="0,0,0,5"
@@ -257,65 +275,69 @@
             </Border>
         </Grid>
 
-        <!--  Level Navigation Above Skill Navigation  -->
+        <!--  Navigation Container with Side-by-Side Layout  -->
         <StackPanel
             Grid.Row="2"
             HorizontalAlignment="Center"
             IsVisible="{Binding IsSkillsLoaded}"
-            Margin="20,15,20,10"
-            Orientation="Horizontal">
-            <Button
-                Click="OnPreviousLevelClick"
-                Content="◀ Prev Level"
-                IsEnabled="{Binding CanGoPreviousLevel}"
-                Margin="0,0,10,0"
-                MinWidth="100" />
-            <Border
-                Background="#B3000000"
-                CornerRadius="4"
-                Padding="8,4">
-                <TextBlock
-                    FontFamily="{StaticResource MikodacsFont}"
-                    FontWeight="SemiBold"
-                    Foreground="Transparent"
-                    Text="{Binding LevelNavigationText}" />
-            </Border>
-            <Button
-                Click="OnNextLevelClick"
-                Content="Next Level ▶"
-                IsEnabled="{Binding CanGoNextLevel}"
-                Margin="10,0,0,0"
-                MinWidth="100" />
-        </StackPanel>
-
-        <!--  Skill Navigation at Bottom  -->
-        <StackPanel
-            Grid.Row="3"
-            HorizontalAlignment="Center"
-            IsVisible="{Binding IsSkillsLoaded}"
             Margin="20,5,20,20"
             Orientation="Horizontal">
-            <Button
-                Click="OnPreviousSkillClick"
-                Content="◀ Prev Skill"
-                IsEnabled="{Binding CanGoPreviousSkill}"
-                Margin="0,0,10,0"
-                MinWidth="100" />
-            <Border
-                Background="LightGray"
-                CornerRadius="4"
-                Padding="12,6">
-                <TextBlock
-                    FontFamily="{StaticResource MikodacsFont}"
-                    FontWeight="SemiBold"
-                    Text="{Binding SkillNavigationText}" />
-            </Border>
-            <Button
-                Click="OnNextSkillClick"
-                Content="Next Skill ▶"
-                IsEnabled="{Binding CanGoNextSkill}"
-                Margin="10,0,0,0"
-                MinWidth="100" />
+
+            <!--  Skill Navigation Section  -->
+            <StackPanel Margin="0,0,30,0" Orientation="Horizontal">
+                <Button
+                    Click="OnPreviousSkillClick"
+                    Content="◀ Prev Skill"
+                    IsEnabled="{Binding CanGoPreviousSkill}"
+                    Margin="0,0,10,0"
+                    Width="200" />
+                <Border
+                    Background="Transparent"
+                    CornerRadius="4"
+                    Padding="12,6">
+                    <TextBlock
+                        FontFamily="{StaticResource MikodacsFont}"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        Text="{Binding SkillNavigationText}"
+                        Width="100" />
+                </Border>
+                <Button
+                    Click="OnNextSkillClick"
+                    Content="Next Skill ▶"
+                    IsEnabled="{Binding CanGoNextSkill}"
+                    Margin="10,0,0,0"
+                    Width="200" />
+            </StackPanel>
+
+            <!--  Level Navigation Section  -->
+            <StackPanel Orientation="Horizontal">
+                <Button
+                    Click="OnPreviousLevelClick"
+                    Content="◀ Prev Level"
+                    IsEnabled="{Binding CanGoPreviousLevel}"
+                    Margin="0,0,10,0"
+                    Width="200" />
+                <Border
+                    Background="Transparent"
+                    CornerRadius="4"
+                    Padding="8,4">
+                    <TextBlock
+                        FontFamily="{StaticResource MikodacsFont}"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        Text="{Binding LevelNavigationText}"
+                        Width="100" />
+                </Border>
+                <Button
+                    Click="OnNextLevelClick"
+                    Content="Next Level ▶"
+                    IsEnabled="{Binding CanGoNextLevel}"
+                    Margin="10,0,0,0"
+                    Width="200" />
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>
