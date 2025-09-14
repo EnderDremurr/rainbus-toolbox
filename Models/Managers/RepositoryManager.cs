@@ -36,7 +36,9 @@ namespace RainbusToolbox.Models.Managers
             _dataManager = dataManager;
             TryInitialize();
         }
-
+        
+        
+        # region File fuckery
         public void UpdateToGame() => ParseNewAdditionsFromGame();
 
         public void ParseNewAdditionsFromGame()
@@ -211,6 +213,8 @@ namespace RainbusToolbox.Models.Managers
         
             return result;
         }
+        
+        #endregion
 
         #region Initialization
         public void TryInitialize()
@@ -270,7 +274,197 @@ namespace RainbusToolbox.Models.Managers
         }
         #endregion
 
-        #region Repository Operations
+        #region Packaging
+        public string PackageLocalization(string version)
+        {
+            SynchronizeWithOrigin();
+
+            var repoPath = Repository.Info.WorkingDirectory;
+            var zipFileName = $"RCR v{version}.zip";
+            var zipPath = Path.Combine(repoPath, _distPath, zipFileName);
+
+            if (File.Exists(zipPath))
+                File.Delete(zipPath);
+
+            using (var zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
+            {
+                AddLocalizationFilesToZip(zip, repoPath);
+            }
+
+            return zipPath;
+        }
+        
+        private void AddLocalizationFilesToZip(ZipArchive zip, string repoPath)
+        {
+            var localizePath = Path.Combine(repoPath, _localizationFolder);
+            if (Directory.Exists(localizePath))
+            {
+                foreach (var file in Directory.GetFiles(localizePath, "*", SearchOption.AllDirectories))
+                {
+                    var relativePath = Path.GetRelativePath(localizePath, file);
+                    zip.CreateEntryFromFile(file, relativePath);
+                }
+            }
+        }
+        
+        #endregion
+        
+        # region Battlehints
+        public void DeleteHintAtId(int id, BattleHintTypes hintType)
+        {
+            var path = GetBattleHintPath(hintType);;
+            var hints = GetBattleHints(hintType);
+
+            var hintToRemove = hints.DataList.FirstOrDefault(h => int.TryParse(h.Id, out var hId) && hId == id);
+            if (hintToRemove == null)
+            {
+                Console.WriteLine($"Hint with ID {id} not found.");
+                return;
+            }
+
+            hints.DataList.Remove(hintToRemove);
+            ReassignIds(hints);
+
+            var json = JsonConvert.SerializeObject(hints, Formatting.Indented);
+            File.WriteAllText(path, json);
+            Console.WriteLine($"Hint with original ID {id} deleted. IDs updated sequentially.");
+        }
+        
+        public void UpdateHint(int id, string newContent, BattleHintTypes hintType)
+        {
+            var path = GetBattleHintPath(hintType);
+            var hints = GetBattleHints(hintType);
+
+            var hintToUpdate = hints.DataList.FirstOrDefault(h => int.TryParse(h.Id, out var hId) && hId == id);
+            if (hintToUpdate == null)
+            {
+                Console.WriteLine($"Hint with ID {id} not found.");
+                return;
+            }
+
+            hintToUpdate.Content = newContent;
+
+            var json = JsonConvert.SerializeObject(hints, Formatting.Indented);
+            File.WriteAllText(path, json);
+            Console.WriteLine($"Hint with ID {id} updated successfully.");
+        }
+
+        public void AddHint(string text, BattleHintTypes hintType)
+        {
+            var path = GetBattleHintPath(hintType);
+            var hints = GetBattleHints(hintType);
+
+            int nextId = hints.DataList.Any() ? hints.DataList.Max(h => int.TryParse(h.Id, out var id) ? id : 0) + 1 : 1;
+
+            hints.DataList.Add(new GenericIdContent()
+            {
+                Id = nextId.ToString(),
+                Content = text
+            });
+
+            var json = JsonConvert.SerializeObject(hints, Formatting.Indented);
+            File.WriteAllText(path, json);
+        }
+
+        public BattleHintsFile GetBattleHints(BattleHintTypes hintType)
+        {
+            var path = GetBattleHintPath(hintType);
+
+            if (!File.Exists(path))
+                throw new FileNotFoundException("BattleHints.json not found", path);
+
+            var json = File.ReadAllText(path);
+            var hints = JsonConvert.DeserializeObject<BattleHintsFile>(json);
+
+            if (hints == null)
+                throw new InvalidOperationException("Failed to deserialize BattleHint.json");
+
+            return hints;
+        }
+
+        public string GetBattleHintPath(BattleHintTypes hintType)
+        {
+            var hintName = "";
+            switch (hintType)
+
+            {
+             case BattleHintTypes.Loading:
+                 hintName = "BattleHint.json";
+                 break;
+             case BattleHintTypes.Battle:
+                 hintName = "BattleHint_NormalBattle.json";
+                 break;
+             case BattleHintTypes.Abnormality:
+                 hintName = "BattleHint_AbnorBattle.json";
+                 break;
+            }
+            
+            
+            
+            var path = Path.Combine(_dataManager.Settings.RepositoryPath, _localizationFolder, hintName);
+            
+            return path;
+        }
+        private void ReassignIds(BattleHintsFile hints)
+        {
+            for (int i = 0; i < hints.DataList.Count; i++)
+            {
+                hints.DataList[i].Id = (i + 1).ToString();
+            }
+        }
+        
+        #endregion
+
+        #region Git shit
+        public Signature GetLocalSignature(Repository repo)
+        {
+            var name = repo.Config.Get<string>("user.name")?.Value;
+            var email = repo.Config.Get<string>("user.email")?.Value;
+
+            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(email))
+            {
+                throw new InvalidOperationException("Git user.name or user.email not set. Please configure Git.");
+            }
+
+            return new Signature(name, email, DateTimeOffset.Now);
+        }
+
+        private FetchOptions CreateFetchOptions()
+        {
+            return new FetchOptions
+            {
+                CredentialsProvider = (_url, _user, _cred) =>
+                    new UsernamePasswordCredentials
+                    {
+                        Username = "token",
+                        Password = _dataManager.Settings.GitHubToken
+                    }
+            };
+        }
+
+        private PushOptions CreatePushOptions()
+        {
+            return new PushOptions
+            {
+                CredentialsProvider = (_url, _user, _cred) =>
+                    new UsernamePasswordCredentials
+                    {
+                        Username = _dataManager.Settings.GitHubToken,
+                        Password = string.Empty
+                    }
+            };
+        }
+
+        private Branch GetTrackedBranch(Branch branch, Remote remote)
+        {
+            var tracked = branch.TrackedBranch;
+            if (tracked == null)
+            {
+                Console.WriteLine("Tracked branch is null. Trying to get remote branch manually.");
+                tracked = Repository.Branches[$"{remote.Name}/{branch.FriendlyName}"];
+            }
+            return tracked;
+        }
         public int[] CheckRepositoryChanges()
         {
             var branch = Repository.Head;
@@ -367,196 +561,6 @@ namespace RainbusToolbox.Models.Managers
             var currentBranch = Repository.Head;
             var pushOptions = CreatePushOptions();
             Repository.Network.Push(remote, $"refs/heads/{currentBranch.FriendlyName}", pushOptions);
-        }
-        #endregion
-
-        #region Localization Management
-        public string PackageLocalization(string version)
-        {
-            SynchronizeWithOrigin();
-
-            var repoPath = Repository.Info.WorkingDirectory;
-            var zipFileName = $"RCR v{version}.zip";
-            var zipPath = Path.Combine(repoPath, _distPath, zipFileName);
-
-            if (File.Exists(zipPath))
-                File.Delete(zipPath);
-
-            using (var zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
-            {
-                AddLocalizationFilesToZip(zip, repoPath);
-            }
-
-            return zipPath;
-        }
-
-        public void DeleteHintAtId(int id, BattleHintTypes hintType)
-        {
-            var path = GetBattleHintPath(hintType);;
-            var hints = GetBattleHints(hintType);
-
-            var hintToRemove = hints.DataList.FirstOrDefault(h => int.TryParse(h.Id, out var hId) && hId == id);
-            if (hintToRemove == null)
-            {
-                Console.WriteLine($"Hint with ID {id} not found.");
-                return;
-            }
-
-            hints.DataList.Remove(hintToRemove);
-            ReassignIds(hints);
-
-            var json = JsonConvert.SerializeObject(hints, Formatting.Indented);
-            File.WriteAllText(path, json);
-            Console.WriteLine($"Hint with original ID {id} deleted. IDs updated sequentially.");
-        }
-        
-        public void UpdateHint(int id, string newContent, BattleHintTypes hintType)
-        {
-            var path = GetBattleHintPath(hintType);
-            var hints = GetBattleHints(hintType);
-
-            var hintToUpdate = hints.DataList.FirstOrDefault(h => int.TryParse(h.Id, out var hId) && hId == id);
-            if (hintToUpdate == null)
-            {
-                Console.WriteLine($"Hint with ID {id} not found.");
-                return;
-            }
-
-            hintToUpdate.Content = newContent;
-
-            var json = JsonConvert.SerializeObject(hints, Formatting.Indented);
-            File.WriteAllText(path, json);
-            Console.WriteLine($"Hint with ID {id} updated successfully.");
-        }
-
-        public void AddHint(string text, BattleHintTypes hintType)
-        {
-            var path = GetBattleHintPath(hintType);
-            var hints = GetBattleHints(hintType);
-
-            int nextId = hints.DataList.Any() ? hints.DataList.Max(h => int.TryParse(h.Id, out var id) ? id : 0) + 1 : 1;
-
-            hints.DataList.Add(new GenericIdContent()
-            {
-                Id = nextId.ToString(),
-                Content = text
-            });
-
-            var json = JsonConvert.SerializeObject(hints, Formatting.Indented);
-            File.WriteAllText(path, json);
-        }
-
-        public BattleHintsFile GetBattleHints(BattleHintTypes hintType)
-        {
-            var path = GetBattleHintPath(hintType);
-
-            if (!File.Exists(path))
-                throw new FileNotFoundException("BattleHints.json not found", path);
-
-            var json = File.ReadAllText(path);
-            var hints = JsonConvert.DeserializeObject<BattleHintsFile>(json);
-
-            if (hints == null)
-                throw new InvalidOperationException("Failed to deserialize BattleHint.json");
-
-            return hints;
-        }
-
-        public string GetBattleHintPath(BattleHintTypes hintType)
-        {
-            var hintName = "";
-            switch (hintType)
-
-            {
-             case BattleHintTypes.Loading:
-                 hintName = "BattleHint.json";
-                 break;
-             case BattleHintTypes.Battle:
-                 hintName = "BattleHint_NormalBattle.json";
-                 break;
-             case BattleHintTypes.Abnormality:
-                 hintName = "BattleHint_AbnorBattle.json";
-                 break;
-            }
-            
-            
-            
-            var path = Path.Combine(_dataManager.Settings.RepositoryPath, _localizationFolder, hintName);
-            
-            return path;
-        }
-
-        private void AddLocalizationFilesToZip(ZipArchive zip, string repoPath)
-        {
-            var localizePath = Path.Combine(repoPath, _localizationFolder);
-            if (Directory.Exists(localizePath))
-            {
-                foreach (var file in Directory.GetFiles(localizePath, "*", SearchOption.AllDirectories))
-                {
-                    var relativePath = Path.GetRelativePath(localizePath, file);
-                    zip.CreateEntryFromFile(file, relativePath);
-                }
-            }
-        }
-
-        private void ReassignIds(BattleHintsFile hints)
-        {
-            for (int i = 0; i < hints.DataList.Count; i++)
-            {
-                hints.DataList[i].Id = (i + 1).ToString();
-            }
-        }
-        #endregion
-
-        #region Git Operations
-        public Signature GetLocalSignature(Repository repo)
-        {
-            var name = repo.Config.Get<string>("user.name")?.Value;
-            var email = repo.Config.Get<string>("user.email")?.Value;
-
-            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(email))
-            {
-                throw new InvalidOperationException("Git user.name or user.email not set. Please configure Git.");
-            }
-
-            return new Signature(name, email, DateTimeOffset.Now);
-        }
-
-        private FetchOptions CreateFetchOptions()
-        {
-            return new FetchOptions
-            {
-                CredentialsProvider = (_url, _user, _cred) =>
-                    new UsernamePasswordCredentials
-                    {
-                        Username = "token",
-                        Password = _dataManager.Settings.GitHubToken
-                    }
-            };
-        }
-
-        private PushOptions CreatePushOptions()
-        {
-            return new PushOptions
-            {
-                CredentialsProvider = (_url, _user, _cred) =>
-                    new UsernamePasswordCredentials
-                    {
-                        Username = _dataManager.Settings.GitHubToken,
-                        Password = string.Empty
-                    }
-            };
-        }
-
-        private Branch GetTrackedBranch(Branch branch, Remote remote)
-        {
-            var tracked = branch.TrackedBranch;
-            if (tracked == null)
-            {
-                Console.WriteLine("Tracked branch is null. Trying to get remote branch manually.");
-                tracked = Repository.Branches[$"{remote.Name}/{branch.FriendlyName}"];
-            }
-            return tracked;
         }
         #endregion
     }
