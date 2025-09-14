@@ -111,7 +111,7 @@
 
                             <CheckBox
                                 Content="Оставить ссылку на лаунчер"
-                                IsChecked="{Binding AppendLauncherLink}"
+                                IsChecked="{Binding MustAppendLauncherLink}"
                                 Margin="5,0" />
                             <CheckBox
                                 Content="Оставить ссылку на релиз"

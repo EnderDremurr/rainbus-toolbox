@@ -22,6 +22,7 @@ public partial class App : Application
     private IServiceProvider _serviceProvider;
     public IServiceProvider ServiceProvider => _serviceProvider;
     public static ViewModelLocator Locator { get; private set; }
+    public static new App Current => (App)Application.Current!;
 
     public override void Initialize()
     {

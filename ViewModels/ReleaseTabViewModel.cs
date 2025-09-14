@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -9,6 +10,7 @@ using CommunityToolkit.Mvvm.Input;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using RainbusToolbox.Models.Managers;
+using RainbusToolbox.Services;
 
 namespace RainbusToolbox.ViewModels;
 
@@ -37,7 +39,7 @@ public partial class ReleaseTabViewModel : ObservableObject
         _repositoryManager = repositoryManager;
 
         // Set default values for checkboxes
-        AppendLauncherLink = true;
+        MustAppendLauncherLink = true;
         MergeWithReadme = true;
         SendToDiscord = false;
         Option1 = false;
@@ -85,7 +87,7 @@ public partial class ReleaseTabViewModel : ObservableObject
 
     // General section checkboxes
     [ObservableProperty]
-    private bool _appendLauncherLink;
+    private bool _mustAppendLauncherLink;
 
     [ObservableProperty]
     private bool _mergeWithReadme;
@@ -137,8 +139,6 @@ public partial class ReleaseTabViewModel : ObservableObject
     [RelayCommand]
     private async Task Submit()
     {
-        System.Diagnostics.Debug.WriteLine("ReleaseTabViewModel: Submit method called!");
-
         if (string.IsNullOrWhiteSpace(Version))
         {
             var messageBox = MessageBoxManager.GetMessageBoxStandard("Ошибка",
@@ -167,7 +167,7 @@ public partial class ReleaseTabViewModel : ObservableObject
             }
 
             // Package the localization
-            var package = await Task.Run(() => _repositoryManager.PackageLocalization(Version));
+            var package = await Task.Run(() => LocalizationPackager.PackageLocalization(Version, _repositoryManager));
 
             // Create GitHub release
             await _githubManager.CreateReleaseAsync($"RCR v{Version}", EditorText, package);
@@ -176,20 +176,14 @@ public partial class ReleaseTabViewModel : ObservableObject
             if (SendToDiscord)
             {
                 var discordMessage = $"# v{Version}\n\n" + EditorText;
-
+                
+                if (MustAppendLauncherLink)
+                    discordMessage += "\n\n[Лаунчер для переводов](<https://github.com/kimght/LimbusLocalizationManager/releases>)";
                 if (Option1)
-                    discordMessage += "\n\n[Ссылка на релиз](https://github.com/enqenqenqenqenq/RCR/releases/latest)";
-
+                    discordMessage += "\n\n[Ссылка на релиз](<https://github.com/enqenqenqenqenq/RCR/releases/latest>)";
                 if (Option2 && !string.IsNullOrWhiteSpace(RoleToPing))
                     discordMessage += $"\n\n\n\n<@&{RoleToPing}>";
-
-                if (AppendLauncherLink)
-                {
-                    // TODO: Implement launcher link appending logic
-                    System.Diagnostics.Debug.WriteLine("TODO: Implement launcher link appending");
-                    // discordMessage += "\n\n[Launcher Download Link]";
-                }
-
+                
                 await _discordManager.SendMessageAsync(discordMessage);
             }
 
@@ -200,9 +194,7 @@ public partial class ReleaseTabViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            var messageBox = MessageBoxManager.GetMessageBoxStandard("Ошибка", 
-                $"Ошибка при создании релиза: {ex.Message}", ButtonEnum.Ok);
-            await messageBox.ShowAsync();
+            App.Current.HandleGlobalException(ex);
         }
         finally
         {

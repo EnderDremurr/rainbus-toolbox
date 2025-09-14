@@ -10,9 +10,9 @@ using RainbusToolbox.ViewModels;
 
 namespace RainbusToolbox.Views;
 
-public partial class BattleHintsTab : UserControl
+public partial class BattleHintsEditor : UserControl
 {
-    public BattleHintsTab()
+    public BattleHintsEditor()
     {
         InitializeComponent();
         

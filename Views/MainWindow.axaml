@@ -123,7 +123,7 @@
                     FontSize="20"
                     Foreground="White"
                     Header="Сюжет">
-                    <views:TranslationTab />
+                    <views:StoryTranslationEditor />
                 </TabItem>
 
                 <TabItem
@@ -131,7 +131,7 @@
                     FontSize="20"
                     Foreground="White"
                     Header="Скиллы">
-                    <views:SkillsTranslationTab />
+                    <views:SkillsTranslationEditor />
                 </TabItem>
 
                 <TabItem
@@ -139,7 +139,7 @@
                     FontSize="20"
                     Foreground="White"
                     Header="Баттл хинты">
-                    <views:BattleHintsTab />
+                    <views:BattleHintsEditor />
                 </TabItem>
 
                 <TabItem

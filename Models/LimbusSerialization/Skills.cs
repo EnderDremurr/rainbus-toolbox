@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using RainbusToolbox.Utilities.Data;
 
+[FilePattern("Skills*")]
 public class SkillsFile : LocalizationFileBase
 {
     [JsonProperty("dataList")]

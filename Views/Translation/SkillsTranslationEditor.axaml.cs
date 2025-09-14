@@ -13,7 +13,7 @@ using RainbusToolbox.Models.Managers;
 
 namespace RainbusToolbox.Views
 {
-    public partial class SkillsTranslationTab : UserControl, INotifyPropertyChanged
+    public partial class SkillsTranslationEditor : UserControl, INotifyPropertyChanged
     {
         private SkillsFile? _skillsFile;
         private SkillsFile? _referenceSkillsFile;
@@ -24,7 +24,7 @@ namespace RainbusToolbox.Views
 
         private PersistentDataManager _dataManager;
 
-        public SkillsTranslationTab()
+        public SkillsTranslationEditor()
         {
             InitializeComponent();
             DataContext = this;

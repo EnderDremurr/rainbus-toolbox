@@ -40,7 +40,35 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Views\SettingsWindow.axaml.cs">
+      <Compile Update="Views\Translation\BattleHintsEditor.axaml.cs">
+        <DependentUpon>BattleHintsTab.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Misc\ExceptionDialog.axaml.cs">
+        <DependentUpon>ExceptionDialog.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Misc\InitializationWindow.axaml.cs">
+        <DependentUpon>InitializationWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Misc\InputDialogue.axaml.cs">
+        <DependentUpon>InputDialogue.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Translation\SkillsTranslationEditor.axaml.cs">
+        <DependentUpon>SkillsTranslationTab.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\ReleaseTab.axaml.cs">
+        <DependentUpon>ReleaseTab.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Translation\StoryTranslationEditor.axaml.cs">
+        <DependentUpon>TranslationTab.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Misc\SettingsWindow.axaml.cs">
         <DependentUpon>SettingsWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>

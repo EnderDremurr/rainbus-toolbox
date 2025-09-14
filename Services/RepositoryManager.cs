@@ -14,21 +14,13 @@ namespace RainbusToolbox.Models.Managers
     {
         // Fields
         public Repository Repository { get; private set; }
-        private readonly string _distPath = ".dist/";
-        private readonly string _packageConfigName = "config.json";
-        private readonly string _localizationFolder = "localize";
+        public readonly string DistPath = ".dist/";
+        public readonly string LocalizationFolder = "localize";
         private readonly string _referenceLangAppendage = "LimbusCompany_Data/Assets/Resources_moved/Localize/en/";
         private string _pathToReference = string.Empty;
         private readonly PersistentDataManager _dataManager;
         public bool IsValid { get; private set; }
         
-        private static readonly Dictionary<string, Type> FileTypeMap = new Dictionary<string, Type>
-        {
-            { "*AbDlg*", typeof(DialogueFile) },
-            { "EGOgift*", typeof(EGOGiftFile) },
-            { "*Announcer*", typeof(BattleAnnouncerFile) },
-            { "*Voice*", typeof(PersonalityVoiceFile) }
-        };
 
         // Constructor
         public RepositoryManager(PersistentDataManager dataManager)
@@ -44,7 +36,7 @@ namespace RainbusToolbox.Models.Managers
         public void ParseNewAdditionsFromGame()
         {
             var pathToGame = Path.Combine(_dataManager.Settings.PathToLimbus, _referenceLangAppendage);
-            var pathToLocalization = Path.Combine(_dataManager.Settings.RepositoryPath, _localizationFolder);
+            var pathToLocalization = Path.Combine(_dataManager.Settings.RepositoryPath, LocalizationFolder);
 
             Directory.CreateDirectory(pathToLocalization);
 
@@ -120,37 +112,9 @@ namespace RainbusToolbox.Models.Managers
             return updated;
         }
         
-        public static LocalizationFileBase DeserializeJsonFile(string filePath)
-    {
-        string fileName = Path.GetFileNameWithoutExtension(filePath);
-        
-        Type targetType = GetFileTypeFromPattern(fileName);
-        if (targetType == null)
-        {
-            throw new ArgumentException($"No mapping found for file: {fileName}");
-        }
-
-        string jsonContent = File.ReadAllText(filePath);
-        var result = (LocalizationFileBase)JsonConvert.DeserializeObject(jsonContent, targetType);
-        
-        // Set the path info after deserialization
-        result.SetPathInfo(filePath);
-        
-        return result;
-    }
 
     // Pattern matching method that handles wildcards
-    private static Type GetFileTypeFromPattern(string fileName)
-    {
-        foreach (var kvp in FileTypeMap)
-        {
-            if (MatchesPattern(fileName, kvp.Key))
-            {
-                return kvp.Value;
-            }
-        }
-        return null;
-    }
+    
 
     // Wildcard pattern matching method
     private static bool MatchesPattern(string fileName, string pattern)
@@ -185,35 +149,7 @@ namespace RainbusToolbox.Models.Managers
         return false;
     }
 
-    // Helper methods
-    public static Type GetFileType(string fileName)
-    {
-        return GetFileTypeFromPattern(fileName);
-    }
-
-    public static bool IsRecognizedFile(string fileName)
-    {
-        return GetFileTypeFromPattern(fileName) != null;
-    }
-        
-        public static LocalizationFileBase DeserializeLocalizationFile(string filePath)
-        {
-            string fileName = Path.GetFileNameWithoutExtension(filePath);
-        
-            if (!FileTypeMap.TryGetValue(fileName, out System.Type targetType))
-            {
-                throw new System.ArgumentException($"No mapping found for file: {fileName}");
-            }
-
-            string jsonContent = File.ReadAllText(filePath);
-            var result = (LocalizationFileBase)JsonConvert.DeserializeObject(jsonContent, targetType);
-        
-            // Set the path info after deserialization
-            result.SetPathInfo(filePath);
-        
-            return result;
-        }
-        
+    
         #endregion
 
         #region Initialization
@@ -236,7 +172,7 @@ namespace RainbusToolbox.Models.Managers
                 }
 
                 Repository = new Repository(foundRepoPath);
-                Directory.CreateDirectory(Path.Combine(foundRepoPath, _distPath));
+                Directory.CreateDirectory(Path.Combine(foundRepoPath, DistPath));
                 _pathToReference = Path.Combine(_dataManager.Settings.PathToLimbus, _referenceLangAppendage);
                 IsValid = true;
             }
@@ -275,37 +211,7 @@ namespace RainbusToolbox.Models.Managers
         #endregion
 
         #region Packaging
-        public string PackageLocalization(string version)
-        {
-            SynchronizeWithOrigin();
-
-            var repoPath = Repository.Info.WorkingDirectory;
-            var zipFileName = $"RCR v{version}.zip";
-            var zipPath = Path.Combine(repoPath, _distPath, zipFileName);
-
-            if (File.Exists(zipPath))
-                File.Delete(zipPath);
-
-            using (var zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
-            {
-                AddLocalizationFilesToZip(zip, repoPath);
-            }
-
-            return zipPath;
-        }
         
-        private void AddLocalizationFilesToZip(ZipArchive zip, string repoPath)
-        {
-            var localizePath = Path.Combine(repoPath, _localizationFolder);
-            if (Directory.Exists(localizePath))
-            {
-                foreach (var file in Directory.GetFiles(localizePath, "*", SearchOption.AllDirectories))
-                {
-                    var relativePath = Path.GetRelativePath(localizePath, file);
-                    zip.CreateEntryFromFile(file, relativePath);
-                }
-            }
-        }
         
         #endregion
         
@@ -401,7 +307,7 @@ namespace RainbusToolbox.Models.Managers
             
             
             
-            var path = Path.Combine(_dataManager.Settings.RepositoryPath, _localizationFolder, hintName);
+            var path = Path.Combine(_dataManager.Settings.RepositoryPath, LocalizationFolder, hintName);
             
             return path;
         }

@@ -13,7 +13,7 @@ using RainbusToolbox.Models.Managers;
 
 namespace RainbusToolbox.Views
 {
-    public partial class TranslationTab : UserControl, INotifyPropertyChanged
+    public partial class StoryTranslationEditor : UserControl, INotifyPropertyChanged
     {
         private StoryDataFile? _storyDataFile;
         private StoryDataFile? _referenceDataFile;
@@ -23,7 +23,7 @@ namespace RainbusToolbox.Views
 
         private PersistentDataManager _dataManager;
 
-        public TranslationTab()
+        public StoryTranslationEditor()
         {
             InitializeComponent();
             DataContext = this;
