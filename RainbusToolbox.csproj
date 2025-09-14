@@ -60,16 +60,28 @@
         <DependentUpon>SkillsTranslationTab.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Views\ReleaseTab.axaml.cs">
-        <DependentUpon>ReleaseTab.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
       <Compile Update="Views\Translation\StoryTranslationEditor.axaml.cs">
         <DependentUpon>TranslationTab.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
       <Compile Update="Views\Misc\SettingsWindow.axaml.cs">
         <DependentUpon>SettingsWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Tabs\UpdaterTab.axaml.cs">
+        <DependentUpon>UpdaterTab.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Tabs\TranslationTab.axaml.cs">
+        <DependentUpon>TranslationTab.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Tabs\ReleaseTab.axaml.cs">
+        <DependentUpon>ReleaseTab.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Tabs\OverviewTab.axaml.cs">
+        <DependentUpon>OverviewTab.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
     </ItemGroup>

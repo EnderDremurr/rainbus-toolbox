@@ -10,11 +10,11 @@ using RainbusToolbox.Utilities.Data;
 
 namespace RainbusToolbox.ViewModels;
 
-public partial class BattleHintsTabViewModel : ObservableObject
+public partial class BattleHintsEditorViewModel : ObservableObject
 {
     private readonly RepositoryManager _repositoryManager;
 
-    public BattleHintsTabViewModel(RepositoryManager repositoryManager)
+    public BattleHintsEditorViewModel(RepositoryManager repositoryManager)
     {
         _repositoryManager = repositoryManager;
         Hints = new ObservableCollection<EditableGenericIdContent>();

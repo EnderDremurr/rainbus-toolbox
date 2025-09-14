@@ -18,7 +18,7 @@ public partial class BattleHintsEditor : UserControl
         
         // Resolve RepositoryManager via DI
         var repoManager = ((App)Application.Current).ServiceProvider.GetRequiredService<RepositoryManager>();
-        var vm = new BattleHintsTabViewModel(repoManager);
+        var vm = new BattleHintsEditorViewModel(repoManager);
         DataContext = vm;
 
         vm.HintsUpdated += () =>
@@ -28,7 +28,7 @@ public partial class BattleHintsEditor : UserControl
     }
     private void RadioButton_Checked(object? sender, RoutedEventArgs e)
     {
-        if (sender is RadioButton rb && DataContext is BattleHintsTabViewModel vm)
+        if (sender is RadioButton rb && DataContext is BattleHintsEditorViewModel vm)
         {
             if (Enum.TryParse<BattleHintTypes>(rb.Tag.ToString(), out var type))
             {

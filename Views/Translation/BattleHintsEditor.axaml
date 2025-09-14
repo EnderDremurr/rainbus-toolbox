@@ -1,8 +1,8 @@
 <UserControl
-    d:DataContext="{d:DesignInstance Type=vm:BattleHintsTabViewModel}"
+    d:DataContext="{d:DesignInstance Type=vm:BattleHintsEditorViewModel}"
     mc:Ignorable="d"
     x:Class="RainbusToolbox.Views.BattleHintsEditor"
-    x:DataType="vm:BattleHintsTabViewModel"
+    x:DataType="vm:BattleHintsEditorViewModel"
     x:Name="Root"
     xmlns="https://github.com/avaloniaui"
     xmlns:converters="clr-namespace:RainbusToolbox.Models"
