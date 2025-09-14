@@ -52,7 +52,7 @@
         <DependentUpon>InitializationWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Views\Misc\InputDialogue.axaml.cs">
+      <Compile Update="Views\Misc\InputDialog.axaml.cs">
         <DependentUpon>InputDialogue.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>

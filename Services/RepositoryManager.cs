@@ -30,7 +30,6 @@ namespace RainbusToolbox.Models.Managers
         }
         
         
-        # region File fuckery
         public void UpdateToGame() => ParseNewAdditionsFromGame();
 
         public void ParseNewAdditionsFromGame()
@@ -112,45 +111,6 @@ namespace RainbusToolbox.Models.Managers
             return updated;
         }
         
-
-    // Pattern matching method that handles wildcards
-    
-
-    // Wildcard pattern matching method
-    private static bool MatchesPattern(string fileName, string pattern)
-    {
-        // Handle exact matches (no wildcards)
-        if (!pattern.Contains("*"))
-        {
-            return string.Equals(fileName, pattern, StringComparison.OrdinalIgnoreCase);
-        }
-
-        // Convert wildcard pattern to regex-like matching
-        if (pattern.StartsWith("*") && pattern.EndsWith("*"))
-        {
-            // *text* - contains
-            string searchText = pattern.Substring(1, pattern.Length - 2);
-            return fileName.Contains(searchText, StringComparison.OrdinalIgnoreCase);
-        }
-        else if (pattern.StartsWith("*"))
-        {
-            // *text - ends with
-            string suffix = pattern.Substring(1);
-            return fileName.EndsWith(suffix, StringComparison.OrdinalIgnoreCase);
-        }
-        else if (pattern.EndsWith("*"))
-        {
-            // text* - starts with
-            string prefix = pattern.Substring(0, pattern.Length - 1);
-            return fileName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase);
-        }
-
-        // Handle more complex patterns if needed
-        return false;
-    }
-
-    
-        #endregion
 
         #region Initialization
         public void TryInitialize()

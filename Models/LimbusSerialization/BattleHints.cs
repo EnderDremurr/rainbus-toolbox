@@ -14,6 +14,7 @@ public enum BattleHintTypes
 
 
 // BattleHint*
+[FilePattern("BattleHint*")]
 public class BattleHintsFile : LocalizationFileBase
 {
     [JsonProperty("dataList")]
@@ -22,6 +23,7 @@ public class BattleHintsFile : LocalizationFileBase
 
 
 // AbDlg* (Character dialogue files - DonQuixote, Faust, Gregor, etc.) +
+[FilePattern("AbDlg*")]
 public class DialogueFile : LocalizationFileBase
 {
     [JsonProperty("dataList")]
