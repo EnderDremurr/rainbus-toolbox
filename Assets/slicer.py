@@ -2,12 +2,12 @@ from PIL import Image
 import os
 
 # Border coordinates from CSS (top, right, bottom, left)
-top, right, bottom, left = 85,85,85,85
+top, right, bottom, left = 50,50,50,50
 
-img = Image.open("/home/enderdremurr/RiderProjects/RainbusTools/Assets/TextEditor.png")
+img = Image.open("/home/enderdremurr/RiderProjects/RainbusToolbox/Assets/TextEditor.png")
 w, h = img.size
 base_name = "TextEditor"
-output_dir = "/home/enderdremurr/RiderProjects/RainbusTools/Assets/"
+output_dir = "/home/enderdremurr/RiderProjects/RainbusToolbox/Assets/"
 
 # Make sure the directory exists
 os.makedirs(output_dir, exist_ok=True)

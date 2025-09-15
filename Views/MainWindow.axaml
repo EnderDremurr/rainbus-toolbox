@@ -141,12 +141,30 @@
                     Header="Баттл хинты">
                     <views:BattleHintsEditor />
                 </TabItem>
+                <TabItem
+                    FontFamily="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs"
+                    FontSize="20"
+                    Foreground="White"
+                    Header="Паника">
+                    <views:PanicTranslationEditor />
+                </TabItem>
+                <TabItem
+                    FontFamily="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs"
+                    FontSize="20"
+                    Foreground="White"
+                    Header="Баффы">
+                    <views:BuffTranslationEditor />
+                </TabItem>
+
+
+
+
 
                 <TabItem
                     FontFamily="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs"
                     FontSize="20"
                     Foreground="White"
-                    Header="Добавить файлы"
+                    Header="Файлы"
                     Margin="800,0,0,0">
                     <views:UpdaterTab />
                 </TabItem>

@@ -12,6 +12,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using RainbusToolbox.Models.Managers;
+using RainbusToolbox.Services;
 using RainbusToolbox.ViewModels;
 using RainbusToolbox.Views;
 
@@ -27,85 +28,74 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
-        
-        // Set up global exception handlers
         SetupExceptionHandlers();
     }
-    
+
     private void SetupExceptionHandlers()
     {
-        // Handle unhandled exceptions in the UI thread
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
         }
 
-        // Handle exceptions in background threads
-        AppDomain.CurrentDomain.UnhandledException += OnAppDomainUnhandledException;
-
-        // Handle unobserved task exceptions
-        TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
-    }
-
-    private void OnAppDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
-    {
-        if (e.ExceptionObject is Exception exception)
+        // CLR-level unhandled exceptions (non-UI threads)
+        AppDomain.CurrentDomain.UnhandledException += (_, e) =>
         {
-            // Use Dispatcher to show dialog on UI thread
-            Dispatcher.UIThread.InvokeAsync(() => ShowExceptionDialog(exception));
-        }
-    }
+            if (e.ExceptionObject is Exception ex)
+                _ = HandleGlobalExceptionAsync(ex);
+        };
 
-    private void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
-    {
-        // Use Dispatcher to show dialog on UI thread
-        Dispatcher.UIThread.InvokeAsync(() => ShowExceptionDialog(e.Exception));
-        e.SetObserved(); // Mark as observed to prevent app crash
-    }
-
-    private async void ShowExceptionDialog(Exception exception)
-    {
-        try
+        // Unobserved Task exceptions
+        TaskScheduler.UnobservedTaskException += (_, e) =>
         {
-            var errorText = FormatExceptionText(exception);
-            
-            // Create and show the error dialog
-            var dialog = new ExceptionDialog(errorText);
-            
-            // Get the desktop lifetime for later use
-            var desktopLifetime = ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-            
-            // Get the main window to use as parent
-            Window? parentWindow = desktopLifetime?.MainWindow;
+            _ = HandleGlobalExceptionAsync(e.Exception);
+            e.SetObserved();
+        };
 
-            if (parentWindow != null)
+        // Avalonia UI thread exceptions
+        Dispatcher.UIThread.UnhandledException += (_, e) =>
+        {
+            _ = HandleGlobalExceptionAsync(e.Exception);
+            e.Handled = true; // prevent Avalonia from shutting down immediately
+        };
+    }
+
+    // Global exception handler
+    public async Task HandleGlobalExceptionAsync(Exception exception)
+    {
+        Console.WriteLine(FormatExceptionText(exception)); // log to console
+        await Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            try
             {
-                await dialog.ShowDialog(parentWindow);
+                await ShowExceptionDialogAsync(exception);
             }
-            else
+            catch (Exception ex)
             {
-                dialog.Show();
-                await dialog.GetObservable(Window.IsVisibleProperty)
-                    .Where(visible => !visible)
-                    .Take(1)
-                    .ToTask();
+                Console.WriteLine($"Exception while showing dialog: {ex}");
+                (ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Shutdown();
             }
-
-            // After dialog is closed, shut down the application
-            desktopLifetime?.Shutdown();
-        }
-        catch
-        {
-            // If showing the dialog fails, shut down immediately
-            var desktopLifetime = ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-            desktopLifetime?.Shutdown();
-        }
+        });
     }
 
-    // Public method to handle exceptions from anywhere in the app
-    public void HandleGlobalException(Exception exception)
+    private async Task ShowExceptionDialogAsync(Exception exception)
     {
-        Dispatcher.UIThread.InvokeAsync(() => ShowExceptionDialog(exception));
+        var errorText = FormatExceptionText(exception);
+        var dialog = new ExceptionDialog(errorText);
+
+        var desktopLifetime = ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+        Window? parentWindow = desktopLifetime?.MainWindow;
+
+        if (parentWindow != null)
+        {
+            await dialog.ShowDialog(parentWindow);
+        }
+        else
+        {
+            dialog.Show();
+        }
+
+        desktopLifetime?.Shutdown();
     }
 
     private string FormatExceptionText(Exception exception)
@@ -114,18 +104,17 @@ public partial class App : Application
         text += $"Error Type: {exception.GetType().Name}\n";
         text += $"Message: {exception.Message}\n\n";
         text += $"Stack Trace:\n{exception.StackTrace}";
-        
-        // Include inner exceptions
-        var innerException = exception.InnerException;
+
+        var inner = exception.InnerException;
         var level = 1;
-        while (innerException != null)
+        while (inner != null)
         {
             text += $"\n\n--- Inner Exception {level} ---\n";
-            text += $"Type: {innerException.GetType().Name}\n";
-            text += $"Message: {innerException.Message}\n";
-            text += $"Stack Trace:\n{innerException.StackTrace}";
-            
-            innerException = innerException.InnerException;
+            text += $"Type: {inner.GetType().Name}\n";
+            text += $"Message: {inner.Message}\n";
+            text += $"Stack Trace:\n{inner.StackTrace}";
+
+            inner = inner.InnerException;
             level++;
         }
 
@@ -138,16 +127,16 @@ public partial class App : Application
         {
             DisableAvaloniaDataAnnotationValidation();
 
-            // Set up DI container
             var services = new ServiceCollection();
 
-            // Singletons for managers
+            // Singletons
             services.AddSingleton<PersistentDataManager>();
             services.AddSingleton<RepositoryManager>();
             services.AddSingleton<DiscordManager>();
             services.AddSingleton<GithubManager>();
+            services.AddSingleton<KeyWordConversionService>();
 
-            // Transient windows and their ViewModels
+            // Windows and VMs
             services.AddTransient<MainWindow>();
             services.AddTransient<MainWindowViewModel>();
             services.AddTransient<InitializationWindow>();
@@ -156,38 +145,29 @@ public partial class App : Application
             services.AddTransient<ReleaseTabViewModel>();
             services.AddSingleton<ViewModelLocator>();
 
-            // Build service provider
             _serviceProvider = services.BuildServiceProvider();
-
-            Window windowToShow;
 
             try
             {
-                // Resolve RepositoryManager first to check validity
                 var repoManager = _serviceProvider.GetRequiredService<RepositoryManager>();
                 Locator = _serviceProvider.GetRequiredService<ViewModelLocator>();
 
                 if (repoManager.IsValid)
                 {
-                    // Repository valid → show MainWindow
                     var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
                     mainWindow.DataContext = _serviceProvider.GetRequiredService<MainWindowViewModel>();
-                    windowToShow = mainWindow;
+                    desktop.MainWindow = mainWindow;
                 }
                 else
                 {
-                    // Repository invalid → show InitializationWindow
                     var initWindow = _serviceProvider.GetRequiredService<InitializationWindow>();
                     initWindow.DataContext = _serviceProvider.GetRequiredService<InitializationWindowViewModel>();
-                    windowToShow = initWindow;
+                    desktop.MainWindow = initWindow;
                 }
-
-                desktop.MainWindow = windowToShow;
             }
             catch (Exception ex)
             {
-                // Handle startup exceptions
-                ShowExceptionDialog(ex);
+                _ = HandleGlobalExceptionAsync(ex);
                 return;
             }
         }
@@ -197,14 +177,11 @@ public partial class App : Application
 
     private void DisableAvaloniaDataAnnotationValidation()
     {
-        var dataValidationPluginsToRemove =
-            BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToArray();
-
-        foreach (var plugin in dataValidationPluginsToRemove)
+        var toRemove = BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToArray();
+        foreach (var plugin in toRemove)
             BindingPlugins.DataValidators.Remove(plugin);
     }
 
-    // Helper method to open windows via DI anywhere in the app
     public TWindow OpenWindow<TWindow, TViewModel>()
         where TWindow : Window
         where TViewModel : class

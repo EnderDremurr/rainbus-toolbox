@@ -22,37 +22,10 @@ public class BattleHintsFile : LocalizationFileBase
 }
 
 
-// AbDlg* (Character dialogue files - DonQuixote, Faust, Gregor, etc.) +
-[FilePattern("AbDlg*")]
-public class DialogueFile : LocalizationFileBase
-{
-    [JsonProperty("dataList")]
-    public List<DialogueEntry> DataList { get; set; }
-}
 
-public class DialogueEntry : LocalizationFileBase
-{
-    [JsonProperty("id")]
-    public int Id { get; set; }
-
-    [JsonProperty("personalityid")]
-    public int PersonalityId { get; set; }
-
-    [JsonProperty("voicefile")]
-    public int VoiceFile { get; set; }
-
-    [JsonProperty("teller")]
-    public string Teller { get; set; }
-
-    [JsonProperty("dialog")]
-    public string Dialog { get; set; }
-
-    // Keeping as string since format is non-standard, can parse later if needed
-    [JsonProperty("usage")]
-    public string Usage { get; set; }
-}
 
 // BattleAnnouncerDlg/Announcer* (Battle announcer dialogue) +
+[FilePattern("Announcer*")]
 public class BattleAnnouncerFile : LocalizationFileBase
 {
     [JsonProperty("dataList")]
@@ -107,52 +80,7 @@ public class EGOVoiceEntry
     public string Dialogue { get; set; }
 }
 
-//StoryData/* (Individual story scene files)+
-public class StoryDataFile : LocalizationFileBase
-{
-    [JsonProperty("dataList")]
-    public List<StoryDataItem> DataList { get; set; }
-}
 
-public class StoryDataItem
-{
-    [JsonProperty("id")]
-    public int Id { get; set; }
-
-    [JsonProperty("model")]
-    public string? Model { get; set; } // Optional
-
-    [JsonProperty("teller")]
-    public string? Teller { get; set; } // Optional
-
-    [JsonProperty("title")]
-    public string? Title { get; set; } // Optional
-
-    [JsonProperty("place")]
-    public string? Place { get; set; } // Optional
-
-    [JsonProperty("content")]
-    public string Content { get; set; } = string.Empty; // Always present
-}
-
-//StoryText.json +
-public class StoryTextFile : LocalizationFileBase
-{
-    [JsonProperty("dataList")]
-    public List<StoryTextItem> DataList { get; set; }
-}
-
-public class StoryTextItem
-{
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
-    [JsonProperty("title")]
-    public string Title { get; set; } = string.Empty;
-
-    [JsonProperty("desc")]
-    public string Desc { get; set; } = string.Empty;
-}
 //StoryTheater* (Story theater UI and notes)+
 public class StoryTheaterFile : LocalizationFileBase
 {
@@ -164,37 +92,16 @@ public class StoryTheaterFile : LocalizationFileBase
 public class StoryTheaterDetailFile : LocalizationFileBase
 {
     [JsonProperty("dataList")]
-    public List<StoryTheaterDetailItem> DataList { get; set; }
+    public List<GenericIdTitleDesc> DataList { get; set; }
 }
 
-public class StoryTheaterDetailItem
-{
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
-    [JsonProperty("title")]
-    public string Title { get; set; } = string.Empty;
-
-    [JsonProperty("desc")]
-    public string Description { get; set; } = string.Empty;
-}
 
 // StageNode* (Stage narrative content)+
 public class StageNodeFile : LocalizationFileBase
 {
     [JsonProperty("dataList")]
-    public List<StageNodeItem> DataList { get; set; }
+    public List<GenericIdTitle> DataList { get; set; }
 }
-
-public class StageNodeItem
-{
-    [JsonProperty("id")]
-    public int Id { get; set; }
-
-    [JsonProperty("title")]
-    public string Title { get; set; } = string.Empty;
-}
-
 //DungeonNode* (Dungeon narrative content)
 public class DungeonNodeFile : LocalizationFileBase
 {
@@ -208,19 +115,7 @@ public class DungeonNodeItem
     public int Id { get; set; }
 
     [JsonProperty("stageList")]
-    public List<DungeonStage> StageList { get; set; } = new List<DungeonStage>();
-}
-
-public class DungeonStage
-{
-    [JsonProperty("id")]
-    public int Id { get; set; }
-
-    [JsonProperty("title")]
-    public string Title { get; set; } = string.Empty;
-
-    [JsonProperty("desc")]
-    public string Desc { get; set; } = string.Empty;
+    public List<GenericIdTitleDesc> StageList { get; set; } = new List<GenericIdTitleDesc>();
 }
 
 
@@ -230,7 +125,6 @@ public class PassivesFile : LocalizationFileBase
     [JsonProperty("dataList")]
     public List<GenericIdNameDesc> DataList { get; set; }
 }
-
 
 //Buffs* (Buff descriptions)
 public class BuffsFile
@@ -329,27 +223,7 @@ public class BattleKeyword
     public string Undefined { get; set; } = "-";
 }
 
-// PanicInfo* (Panic system information)
-public class PanicInfoFile
-{
-    [JsonProperty("dataList")]
-    public List<PanicInfo> DataList { get; set; }
-}
 
-public class PanicInfo
-{
-    [JsonProperty("id")]
-    public int Id { get; set; }
-
-    [JsonProperty("panicName")]
-    public string PanicName { get; set; } = string.Empty;
-
-    [JsonProperty("lowMoraleDescription")]
-    public string LowMoraleDescription { get; set; } = string.Empty;
-
-    [JsonProperty("panicDescription")]
-    public string PanicDescription { get; set; } = string.Empty;
-}
 
 //*UIText* (UI elements)
 public class UITextFile
@@ -380,17 +254,14 @@ public class UITextFile
    
    
    
-   ShopUI.json
-   
-   MissionUIText.json
    
    Tutorial* (Tutorial text)
    
-   FormationUI* (Formation screen text)
    
    Gacha* (Gacha system text)
    
-   LoginUIText.json
+   
+ * *UI*
    
    AbEvents* (Abnormality events)
    

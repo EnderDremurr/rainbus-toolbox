@@ -73,29 +73,29 @@
                     FontWeight="Bold"
                     Foreground="#DC3545"
                     Margin="0,0,0,8"
-                    Text="⚠️ Application will close after this dialog" />
+                    Text="⚠️ Программа закроется после нажатия 'OK'" />
                 <TextBlock
                     FontSize="14"
                     FontWeight="Bold"
                     Margin="0,0,0,8"
-                    Text="How to report this error:" />
+                    Text="Как зарепортить ошибку:" />
                 <TextBlock
                     FontSize="13"
                     Margin="0,0,0,3"
-                    Text="1. Click 'Copy Error Details' to copy the error information to your clipboard" />
+                    Text="1. Нажми 'Copy Error Details' чтобы скопировать текст ошибки" />
                 <TextBlock
                     FontSize="13"
                     Margin="0,0,0,3"
-                    Text="2. Send the copied information to the developer for assistance" />
+                    Text="2. Отправьте текст в issues на гитхабе либо @enderdremurr в дс" />
                 <TextBlock
                     FontSize="13"
                     Margin="0,0,0,3"
-                    Text="3. Include any steps you were taking when the error occurred" />
+                    Text="3. Желательно добавить что ты делал перед ошибкой" />
                 <TextBlock
                     FontSize="13"
                     FontWeight="Bold"
                     Foreground="#DC3545"
-                    Text="4. Restart the application to continue using it" />
+                    Text="Из-за того что ошибка анальная, придется перезапустить прогу" />
             </StackPanel>
         </Border>
 

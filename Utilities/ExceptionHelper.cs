@@ -15,7 +15,7 @@ public static class ExceptionHelper
         {
             if (Application.Current is App app)
             {
-                app.HandleGlobalException(exception);
+                app.HandleGlobalExceptionAsync(exception);
             }
             else
             {

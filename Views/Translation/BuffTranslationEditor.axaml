@@ -1,0 +1,308 @@
+<UserControl
+    d:DesignHeight="800"
+    d:DesignWidth="1200"
+    mc:Ignorable="d"
+    x:Class="RainbusToolbox.Views.BuffTranslationEditor"
+    x:DataType="views:BuffTranslationEditor"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:RainbusToolbox.Views"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!--  File Selection  -->
+        <StackPanel
+            Grid.Row="0"
+            Margin="20,15,20,15"
+            Orientation="Horizontal">
+            <Button
+                Click="OnSelectFileClick"
+                Content="Select Buff File"
+                Margin="0,0,15,0"
+                MinWidth="120"
+                Name="SelectFileButton" />
+            <TextBlock
+                Margin="10,0,0,0"
+                Name="FilePathText"
+                Text="No file selected"
+                VerticalAlignment="Center" />
+        </StackPanel>
+
+        <!--  Main Content - Vertical Split  -->
+        <Grid
+            ColumnDefinitions="*,*"
+            Grid.Row="1"
+            IsVisible="{Binding IsBuffLoaded}"
+            Margin="20,0,20,15">
+
+            <!--  Reference Section (Left)  -->
+            <Border
+                ClipToBounds="True"
+                Grid.Column="0"
+                Margin="0,0,10,0">
+                <Panel>
+                    <!--  Background Image  -->
+                    <Image
+                        HorizontalAlignment="Stretch"
+                        Source="avares://RainbusToolbox/Assets/SkillBG.png"
+                        Stretch="Uniform"
+                        StretchDirection="Both"
+                        VerticalAlignment="Stretch" />
+
+                    <!--  Content Area  -->
+                    <Border Margin="72,54,114,195">
+                        <ScrollViewer>
+                            <StackPanel Margin="15">
+                                <!--  Section Title  -->
+                                <TextBlock
+                                    FontFamily="{StaticResource MikodacsFont}"
+                                    FontSize="18"
+                                    FontWeight="Bold"
+                                    Foreground="White"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,0,0,10"
+                                    Text="Reference" />
+
+                                <!--  Buff ID  -->
+                                <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Text="Buff ID: "
+                                        Width="100" />
+                                    <TextBlock
+                                        FontSize="24"
+                                        Foreground="White"
+                                        Text="{Binding ReferenceBuff.Id}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--  Buff Name  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Name:" />
+                                    <TextBox
+                                        Background="Transparent"
+                                        IsReadOnly="True"
+                                        Text="{Binding ReferenceBuff.Name}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--  Buff Description  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Description:" />
+                                    <TextBox
+                                        Background="Transparent"
+                                        IsReadOnly="True"
+                                        MinHeight="80"
+                                        Text="{Binding ReferenceBuff.Desc}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--  Buff Summary  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Summary:" />
+                                    <TextBox
+                                        Background="Transparent"
+                                        IsReadOnly="True"
+                                        MinHeight="60"
+                                        Text="{Binding ReferenceBuff.Summary}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--  Undefined Field  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Undefined:" />
+                                    <TextBox
+                                        Background="Transparent"
+                                        IsReadOnly="True"
+                                        MinHeight="40"
+                                        Text="{Binding ReferenceBuff.Undefined}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Panel>
+            </Border>
+
+            <!--  Editor Section (Right)  -->
+            <Border
+                ClipToBounds="True"
+                Grid.Column="1"
+                Margin="10,0,0,0">
+                <Panel>
+                    <!--  Background Image  -->
+                    <Image
+                        HorizontalAlignment="Stretch"
+                        Source="avares://RainbusToolbox/Assets/SkillBG.png"
+                        Stretch="Uniform"
+                        StretchDirection="Both"
+                        VerticalAlignment="Stretch" />
+
+                    <!--  Content Area  -->
+                    <Border Margin="72,54,114,195">
+                        <ScrollViewer>
+                            <StackPanel Margin="15">
+                                <!--  Section Title  -->
+                                <TextBlock
+                                    FontFamily="{StaticResource MikodacsFont}"
+                                    FontSize="18"
+                                    FontWeight="Bold"
+                                    Foreground="White"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,0,0,10"
+                                    Text="Editor" />
+
+                                <!--  Buff ID  -->
+                                <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Text="Buff ID: "
+                                        Width="100" />
+                                    <TextBlock
+                                        FontSize="24"
+                                        Foreground="White"
+                                        Text="{Binding CurrentBuff.Id}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--  Buff Name  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Name:" />
+                                    <TextBox
+                                        Background="Transparent"
+                                        Text="{Binding CurrentBuff.Name, Mode=TwoWay}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--  Buff Description  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Description:" />
+                                    <TextBox
+                                        AcceptsReturn="True"
+                                        Background="Transparent"
+                                        MinHeight="80"
+                                        Text="{Binding CurrentBuff.Desc, Mode=TwoWay}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--  Buff Summary  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Summary:" />
+                                    <TextBox
+                                        AcceptsReturn="True"
+                                        Background="Transparent"
+                                        MinHeight="60"
+                                        Text="{Binding CurrentBuff.Summary, Mode=TwoWay}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--  Undefined Field  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Undefined:" />
+                                    <TextBox
+                                        AcceptsReturn="True"
+                                        Background="Transparent"
+                                        MinHeight="40"
+                                        Text="{Binding CurrentBuff.Undefined, Mode=TwoWay}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Panel>
+            </Border>
+        </Grid>
+
+        <!--  Navigation Container  -->
+        <StackPanel
+            Grid.Row="2"
+            HorizontalAlignment="Center"
+            IsVisible="{Binding IsBuffLoaded}"
+            Margin="20,5,20,20"
+            Orientation="Horizontal">
+
+            <!--  Buff Navigation Section  -->
+            <StackPanel Orientation="Horizontal">
+                <Button
+                    Click="OnPreviousBuffClick"
+                    Content="◀ Previous"
+                    IsEnabled="{Binding CanGoPrevious}"
+                    Margin="0,0,10,0"
+                    Width="200" />
+                <Border
+                    Background="Transparent"
+                    CornerRadius="4"
+                    Padding="12,6">
+                    <TextBlock
+                        FontFamily="{StaticResource MikodacsFont}"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        Text="{Binding NavigationText}"
+                        Width="150" />
+                </Border>
+                <Button
+                    Click="OnNextBuffClick"
+                    Content="Next ▶"
+                    IsEnabled="{Binding CanGoNext}"
+                    Margin="10,0,0,0"
+                    Width="200" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

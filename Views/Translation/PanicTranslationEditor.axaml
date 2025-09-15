@@ -1,0 +1,272 @@
+<UserControl
+    d:DesignHeight="800"
+    d:DesignWidth="1200"
+    mc:Ignorable="d"
+    x:Class="RainbusToolbox.Views.PanicTranslationEditor"
+    x:DataType="views:PanicTranslationEditor"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:RainbusToolbox.Views"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!--  File Selection  -->
+        <StackPanel
+            Grid.Row="0"
+            Margin="20,15,20,15"
+            Orientation="Horizontal">
+            <Button
+                Click="OnSelectFileClick"
+                Content="Select Panic File"
+                Margin="0,0,15,0"
+                MinWidth="120"
+                Name="SelectFileButton" />
+            <TextBlock
+                Margin="10,0,0,0"
+                Name="FilePathText"
+                Text="No file selected"
+                VerticalAlignment="Center" />
+        </StackPanel>
+
+        <!--  Main Content - Vertical Split  -->
+        <Grid
+            ColumnDefinitions="*,*"
+            Grid.Row="1"
+            IsVisible="{Binding IsPanicLoaded}"
+            Margin="20,0,20,15">
+
+            <!--  Reference Section (Left)  -->
+            <Border
+                ClipToBounds="True"
+                Grid.Column="0"
+                Margin="0,0,10,0">
+                <Panel>
+                    <!--  Background Image  -->
+                    <Image
+                        HorizontalAlignment="Stretch"
+                        Source="avares://RainbusToolbox/Assets/SkillBG.png"
+                        Stretch="Uniform"
+                        StretchDirection="Both"
+                        VerticalAlignment="Stretch" />
+
+                    <!--  Content Area  -->
+                    <Border Margin="72,54,114,195">
+                        <ScrollViewer>
+                            <StackPanel Margin="15">
+                                <!--  Section Title  -->
+                                <TextBlock
+                                    FontFamily="{StaticResource MikodacsFont}"
+                                    FontSize="18"
+                                    FontWeight="Bold"
+                                    Foreground="White"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,0,0,10"
+                                    Text="Reference" />
+
+                                <!--  Panic ID  -->
+                                <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Text="Panic ID: "
+                                        Width="120" />
+                                    <TextBlock
+                                        FontSize="28"
+                                        Foreground="White"
+                                        Text="{Binding ReferencePanic.Id}" />
+                                </StackPanel>
+
+                                <!--  Panic Name  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Panic Name:" />
+                                    <TextBox
+                                        Background="Transparent"
+                                        IsReadOnly="True"
+                                        Text="{Binding ReferencePanic.PanicName}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--  Low Morale Description  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Low Morale Description:" />
+                                    <TextBox
+                                        Background="Transparent"
+                                        IsReadOnly="True"
+                                        MinHeight="80"
+                                        Text="{Binding ReferencePanic.LowMoraleDescription}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--  Panic Description  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Panic Description:" />
+                                    <TextBox
+                                        Background="Transparent"
+                                        IsReadOnly="True"
+                                        MinHeight="80"
+                                        Text="{Binding ReferencePanic.PanicDescription}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Panel>
+            </Border>
+
+            <!--  Editor Section (Right)  -->
+            <Border
+                ClipToBounds="True"
+                Grid.Column="1"
+                Margin="10,0,0,0">
+                <Panel>
+                    <!--  Background Image  -->
+                    <Image
+                        HorizontalAlignment="Stretch"
+                        Source="avares://RainbusToolbox/Assets/SkillBG.png"
+                        Stretch="Uniform"
+                        StretchDirection="Both"
+                        VerticalAlignment="Stretch" />
+
+                    <!--  Content Area  -->
+                    <Border Margin="72,54,114,195">
+                        <ScrollViewer>
+                            <StackPanel Margin="15">
+                                <!--  Section Title  -->
+                                <TextBlock
+                                    FontFamily="{StaticResource MikodacsFont}"
+                                    FontSize="18"
+                                    FontWeight="Bold"
+                                    Foreground="White"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,0,0,10"
+                                    Text="Editor" />
+
+                                <!--  Panic ID  -->
+                                <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Text="Panic ID: "
+                                        Width="120" />
+                                    <TextBlock
+                                        FontSize="28"
+                                        Foreground="White"
+                                        Text="{Binding CurrentPanic.Id}" />
+                                </StackPanel>
+
+                                <!--  Panic Name  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Panic Name:" />
+                                    <TextBox
+                                        Background="Transparent"
+                                        Text="{Binding CurrentPanic.PanicName, Mode=TwoWay}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--  Low Morale Description  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Low Morale Description:" />
+                                    <TextBox
+                                        AcceptsReturn="True"
+                                        Background="Transparent"
+                                        MinHeight="80"
+                                        Text="{Binding CurrentPanic.LowMoraleDescription, Mode=TwoWay}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--  Panic Description  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Panic Description:" />
+                                    <TextBox
+                                        AcceptsReturn="True"
+                                        Background="Transparent"
+                                        MinHeight="80"
+                                        Text="{Binding CurrentPanic.PanicDescription, Mode=TwoWay}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Panel>
+            </Border>
+        </Grid>
+
+        <!--  Navigation Container  -->
+        <StackPanel
+            Grid.Row="2"
+            HorizontalAlignment="Center"
+            IsVisible="{Binding IsPanicLoaded}"
+            Margin="20,5,20,20"
+            Orientation="Horizontal">
+
+            <!--  Panic Navigation Section  -->
+            <StackPanel Orientation="Horizontal">
+                <Button
+                    Click="OnPreviousPanicClick"
+                    Content="◀ Previous"
+                    IsEnabled="{Binding CanGoPrevious}"
+                    Margin="0,0,10,0"
+                    Width="200" />
+                <Border
+                    Background="Transparent"
+                    CornerRadius="4"
+                    Padding="12,6">
+                    <TextBlock
+                        FontFamily="{StaticResource MikodacsFont}"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        Text="{Binding NavigationText}"
+                        Width="150" />
+                </Border>
+                <Button
+                    Click="OnNextPanicClick"
+                    Content="Next ▶"
+                    IsEnabled="{Binding CanGoNext}"
+                    Margin="10,0,0,0"
+                    Width="200" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

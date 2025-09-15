@@ -1,4 +1,3 @@
-//Skills* (Character and enemy skills)
 namespace RainbusToolbox.Utilities.Data;
 
 using System.Collections.Generic;

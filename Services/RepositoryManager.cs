@@ -16,6 +16,7 @@ namespace RainbusToolbox.Models.Managers
         public Repository Repository { get; private set; }
         public readonly string DistPath = ".dist/";
         public readonly string LocalizationFolder = "localize";
+        public string PathToLocalization => Path.Combine(_dataManager.Settings.RepositoryPath, LocalizationFolder);
         private readonly string _referenceLangAppendage = "LimbusCompany_Data/Assets/Resources_moved/Localize/en/";
         private string _pathToReference = string.Empty;
         private readonly PersistentDataManager _dataManager;
@@ -31,7 +32,6 @@ namespace RainbusToolbox.Models.Managers
         
         
         public void UpdateToGame() => ParseNewAdditionsFromGame();
-
         public void ParseNewAdditionsFromGame()
         {
             var pathToGame = Path.Combine(_dataManager.Settings.PathToLimbus, _referenceLangAppendage);
@@ -75,8 +75,6 @@ namespace RainbusToolbox.Models.Managers
 
             CommitLocalChanges("Merged new files from the game [Rainbus Toolbox]");
         }
-
-
         private bool MergeJsonObjects(JToken source, JToken target)
         {
             bool updated = false;
@@ -315,8 +313,8 @@ namespace RainbusToolbox.Models.Managers
                 CredentialsProvider = (_url, _user, _cred) =>
                     new UsernamePasswordCredentials
                     {
-                        Username = _dataManager.Settings.GitHubToken,
-                        Password = string.Empty
+                        Username = "x-access-token",
+                        Password = _dataManager.Settings.GitHubToken
                     }
             };
         }
@@ -380,7 +378,7 @@ namespace RainbusToolbox.Models.Managers
         public void SynchronizeWithOrigin()
         {
             FetchFromOrigin();
-            MergeWithOrigin();
+            PullFromOrigin();
             CommitLocalChanges("Synchronization of local and remote changes [RainbusToolbox]");
             PushToOrigin();
         }
@@ -392,34 +390,63 @@ namespace RainbusToolbox.Models.Managers
             Commands.Fetch(Repository, remote.Name, remote.FetchRefSpecs.Select(x => x.Specification), fetchOptions, "Fetching from origin");
         }
 
-        public void MergeWithOrigin()
+        public void PullFromOrigin()
         {
-            var currentBranch = Repository.Head;
-            var remoteBranch = Repository.Branches[$"origin/{currentBranch.FriendlyName}"];
-
-            if (remoteBranch == null)
-                throw new Exception($"Remote branch origin/{currentBranch.FriendlyName} not found.");
-
-            // Fetch the latest changes from origin
-            var remote = Repository.Network.Remotes["origin"];
-            var refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);
-            Commands.Fetch(Repository, remote.Name, refSpecs, null, null);
-
-            // Perform the pull operation
-            var pullOptions = new PullOptions
+            try
             {
-                FetchOptions = new FetchOptions(),
-                MergeOptions = new MergeOptions
-                {
-                    FastForwardStrategy = FastForwardStrategy.Default
-                }
-            };
+                var currentBranch = Repository.Head;
+                if (currentBranch == null)
+                    throw new Exception("No HEAD is set.");
 
-            var mergeResult = Commands.Pull(Repository, GetLocalSignature(Repository), pullOptions);
-    
-            if (mergeResult.Status == MergeStatus.Conflicts)
-                throw new Exception("Pull conflicts occurred. Please resolve manually.");
+                var remoteBranch = Repository.Branches[$"origin/{currentBranch.FriendlyName}"];
+                if (remoteBranch == null)
+                    throw new Exception($"Remote branch origin/{currentBranch.FriendlyName} not found.");
+
+                // Safety: ensure working directory is clean before pulling
+                if (Repository.RetrieveStatus().IsDirty)
+                    throw new Exception("Working directory has uncommitted changes. Commit or stash before pulling.");
+
+                // Fetch latest changes
+                var remote = Repository.Network.Remotes["origin"];
+                var refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);
+                Commands.Fetch(Repository, remote.Name, refSpecs, null, null);
+
+                // Setup pull options
+                var pullOptions = new PullOptions
+                {
+                    FetchOptions = new FetchOptions(),
+                    MergeOptions = new MergeOptions
+                    {
+                        FastForwardStrategy = FastForwardStrategy.Default
+                    }
+                };
+
+                // Perform the pull
+                var mergeResult = Commands.Pull(
+                    Repository,
+                    GetLocalSignature(Repository),
+                    pullOptions
+                );
+
+                if (mergeResult.Status == MergeStatus.Conflicts)
+                    App.Current.HandleGlobalExceptionAsync(
+                        new Exception("Pull resulted in conflicts. Please resolve them manually.")
+                    );
+            }
+            catch (CheckoutConflictException ex)
+            {
+                // Repo is left in a conflicted state, same as "git pull"
+                App.Current.HandleGlobalExceptionAsync(
+                    new Exception("Pull failed due to checkout conflicts. Please resolve them manually.", ex)
+                );
+            }
+            catch (Exception ex)
+            {
+                // Any other exception gets piped into the global handler
+                App.Current.HandleGlobalExceptionAsync(ex);
+            }
         }
+
 
         public void CommitLocalChanges(string comment)
         {

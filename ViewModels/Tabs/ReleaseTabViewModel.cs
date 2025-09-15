@@ -21,7 +21,7 @@ public partial class ReleaseTabViewModel : ObservableObject
     private readonly DiscordManager _discordManager;
     private readonly GithubManager _githubManager;
     private readonly RepositoryManager _repositoryManager;
-    
+    private readonly KeyWordConversionService _keyWordConversionService;
     private string _username = "Unknown";
     private string _repoName = "Unknown";
     #endregion
@@ -31,12 +31,14 @@ public partial class ReleaseTabViewModel : ObservableObject
         PersistentDataManager dataManager, 
         DiscordManager discordManager, 
         GithubManager githubManager, 
-        RepositoryManager repositoryManager)
+        RepositoryManager repositoryManager,
+        KeyWordConversionService keyWordConversionService)
     {
         _dataManager = dataManager;
         _discordManager = discordManager;
         _githubManager = githubManager;
         _repositoryManager = repositoryManager;
+        _keyWordConversionService = keyWordConversionService;
 
         // Set default values for checkboxes
         MustAppendLauncherLink = true;
@@ -137,6 +139,12 @@ public partial class ReleaseTabViewModel : ObservableObject
     #region Commands
 
     [RelayCommand]
+    private void ExplodeFuckingTranslation()
+    {
+        _keyWordConversionService.ReplaceEveryTagWithMesh(_repositoryManager.PathToLocalization);
+    }
+
+    [RelayCommand]
     private async Task Submit()
     {
         if (string.IsNullOrWhiteSpace(Version))
@@ -194,7 +202,7 @@ public partial class ReleaseTabViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            App.Current.HandleGlobalException(ex);
+            App.Current.HandleGlobalExceptionAsync(ex);
         }
         finally
         {

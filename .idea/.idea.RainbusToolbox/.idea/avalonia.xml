@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="App.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/BattleHintsTab.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/ExceptionDialog.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/MainWindow.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Misc/ExceptionDialog.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/OverviewTab.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/ReleaseTab.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/SkillsTranslationTab.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Tabs/OverviewTab.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Tabs/ReleaseTab.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Tabs/TranslationTab.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Translation/BuffTranslationEditor.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Translation/EGOGiftTranslationEditor.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Translation/GenericTranslationEditor.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Translation/PanicTranslationEditor.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Translation/SkillsTranslationEditor.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Translation/StoryTranslationEditor.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/TranslationTab.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/UpdaterTab.axaml" value="RainbusToolbox.csproj" />
+      </map>
+    </option>
+  </component>
+</project>
