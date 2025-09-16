@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using LibGit2Sharp;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,13 +13,49 @@ namespace RainbusToolbox.Models.Managers
 {
     public class RepositoryManager
     {
-        // Fields
-        public Repository Repository { get; private set; }
-        public readonly string DistPath = ".dist/";
-        public readonly string LocalizationFolder = "localize";
+        #region Folders
+
+        // Relative to repo root
+        private const string DistPath = ".dist/";
+        
+        // Relative to game root
+        private const string ReferenceLangAppendage = "LimbusCompany_Data/Assets/Resources_moved/Localize/en/";
+        #endregion
+
+        #region AbsolutePaths
+        
+        // Repo paths
+        public string RepositoryRoot { get; private set; }
         public string PathToLocalization => Path.Combine(_dataManager.Settings.RepositoryPath, LocalizationFolder);
-        private readonly string _referenceLangAppendage = "LimbusCompany_Data/Assets/Resources_moved/Localize/en/";
-        private string _pathToReference = string.Empty;
+        public string PathToReferenceLocalization;
+        public string PathToDistribution { get; private set; }
+        
+        // Game paths
+
+        #endregion
+        
+        private string FindRepositoryPath(string originalPath)
+        {
+            if (Repository.IsValid(originalPath))
+                return originalPath;
+            
+            var parentDir = Directory.GetParent(originalPath)?.FullName;
+            if (!string.IsNullOrEmpty(parentDir) && Repository.IsValid(parentDir))
+                return parentDir;
+            
+            if (Directory.Exists(originalPath))
+                foreach (var subDir in Directory.GetDirectories(originalPath))
+                    if (Repository.IsValid(subDir))
+                        return subDir;
+            
+            return null;
+        }
+        
+        
+        public Repository Repository { get; private set; }
+        public readonly string LocalizationFolder = "localize";
+        
+        
         private readonly PersistentDataManager _dataManager;
         public bool IsValid { get; private set; }
         
@@ -31,10 +68,9 @@ namespace RainbusToolbox.Models.Managers
         }
         
         
-        public void UpdateToGame() => ParseNewAdditionsFromGame();
         public void ParseNewAdditionsFromGame()
         {
-            var pathToGame = Path.Combine(_dataManager.Settings.PathToLimbus, _referenceLangAppendage);
+            var pathToGame = Path.Combine(_dataManager.Settings.PathToLimbus, ReferenceLangAppendage);
             var pathToLocalization = Path.Combine(_dataManager.Settings.RepositoryPath, LocalizationFolder);
 
             Directory.CreateDirectory(pathToLocalization);
@@ -131,7 +167,7 @@ namespace RainbusToolbox.Models.Managers
 
                 Repository = new Repository(foundRepoPath);
                 Directory.CreateDirectory(Path.Combine(foundRepoPath, DistPath));
-                _pathToReference = Path.Combine(_dataManager.Settings.PathToLimbus, _referenceLangAppendage);
+                PathToReferenceLocalization = Path.Combine(_dataManager.Settings.PathToLimbus, ReferenceLangAppendage);
                 IsValid = true;
             }
             catch
@@ -139,38 +175,92 @@ namespace RainbusToolbox.Models.Managers
                 IsValid = false;
             }
         }
-
-        private string FindRepositoryPath(string originalPath)
-        {
-            if (Repository.IsValid(originalPath))
-            {
-                return originalPath;
-            }
-
-            var parentDir = Directory.GetParent(originalPath)?.FullName;
-            if (!string.IsNullOrEmpty(parentDir) && Repository.IsValid(parentDir))
-            {
-                return parentDir;
-            }
-
-            if (Directory.Exists(originalPath))
-            {
-                foreach (var subDir in Directory.GetDirectories(originalPath))
-                {
-                    if (Repository.IsValid(subDir))
-                    {
-                        return subDir;
-                    }
-                }
-            }
-
-            return null;
-        }
         #endregion
 
-        #region Packaging
-        
-        
+
+        #region Serialization
+
+        public TFile? GetObjectFromPath<TFile>(string path) where TFile : LocalizationFileBase
+        {
+            var rawFile = "";
+            try
+            {
+               rawFile = File.ReadAllText(path, new UTF8Encoding(false));
+            }
+            catch
+            {
+                Console.WriteLine("Unable to read file, please check manually.");
+                return null;
+            }
+
+            TFile? deserialized;
+            try
+            {
+                deserialized = JsonConvert.DeserializeObject<TFile>(rawFile);
+            }
+            catch
+            {
+                Console.WriteLine("File type differentiates from selected object type, please check manually.");
+                return null;
+            }
+            
+            if(deserialized == null)
+                return null;
+            
+            var justName = Path.GetFileName(path);
+            var justPath = Path.GetDirectoryName(path);
+            
+            deserialized.FileName = justName;
+            deserialized.FullPath = path;
+            deserialized.PathTo = justPath ?? Path.DirectorySeparatorChar.ToString();
+
+            return deserialized;
+        }
+
+        public TFile? GetReference<TFile>(TFile refTo) where TFile : LocalizationFileBase
+        {
+            if(string.IsNullOrEmpty(refTo.FileName) || string.IsNullOrEmpty(refTo.FullPath))
+                return null;
+
+            if (!Directory.Exists(PathToReferenceLocalization))
+                return null;
+            
+            var referenceFileName = "EN_" + refTo.FileName;
+            var files = Directory.GetFiles(PathToReferenceLocalization, referenceFileName, SearchOption.AllDirectories);
+            
+            if(files.Length > 1)
+                Console.WriteLine("Multiple files found. This should not happen, taking the first found file.");
+            
+            var referencePath = files.FirstOrDefault(); // Parse one file, as in 100% of cases there must be only one matching file.
+            
+            if (referencePath == null)
+                return null;
+                
+            return GetObjectFromPath<TFile>(referencePath);
+        }
+
+        public bool SaveObjectToFile<TFile>(TFile obj) where TFile : LocalizationFileBase
+        {
+            if(string.IsNullOrEmpty(obj.FileName) || string.IsNullOrEmpty(obj.FullPath))
+                return false;
+
+            Directory.CreateDirectory(Path.GetDirectoryName(obj.FullPath)!);
+            
+            try
+            {
+                var json = JsonConvert.SerializeObject(obj);
+                File.WriteAllText(obj.FullPath, json, new UTF8Encoding(false));
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Non fatal exception.");
+                Console.WriteLine(e);
+                return false;
+            }
+            
+        }
+
         #endregion
         
         # region Battlehints
@@ -292,7 +382,6 @@ namespace RainbusToolbox.Models.Managers
 
             return new Signature(name, email, DateTimeOffset.Now);
         }
-
         private FetchOptions CreateFetchOptions()
         {
             return new FetchOptions
@@ -305,7 +394,6 @@ namespace RainbusToolbox.Models.Managers
                     }
             };
         }
-
         private PushOptions CreatePushOptions()
         {
             return new PushOptions
@@ -318,7 +406,6 @@ namespace RainbusToolbox.Models.Managers
                     }
             };
         }
-
         private Branch GetTrackedBranch(Branch branch, Remote remote)
         {
             var tracked = branch.TrackedBranch;
@@ -374,7 +461,6 @@ namespace RainbusToolbox.Models.Managers
 
             return new[] { divergence?.BehindBy ?? 0, divergence?.AheadBy ?? 0 };
         }
-
         public void SynchronizeWithOrigin()
         {
             FetchFromOrigin();
@@ -382,14 +468,12 @@ namespace RainbusToolbox.Models.Managers
             CommitLocalChanges("Synchronization of local and remote changes [RainbusToolbox]");
             PushToOrigin();
         }
-
         public void FetchFromOrigin()
         {
             var remote = Repository.Network.Remotes["origin"];
             var fetchOptions = CreateFetchOptions();
             Commands.Fetch(Repository, remote.Name, remote.FetchRefSpecs.Select(x => x.Specification), fetchOptions, "Fetching from origin");
         }
-
         public void PullFromOrigin()
         {
             try
@@ -446,8 +530,6 @@ namespace RainbusToolbox.Models.Managers
                 App.Current.HandleGlobalExceptionAsync(ex);
             }
         }
-
-
         public void CommitLocalChanges(string comment)
         {
             Commands.Stage(Repository, "*");
@@ -462,7 +544,6 @@ namespace RainbusToolbox.Models.Managers
                 Repository.Commit(comment, author, author);
             }
         }
-
         public void PushToOrigin()
         {
             var remote = Repository.Network.Remotes["origin"];

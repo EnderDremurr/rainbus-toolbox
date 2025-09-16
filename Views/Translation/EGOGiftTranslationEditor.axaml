@@ -1,11 +1,185 @@
 <UserControl
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    d:DesignHeight="800"
+    d:DesignWidth="1200"
     mc:Ignorable="d"
-    x:Class="RainbusToolbox.Views.Translation.EGOGiftTranslationEditor"
+    x:Class="RainbusToolbox.Views.EGOGiftTranslationEditor"
+    x:DataType="views:EGOGiftTranslationEditor"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:global="clr-namespace:"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:RainbusToolbox.Views"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    Welcome to Avalonia!
+
+    <UserControl.Styles>
+        <Style Selector="TextBox.invisible">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+        </Style>
+        <Style Selector="TextBox.invisible:focus /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        <Style Selector="TextBox.invisible:pointerover /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+    </UserControl.Styles>
+    <UserControl.Resources>
+        <global:TextToFontSizeConverter x:Key="TextToFontSizeConverter" />
+    </UserControl.Resources>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!--  File Selection  -->
+        <StackPanel
+            Grid.Row="0"
+            Margin="20,15,20,15"
+            Orientation="Horizontal">
+            <Button
+                Click="OnSelectFileClick"
+                Content="Select EGO Gift File"
+                Margin="0,0,15,0"
+                MinWidth="140"
+                Name="SelectFileButton" />
+            <TextBlock
+                Margin="10,0,0,0"
+                Name="FilePathText"
+                Text="No file selected"
+                VerticalAlignment="Center" />
+        </StackPanel>
+
+        <!--  Main Content - Fixed Native Resolution  -->
+        <Grid
+            ColumnDefinitions="*,*"
+            Grid.Row="1"
+            IsVisible="{Binding IsEGOGiftLoaded}"
+            Margin="20,0,20,15">
+
+            <!--  Reference Section (Left)  -->
+            <Border
+                ClipToBounds="True"
+                Grid.Column="0"
+                Margin="0,0,10,0">
+                <Panel Height="707" Width="857">
+                    <!--  Background Image  -->
+                    <Image
+                        HorizontalAlignment="Stretch"
+                        Source="avares://RainbusToolbox/Assets/GiftBg.png"
+                        Stretch="Fill"
+                        VerticalAlignment="Stretch" />
+
+                    <!--  Gift Name Area  -->
+                    <Border Margin="350,50,60,560">
+                        <TextBox
+                            Classes="invisible"
+                            FontFamily="{StaticResource MikodacsFont}"
+                            FontSize="{Binding ReferenceEGOGift.Name, Converter={StaticResource TextToFontSizeConverter}}"
+                            HorizontalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            IsReadOnly="True"
+                            Text="{Binding ReferenceEGOGift.Name}"
+                            TextAlignment="Center"
+                            TextWrapping="Wrap"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center" />
+                    </Border>
+
+                    <!--  Gift Description Area  -->
+                    <Border Margin="80,360,65,60">
+                        <TextBox
+                            AcceptsReturn="True"
+                            Classes="invisible"
+                            FontSize="18"
+                            IsReadOnly="True"
+                            Text="{Binding ReferenceEGOGift.Desc}"
+                            TextWrapping="Wrap"
+                            VerticalAlignment="Stretch" />
+                    </Border>
+                </Panel>
+            </Border>
+
+            <!--  Editor Section (Right)  -->
+            <Border
+                ClipToBounds="True"
+                Grid.Column="1"
+                Margin="10,0,0,0">
+                <Panel Height="707" Width="857">
+                    <!--  Background Image  -->
+                    <Image
+                        HorizontalAlignment="Stretch"
+                        Source="avares://RainbusToolbox/Assets/GiftBg.png"
+                        Stretch="Fill"
+                        VerticalAlignment="Stretch" />
+
+                    <!--  Gift Name Area  -->
+                    <Border Margin="350,50,60,560">
+                        <TextBox
+                            Classes="invisible"
+                            FontFamily="{StaticResource MikodacsFont}"
+                            FontSize="{Binding ReferenceEGOGift.Name, Converter={StaticResource TextToFontSizeConverter}}"
+                            HorizontalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            Text="{Binding CurrentEGOGift.Name, Mode=TwoWay}"
+                            TextAlignment="Center"
+                            TextWrapping="Wrap"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center" />
+                    </Border>
+
+                    <!--  Gift Description Area  -->
+                    <Border Margin="80,360,65,60">
+                        <TextBox
+                            AcceptsReturn="True"
+                            Classes="invisible"
+                            FontSize="18"
+                            Text="{Binding CurrentEGOGift.Desc, Mode=TwoWay}"
+                            TextWrapping="Wrap"
+                            VerticalAlignment="Stretch" />
+                    </Border>
+                </Panel>
+            </Border>
+        </Grid>
+
+        <!--  Navigation Container  -->
+        <StackPanel
+            Grid.Row="2"
+            HorizontalAlignment="Center"
+            IsVisible="{Binding IsEGOGiftLoaded}"
+            Margin="20,5,20,20"
+            Orientation="Horizontal">
+
+            <!--  EGO Gift Navigation Section  -->
+            <StackPanel Orientation="Horizontal">
+                <Button
+                    Click="OnPreviousEGOGiftClick"
+                    Content="◀ Previous"
+                    IsEnabled="{Binding CanGoPrevious}"
+                    Margin="0,0,10,0"
+                    Width="200" />
+                <Border
+                    Background="Transparent"
+                    CornerRadius="4"
+                    Padding="12,6">
+                    <TextBlock
+                        FontFamily="{StaticResource MikodacsFont}"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        Text="{Binding NavigationText}"
+                        Width="150" />
+                </Border>
+                <Button
+                    Click="OnNextEGOGiftClick"
+                    Content="Next ▶"
+                    IsEnabled="{Binding CanGoNext}"
+                    Margin="10,0,0,0"
+                    Width="200" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
 </UserControl>

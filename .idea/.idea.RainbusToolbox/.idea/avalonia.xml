@@ -14,6 +14,8 @@
         <entry key="Views/Tabs/OverviewTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Tabs/ReleaseTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Tabs/TranslationTab.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Translation/BattleHintsEditor.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Translation/BattleHintsTranslationEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Translation/BuffTranslationEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Translation/EGOGiftTranslationEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Translation/GenericTranslationEditor.axaml" value="RainbusToolbox.csproj" />

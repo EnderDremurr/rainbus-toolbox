@@ -122,39 +122,10 @@
                     FontFamily="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs"
                     FontSize="20"
                     Foreground="White"
-                    Header="Сюжет">
-                    <views:StoryTranslationEditor />
+                    Header="Перевоз">
+                    <views:TranslationTab />
                 </TabItem>
 
-                <TabItem
-                    FontFamily="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs"
-                    FontSize="20"
-                    Foreground="White"
-                    Header="Скиллы">
-                    <views:SkillsTranslationEditor />
-                </TabItem>
-
-                <TabItem
-                    FontFamily="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs"
-                    FontSize="20"
-                    Foreground="White"
-                    Header="Баттл хинты">
-                    <views:BattleHintsEditor />
-                </TabItem>
-                <TabItem
-                    FontFamily="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs"
-                    FontSize="20"
-                    Foreground="White"
-                    Header="Паника">
-                    <views:PanicTranslationEditor />
-                </TabItem>
-                <TabItem
-                    FontFamily="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs"
-                    FontSize="20"
-                    Foreground="White"
-                    Header="Баффы">
-                    <views:BuffTranslationEditor />
-                </TabItem>
 
 
 

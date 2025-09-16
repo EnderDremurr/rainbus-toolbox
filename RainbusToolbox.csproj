@@ -40,7 +40,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Views\Translation\BattleHintsEditor.axaml.cs">
+      <Compile Update="Views\Translation\BattleHintsTranslationEditor.axaml.cs">
         <DependentUpon>BattleHintsTab.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>

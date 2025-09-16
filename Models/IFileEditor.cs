@@ -1,6 +1,6 @@
-public interface IFileEditor
+using RainbusToolbox.Utilities.Data;
+
+public interface IFileEditor<TFile> where TFile : LocalizationFileBase
 {
-    string FilePath { get; }
-    bool IsFileLoaded { get; }
-    void LoadFile(string filePath);
+    
 }

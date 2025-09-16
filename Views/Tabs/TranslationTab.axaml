@@ -1,11 +1,110 @@
 <UserControl
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    d:DesignHeight="800"
+    d:DesignWidth="1200"
     mc:Ignorable="d"
     x:Class="RainbusToolbox.Views.TranslationTab"
+    x:DataType="views:TranslationTab"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:RainbusToolbox.Views"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    Welcome to Avalonia!
+
+    <Grid RowDefinitions="Auto,*">
+        <!--  File Selection Header  -->
+        <Border
+            Background="#2D2D30"
+            BorderBrush="#3F3F46"
+            BorderThickness="0,0,0,1"
+            Grid.Row="0"
+            Padding="20,15">
+            <StackPanel Orientation="Horizontal" Spacing="15">
+                <!--  File Selection Button  -->
+                <Button
+                    Click="OnSelectFileClick"
+                    Content="Select Translation File"
+                    MinWidth="160"
+                    Name="SelectFileButton" />
+
+                <!--  Selected File Display  -->
+                <StackPanel
+                    Orientation="Horizontal"
+                    Spacing="10"
+                    VerticalAlignment="Center">
+                    <TextBlock
+                        Foreground="#CCCCCC"
+                        Text="Selected File:"
+                        VerticalAlignment="Center" />
+                    <TextBlock
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        Name="FilePathText"
+                        Text="No file selected"
+                        VerticalAlignment="Center" />
+                </StackPanel>
+
+                <!--  File Type Indicator  -->
+                <Border
+                    Background="#0E639C"
+                    CornerRadius="12"
+                    IsVisible="{Binding IsFileLoaded}"
+                    Padding="8,4"
+                    VerticalAlignment="Center">
+                    <TextBlock
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        Name="FileTypeText"
+                        Text="{Binding FileType}" />
+                </Border>
+            </StackPanel>
+        </Border>
+
+        <!--  Dynamic Editor Content  -->
+        <ContentControl
+            Content="{Binding CurrentEditor}"
+            Grid.Row="1"
+            IsVisible="{Binding IsFileLoaded}"
+            Name="EditorContentControl" />
+
+        <!--  Welcome/Empty State  -->
+        <Border Grid.Row="1" IsVisible="{Binding !IsFileLoaded}">
+            <StackPanel
+                HorizontalAlignment="Center"
+                Spacing="20"
+                VerticalAlignment="Center">
+                <TextBlock
+                    FontFamily="{StaticResource MikodacsFont}"
+                    FontSize="28"
+                    FontWeight="Bold"
+                    Foreground="#CCCCCC"
+                    HorizontalAlignment="Center"
+                    Text="Translation Editor" />
+                <TextBlock
+                    FontSize="16"
+                    Foreground="#999999"
+                    HorizontalAlignment="Center"
+                    Text="Select a translation file to begin editing" />
+                <StackPanel
+                    HorizontalAlignment="Center"
+                    Margin="0,20,0,0"
+                    Orientation="Horizontal"
+                    Spacing="30">
+                    <!--  Supported File Types  -->
+                    <StackPanel Spacing="8">
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Foreground="#CCCCCC"
+                            Text="Supported File Types:" />
+                        <StackPanel Spacing="4">
+                            <TextBlock Foreground="#999999" Text="• Dialogue Files" />
+                            <TextBlock Foreground="#999999" Text="• Skills Files" />
+                            <TextBlock Foreground="#999999" Text="• Battle Hints Files" />
+                            <TextBlock Foreground="#999999" Text="• And more..." />
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
 </UserControl>

@@ -11,24 +11,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Grid RowDefinitions="Auto,*,Auto">
-        <!--  File Selection  -->
-        <StackPanel
-            Grid.Row="0"
-            Margin="20,15,20,15"
-            Orientation="Horizontal">
-            <Button
-                Click="OnSelectFileClick"
-                Content="Select Skills File"
-                Margin="0,0,15,0"
-                MinWidth="120"
-                Name="SelectFileButton" />
-            <TextBlock
-                Margin="10,0,0,0"
-                Name="FilePathText"
-                Text="No file selected"
-                VerticalAlignment="Center" />
-        </StackPanel>
-
         <!--  Main Content - Vertical Split  -->
         <Grid
             ColumnDefinitions="*,*"

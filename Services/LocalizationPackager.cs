@@ -12,7 +12,7 @@ public static class LocalizationPackager
 
         var repoPath = repositoryManager.Repository.Info.WorkingDirectory;
         var zipFileName = $"RCR v{version}.zip";
-        var zipPath = Path.Combine(repoPath, repositoryManager.DistPath, zipFileName);
+        var zipPath = Path.Combine(repositoryManager.PathToDistribution, zipFileName);
 
         if (File.Exists(zipPath))
             File.Delete(zipPath);

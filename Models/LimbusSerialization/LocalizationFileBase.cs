@@ -6,13 +6,13 @@ namespace RainbusToolbox.Utilities.Data;
 public abstract class LocalizationFileBase
 {
     [JsonIgnore]
-    public string PathTo { get; private set; }
+    public string PathTo { get; set; }
 
     [JsonIgnore]
-    public string FileName { get; private set; }
+    public string FileName { get; set; }
 
     [JsonIgnore]
-    public string FullPath { get; private set; }
+    public string FullPath { get; set; }
 
     // Protected constructor for inheritance
     protected LocalizationFileBase(string filePath)
