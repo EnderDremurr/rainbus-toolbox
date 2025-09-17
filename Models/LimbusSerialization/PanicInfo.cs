@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using RainbusToolbox.Utilities.Data;
 
 [FilePattern("PanicInfo*")]
-public class PanicInfoFile : LocalizationFileBase
+public class PanicInfoFile : LocalizationFileBase, ILocalizationContainer<PanicInfo>
 {
     [JsonProperty("dataList")]
     public List<PanicInfo> DataList { get; set; }

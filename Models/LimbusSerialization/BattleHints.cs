@@ -15,7 +15,7 @@ public enum BattleHintTypes
 
 // BattleHint*
 [FilePattern("BattleHint*")]
-public class BattleHintsFile : LocalizationFileBase
+public class BattleHintsFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
     public List<GenericIdContent> DataList { get; set; } = new List<GenericIdContent>();
@@ -26,7 +26,7 @@ public class BattleHintsFile : LocalizationFileBase
 
 // BattleAnnouncerDlg/Announcer* (Battle announcer dialogue) +
 [FilePattern("Announcer*")]
-public class BattleAnnouncerFile : LocalizationFileBase
+public class BattleAnnouncerFile : LocalizationFileBase, ILocalizationContainer<BattleAnnouncerEntry>
 {
     [JsonProperty("dataList")]
     public List<BattleAnnouncerEntry> DataList { get; set; }
@@ -43,7 +43,7 @@ public class BattleAnnouncerEntry
 
 //PersonalityVoiceDlg/Voice_* (Character personality voice lines)+
 
-public class PersonalityVoiceFile : LocalizationFileBase
+public class PersonalityVoiceFile : LocalizationFileBase, ILocalizationContainer<PersonalityVoiceEntry>
 {
     [JsonProperty("dataList")]
     public List<PersonalityVoiceEntry> DataList { get; set; }
@@ -62,7 +62,7 @@ public class PersonalityVoiceEntry
 }
 
 //EGOVoiceDig/VoiceEGO* (EGO ability voice lines) +
-public class EGOVoiceFile : LocalizationFileBase
+public class EGOVoiceFile : LocalizationFileBase, ILocalizationContainer<EGOVoiceEntry>
 {
     [JsonProperty("dataList")]
     public List<EGOVoiceEntry> DataList { get; set; }
@@ -82,14 +82,14 @@ public class EGOVoiceEntry
 
 
 //StoryTheater* (Story theater UI and notes)+
-public class StoryTheaterFile : LocalizationFileBase
+public class StoryTheaterFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
     public List<GenericIdContent> DataList { get; set; }
 }
 
 //StoryTheater*Detail (Story theater UI and notes with details)+
-public class StoryTheaterDetailFile : LocalizationFileBase
+public class StoryTheaterDetailFile : LocalizationFileBase, ILocalizationContainer<GenericIdTitleDesc>
 {
     [JsonProperty("dataList")]
     public List<GenericIdTitleDesc> DataList { get; set; }
@@ -97,13 +97,13 @@ public class StoryTheaterDetailFile : LocalizationFileBase
 
 
 // StageNode* (Stage narrative content)+
-public class StageNodeFile : LocalizationFileBase
+public class StageNodeFile : LocalizationFileBase, ILocalizationContainer<GenericIdTitle>
 {
     [JsonProperty("dataList")]
     public List<GenericIdTitle> DataList { get; set; }
 }
 //DungeonNode* (Dungeon narrative content)
-public class DungeonNodeFile : LocalizationFileBase
+public class DungeonNodeFile : LocalizationFileBase, ILocalizationContainer<DungeonNodeItem>
 {
     [JsonProperty("dataList")]
     public List<DungeonNodeItem> DataList { get; set; }
@@ -120,7 +120,7 @@ public class DungeonNodeItem
 
 
 //Passives* (Passive abilities)
-public class PassivesFile : LocalizationFileBase
+public class PassivesFile : LocalizationFileBase, ILocalizationContainer<GenericIdNameDesc>
 {
     [JsonProperty("dataList")]
     public List<GenericIdNameDesc> DataList { get; set; }
@@ -152,7 +152,7 @@ public class Buff
 }
 //EGOGift* (EGO gifts)
 [FilePattern("EGOGift*")]
-public class EGOGiftFile : LocalizationFileBase
+public class EGOGiftFile : LocalizationFileBase, ILocalizationContainer<GenericIdNameDesc>
 {
     [JsonProperty("dataList")]
     public List<GenericIdNameDesc> DataList { get; set; }

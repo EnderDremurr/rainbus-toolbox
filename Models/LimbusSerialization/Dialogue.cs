@@ -3,13 +3,13 @@ using Newtonsoft.Json;
 using RainbusToolbox.Utilities.Data;
 
 [FilePattern("AbDlg*")]
-public class DialogueFile : LocalizationFileBase
+public class DialogueFile : LocalizationFileBase, ILocalizationContainer<DialogueEntry>
 {
     [JsonProperty("dataList")]
     public List<DialogueEntry> DataList { get; set; }
 }
 
-public class DialogueEntry : LocalizationFileBase
+public class DialogueEntry
 {
     [JsonProperty("id")]
     public int Id { get; set; }

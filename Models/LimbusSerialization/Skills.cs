@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using RainbusToolbox.Utilities.Data;
 
 [FilePattern("Skills*")]
-public class SkillsFile : LocalizationFileBase
+public class SkillsFile : LocalizationFileBase, ILocalizationContainer<Skill>
 {
     [JsonProperty("dataList")]
     public List<Skill> DataList { get; set; }

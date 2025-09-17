@@ -17,7 +17,7 @@
         <Grid
             ColumnDefinitions="*,*"
             Grid.Row="1"
-            IsVisible="{Binding IsStoryLoaded}"
+            IsVisible="{Binding IsFileLoaded}"
             Margin="20,0,20,15">
 
             <!--  Reference Section (Left)  -->
@@ -220,7 +220,7 @@
         <StackPanel
             Grid.Row="2"
             HorizontalAlignment="Center"
-            IsVisible="{Binding IsStoryLoaded}"
+            IsVisible="{Binding IsFileLoaded}"
             Margin="20,5,20,20"
             Orientation="Horizontal">
 

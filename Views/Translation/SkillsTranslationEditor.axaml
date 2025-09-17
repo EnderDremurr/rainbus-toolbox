@@ -15,7 +15,7 @@
         <Grid
             ColumnDefinitions="*,*"
             Grid.Row="1"
-            IsVisible="{Binding IsSkillsLoaded}"
+            IsVisible="{Binding IsFileLoaded}"
             Margin="20,0,20,15">
 
             <!--  Reference Section (Left)  -->
@@ -55,7 +55,7 @@
                                     <TextBlock
                                         FontSize="28"
                                         Foreground="White"
-                                        Text="{Binding ReferenceSkill.Id}" />
+                                        Text="{Binding ReferenceItem.Id}" />
                                     <TextBlock
                                         FontFamily="{StaticResource MikodacsFont}"
                                         FontSize="28"
@@ -170,7 +170,7 @@
                                         Foreground="White"
                                         Grid.Column="1"
                                         Margin="5,0,20,0"
-                                        Text="{Binding CurrentSkill.Id}" />
+                                        Text="{Binding CurrentItem.Id}" />
                                     <TextBlock
                                         FontFamily="{StaticResource MikodacsFont}"
                                         FontSize="28"
@@ -251,7 +251,7 @@
         <StackPanel
             Grid.Row="2"
             HorizontalAlignment="Center"
-            IsVisible="{Binding IsSkillsLoaded}"
+            IsVisible="{Binding IsFileLoaded}"
             Margin="20,5,20,20"
             Orientation="Horizontal">
 
@@ -260,7 +260,7 @@
                 <Button
                     Click="OnPreviousSkillClick"
                     Content="◀ Prev Skill"
-                    IsEnabled="{Binding CanGoPreviousSkill}"
+                    IsEnabled="{Binding CanGoPrevious}"
                     Margin="0,0,10,0"
                     Width="200" />
                 <Border
@@ -272,13 +272,13 @@
                         FontSize="16"
                         FontWeight="SemiBold"
                         Foreground="White"
-                        Text="{Binding SkillNavigationText}"
+                        Text="{Binding NavigationText}"
                         Width="100" />
                 </Border>
                 <Button
                     Click="OnNextSkillClick"
                     Content="Next Skill ▶"
-                    IsEnabled="{Binding CanGoNextSkill}"
+                    IsEnabled="{Binding CanGoNext}"
                     Margin="10,0,0,0"
                     Width="200" />
             </StackPanel>

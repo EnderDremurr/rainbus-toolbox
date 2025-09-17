@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using RainbusToolbox.Models.Data;
@@ -6,41 +6,31 @@ using RainbusToolbox.Utilities.Data;
 
 namespace RainbusToolbox.ViewModels;
 
-public partial class SkillsTranslationEditorViewModel : ObservableObject
+public partial class SkillsTranslationEditorViewModel : TranslationEditorViewModel<SkillsFile, Skill>
 {
-    private SkillsFile? _editableFile;
-    private SkillsFile? _referenceFile;
-    private int _currentSkillIndex = 0;
     private int _currentLevelIndex = 0;
 
-    [ObservableProperty] private Skill? _currentSkill;
     [ObservableProperty] private SkillLevel? _currentLevel;
-    [ObservableProperty] private Skill? _referenceSkill;
     [ObservableProperty] private SkillLevel? _referenceLevel;
 
-    [ObservableProperty] private bool _canGoPreviousSkill;
-    [ObservableProperty] private bool _canGoNextSkill;
-    [ObservableProperty] private bool _canGoPreviousLevel;
     [ObservableProperty] private bool _canGoNextLevel;
+    [ObservableProperty] private bool _canGoPreviousLevel;
 
-    [ObservableProperty] private string _skillNavigationText = "";
     [ObservableProperty] private string _levelNavigationText = "";
-    
-    public List<CoinDesc> ReferenceCoinDescs => ReferenceLevel?.CoinList.SelectMany(c => c.CoinDescs).ToList() ?? new();
-    public List<CoinDesc> CurrentCoinDescs => CurrentLevel?.CoinList.SelectMany(c => c.CoinDescs).ToList() ?? new();
+
+    public ObservableCollection<CoinDesc> ReferenceCoinDescs { get; } = new();
+    public ObservableCollection<CoinDesc> CurrentCoinDescs { get; } = new();
 
 
-    public bool IsSkillsLoaded => _editableFile != null && _editableFile.DataList.Count > 0;
-
-    public void LoadEditableFile(SkillsFile file)
+    public override void LoadEditableFile(SkillsFile file)
     {
         _editableFile = file;
-        _currentSkillIndex = 0;
+        _currentIndex = 0;
         _currentLevelIndex = 0;
         UpdateCurrent();
         UpdateReference();
         UpdateNavigation();
-        OnPropertyChanged(nameof(IsSkillsLoaded));
+        OnPropertyChanged(nameof(IsFileLoaded));
     }
 
     public void LoadReferenceFile(SkillsFile file)
@@ -51,8 +41,8 @@ public partial class SkillsTranslationEditorViewModel : ObservableObject
 
     public void GoPreviousSkill()
     {
-        if (_currentSkillIndex <= 0) return;
-        _currentSkillIndex = _currentSkillIndex - 1;
+        if (_currentIndex <= 0) return;
+        _currentIndex--;
         _currentLevelIndex = 0;
         UpdateCurrent();
         UpdateReference();
@@ -61,8 +51,8 @@ public partial class SkillsTranslationEditorViewModel : ObservableObject
 
     public void GoNextSkill()
     {
-        if (_editableFile == null || _currentSkillIndex >= _editableFile.DataList.Count - 1) return;
-        _currentSkillIndex++;
+        if (_editableFile == null || _currentIndex >= _editableFile.DataList.Count - 1) return;
+        _currentIndex++;
         _currentLevelIndex = 0;
         UpdateCurrent();
         UpdateReference();
@@ -80,7 +70,7 @@ public partial class SkillsTranslationEditorViewModel : ObservableObject
 
     public void GoNextLevel()
     {
-        if (_editableFile == null || CurrentSkill == null || _currentLevelIndex >= CurrentSkill.LevelList.Count - 1) return;
+        if (_editableFile == null || _currentItem == null || _currentLevelIndex >= _currentItem.LevelList.Count - 1) return;
         _currentLevelIndex++;
         UpdateCurrent();
         UpdateReference();
@@ -91,36 +81,56 @@ public partial class SkillsTranslationEditorViewModel : ObservableObject
     {
         if (_editableFile != null && _editableFile.DataList.Count > 0)
         {
-            CurrentSkill = _editableFile.DataList[_currentSkillIndex];
-            if (CurrentSkill.LevelList.Count > _currentLevelIndex)
-                CurrentLevel = CurrentSkill.LevelList[_currentLevelIndex];
+            _currentItem = _editableFile.DataList[_currentIndex];
+            if (_currentItem.LevelList.Count > _currentLevelIndex)
+                CurrentLevel = _currentItem.LevelList[_currentLevelIndex];
+            else
+                CurrentLevel = null;
+
+            // Update CurrentCoinDescs
+            CurrentCoinDescs.Clear();
+            if (CurrentLevel != null)
+            {
+                foreach (var coin in CurrentLevel.CoinList.SelectMany(c => c.CoinDescs))
+                    CurrentCoinDescs.Add(coin);
+            }
         }
     }
 
     private void UpdateReference()
     {
-        if (_referenceFile != null && _referenceFile.DataList.Count > _currentSkillIndex)
+        if (_referenceFile != null && _referenceFile.DataList.Count > _currentIndex)
         {
-            ReferenceSkill = _referenceFile.DataList[_currentSkillIndex];
-            if (ReferenceSkill.LevelList.Count > _currentLevelIndex)
-                ReferenceLevel = ReferenceSkill.LevelList[_currentLevelIndex];
+            _referenceItem = _referenceFile.DataList[_currentIndex];
+            if (_referenceItem.LevelList.Count > _currentLevelIndex)
+                ReferenceLevel = _referenceItem.LevelList[_currentLevelIndex];
+            else
+                ReferenceLevel = null;
         }
         else
         {
-            ReferenceSkill = null;
+            ReferenceItem = null;
             ReferenceLevel = null;
+        }
+
+        // Update ReferenceCoinDescs
+        ReferenceCoinDescs.Clear();
+        if (ReferenceLevel != null)
+        {
+            foreach (var coin in ReferenceLevel.CoinList.SelectMany(c => c.CoinDescs))
+                ReferenceCoinDescs.Add(coin);
         }
     }
 
     private void UpdateNavigation()
     {
-        CanGoPreviousSkill = _currentSkillIndex > 0;
-        CanGoNextSkill = _editableFile != null && _currentSkillIndex < _editableFile.DataList.Count - 1;
+        CanGoPrevious = _currentIndex > 0;
+        CanGoNext = _editableFile != null && _currentIndex < _editableFile.DataList.Count - 1;
 
-        CanGoPreviousLevel = CurrentSkill?.LevelList != null && _currentLevelIndex > 0;
-        CanGoNextLevel = CurrentSkill?.LevelList != null && _currentLevelIndex < (CurrentSkill.LevelList.Count - 1);
+        CanGoPreviousLevel = _currentItem?.LevelList != null && _currentLevelIndex > 0;
+        CanGoNextLevel = _currentItem?.LevelList != null && _currentLevelIndex < (_currentItem.LevelList.Count - 1);
 
-        SkillNavigationText = $"{_currentSkillIndex + 1} / {_editableFile?.DataList.Count ?? 0}";
-        LevelNavigationText = CurrentSkill?.LevelList != null ? $"{_currentLevelIndex + 1} / {CurrentSkill.LevelList.Count}" : "";
+        NavigationText = $"{_currentIndex + 1} / {_editableFile?.DataList.Count ?? 0}";
+        LevelNavigationText = _currentItem?.LevelList != null ? $"{_currentLevelIndex + 1} / {_currentItem.LevelList.Count}" : "";
     }
 }
