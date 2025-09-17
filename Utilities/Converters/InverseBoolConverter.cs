@@ -2,11 +2,20 @@ using System;
 using System.Globalization;
 using Avalonia.Data.Converters;
 
-public class InverseBoolConverter : IValueConverter
+namespace RainbusToolbox.Utilities.Converters
 {
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        => value is bool b ? !b : true;
+    public class InverseBoolConverter : IValueConverter
+    {
+        public static InverseBoolConverter Instance { get; } = new InverseBoolConverter();
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        => throw new NotImplementedException();
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value is bool b ? !b : true;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value is bool b ? !b : true;
+        }
+    }
 }

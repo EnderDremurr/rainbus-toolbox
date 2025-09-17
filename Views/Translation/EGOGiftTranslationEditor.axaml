@@ -3,13 +3,16 @@
     d:DesignWidth="1200"
     mc:Ignorable="d"
     x:Class="RainbusToolbox.Views.EGOGiftTranslationEditor"
-    x:DataType="views:EGOGiftTranslationEditor"
+    x:DataType="vm:EGOGiftTranslationEditorViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:global="clr-namespace:"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:views="clr-namespace:RainbusToolbox.Views"
+    xmlns:vm="clr-namespace:RainbusToolbox.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <global:TextToFontSizeConverter x:Key="TextToFontSizeConverter" />
+    </UserControl.Resources>
 
     <UserControl.Styles>
         <Style Selector="TextBox.invisible">
@@ -30,35 +33,15 @@
             <Setter Property="BorderThickness" Value="0" />
         </Style>
     </UserControl.Styles>
-    <UserControl.Resources>
-        <global:TextToFontSizeConverter x:Key="TextToFontSizeConverter" />
-    </UserControl.Resources>
 
-    <Grid RowDefinitions="Auto,*,Auto">
-        <!--  File Selection  -->
-        <StackPanel
-            Grid.Row="0"
-            Margin="20,15,20,15"
-            Orientation="Horizontal">
-            <Button
-                Click="OnSelectFileClick"
-                Content="Select EGO Gift File"
-                Margin="0,0,15,0"
-                MinWidth="140"
-                Name="SelectFileButton" />
-            <TextBlock
-                Margin="10,0,0,0"
-                Name="FilePathText"
-                Text="No file selected"
-                VerticalAlignment="Center" />
-        </StackPanel>
+    <Grid RowDefinitions="*,Auto">
 
-        <!--  Main Content - Fixed Native Resolution  -->
+        <!--  Main Content - Side by Side Layout  -->
         <Grid
             ColumnDefinitions="*,*"
-            Grid.Row="1"
+            Grid.Row="0"
             IsVisible="{Binding IsEGOGiftLoaded}"
-            Margin="20,0,20,15">
+            Margin="20,15,20,15">
 
             <!--  Reference Section (Left)  -->
             <Border
@@ -78,11 +61,11 @@
                         <TextBox
                             Classes="invisible"
                             FontFamily="{StaticResource MikodacsFont}"
-                            FontSize="{Binding ReferenceEGOGift.Name, Converter={StaticResource TextToFontSizeConverter}}"
+                            FontSize="{Binding ReferenceItem.Name, Converter={StaticResource TextToFontSizeConverter}}"
                             HorizontalAlignment="Center"
                             HorizontalContentAlignment="Center"
                             IsReadOnly="True"
-                            Text="{Binding ReferenceEGOGift.Name}"
+                            Text="{Binding ReferenceItem.Name}"
                             TextAlignment="Center"
                             TextWrapping="Wrap"
                             VerticalAlignment="Center"
@@ -96,7 +79,7 @@
                             Classes="invisible"
                             FontSize="18"
                             IsReadOnly="True"
-                            Text="{Binding ReferenceEGOGift.Desc}"
+                            Text="{Binding ReferenceItem.Desc}"
                             TextWrapping="Wrap"
                             VerticalAlignment="Stretch" />
                     </Border>
@@ -121,10 +104,10 @@
                         <TextBox
                             Classes="invisible"
                             FontFamily="{StaticResource MikodacsFont}"
-                            FontSize="{Binding ReferenceEGOGift.Name, Converter={StaticResource TextToFontSizeConverter}}"
+                            FontSize="{Binding ReferenceItem.Name, Converter={StaticResource TextToFontSizeConverter}}"
                             HorizontalAlignment="Center"
                             HorizontalContentAlignment="Center"
-                            Text="{Binding CurrentEGOGift.Name, Mode=TwoWay}"
+                            Text="{Binding CurrentItem.Name, Mode=TwoWay}"
                             TextAlignment="Center"
                             TextWrapping="Wrap"
                             VerticalAlignment="Center"
@@ -137,7 +120,7 @@
                             AcceptsReturn="True"
                             Classes="invisible"
                             FontSize="18"
-                            Text="{Binding CurrentEGOGift.Desc, Mode=TwoWay}"
+                            Text="{Binding CurrentItem.Desc, Mode=TwoWay}"
                             TextWrapping="Wrap"
                             VerticalAlignment="Stretch" />
                     </Border>
@@ -145,41 +128,30 @@
             </Border>
         </Grid>
 
-        <!--  Navigation Container  -->
+        <!--  Navigation  -->
         <StackPanel
-            Grid.Row="2"
+            Grid.Row="1"
             HorizontalAlignment="Center"
             IsVisible="{Binding IsEGOGiftLoaded}"
-            Margin="20,5,20,20"
+            Margin="20,15,20,20"
             Orientation="Horizontal">
-
-            <!--  EGO Gift Navigation Section  -->
-            <StackPanel Orientation="Horizontal">
-                <Button
-                    Click="OnPreviousEGOGiftClick"
-                    Content="◀ Previous"
-                    IsEnabled="{Binding CanGoPrevious}"
-                    Margin="0,0,10,0"
-                    Width="200" />
-                <Border
-                    Background="Transparent"
-                    CornerRadius="4"
-                    Padding="12,6">
-                    <TextBlock
-                        FontFamily="{StaticResource MikodacsFont}"
-                        FontSize="16"
-                        FontWeight="SemiBold"
-                        Foreground="White"
-                        Text="{Binding NavigationText}"
-                        Width="150" />
-                </Border>
-                <Button
-                    Click="OnNextEGOGiftClick"
-                    Content="Next ▶"
-                    IsEnabled="{Binding CanGoNext}"
-                    Margin="10,0,0,0"
-                    Width="200" />
-            </StackPanel>
+            <Button
+                Click="OnPreviousClick"
+                Content="◀ Previous"
+                IsEnabled="{Binding CanGoPrevious}"
+                Margin="0,0,15,0"
+                MinWidth="100" />
+            <TextBlock
+                FontWeight="SemiBold"
+                Margin="15,0"
+                Text="{Binding NavigationText}"
+                VerticalAlignment="Center" />
+            <Button
+                Click="OnNextClick"
+                Content="Next ▶"
+                IsEnabled="{Binding CanGoNext}"
+                Margin="15,0,0,0"
+                MinWidth="100" />
         </StackPanel>
     </Grid>
 </UserControl>

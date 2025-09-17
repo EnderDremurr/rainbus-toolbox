@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using RainbusToolbox.Utilities.Data;
 
 [FilePattern("PanicInfo*")]
-public class PanicInfoFile
+public class PanicInfoFile : LocalizationFileBase
 {
     [JsonProperty("dataList")]
     public List<PanicInfo> DataList { get; set; }

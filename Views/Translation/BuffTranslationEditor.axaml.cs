@@ -10,10 +10,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using RainbusToolbox.Models.Managers;
+using RainbusToolbox.Utilities.Data;
 
 namespace RainbusToolbox.Views
 {
-    public partial class BuffTranslationEditor : UserControl, INotifyPropertyChanged
+    public partial class BuffTranslationEditor : UserControl, INotifyPropertyChanged, IFileEditor
     {
         private BuffsFile? _buffFile;
         private BuffsFile? _referenceBuffFile;
@@ -213,6 +214,16 @@ namespace RainbusToolbox.Views
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         #endregion
+
+        public void SetFileToEdit(LocalizationFileBase file)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetReferenceFile(LocalizationFileBase file)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     // Data model classes with INotifyPropertyChanged implementation

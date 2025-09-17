@@ -1,6 +1,7 @@
 using RainbusToolbox.Utilities.Data;
 
-public interface IFileEditor<TFile> where TFile : LocalizationFileBase
+public interface IFileEditor
 {
-    
+    public void SetFileToEdit(LocalizationFileBase file);
+    public void SetReferenceFile(LocalizationFileBase file);
 }

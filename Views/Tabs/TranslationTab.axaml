@@ -3,12 +3,19 @@
     d:DesignWidth="1200"
     mc:Ignorable="d"
     x:Class="RainbusToolbox.Views.TranslationTab"
-    x:DataType="views:TranslationTab"
+    x:DataType="vm:TranslationTabViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:conv="clr-namespace:RainbusToolbox.Utilities.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:views="clr-namespace:RainbusToolbox.Views"
+    xmlns:views="clr-namespace:RainbusToolbox.Views.Translation"
+    xmlns:views1="clr-namespace:RainbusToolbox.Views"
+    xmlns:vm="clr-namespace:RainbusToolbox.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <UserControl.Resources>
+        <conv:InverseBoolConverter x:Key="InverseBoolConverter" />
+    </UserControl.Resources>
 
     <Grid RowDefinitions="Auto,*">
         <!--  File Selection Header  -->
@@ -19,14 +26,11 @@
             Grid.Row="0"
             Padding="20,15">
             <StackPanel Orientation="Horizontal" Spacing="15">
-                <!--  File Selection Button  -->
                 <Button
-                    Click="OnSelectFileClick"
+                    Command="{Binding SelectFileCommand}"
                     Content="Select Translation File"
-                    MinWidth="160"
-                    Name="SelectFileButton" />
+                    MinWidth="160" />
 
-                <!--  Selected File Display  -->
                 <StackPanel
                     Orientation="Horizontal"
                     Spacing="10"
@@ -38,12 +42,10 @@
                     <TextBlock
                         FontWeight="SemiBold"
                         Foreground="White"
-                        Name="FilePathText"
-                        Text="No file selected"
+                        Text="{Binding FileName}"
                         VerticalAlignment="Center" />
                 </StackPanel>
 
-                <!--  File Type Indicator  -->
                 <Border
                     Background="#0E639C"
                     CornerRadius="12"
@@ -54,7 +56,6 @@
                         FontSize="12"
                         FontWeight="SemiBold"
                         Foreground="White"
-                        Name="FileTypeText"
                         Text="{Binding FileType}" />
                 </Border>
             </StackPanel>
@@ -64,17 +65,15 @@
         <ContentControl
             Content="{Binding CurrentEditor}"
             Grid.Row="1"
-            IsVisible="{Binding IsFileLoaded}"
-            Name="EditorContentControl" />
+            IsVisible="{Binding IsFileLoaded}" />
 
-        <!--  Welcome/Empty State  -->
-        <Border Grid.Row="1" IsVisible="{Binding !IsFileLoaded}">
+        <!--  Welcome / Empty State  -->
+        <Border Grid.Row="1" IsVisible="{Binding IsFileLoaded, Converter={StaticResource InverseBoolConverter}}">
             <StackPanel
                 HorizontalAlignment="Center"
                 Spacing="20"
                 VerticalAlignment="Center">
                 <TextBlock
-                    FontFamily="{StaticResource MikodacsFont}"
                     FontSize="28"
                     FontWeight="Bold"
                     Foreground="#CCCCCC"
@@ -85,12 +84,12 @@
                     Foreground="#999999"
                     HorizontalAlignment="Center"
                     Text="Select a translation file to begin editing" />
+
                 <StackPanel
                     HorizontalAlignment="Center"
                     Margin="0,20,0,0"
                     Orientation="Horizontal"
                     Spacing="30">
-                    <!--  Supported File Types  -->
                     <StackPanel Spacing="8">
                         <TextBlock
                             FontWeight="SemiBold"

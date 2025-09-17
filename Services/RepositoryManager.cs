@@ -7,6 +7,7 @@ using System.Text;
 using LibGit2Sharp;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RainbusToolbox.Models.Data;
 using RainbusToolbox.Utilities.Data;
 
 namespace RainbusToolbox.Models.Managers
@@ -180,12 +181,12 @@ namespace RainbusToolbox.Models.Managers
 
         #region Serialization
 
-        public TFile? GetObjectFromPath<TFile>(string path) where TFile : LocalizationFileBase
+        public LocalizationFileBase? GetObjectFromPath(string path, LocalizationFileBase? file = null)
         {
-            var rawFile = "";
+            string rawFile;
             try
             {
-               rawFile = File.ReadAllText(path, new UTF8Encoding(false));
+                rawFile = File.ReadAllText(path, new UTF8Encoding(false));
             }
             catch
             {
@@ -193,23 +194,30 @@ namespace RainbusToolbox.Models.Managers
                 return null;
             }
 
-            TFile? deserialized;
+            var targetType = file?.GetType() ?? FileToObjectCaster.GetType(path);
+            if (targetType == null)
+            {
+                Console.WriteLine("Unable to determine file type from path pattern.");
+                return null;
+            }
+
+            LocalizationFileBase? deserialized;
             try
             {
-                deserialized = JsonConvert.DeserializeObject<TFile>(rawFile);
+                deserialized = (LocalizationFileBase?)JsonConvert.DeserializeObject(rawFile, targetType);
             }
             catch
             {
                 Console.WriteLine("File type differentiates from selected object type, please check manually.");
                 return null;
             }
-            
-            if(deserialized == null)
+
+            if (deserialized == null)
                 return null;
-            
+
             var justName = Path.GetFileName(path);
             var justPath = Path.GetDirectoryName(path);
-            
+
             deserialized.FileName = justName;
             deserialized.FullPath = path;
             deserialized.PathTo = justPath ?? Path.DirectorySeparatorChar.ToString();
@@ -217,7 +225,8 @@ namespace RainbusToolbox.Models.Managers
             return deserialized;
         }
 
-        public TFile? GetReference<TFile>(TFile refTo) where TFile : LocalizationFileBase
+
+        public LocalizationFileBase? GetReference(LocalizationFileBase refTo)
         {
             if(string.IsNullOrEmpty(refTo.FileName) || string.IsNullOrEmpty(refTo.FullPath))
                 return null;
@@ -227,6 +236,12 @@ namespace RainbusToolbox.Models.Managers
             
             var referenceFileName = "EN_" + refTo.FileName;
             var files = Directory.GetFiles(PathToReferenceLocalization, referenceFileName, SearchOption.AllDirectories);
+
+            if (!files.Any())
+            {
+                Console.WriteLine("No reference files found.");
+                return null;
+            }
             
             if(files.Length > 1)
                 Console.WriteLine("Multiple files found. This should not happen, taking the first found file.");
@@ -236,10 +251,10 @@ namespace RainbusToolbox.Models.Managers
             if (referencePath == null)
                 return null;
                 
-            return GetObjectFromPath<TFile>(referencePath);
+            return GetObjectFromPath(referencePath, refTo);
         }
 
-        public bool SaveObjectToFile<TFile>(TFile obj) where TFile : LocalizationFileBase
+        public bool SaveObjectToFile(LocalizationFileBase obj)
         {
             if(string.IsNullOrEmpty(obj.FileName) || string.IsNullOrEmpty(obj.FullPath))
                 return false;

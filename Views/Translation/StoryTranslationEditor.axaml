@@ -3,31 +3,14 @@
     d:DesignWidth="800"
     mc:Ignorable="d"
     x:Class="RainbusToolbox.Views.StoryTranslationEditor"
-    x:DataType="views:StoryTranslationEditor"
+    x:DataType="vm:StoryTranslationEditorViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:views="clr-namespace:RainbusToolbox.Views"
+    xmlns:vm="clr-namespace:RainbusToolbox.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Grid RowDefinitions="Auto,*,Auto,*,Auto">
-        <!--  File selection  -->
-        <StackPanel
-            Grid.Row="0"
-            Margin="20,15,20,15"
-            Orientation="Horizontal">
-            <Button
-                Click="OnSelectFileClick"
-                Content="Select Story File"
-                Margin="0,0,15,0"
-                MinWidth="120"
-                Name="SelectFileButton" />
-            <TextBlock
-                Margin="10,0,0,0"
-                Name="FilePathText"
-                Text="No file selected"
-                VerticalAlignment="Center" />
-        </StackPanel>
 
         <!--  Reference Section  -->
         <Border
@@ -35,58 +18,44 @@
             IsVisible="{Binding IsStoryLoaded}"
             Margin="20,0,20,10">
             <Grid>
-                <!--  Background  -->
                 <Image
                     Height="250"
                     HorizontalAlignment="Stretch"
                     Margin="240,0,0,0"
                     Source="avares://RainbusToolbox/Assets/StoryBG.png" />
-
                 <Grid Margin="25,20,25,20">
-                    <!--  Story Text  -->
                     <TextBlock
                         HorizontalAlignment="Stretch"
                         Margin="430,65,20,40"
                         Text="{Binding ReferenceItem.Content}"
                         TextWrapping="Wrap"
                         VerticalAlignment="Stretch" />
-
-                    <!--  Place (bottom center)  -->
                     <TextBlock
                         HorizontalAlignment="Center"
                         Margin="0,0,0,15"
                         Text="{Binding ReferenceItem.Place}"
                         VerticalAlignment="Bottom" />
-
-                    <!--  Single overlay for Title + Model  -->
                     <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
                         <Image
                             Height="225"
                             Margin="0,-40,0,0"
                             Source="avares://RainbusToolbox/Assets/StoryBGName.png"
                             Width="450" />
-
-                        <!--  Overlay texts inside the same image  -->
                         <StackPanel
                             HorizontalAlignment="Center"
                             Margin="0,15,0,15"
                             VerticalAlignment="Center">
                             <TextBlock
-                                Classes="header"
                                 FontWeight="Bold"
                                 HorizontalAlignment="Center"
-                                Margin="0,0,0,0"
                                 MaxWidth="250"
-                                Text="{Binding ReferenceItem.Title}"
-                                TextWrapping="Wrap">
+                                Text="{Binding ReferenceItem.Title}">
                                 <TextBlock.RenderTransform>
                                     <RotateTransform Angle="-6" />
                                 </TextBlock.RenderTransform>
                             </TextBlock>
                             <TextBlock
-                                Classes="header"
                                 HorizontalAlignment="Center"
-                                Margin="0,0,0,0"
                                 MaxWidth="250"
                                 Text="{Binding ReferenceItem.Teller}">
                                 <TextBlock.RenderTransform>
@@ -112,15 +81,12 @@
             IsVisible="{Binding IsStoryLoaded}"
             Margin="20,10,20,15">
             <Grid>
-                <!--  Background  -->
                 <Image
                     Height="250"
                     HorizontalAlignment="Stretch"
                     Margin="240,0,0,0"
                     Source="avares://RainbusToolbox/Assets/StoryBG.png" />
-
                 <Grid Margin="20,10,20,10">
-                    <!--  Editable Story Text  -->
                     <TextBox
                         AcceptsReturn="True"
                         Background="Transparent"
@@ -130,8 +96,6 @@
                         Text="{Binding CurrentItem.Content, Mode=TwoWay}"
                         TextWrapping="Wrap"
                         VerticalAlignment="Stretch" />
-
-                    <!--  Place (bottom center)  -->
                     <TextBox
                         Background="Transparent"
                         BorderThickness="0"
@@ -139,39 +103,31 @@
                         Margin="0,0,0,15"
                         Text="{Binding CurrentItem.Place, Mode=TwoWay}"
                         VerticalAlignment="Bottom" />
-
-                    <!--  Single overlay for Title + Model  -->
                     <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
                         <Image
                             Height="225"
                             Margin="0,-40,0,0"
                             Source="avares://RainbusToolbox/Assets/StoryBGName.png"
                             Width="450" />
-
-                        <!--  Overlay texts inside the same image  -->
                         <StackPanel
                             HorizontalAlignment="Center"
                             Margin="0,15,0,15"
                             VerticalAlignment="Center">
-                            <!--  Title editable  -->
                             <TextBox
                                 Background="Transparent"
                                 BorderThickness="0"
-                                Classes="header"
                                 FontWeight="Bold"
                                 HorizontalAlignment="Center"
                                 Margin="0,0,0,5"
+                                MaxWidth="250"
                                 Text="{Binding CurrentItem.Title, Mode=TwoWay}">
                                 <TextBox.RenderTransform>
                                     <RotateTransform Angle="-6" />
                                 </TextBox.RenderTransform>
                             </TextBox>
-
-                            <!--  Model uneditable  -->
                             <TextBox
                                 Background="Transparent"
                                 BorderThickness="0"
-                                Classes="header"
                                 HorizontalAlignment="Center"
                                 IsReadOnly="True"
                                 Text="{Binding CurrentItem.Teller}">
@@ -197,8 +153,7 @@
                 Content="◀ Previous"
                 IsEnabled="{Binding CanGoPrevious}"
                 Margin="0,0,15,0"
-                MinWidth="100"
-                Name="PreviousButton" />
+                MinWidth="100" />
             <TextBlock
                 FontWeight="SemiBold"
                 Margin="15,0"
@@ -209,8 +164,7 @@
                 Content="Next ▶"
                 IsEnabled="{Binding CanGoNext}"
                 Margin="15,0,0,0"
-                MinWidth="100"
-                Name="NextButton" />
+                MinWidth="100" />
         </StackPanel>
     </Grid>
 </UserControl>

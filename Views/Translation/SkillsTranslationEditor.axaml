@@ -3,11 +3,11 @@
     d:DesignWidth="1200"
     mc:Ignorable="d"
     x:Class="RainbusToolbox.Views.SkillsTranslationEditor"
-    x:DataType="views:SkillsTranslationEditor"
+    x:DataType="vm:SkillsTranslationEditorViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:views="clr-namespace:RainbusToolbox.Views"
+    xmlns:vm="clr-namespace:RainbusToolbox.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Grid RowDefinitions="Auto,*,Auto">
@@ -24,7 +24,6 @@
                 Grid.Column="0"
                 Margin="0,0,10,0">
                 <Panel>
-                    <!--  Background Image  -->
                     <Image
                         HorizontalAlignment="Stretch"
                         Source="avares://RainbusToolbox/Assets/SkillBG.png"
@@ -32,11 +31,9 @@
                         StretchDirection="Both"
                         VerticalAlignment="Stretch" />
 
-                    <!--  Content Area  -->
                     <Border Margin="72,54,114,195">
                         <ScrollViewer>
                             <StackPanel Margin="15">
-                                <!--  Section Title  -->
                                 <TextBlock
                                     FontFamily="{StaticResource MikodacsFont}"
                                     FontSize="18"
@@ -118,14 +115,12 @@
                                     <ItemsControl ItemsSource="{Binding ReferenceCoinDescs}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <StackPanel Margin="0,0,0,5">
-                                                    <TextBox
-                                                        Background="Transparent"
-                                                        IsReadOnly="True"
-                                                        MinHeight="40"
-                                                        Text="{Binding Desc}"
-                                                        TextWrapping="Wrap" />
-                                                </StackPanel>
+                                                <TextBox
+                                                    Background="Transparent"
+                                                    IsReadOnly="True"
+                                                    MinHeight="40"
+                                                    Text="{Binding Desc}"
+                                                    TextWrapping="Wrap" />
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
@@ -142,7 +137,6 @@
                 Grid.Column="1"
                 Margin="10,0,0,0">
                 <Panel>
-                    <!--  Background Image  -->
                     <Image
                         HorizontalAlignment="Stretch"
                         Source="avares://RainbusToolbox/Assets/SkillBG.png"
@@ -150,11 +144,9 @@
                         StretchDirection="Both"
                         VerticalAlignment="Stretch" />
 
-                    <!--  Content Area  -->
                     <Border Margin="72,54,114,195">
                         <ScrollViewer>
                             <StackPanel Margin="15">
-                                <!--  Section Title  -->
                                 <TextBlock
                                     FontFamily="{StaticResource MikodacsFont}"
                                     FontSize="18"
@@ -238,14 +230,12 @@
                                     <ItemsControl ItemsSource="{Binding CurrentCoinDescs}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <StackPanel Margin="0,0,0,5">
-                                                    <TextBox
-                                                        AcceptsReturn="True"
-                                                        Background="Transparent"
-                                                        MinHeight="40"
-                                                        Text="{Binding Desc, Mode=TwoWay}"
-                                                        TextWrapping="Wrap" />
-                                                </StackPanel>
+                                                <TextBox
+                                                    AcceptsReturn="True"
+                                                    Background="Transparent"
+                                                    MinHeight="40"
+                                                    Text="{Binding Desc, Mode=TwoWay}"
+                                                    TextWrapping="Wrap" />
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
@@ -257,7 +247,7 @@
             </Border>
         </Grid>
 
-        <!--  Navigation Container with Side-by-Side Layout  -->
+        <!--  Navigation  -->
         <StackPanel
             Grid.Row="2"
             HorizontalAlignment="Center"
@@ -265,7 +255,7 @@
             Margin="20,5,20,20"
             Orientation="Horizontal">
 
-            <!--  Skill Navigation Section  -->
+            <!--  Skill Navigation  -->
             <StackPanel Margin="0,0,30,0" Orientation="Horizontal">
                 <Button
                     Click="OnPreviousSkillClick"
@@ -293,7 +283,7 @@
                     Width="200" />
             </StackPanel>
 
-            <!--  Level Navigation Section  -->
+            <!--  Level Navigation  -->
             <StackPanel Orientation="Horizontal">
                 <Button
                     Click="OnPreviousLevelClick"

@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using RainbusToolbox.Utilities.Data;
 
+namespace RainbusToolbox.Utilities.Data;
+
 [FilePattern("StoryData/*")]
 public class StoryDataFile : LocalizationFileBase
 {

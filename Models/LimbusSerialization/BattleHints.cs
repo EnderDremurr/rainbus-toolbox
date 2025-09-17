@@ -151,7 +151,8 @@ public class Buff
     public string Undefined { get; set; } = string.Empty;
 }
 //EGOGift* (EGO gifts)
-public class EGOGiftFile
+[FilePattern("EGOGift*")]
+public class EGOGiftFile : LocalizationFileBase
 {
     [JsonProperty("dataList")]
     public List<GenericIdNameDesc> DataList { get; set; }
