@@ -1,0 +1,30 @@
+<UserControl
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d"
+    x:Class="RainbusToolbox.Views.FilesTab"
+    x:DataType="viewModels:FilesTabViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:RainbusToolbox.ViewModels"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <StackPanel Margin="20" Spacing="10">
+        <Button
+            Classes="header"
+            Click="OnParseButtonClick"
+            Content="Добавить новые файлы из игры"
+            Height="80"
+            HorizontalAlignment="Center"
+            Width="480" />
+        <Button
+            Classes="header"
+            Command="{Binding ReplaceAllTagsWithMeshes}"
+            Content="Заменить все теги формата [Key:'Value'] на html/TMPro"
+            Height="80"
+            HorizontalAlignment="Center"
+            Width="720" />
+    </StackPanel>
+
+</UserControl>

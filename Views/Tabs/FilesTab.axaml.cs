@@ -3,25 +3,22 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Microsoft.Extensions.DependencyInjection;
 using RainbusToolbox.Models.Managers;
+using RainbusToolbox.ViewModels;
 
 namespace RainbusToolbox.Views;
 
-public partial class UpdaterTab : UserControl
+public partial class FilesTab : UserControl
 {
-    private readonly RepositoryManager _repositoryManager;
-
-    public UpdaterTab()
+    private FilesTabViewModel _viewModel;
+    public FilesTab()
     {
         InitializeComponent();
-
+        DataContext = _viewModel = new FilesTabViewModel();
         // Pull the RepositoryManager out of DI
-        _repositoryManager = ((App)Application.Current)
-            .ServiceProvider
-            .GetRequiredService<RepositoryManager>();
     }
 
     private void OnParseButtonClick(object? sender, RoutedEventArgs e)
     {
-        _repositoryManager.ParseNewAdditionsFromGame();
+        _viewModel.OnParseButtonClick(sender, e);
     }
 }

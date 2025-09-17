@@ -24,7 +24,7 @@ public partial class TranslationTabViewModel : ObservableObject
     private string _fileType = "";
 
     [ObservableProperty]
-    private string _fileName = "No file selected";
+    private string _fileName = "Не выбран";
 
     [ObservableProperty]
     private IFileEditor? _currentEditor;

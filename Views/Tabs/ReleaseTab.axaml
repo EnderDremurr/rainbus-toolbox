@@ -171,13 +171,7 @@
                     Height="80"
                     HorizontalAlignment="Center"
                     Width="360" />
-                <Button
-                    Classes="header"
-                    Command="{Binding ExplodeFuckingTranslationCommand}"
-                    Content="ВЗОРВАТЬ РЕЛИЗ!!!"
-                    Height="80"
-                    HorizontalAlignment="Center"
-                    Width="360" />
+
             </StackPanel>
         </Grid>
 

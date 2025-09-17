@@ -20,51 +20,71 @@
     <Grid RowDefinitions="Auto,*">
         <!--  File Selection Header  -->
         <Border
-            Background="#2D2D30"
-            BorderBrush="#3F3F46"
+            Background="Transparent"
+            BorderBrush="Transparent"
             BorderThickness="0,0,0,1"
             Grid.Row="0"
             Padding="20,15">
-            <StackPanel Orientation="Horizontal" Spacing="15">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <!--  Left: File select button  -->
+                    <ColumnDefinition Width="*" />
+                    <!--  Center: File type text  -->
+                    <ColumnDefinition Width="Auto" />
+                    <!--  Right: Save button  -->
+                </Grid.ColumnDefinitions>
+
+                <!--  Left: Select File Button  -->
                 <Button
                     Command="{Binding SelectFileCommand}"
-                    Content="Select Translation File"
-                    MinWidth="160" />
+                    Content="Выбрать файл"
+                    VerticalAlignment="Center"
+                    Width="320" />
 
+                <!--  Center: File type info  -->
                 <StackPanel
+                    Grid.Column="1"
+                    HorizontalAlignment="Center"
                     Orientation="Horizontal"
                     Spacing="10"
                     VerticalAlignment="Center">
                     <TextBlock
                         Foreground="#CCCCCC"
-                        Text="Selected File:"
+                        Text="Редактируемый файл:"
                         VerticalAlignment="Center" />
                     <TextBlock
                         FontWeight="SemiBold"
                         Foreground="White"
                         Text="{Binding FileName}"
                         VerticalAlignment="Center" />
+
+                    <Border
+                        Background="#0E639C"
+                        CornerRadius="12"
+                        IsVisible="{Binding IsFileLoaded}"
+                        Padding="8,4"
+                        VerticalAlignment="Center">
+                        <TextBlock
+                            FontSize="12"
+                            FontWeight="SemiBold"
+                            Foreground="White"
+                            Text="{Binding FileType}" />
+                    </Border>
                 </StackPanel>
 
-                <Border
-                    Background="#0E639C"
-                    CornerRadius="12"
-                    IsVisible="{Binding IsFileLoaded}"
-                    Padding="8,4"
-                    VerticalAlignment="Center">
-                    <TextBlock
-                        FontSize="12"
-                        FontWeight="SemiBold"
-                        Foreground="White"
-                        Text="{Binding FileType}" />
-                </Border>
+                <!--  Right: Save Button  -->
                 <Button
                     Command="{Binding SaveObjectFromCurrentEditorCommand}"
-                    Content="Save"
+                    Content="Сохранить"
+                    Grid.Column="2"
                     IsEnabled="{Binding IsFileLoaded}"
-                    MinWidth="100" />
-            </StackPanel>
+                    VerticalAlignment="Center"
+                    Width="320" />
+            </Grid>
         </Border>
+
 
         <!--  Dynamic Editor Content  -->
         <ContentControl
@@ -83,31 +103,18 @@
                     FontWeight="Bold"
                     Foreground="#CCCCCC"
                     HorizontalAlignment="Center"
-                    Text="Translation Editor" />
+                    Text="Редактор перевода" />
                 <TextBlock
                     FontSize="16"
                     Foreground="#999999"
                     HorizontalAlignment="Center"
-                    Text="Select a translation file to begin editing" />
+                    Text="Нужно выбрать файл" />
 
                 <StackPanel
                     HorizontalAlignment="Center"
                     Margin="0,20,0,0"
                     Orientation="Horizontal"
-                    Spacing="30">
-                    <StackPanel Spacing="8">
-                        <TextBlock
-                            FontWeight="SemiBold"
-                            Foreground="#CCCCCC"
-                            Text="Supported File Types:" />
-                        <StackPanel Spacing="4">
-                            <TextBlock Foreground="#999999" Text="• Dialogue Files" />
-                            <TextBlock Foreground="#999999" Text="• Skills Files" />
-                            <TextBlock Foreground="#999999" Text="• Battle Hints Files" />
-                            <TextBlock Foreground="#999999" Text="• And more..." />
-                        </StackPanel>
-                    </StackPanel>
-                </StackPanel>
+                    Spacing="30" />
             </StackPanel>
         </Border>
     </Grid>

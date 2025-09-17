@@ -250,7 +250,7 @@ public class RepositoryManager
 
         try
         {
-            var json = JsonConvert.SerializeObject(obj);
+            var json = JsonConvert.SerializeObject(obj, Formatting.Indented);
             File.WriteAllText(obj.FullPath, json, new UTF8Encoding(false));
             return true;
         }
@@ -471,65 +471,63 @@ public class RepositoryManager
         {
             Console.WriteLine("Starting synchronization with origin...");
 
-            // Step 1: Fetch latest remote information
+            // Step 1: Fetch latest remote info
             FetchFromOrigin();
             Console.WriteLine("Fetch completed.");
 
-            // Step 2: Check current status before pulling
-            var currentBranch = Repository.Head;
-            var trackingBranch = currentBranch.TrackedBranch;
+            // Step 2: Check divergence between local and remote
+            var divergence = CheckRepositoryChanges();
+            var behind = divergence[0];
+            var ahead = divergence[1];
 
-            if (trackingBranch != null)
+            if (behind > 0)
             {
-                var localCommit = currentBranch.Tip;
-                var remoteCommit = trackingBranch.Tip;
-
-                if (localCommit.Sha == remoteCommit.Sha)
-                {
-                    Console.WriteLine("Already synchronized with remote.");
-                }
-                else
-                {
-                    // Step 3: Pull remote changes if needed
-                    PullFromOrigin();
-                    Console.WriteLine("Pull completed.");
-                }
-            }
-            else
-            {
-                // No tracking branch, just pull
+                Console.WriteLine($"Local branch is behind by {behind} commit(s). Pulling...");
                 PullFromOrigin();
                 Console.WriteLine("Pull completed.");
             }
+            else
+            {
+                Console.WriteLine("No remote commits to pull.");
+            }
 
-            // Step 4: Only commit if there are actual local changes
+            // Step 3: Commit local changes if any
             var status = Repository.RetrieveStatus();
             if (status.IsDirty)
             {
-                var changes = status.Where(s => s.State != FileStatus.Ignored && s.State != FileStatus.NewInWorkdir)
+                var changes = status
+                    .Where(s => s.State != FileStatus.Ignored && s.State != FileStatus.NewInWorkdir)
                     .ToList();
+
                 if (changes.Any())
                 {
                     Console.WriteLine($"Found {changes.Count} local changes to commit.");
                     CommitLocalChanges("Synchronization of local and remote changes [RainbusToolbox]");
                     Console.WriteLine("Local changes committed.");
-
-                    // Step 5: Only push if we made a new commit
-                    PushToOrigin();
-                    Console.WriteLine("Push completed.");
+                    ahead++; // we just added a commit
                 }
                 else
                 {
-                    // Only untracked files, decide if you want to add them
-                    var untrackedFiles = status.Where(s => s.State == FileStatus.NewInWorkdir).ToList();
-                    if (untrackedFiles.Any())
-                        Console.WriteLine($"Found {untrackedFiles.Count} untracked files. Skipping commit.");
-                    // Optionally: ask user if they want to add untracked files
+                    var untracked = status.Where(s => s.State == FileStatus.NewInWorkdir).ToList();
+                    if (untracked.Any())
+                        Console.WriteLine($"Found {untracked.Count} untracked files (not committed).");
                 }
             }
             else
             {
-                Console.WriteLine("No local changes to commit. Synchronization complete.");
+                Console.WriteLine("No local changes to commit.");
+            }
+
+            // Step 4: Push if ahead
+            if (ahead > 0)
+            {
+                Console.WriteLine($"Local branch is ahead by {ahead} commit(s). Pushing...");
+                PushToOrigin();
+                Console.WriteLine("Push completed.");
+            }
+            else
+            {
+                Console.WriteLine("No local commits to push.");
             }
 
             Console.WriteLine("Synchronization with origin completed successfully.");
@@ -541,6 +539,7 @@ public class RepositoryManager
             );
         }
     }
+
 
     public void FetchFromOrigin()
     {
@@ -554,77 +553,50 @@ public class RepositoryManager
     {
         try
         {
-            var currentBranch = Repository.Head;
-            if (currentBranch == null)
-                throw new Exception("No HEAD is set.");
+            var currentBranch = Repository.Head ?? throw new Exception("No HEAD is set.");
+            var remote = Repository.Network.Remotes["origin"]
+                         ?? throw new Exception("Remote 'origin' not found.");
 
-            // Check if we have a remote tracking branch
-            var trackingBranch = currentBranch.TrackedBranch;
-            if (trackingBranch == null)
-            {
-                // Try to find the corresponding remote branch
-                var remoteBranchName = $"origin/{currentBranch.FriendlyName}";
-                trackingBranch = Repository.Branches[remoteBranchName];
-
-                if (trackingBranch == null)
-                    throw new Exception(
-                        $"No tracking branch found for {currentBranch.FriendlyName}. Remote branch {remoteBranchName} doesn't exist.");
-            }
-
-            // Safety: ensure working directory is clean before pulling
-            var status = Repository.RetrieveStatus();
-            if (status.IsDirty)
-            {
-                var changes = status.Where(s => s.State != FileStatus.Ignored).ToList();
-                var changesList = string.Join("\n", changes.Select(c => $"  {c.State}: {c.FilePath}"));
-                throw new Exception(
-                    $"Working directory has uncommitted changes. Commit or stash before pulling:\n{changesList}");
-            }
-
-            // Get the remote
-            var remote = Repository.Network.Remotes["origin"];
-            if (remote == null)
-                throw new Exception("Remote 'origin' not found.");
-
-            // Fetch latest changes with GitHub token
-            var fetchOptions = new FetchOptions
-            {
-                CredentialsProvider = (url, user, cred) =>
-                    new UsernamePasswordCredentials
-                    {
-                        Username = "token", // GitHub uses "token" as username for personal access tokens
-                        Password = _dataManager.Settings.GitHubToken
-                    }
-            };
-
+            // Step 1: Fetch again to ensure latest remote refs
+            var fetchOptions = CreateFetchOptions();
             var refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);
-            Commands.Fetch(Repository, remote.Name, refSpecs, fetchOptions, null);
+            Commands.Fetch(Repository, remote.Name, refSpecs, fetchOptions, "Fetching before pull");
 
-            // Check if there are any changes to pull
+            // Step 2: Get tracking branch
+            var trackingBranch = currentBranch.TrackedBranch ??
+                                 Repository.Branches[$"{remote.Name}/{currentBranch.FriendlyName}"];
+
+            if (trackingBranch == null)
+                throw new Exception($"No tracking branch found for {currentBranch.FriendlyName}.");
+
             var localCommit = currentBranch.Tip;
             var remoteCommit = trackingBranch.Tip;
 
-            if (localCommit.Sha == remoteCommit.Sha)
+            // Step 3: Check divergence
+            var divergence = Repository.ObjectDatabase.CalculateHistoryDivergence(localCommit, remoteCommit);
+            var behind = divergence?.BehindBy ?? 0;
+            var ahead = divergence?.AheadBy ?? 0;
+
+            if (behind == 0)
             {
-                Console.WriteLine("Already up to date.");
+                Console.WriteLine("No remote commits to pull (up to date).");
                 return;
             }
 
-            // Check if we can fast-forward
+            Console.WriteLine($"Local is behind by {behind} commit(s). Updating...");
+
+            // Step 4: Check if fast-forward possible
             var mergeBase = Repository.ObjectDatabase.FindMergeBase(localCommit, remoteCommit);
             var canFastForward = mergeBase?.Sha == localCommit.Sha;
 
             if (canFastForward)
             {
-                // Fast-forward merge
                 Repository.Reset(ResetMode.Hard, remoteCommit);
                 Console.WriteLine($"Fast-forwarded to {remoteCommit.Sha.Substring(0, 8)}");
             }
             else
             {
-                // Need to do a merge
                 var signature = GetLocalSignature(Repository);
-
                 var mergeOptions = new MergeOptions
                 {
                     FastForwardStrategy = FastForwardStrategy.Default,
@@ -636,7 +608,7 @@ public class RepositoryManager
                 switch (mergeResult.Status)
                 {
                     case MergeStatus.UpToDate:
-                        Console.WriteLine("Already up to date.");
+                        Console.WriteLine("Already up to date after merge.");
                         break;
 
                     case MergeStatus.FastForward:
@@ -653,17 +625,13 @@ public class RepositoryManager
                             .Where(s => s.State == FileStatus.Conflicted)
                             .Select(s => s.FilePath)
                             .ToList();
-
                         var conflictList = string.Join("\n", conflictedFiles.Select(f => $"  {f}"));
-                        throw new Exception(
-                            $"Pull resulted in conflicts in the following files:\n{conflictList}\n\nPlease resolve conflicts manually and commit.");
+                        throw new Exception($"Pull resulted in conflicts:\n{conflictList}\nPlease resolve manually.");
                 }
             }
         }
         catch (CheckoutConflictException ex)
         {
-            // CheckoutConflictException doesn't expose conflicting paths directly
-            // Check repository status to find conflicted files
             var conflictedFiles = Repository.RetrieveStatus()
                 .Where(s => s.State == FileStatus.Conflicted)
                 .Select(s => s.FilePath)
@@ -673,29 +641,21 @@ public class RepositoryManager
             {
                 var conflictList = string.Join("\n", conflictedFiles.Select(f => $"  {f}"));
                 App.Current.HandleGlobalExceptionAsync(
-                    new Exception(
-                        $"Pull failed due to checkout conflicts in:\n{conflictList}\n\nPlease resolve conflicts manually.",
-                        ex)
+                    new Exception($"Pull failed due to checkout conflicts:\n{conflictList}", ex)
                 );
             }
             else
             {
                 App.Current.HandleGlobalExceptionAsync(
-                    new Exception(
-                        $"Pull failed due to checkout conflicts. Please resolve them manually.\nDetails: {ex.Message}",
-                        ex)
+                    new Exception($"Pull failed due to checkout conflicts. {ex.Message}", ex)
                 );
             }
         }
-        catch (LibGit2SharpException ex)
-        {
-            App.Current.HandleGlobalExceptionAsync(
-                new Exception($"Git pull failed: {ex.Message}", ex)
-            );
-        }
         catch (Exception ex)
         {
-            App.Current.HandleGlobalExceptionAsync(ex);
+            App.Current.HandleGlobalExceptionAsync(
+                new Exception($"Pull failed: {ex.Message}", ex)
+            );
         }
     }
 

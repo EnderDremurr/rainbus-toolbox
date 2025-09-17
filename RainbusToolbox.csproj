@@ -68,7 +68,7 @@
         <DependentUpon>SettingsWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Views\Tabs\UpdaterTab.axaml.cs">
+      <Compile Update="Views\Tabs\FilesTab.axaml.cs">
         <DependentUpon>UpdaterTab.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>

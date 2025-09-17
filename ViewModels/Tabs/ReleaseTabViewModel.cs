@@ -137,12 +137,7 @@ public partial class ReleaseTabViewModel : ObservableObject
 
 
     #region Commands
-
-    [RelayCommand]
-    private void ExplodeFuckingTranslation()
-    {
-        _keyWordConversionService.ReplaceEveryTagWithMesh(_repositoryManager.PathToLocalization);
-    }
+    
 
     [RelayCommand]
     private async Task Submit()
@@ -167,12 +162,6 @@ public partial class ReleaseTabViewModel : ObservableObject
         {
             IsLoading = true;
 
-            // Handle General section options
-            if (MergeWithReadme)
-            {
-                // TODO: Implement README.md merging logic
-                System.Diagnostics.Debug.WriteLine("TODO: Implement README.md merging");
-            }
 
             // Package the localization
             var package = await Task.Run(() => LocalizationPackager.PackageLocalization(Version, _repositoryManager));
