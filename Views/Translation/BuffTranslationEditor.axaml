@@ -3,37 +3,20 @@
     d:DesignWidth="1200"
     mc:Ignorable="d"
     x:Class="RainbusToolbox.Views.BuffTranslationEditor"
-    x:DataType="views:BuffTranslationEditor"
+    x:DataType="viewModels:BuffTranslationEditorViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:RainbusToolbox.ViewModels"
     xmlns:views="clr-namespace:RainbusToolbox.Views"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Grid RowDefinitions="Auto,*,Auto">
-        <!--  File Selection  -->
-        <StackPanel
-            Grid.Row="0"
-            Margin="20,15,20,15"
-            Orientation="Horizontal">
-            <Button
-                Click="OnSelectFileClick"
-                Content="Select Buff File"
-                Margin="0,0,15,0"
-                MinWidth="120"
-                Name="SelectFileButton" />
-            <TextBlock
-                Margin="10,0,0,0"
-                Name="FilePathText"
-                Text="No file selected"
-                VerticalAlignment="Center" />
-        </StackPanel>
-
         <!--  Main Content - Vertical Split  -->
         <Grid
             ColumnDefinitions="*,*"
             Grid.Row="1"
-            IsVisible="{Binding IsBuffLoaded}"
+            IsVisible="{Binding IsFileLoaded}"
             Margin="20,0,20,15">
 
             <!--  Reference Section (Left)  -->
@@ -76,7 +59,7 @@
                                     <TextBlock
                                         FontSize="24"
                                         Foreground="White"
-                                        Text="{Binding ReferenceBuff.Id}"
+                                        Text="{Binding ReferenceItem.Id}"
                                         TextWrapping="Wrap" />
                                 </StackPanel>
 
@@ -92,7 +75,7 @@
                                     <TextBox
                                         Background="Transparent"
                                         IsReadOnly="True"
-                                        Text="{Binding ReferenceBuff.Name}"
+                                        Text="{Binding ReferenceItem.Name}"
                                         TextWrapping="Wrap" />
                                 </StackPanel>
 
@@ -109,7 +92,7 @@
                                         Background="Transparent"
                                         IsReadOnly="True"
                                         MinHeight="80"
-                                        Text="{Binding ReferenceBuff.Desc}"
+                                        Text="{Binding ReferenceItem.Desc}"
                                         TextWrapping="Wrap" />
                                 </StackPanel>
 
@@ -126,7 +109,7 @@
                                         Background="Transparent"
                                         IsReadOnly="True"
                                         MinHeight="60"
-                                        Text="{Binding ReferenceBuff.Summary}"
+                                        Text="{Binding ReferenceItem.Summary}"
                                         TextWrapping="Wrap" />
                                 </StackPanel>
 
@@ -143,7 +126,7 @@
                                         Background="Transparent"
                                         IsReadOnly="True"
                                         MinHeight="40"
-                                        Text="{Binding ReferenceBuff.Undefined}"
+                                        Text="{Binding ReferenceItem.Undefined}"
                                         TextWrapping="Wrap" />
                                 </StackPanel>
                             </StackPanel>
@@ -192,7 +175,7 @@
                                     <TextBlock
                                         FontSize="24"
                                         Foreground="White"
-                                        Text="{Binding CurrentBuff.Id}"
+                                        Text="{Binding CurrentItem.Id}"
                                         TextWrapping="Wrap" />
                                 </StackPanel>
 
@@ -207,7 +190,7 @@
                                         Text="Name:" />
                                     <TextBox
                                         Background="Transparent"
-                                        Text="{Binding CurrentBuff.Name, Mode=TwoWay}"
+                                        Text="{Binding CurrentItem.Name, Mode=TwoWay}"
                                         TextWrapping="Wrap" />
                                 </StackPanel>
 
@@ -224,7 +207,7 @@
                                         AcceptsReturn="True"
                                         Background="Transparent"
                                         MinHeight="80"
-                                        Text="{Binding CurrentBuff.Desc, Mode=TwoWay}"
+                                        Text="{Binding CurrentItem.Desc, Mode=TwoWay}"
                                         TextWrapping="Wrap" />
                                 </StackPanel>
 
@@ -241,7 +224,7 @@
                                         AcceptsReturn="True"
                                         Background="Transparent"
                                         MinHeight="60"
-                                        Text="{Binding CurrentBuff.Summary, Mode=TwoWay}"
+                                        Text="{Binding CurrentItem.Summary, Mode=TwoWay}"
                                         TextWrapping="Wrap" />
                                 </StackPanel>
 
@@ -258,7 +241,7 @@
                                         AcceptsReturn="True"
                                         Background="Transparent"
                                         MinHeight="40"
-                                        Text="{Binding CurrentBuff.Undefined, Mode=TwoWay}"
+                                        Text="{Binding CurrentItem.Undefined, Mode=TwoWay}"
                                         TextWrapping="Wrap" />
                                 </StackPanel>
                             </StackPanel>
@@ -272,14 +255,14 @@
         <StackPanel
             Grid.Row="2"
             HorizontalAlignment="Center"
-            IsVisible="{Binding IsBuffLoaded}"
+            IsVisible="{Binding IsFileLoaded}"
             Margin="20,5,20,20"
             Orientation="Horizontal">
 
             <!--  Buff Navigation Section  -->
             <StackPanel Orientation="Horizontal">
                 <Button
-                    Click="OnPreviousBuffClick"
+                    Click="OnPreviousClick"
                     Content="◀ Previous"
                     IsEnabled="{Binding CanGoPrevious}"
                     Margin="0,0,10,0"
@@ -297,7 +280,7 @@
                         Width="150" />
                 </Border>
                 <Button
-                    Click="OnNextBuffClick"
+                    Click="OnNextClick"
                     Content="Next ▶"
                     IsEnabled="{Binding CanGoNext}"
                     Margin="10,0,0,0"

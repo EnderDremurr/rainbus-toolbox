@@ -29,34 +29,25 @@ public partial class TranslationTabViewModel : ObservableObject
     [ObservableProperty]
     private IFileEditor? _currentEditor;
 
-    private readonly Dictionary<Type, IFileEditor> _editorMap;
-    private readonly IFileEditor _genericEditor;
-    
-    private RepositoryManager _repositoryManager;
-
-    public TranslationTabViewModel()
+    private readonly Dictionary<Type, IFileEditor> _editorMap = new()
     {
-        _editorMap = new Dictionary<Type, IFileEditor>
-        {
-            { typeof(StoryDataFile), new StoryTranslationEditor() },
-            { typeof(EGOGiftFile), new EGOGiftTranslationEditor() },
-            { typeof(SkillsFile), new SkillsTranslationEditor() },
-            { typeof(PanicInfoFile), new PanicTranslationEditor() }
-        };
-        
-        _repositoryManager = App.Current.ServiceProvider.GetService(typeof(RepositoryManager)) as RepositoryManager;
-
-        _genericEditor = new GenericTranslationEditor();
-    }
+        { typeof(StoryDataFile), new StoryTranslationEditor() },
+        { typeof(EGOGiftFile), new EGOGiftTranslationEditor() },
+        { typeof(SkillsFile), new SkillsTranslationEditor() },
+        { typeof(PanicInfoFile), new PanicTranslationEditor() },
+        { typeof(BuffsFile), new BuffTranslationEditor() }
+    };
+    private readonly IFileEditor _genericEditor = new GenericTranslationEditor();
+    
+    private RepositoryManager _repositoryManager = (App.Current.ServiceProvider.GetService(typeof(RepositoryManager)) as RepositoryManager)!;
 
     [RelayCommand]
     public async void SelectFile()
     {
-        var top = Avalonia.Application.Current.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
+        var top = Avalonia.Application.Current!.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
         if (top == null) return;
 
         var storage = top.StorageProvider;
-        if (storage == null) return;
 
         var fileTypes = new[]
         {
@@ -97,9 +88,23 @@ public partial class TranslationTabViewModel : ObservableObject
 
 
         var file = _repositoryManager.GetObjectFromPath(filePath);
-        var refFile = _repositoryManager.GetReference(file);
-        CurrentEditor.SetFileToEdit(file);
-        CurrentEditor.SetReferenceFile(refFile);
+        var refFile = _repositoryManager.GetReference(file!);
+        CurrentEditor.SetFileToEdit(file!);
+        CurrentEditor.SetReferenceFile(refFile!);
         
+    }
+
+    [RelayCommand]
+    public void SaveObjectFromCurrentEditor()
+    {
+        if (CurrentEditor is UserControl editor && editor.DataContext is not null)
+        {
+            var vm = editor.DataContext;
+            var prop = vm.GetType().GetProperty("EditableFile");
+            var obj = prop?.GetValue(vm);
+
+            if (obj is LocalizationFileBase file)
+                _repositoryManager.SaveObjectToFile(file);
+        }
     }
 }

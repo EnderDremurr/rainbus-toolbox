@@ -58,6 +58,11 @@
                         Foreground="White"
                         Text="{Binding FileType}" />
                 </Border>
+                <Button
+                    Command="{Binding SaveObjectFromCurrentEditorCommand}"
+                    Content="Save"
+                    IsEnabled="{Binding IsFileLoaded}"
+                    MinWidth="100" />
             </StackPanel>
         </Border>
 

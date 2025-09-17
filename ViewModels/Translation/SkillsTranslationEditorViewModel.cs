@@ -24,8 +24,8 @@ public partial class SkillsTranslationEditorViewModel : TranslationEditorViewMod
 
     public override void LoadEditableFile(SkillsFile file)
     {
-        _editableFile = file;
-        _currentIndex = 0;
+        EditableFile = file;
+        CurrentIndex = 0;
         _currentLevelIndex = 0;
         UpdateCurrent();
         UpdateReference();
@@ -35,14 +35,14 @@ public partial class SkillsTranslationEditorViewModel : TranslationEditorViewMod
 
     public void LoadReferenceFile(SkillsFile file)
     {
-        _referenceFile = file;
+        ReferenceFile = file;
         UpdateReference();
     }
 
     public void GoPreviousSkill()
     {
-        if (_currentIndex <= 0) return;
-        _currentIndex--;
+        if (CurrentIndex <= 0) return;
+        CurrentIndex--;
         _currentLevelIndex = 0;
         UpdateCurrent();
         UpdateReference();
@@ -51,8 +51,8 @@ public partial class SkillsTranslationEditorViewModel : TranslationEditorViewMod
 
     public void GoNextSkill()
     {
-        if (_editableFile == null || _currentIndex >= _editableFile.DataList.Count - 1) return;
-        _currentIndex++;
+        if (EditableFile == null || CurrentIndex >= EditableFile.DataList.Count - 1) return;
+        CurrentIndex++;
         _currentLevelIndex = 0;
         UpdateCurrent();
         UpdateReference();
@@ -70,7 +70,7 @@ public partial class SkillsTranslationEditorViewModel : TranslationEditorViewMod
 
     public void GoNextLevel()
     {
-        if (_editableFile == null || _currentItem == null || _currentLevelIndex >= _currentItem.LevelList.Count - 1) return;
+        if (EditableFile == null || _currentItem == null || _currentLevelIndex >= _currentItem.LevelList.Count - 1) return;
         _currentLevelIndex++;
         UpdateCurrent();
         UpdateReference();
@@ -79,9 +79,9 @@ public partial class SkillsTranslationEditorViewModel : TranslationEditorViewMod
 
     private void UpdateCurrent()
     {
-        if (_editableFile != null && _editableFile.DataList.Count > 0)
+        if (EditableFile != null && EditableFile.DataList.Count > 0)
         {
-            _currentItem = _editableFile.DataList[_currentIndex];
+            _currentItem = EditableFile.DataList[CurrentIndex];
             if (_currentItem.LevelList.Count > _currentLevelIndex)
                 CurrentLevel = _currentItem.LevelList[_currentLevelIndex];
             else
@@ -99,9 +99,9 @@ public partial class SkillsTranslationEditorViewModel : TranslationEditorViewMod
 
     private void UpdateReference()
     {
-        if (_referenceFile != null && _referenceFile.DataList.Count > _currentIndex)
+        if (ReferenceFile != null && ReferenceFile.DataList.Count > CurrentIndex)
         {
-            _referenceItem = _referenceFile.DataList[_currentIndex];
+            _referenceItem = ReferenceFile.DataList[CurrentIndex];
             if (_referenceItem.LevelList.Count > _currentLevelIndex)
                 ReferenceLevel = _referenceItem.LevelList[_currentLevelIndex];
             else
@@ -124,13 +124,13 @@ public partial class SkillsTranslationEditorViewModel : TranslationEditorViewMod
 
     private void UpdateNavigation()
     {
-        CanGoPrevious = _currentIndex > 0;
-        CanGoNext = _editableFile != null && _currentIndex < _editableFile.DataList.Count - 1;
+        CanGoPrevious = CurrentIndex > 0;
+        CanGoNext = EditableFile != null && CurrentIndex < EditableFile.DataList.Count - 1;
 
         CanGoPreviousLevel = _currentItem?.LevelList != null && _currentLevelIndex > 0;
         CanGoNextLevel = _currentItem?.LevelList != null && _currentLevelIndex < (_currentItem.LevelList.Count - 1);
 
-        NavigationText = $"{_currentIndex + 1} / {_editableFile?.DataList.Count ?? 0}";
+        NavigationText = $"{CurrentIndex + 1} / {EditableFile?.DataList.Count ?? 0}";
         LevelNavigationText = _currentItem?.LevelList != null ? $"{_currentLevelIndex + 1} / {_currentItem.LevelList.Count}" : "";
     }
 }

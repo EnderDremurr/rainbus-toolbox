@@ -126,8 +126,8 @@ public class PassivesFile : LocalizationFileBase, ILocalizationContainer<Generic
     public List<GenericIdNameDesc> DataList { get; set; }
 }
 
-//Buffs* (Buff descriptions)
-public class BuffsFile
+[FilePattern("Bufs*")] // bufs with one f!!! (its like that in game)
+public class BuffsFile : LocalizationFileBase, ILocalizationContainer<Buff>
 {
     [JsonProperty("dataList")]
     public List<Buff> DataList { get; set; }

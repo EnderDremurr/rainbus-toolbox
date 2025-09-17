@@ -5,9 +5,9 @@ namespace RainbusToolbox.ViewModels;
 
 public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject where TFile : LocalizationFileBase, ILocalizationContainer<TItem>
 {
-    protected TFile? _editableFile;
-    protected TFile? _referenceFile;
-    protected int _currentIndex = 0;
+    public TFile? EditableFile { get; protected set; }
+    public TFile? ReferenceFile { get; protected set; }
+    public int CurrentIndex { get; protected set; } = 0;
 
     [ObservableProperty] protected bool _canGoPrevious;
     [ObservableProperty] protected bool _canGoNext;
@@ -15,12 +15,12 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
     [ObservableProperty] protected TItem? _currentItem;
     [ObservableProperty] protected TItem? _referenceItem;
 
-    public bool IsFileLoaded => _editableFile != null && _editableFile.DataList.Count > 0;
+    public bool IsFileLoaded => EditableFile != null && EditableFile.DataList.Count > 0;
 
     public virtual void LoadEditableFile(TFile file)
     {
-        _editableFile = file;
-        _currentIndex = 0;
+        EditableFile = file;
+        CurrentIndex = 0;
         UpdateCurrentItem();
         UpdateReferenceItem();
         UpdateNavigation();
@@ -29,14 +29,14 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
 
     public virtual void LoadReferenceFile(TFile file)
     {
-        _referenceFile = file;
+        ReferenceFile = file;
         UpdateReferenceItem();
     }
 
     public virtual void GoPrevious()
     {
-        if (_currentIndex <= 0) return;
-        _currentIndex--;
+        if (CurrentIndex <= 0) return;
+        CurrentIndex--;
         UpdateCurrentItem();
         UpdateReferenceItem();
         UpdateNavigation();
@@ -44,8 +44,8 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
 
     public virtual void GoNext()
     {
-        if (_editableFile == null || _currentIndex >= _editableFile.DataList.Count - 1) return;
-        _currentIndex++;
+        if (EditableFile == null || CurrentIndex >= EditableFile.DataList.Count - 1) return;
+        CurrentIndex++;
         UpdateCurrentItem();
         UpdateReferenceItem(); 
         UpdateNavigation();
@@ -53,23 +53,23 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
 
     protected virtual void UpdateCurrentItem()
     {
-        if (_editableFile != null && _editableFile.DataList.Count > 0)
-            CurrentItem = _editableFile.DataList[_currentIndex];
+        if (EditableFile != null && EditableFile.DataList.Count > 0)
+            CurrentItem = EditableFile.DataList[CurrentIndex];
     }
 
     // Add this new method
     protected virtual void UpdateReferenceItem()
     {
-        if (_referenceFile != null && _referenceFile.DataList.Count > _currentIndex)
-            ReferenceItem = _referenceFile.DataList[_currentIndex];
+        if (ReferenceFile != null && ReferenceFile.DataList.Count > CurrentIndex)
+            ReferenceItem = ReferenceFile.DataList[CurrentIndex];
         else
             ReferenceItem = default;
     }
 
     protected virtual void UpdateNavigation()
     {
-        CanGoPrevious = _currentIndex > 0;
-        CanGoNext = _editableFile != null && _currentIndex < _editableFile.DataList.Count - 1;
-        NavigationText = $"{_currentIndex + 1} / {_editableFile?.DataList.Count ?? 0}";
+        CanGoPrevious = CurrentIndex > 0;
+        CanGoNext = EditableFile != null && CurrentIndex < EditableFile.DataList.Count - 1;
+        NavigationText = $"{CurrentIndex + 1} / {EditableFile?.DataList.Count ?? 0}";
     }
 }

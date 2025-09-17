@@ -60,7 +60,7 @@ public partial class App : Application
         };
     }
 
-    // Global exception handler
+    // Global exception handler for fatal exceptions
     public async Task HandleGlobalExceptionAsync(Exception exception)
     {
         Console.WriteLine(FormatExceptionText(exception)); // log to console
@@ -74,6 +74,82 @@ public partial class App : Application
             {
                 Console.WriteLine($"Exception while showing dialog: {ex}");
                 (ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Shutdown();
+            }
+        });
+    }
+
+    // Non-fatal exception handler - just informs the user, doesn't shut down
+    public async Task HandleNonFatalExceptionAsync(Exception exception, string? userFriendlyMessage = null)
+    {
+        Console.WriteLine($"Non-fatal exception: {FormatExceptionText(exception)}"); // log to console
+        
+        await Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            try
+            {
+                await ShowNonFatalExceptionDialogAsync(exception, userFriendlyMessage);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception while showing non-fatal error dialog: {ex}");
+                // Don't shut down for non-fatal exceptions, just log the error
+            }
+        });
+    }
+
+    // Convenience method for quick non-fatal error notifications
+    public async Task ShowErrorNotificationAsync(string message, string? title = null)
+    {
+        await Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            try
+            {
+                var dialog = new Window
+                {
+                    Title = title ?? "Error",
+                    Width = 400,
+                    Height = 200,
+                    CanResize = false,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+
+                var textBlock = new TextBlock
+                {
+                    Text = message,
+                    Margin = new Thickness(20),
+                    TextWrapping = Avalonia.Media.TextWrapping.Wrap
+                };
+
+                var button = new Button
+                {
+                    Content = "OK",
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                    Margin = new Thickness(20)
+                };
+
+                button.Click += (_, _) => dialog.Close();
+
+                var stackPanel = new StackPanel();
+                stackPanel.Children.Add(textBlock);
+                stackPanel.Children.Add(button);
+
+                dialog.Content = stackPanel;
+
+                var desktopLifetime = ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+                Window? parentWindow = desktopLifetime?.MainWindow;
+
+                if (parentWindow != null)
+                {
+                    await dialog.ShowDialog(parentWindow);
+                }
+                else
+                {
+                    dialog.Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception while showing error notification: {ex}");
             }
         });
     }
@@ -96,6 +172,83 @@ public partial class App : Application
         }
 
         desktopLifetime?.Shutdown();
+    }
+
+    private async Task ShowNonFatalExceptionDialogAsync(Exception exception, string? userFriendlyMessage = null)
+    {
+        var dialog = new Window
+        {
+            Title = "Error",
+            Width = 500,
+            Height = 400,
+            CanResize = true,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner
+        };
+
+        var mainPanel = new StackPanel { Margin = new Thickness(20) };
+
+        // User-friendly message
+        var messageText = userFriendlyMessage ?? "An error occurred, but the application can continue running.";
+        var messageBlock = new TextBlock
+        {
+            Text = messageText,
+            FontSize = 14,
+            FontWeight = Avalonia.Media.FontWeight.Medium,
+            Margin = new Thickness(0, 0, 0, 20),
+            TextWrapping = Avalonia.Media.TextWrapping.Wrap
+        };
+        mainPanel.Children.Add(messageBlock);
+
+        // Details section
+        var detailsExpander = new Expander
+        {
+            Header = "Technical Details",
+            Margin = new Thickness(0, 0, 0, 20)
+        };
+
+        var detailsText = new TextBox
+        {
+            Text = FormatExceptionText(exception),
+            IsReadOnly = true,
+            AcceptsReturn = true,
+            TextWrapping = Avalonia.Media.TextWrapping.Wrap,
+            Height = 200,
+        };
+
+        detailsExpander.Content = detailsText;
+        mainPanel.Children.Add(detailsExpander);
+
+        // Buttons
+        var buttonPanel = new StackPanel
+        {
+            Orientation = Avalonia.Layout.Orientation.Horizontal,
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right
+        };
+
+        var okButton = new Button
+        {
+            Content = "OK",
+            Margin = new Thickness(10, 0, 0, 0),
+            MinWidth = 80
+        };
+
+        okButton.Click += (_, _) => dialog.Close();
+        buttonPanel.Children.Add(okButton);
+
+        mainPanel.Children.Add(buttonPanel);
+        dialog.Content = mainPanel;
+
+        var desktopLifetime = ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+        Window? parentWindow = desktopLifetime?.MainWindow;
+
+        if (parentWindow != null)
+        {
+            await dialog.ShowDialog(parentWindow);
+        }
+        else
+        {
+            dialog.Show();
+        }
     }
 
     private string FormatExceptionText(Exception exception)
