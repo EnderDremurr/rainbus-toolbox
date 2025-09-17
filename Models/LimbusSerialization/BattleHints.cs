@@ -5,12 +5,6 @@ using Newtonsoft.Json;
 namespace RainbusToolbox.Utilities.Data;
 
 
-public enum BattleHintTypes
-{
-    Loading,
-    Battle,
-    Abnormality,
-}
 
 
 // BattleHint*

@@ -34,6 +34,7 @@ public partial class TranslationTabViewModel : ObservableObject
         { typeof(StoryDataFile), new StoryTranslationEditor() },
         { typeof(EGOGiftFile), new EGOGiftTranslationEditor() },
         { typeof(SkillsFile), new SkillsTranslationEditor() },
+        {typeof(BattleHintsFile), new BattleHintsTranslationEditor()},
         { typeof(PanicInfoFile), new PanicTranslationEditor() },
         { typeof(BuffsFile), new BuffTranslationEditor() }
     };

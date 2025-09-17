@@ -1,13 +1,14 @@
 <UserControl
-    d:DataContext="{d:DesignInstance Type=vm:BattleHintsEditorViewModel}"
+    d:DataContext="{d:DesignInstance Type=global:BattleHintsEditorViewModel}"
     mc:Ignorable="d"
     x:Class="RainbusToolbox.Views.BattleHintsTranslationEditor"
-    x:DataType="vm:BattleHintsEditorViewModel"
+    x:DataType="global:BattleHintsEditorViewModel"
     x:Name="Root"
     xmlns="https://github.com/avaloniaui"
     xmlns:converters="clr-namespace:RainbusToolbox.Models"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:data="clr-namespace:RainbusToolbox.Utilities.Data"
+    xmlns:global="clr-namespace:"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:RainbusToolbox.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
@@ -23,9 +24,9 @@
             Grid.Row="0"
             Margin="10"
             x:Name="BattleHintsScrollViewer">
-            <ItemsControl ItemsSource="{Binding Hints}">
+            <ItemsControl ItemsSource="{Binding ObservableDataList}">
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="data:EditableGenericIdContent">
+                    <DataTemplate x:DataType="data:GenericIdContent">
                         <Border
                             Background="#1E1E1E"
                             BorderBrush="#666666"
@@ -56,50 +57,18 @@
                                     <TextBlock
                                         FontSize="18"
                                         Foreground="White"
-                                        IsVisible="{Binding !IsEditing}"
                                         Text="{Binding Content}"
                                         TextWrapping="Wrap"
                                         VerticalAlignment="Center"
                                         Width="1700" />
 
-                                    <!--  Edit mode  -->
-                                    <TextBox
-                                        AcceptsReturn="True"
-                                        FontSize="18"
-                                        Foreground="White"
-                                        IsVisible="{Binding IsEditing}"
-                                        Text="{Binding EditContent, Mode=TwoWay}"
-                                        TextWrapping="Wrap"
-                                        VerticalAlignment="Center"
-                                        Width="1700" />
                                 </StackPanel>
 
-                                <!--  Edit/Save Button  -->
-                                <Button
-                                    Command="{Binding DataContext.EditHintCommand, ElementName=Root}"
-                                    CommandParameter="{Binding}"
-                                    Content="✏"
-                                    Grid.Column="1"
-                                    Height="40"
-                                    IsVisible="{Binding !IsEditing}"
-                                    Margin="0,0,5,0"
-                                    VerticalAlignment="Center"
-                                    Width="40" />
 
-                                <Button
-                                    Command="{Binding DataContext.SaveHintCommand, ElementName=Root}"
-                                    CommandParameter="{Binding}"
-                                    Content="💾"
-                                    Grid.Column="1"
-                                    Height="40"
-                                    IsVisible="{Binding IsEditing}"
-                                    Margin="0,0,5,0"
-                                    VerticalAlignment="Center"
-                                    Width="40" />
 
                                 <!--  Delete Button  -->
                                 <Button
-                                    Command="{Binding DataContext.DeleteHintCommand, ElementName=Root}"
+                                    Command="{Binding DataContext.DeleteHint, ElementName=Root}"
                                     CommandParameter="{Binding Id}"
                                     Content="✖"
                                     Grid.Column="2"
@@ -134,30 +103,6 @@
                 Height="60"
                 Width="150" />
 
-            <!--  Radio buttons  -->
-            <StackPanel
-                Orientation="Horizontal"
-                Spacing="10"
-                VerticalAlignment="Center">
-                <RadioButton
-                    Checked="RadioButton_Checked"
-                    Content="Loading"
-                    GroupName="HintTypes"
-                    Tag="Loading" />
-
-                <RadioButton
-                    Checked="RadioButton_Checked"
-                    Content="Battle"
-                    GroupName="HintTypes"
-                    Tag="Battle" />
-
-                <RadioButton
-                    Checked="RadioButton_Checked"
-                    Content="Abnormality"
-                    GroupName="HintTypes"
-                    Tag="Abnormality" />
-
-            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>

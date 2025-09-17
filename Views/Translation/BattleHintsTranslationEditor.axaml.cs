@@ -10,31 +10,16 @@ using RainbusToolbox.ViewModels;
 
 namespace RainbusToolbox.Views;
 
-public partial class BattleHintsTranslationEditor : UserControl
+public partial class BattleHintsTranslationEditor : UserControl, IFileEditor
 {
+    public BattleHintsEditorViewModel VM => (BattleHintsEditorViewModel)DataContext!;
+
     public BattleHintsTranslationEditor()
     {
         InitializeComponent();
-        
-        // Resolve RepositoryManager via DI
-        var repoManager = ((App)Application.Current).ServiceProvider.GetRequiredService<RepositoryManager>();
-        var vm = new BattleHintsEditorViewModel(repoManager);
-        DataContext = vm;
-
-        vm.HintsUpdated += () =>
-        {
-            BattleHintsScrollViewer.ScrollToEnd();
-        };
+        DataContext ??= new BattleHintsEditorViewModel();
     }
-    private void RadioButton_Checked(object? sender, RoutedEventArgs e)
-    {
-        if (sender is RadioButton rb && DataContext is BattleHintsEditorViewModel vm)
-        {
-            if (Enum.TryParse<BattleHintTypes>(rb.Tag.ToString(), out var type))
-            {
-                vm.SelectedType = type;
-            }
-        }
-    }
+    public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((BattleHintsFile)file);
 
+    public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((BattleHintsFile)file);
 }

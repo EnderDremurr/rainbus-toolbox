@@ -1,131 +1,67 @@
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Avalonia.Threading;
-using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Utilities.Data;
+using RainbusToolbox.ViewModels;
 
-namespace RainbusToolbox.ViewModels;
-
-public partial class BattleHintsEditorViewModel : ObservableObject
+public partial class BattleHintsEditorViewModel : TranslationEditorViewModel<BattleHintsFile, GenericIdContent>
 {
-    private readonly RepositoryManager _repositoryManager;
+    [ObservableProperty] private string _newHintText;
 
-    public BattleHintsEditorViewModel(RepositoryManager repositoryManager)
+    // Observable collection bound to the UI
+    public ObservableCollection<GenericIdContent> ObservableDataList { get; } = new();
+
+    public override void LoadEditableFile(BattleHintsFile file)
     {
-        _repositoryManager = repositoryManager;
-        Hints = new ObservableCollection<EditableGenericIdContent>();
-        LoadHints();
-    }
-    
-    private BattleHintTypes _selectedType;
-    public BattleHintTypes SelectedType
-    {
-        get => _selectedType;
-        set
+        base.LoadEditableFile(file);
+
+        // Clear and populate the observable collection from the file's list
+        ObservableDataList.Clear();
+        foreach (var item in EditableFile.DataList)
+            ObservableDataList.Add(item);
+
+        // Subscribe to changes in the observable collection if needed
+        ObservableDataList.CollectionChanged += (s, e) =>
         {
-            if (_selectedType != value)
-            {
-                _selectedType = value;
-                OnPropertyChanged(nameof(SelectedType));
-
-                // Call your method when value changes
-                LoadHints();
-            }
-        }
+            // Keep the underlying list in sync for serialization
+            EditableFile.DataList = ObservableDataList.ToList();
+        };
     }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-    protected virtual void OnPropertyChanged(string propertyName) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-    public ObservableCollection<EditableGenericIdContent> Hints { get; }
-
-    [ObservableProperty]
-    private string _newHintText;
-
-    /// <summary>
-    /// Loads BattleHints from the repository and updates the observable collection.
-    /// </summary>
-    private void LoadHints()
-    {
-        Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            var battleHints = _repositoryManager.GetBattleHints(_selectedType);
-
-            Hints.Clear();
-
-            if (battleHints?.DataList == null)
-                return;
-
-            foreach (var hint in battleHints.DataList)
-            {
-                Hints.Add(new EditableGenericIdContent(hint));
-            }
-
-            HintsUpdated?.Invoke();
-        });
-    }
-
-    public event Action? HintsUpdated;
 
     [RelayCommand]
     private void AddHint()
     {
-        if (string.IsNullOrWhiteSpace(NewHintText))
-            return;
+        if (string.IsNullOrWhiteSpace(NewHintText)) return;
 
-        _repositoryManager.AddHint(NewHintText, _selectedType);
+        var nextId = ObservableDataList.Any() 
+            ? ObservableDataList.Max(h => int.Parse(h.Id)) + 1 
+            : 1;
 
-        LoadHints();
+        var newHint = new GenericIdContent
+        {
+            Id = nextId.ToString(),
+            Content = NewHintText
+        };
 
+        ObservableDataList.Add(newHint);
         NewHintText = string.Empty;
     }
 
     [RelayCommand]
     private void DeleteHint(string id)
     {
-        if (string.IsNullOrWhiteSpace(id))
-            return;
-
-        // Delete from repository
-        _repositoryManager.DeleteHintAtId(int.Parse(id), _selectedType);
-
-        // Remove from observable collection
-        var toRemove = Hints.FirstOrDefault(h => h.Id == id);
-        if (toRemove != null)
-            Hints.Remove(toRemove);
+        var hint = ObservableDataList.FirstOrDefault(h => int.Parse(h.Id) == int.Parse(id));
+        if (hint != null)
+            ObservableDataList.Remove(hint);
     }
 
-    [RelayCommand]
-    private void EditHint(EditableGenericIdContent hint)
+    public void UpdateHint(int id, string newContent)
     {
-        if (hint == null)
-            return;
-
-        // Cancel any other editing hints
-        foreach (var h in Hints.Where(x => x != hint && x.IsEditing))
-        {
-            h.CancelEdit();
-        }
-
-        // Start editing this hint
-        hint.StartEdit();
-    }
-
-    [RelayCommand]
-    private void SaveHint(EditableGenericIdContent hint)
-    {
-        if (hint == null || string.IsNullOrWhiteSpace(hint.EditContent))
-            return;
-
-        // Update in repository
-        _repositoryManager.UpdateHint(int.Parse(hint.Id), hint.EditContent, _selectedType);
-
-        // Update the local object
-        hint.SaveEdit();
+        var hint = ObservableDataList.FirstOrDefault(h => int.Parse(h.Id) == id);
+        if (hint != null)
+            hint.Content = newContent;
     }
 }
