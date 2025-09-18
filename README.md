@@ -30,16 +30,13 @@ Rainbus Toolbox — кроссплатформенная альтернатив�
 #### Функционал
 ##### Перевод сюжета > [WIP]
 - Визуальный редактор файлов StoryData, работает но пока выглядит не совсем красиво, будет доработан.
-<img width="1920" height="932" alt="image" src="https://github.com/user-attachments/assets/9f760a1f-c3ef-470b-917c-09f9a1ca5f76" />
 
 ##### Перевод ЭГО гифтов > [WIP]
-- В разработке
+<img width="1920" height="934" alt="image" src="https://github.com/user-attachments/assets/3694ec20-15ae-4a7d-8f1b-1e42934d1fd3" />
 ##### Перевод айдишек и их скиллов > [WIP]
-<img width="1920" height="1050" alt="image" src="https://github.com/user-attachments/assets/06e25414-a413-4e85-9abc-57f124b99f56" />
-
+<img width="1920" height="934" alt="image" src="https://github.com/user-attachments/assets/ef8c2eb4-cd64-4040-8b0a-04307b480b60" />
 ##### Перевод баффов > [WIP]
-<img width="1920" height="1050" alt="image" src="https://github.com/user-attachments/assets/3abf5290-c1cc-4ba0-a002-83e5413ee532" />
-
+<img width="1920" height="934" alt="image" src="https://github.com/user-attachments/assets/d42ad23a-243c-42ff-87b7-14e8a005cbaf" />
 ##### Перевод кейвордов > [WIP]
 - В разработке
 ##### Перевод мини реплик из профиля > [WIP]
@@ -47,18 +44,19 @@ Rainbus Toolbox — кроссплатформенная альтернатив�
 ##### Перевод ачивок > [WIP]
 - В разработке
 ##### Перевод паники/низкой морали > [WIP]
-<img width="1920" height="1050" alt="image" src="https://github.com/user-attachments/assets/8451e9fb-54c5-4754-ab98-2b85cb34dc16" />
-
+<img width="1920" height="934" alt="image" src="https://github.com/user-attachments/assets/bf98b1cc-e53c-4bdb-b480-49ef2455515c" />
 ##### Редактор баттлхинтов.
-- Модификация боевых подсказок (загрузка, обычные и фокус битвы).
-<img width="1920" height="1052" alt="image" src="https://github.com/user-attachments/assets/0d8c0a37-e28d-46d7-87e0-b0bc50cf6cf0" />
+<img width="1920" height="934" alt="image" src="https://github.com/user-attachments/assets/75094031-d503-4435-bf44-22f4c90c2c9a" />
+
 
 
 ###### Список будет обновляться и дополняться
 
 ### Обновление файлов > [WIP]
-- Автоматически следит за вашими файлами локализации.
+- Следит за вашими файлами локализации.
 - Добавляет новые записи, форматирует текст и обновляет ресурсы после апдейтов игры, чтобы не было "Unknown".
+<img width="1920" height="934" alt="image" src="https://github.com/user-attachments/assets/61f42da5-8a55-4f2c-8c75-3ddebab9b9b7" />
+
 
 
 
@@ -66,7 +64,8 @@ Rainbus Toolbox — кроссплатформенная альтернатив�
 - Упаковывает вашу локализацию в `.zip`, готовый для [Лаунчера MTL](https://github.com/kimght/LimbusLocalizationManager).
 - Загружает релиз на GitHub с выбранной версией и описанием.
 - Опционально: отправляет инфу о релизе в Discord через вебхук (если он указан).
-<img width="1920" height="1052" alt="image" src="https://github.com/user-attachments/assets/5fc7442e-6f03-4e89-803d-011705c4ae76" />
+<img width="1920" height="934" alt="image" src="https://github.com/user-attachments/assets/7ffe9839-401b-4f3a-b637-3ada60487ee8" />
+
 
 
 ### Интеграция с Git & GitHub
