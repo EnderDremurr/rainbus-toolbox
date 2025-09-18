@@ -1,9 +1,6 @@
 # Rainbus Toolbox
-[![English](https://img.shields.io/badge/lang-en-purple.svg)](README.md)
-[![Русский](https://img.shields.io/badge/lang-ru-white.svg)](README.ru-ru.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Latest Release](https://img.shields.io/github/v/release/enderdremurr/rainbus-toolbox?color=blue)](https://github.com/enderdremurr/rainbus-toolbox/releases)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/enderdremurr/rainbus-toolbox/build.yml?branch=main)](https://github.com/enderdremurr/rainbus-toolbox/actions)
 [![Downloads](https://img.shields.io/github/downloads/enderdremurr/rainbus-toolbox/total?color=green)](https://github.com/enderdremurr/rainbus-toolbox/releases)
 [![Activity](https://img.shields.io/github/commit-activity/m/enderdremurr/rainbus-toolbox?color=orange)](https://github.com/enderdremurr/rainbus-toolbox/commits/main)
 
@@ -21,11 +18,13 @@ Rainbus Toolbox — кроссплатформенная альтернатив�
 - [Limbus Localization UI](https://github.com/x1bViolet/Limbus-Localization-UI)
 - [LC Localization Controls](https://github.com/x1bViolet/LC-Localization-Controls)
 
+# ВАЖНО!!! Это приложение все ещё в ранней стадии разработки, если вам нужен стабильный редактор используйте софт по ссылкам выше
+
 ---
 
 ## Возможности
 
-### Перевод > [WIP] - **Пока что функционала совсем мало, используйте [Limbus Localization UI](https://github.com/x1bViolet/Limbus-Localization-UI)**
+### Перевод > [WIP] 
 - Инструменты для перевода истории, статусов, ЭГО, айдишек, гифтов и в целом всего что не лень.
 #### Функционал
 ##### Перевод сюжета > [WIP]
@@ -52,8 +51,6 @@ Rainbus Toolbox — кроссплатформенная альтернатив�
 ##### Редактор баттлхинтов.
 <img width="1920" height="934" alt="image" src="https://github.com/user-attachments/assets/75094031-d503-4435-bf44-22f4c90c2c9a" />
 
-
-
 ###### Список будет обновляться и дополняться
 
 ### Обновление файлов > [WIP]
@@ -70,10 +67,8 @@ Rainbus Toolbox — кроссплатформенная альтернатив�
 - Опционально: отправляет инфу о релизе в Discord через вебхук (если он указан).
 <img width="1920" height="934" alt="image" src="https://github.com/user-attachments/assets/7ffe9839-401b-4f3a-b637-3ada60487ee8" />
 
-
-
 ### Интеграция с Git & GitHub
-- В отличие от инструментов x1bViolet, этот тулкит видит вашу локализацию как git-репозиторий, позволяя работать с локальным и удалённым репозиториями.
+- Этот тулкит видит вашу локализацию как git-репозиторий, следя за удаленной и локальной версиями.
 - <img width="567" height="64" alt="image" src="https://github.com/user-attachments/assets/720f8dcf-e58b-43da-9ab8-b59dc4237f8b" />
 
 
@@ -81,7 +76,7 @@ Rainbus Toolbox — кроссплатформенная альтернатив�
 
 ## Обратная связь и вклад
 
-Если вы наткнулись на баг, есть идеи или хотите внести вклад — [открывайте Issue](https://github.com/enderdremurr/rainbus-toolbox/issues) или создавайте Pull Request. (Можно даже по хуйне)
+Если вы наткнулись на баг, есть идеи или хотите что-то добавить/изменить — [открывайте Issue](https://github.com/enderdremurr/rainbus-toolbox/issues) или создавайте Pull Request. (Можно по мелочи)
 
 ---
 
