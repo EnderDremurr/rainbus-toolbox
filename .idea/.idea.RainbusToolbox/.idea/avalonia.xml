@@ -11,6 +11,7 @@
         <entry key="Views/OverviewTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/ReleaseTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/SkillsTranslationTab.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Tabs/FilesTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Tabs/OverviewTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Tabs/ReleaseTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Tabs/TranslationTab.axaml" value="RainbusToolbox.csproj" />

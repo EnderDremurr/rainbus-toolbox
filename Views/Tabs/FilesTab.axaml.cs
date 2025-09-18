@@ -17,8 +17,4 @@ public partial class FilesTab : UserControl
         // Pull the RepositoryManager out of DI
     }
 
-    private void OnParseButtonClick(object? sender, RoutedEventArgs e)
-    {
-        _viewModel.OnParseButtonClick(sender, e);
-    }
 }
