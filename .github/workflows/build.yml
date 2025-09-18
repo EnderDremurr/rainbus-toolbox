@@ -68,26 +68,3 @@ jobs:
           gh release upload "$VERSION" RainbusToolbox-osx-x64-${VERSION}.tar.gz --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}  # <-- Use your PAT here
-
-      - name: Update release notes
-        uses: softprops/action-gh-release@v1
-        with:
-          token: ${{ secrets.GH_PAT }}          # <-- Must use PAT, not GITHUB_TOKEN
-          body: |
-            ## How to Run
-
-            **Linux**  
-            1. Download `RainbusToolbox-linux-x64-<version>.tar.gz`  
-            2. Extract: `tar -xzf RainbusToolbox-linux-x64-<version>.tar.gz`  
-            3. Run: `./RainbusToolbox`
-
-            **Windows**  
-            1. Download `RainbusToolbox-win-x64-<version>.zip`  
-            2. Extract the archive  
-            3. Double-click `RainbusToolbox.exe`
-
-            **macOS**  
-            1. Download `RainbusToolbox-osx-x64-<version>.tar.gz`  
-            2. Extract: `tar -xzf RainbusToolbox-osx-x64-<version>.tar.gz`  
-            3. Run: `./RainbusToolbox`  
-               (May require *System Preferences → Security & Privacy*)
