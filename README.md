@@ -33,10 +33,13 @@ Rainbus Toolbox — кроссплатформенная альтернатив�
 
 ##### Перевод ЭГО гифтов > [WIP]
 <img width="1920" height="934" alt="image" src="https://github.com/user-attachments/assets/3694ec20-15ae-4a7d-8f1b-1e42934d1fd3" />
+
 ##### Перевод айдишек и их скиллов > [WIP]
 <img width="1920" height="934" alt="image" src="https://github.com/user-attachments/assets/ef8c2eb4-cd64-4040-8b0a-04307b480b60" />
+
 ##### Перевод баффов > [WIP]
 <img width="1920" height="934" alt="image" src="https://github.com/user-attachments/assets/d42ad23a-243c-42ff-87b7-14e8a005cbaf" />
+
 ##### Перевод кейвордов > [WIP]
 - В разработке
 ##### Перевод мини реплик из профиля > [WIP]
@@ -45,6 +48,7 @@ Rainbus Toolbox — кроссплатформенная альтернатив�
 - В разработке
 ##### Перевод паники/низкой морали > [WIP]
 <img width="1920" height="934" alt="image" src="https://github.com/user-attachments/assets/bf98b1cc-e53c-4bdb-b480-49ef2455515c" />
+
 ##### Редактор баттлхинтов.
 <img width="1920" height="934" alt="image" src="https://github.com/user-attachments/assets/75094031-d503-4435-bf44-22f4c90c2c9a" />
 
