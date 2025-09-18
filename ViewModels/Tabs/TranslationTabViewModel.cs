@@ -36,6 +36,7 @@ public partial class TranslationTabViewModel : ObservableObject
         { typeof(SkillsFile), new SkillsTranslationEditor() },
         {typeof(BattleHintsFile), new BattleHintsTranslationEditor()},
         { typeof(PanicInfoFile), new PanicTranslationEditor() },
+        {typeof(PassivesFile), new PassiveTranslationEditor()},
         { typeof(BuffsFile), new BuffTranslationEditor() }
     };
     private readonly IFileEditor _genericEditor = new GenericTranslationEditor();

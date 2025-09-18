@@ -3,13 +3,13 @@ using Newtonsoft.Json;
 using RainbusToolbox.Utilities.Data;
 
 [FilePattern("AbDlg*")]
-public class DialogueFile : LocalizationFileBase, ILocalizationContainer<DialogueEntry>
+public class AbDlgFile : LocalizationFileBase, ILocalizationContainer<AbDlgEntry>
 {
     [JsonProperty("dataList")]
-    public List<DialogueEntry> DataList { get; set; }
+    public List<AbDlgEntry> DataList { get; set; }
 }
 
-public class DialogueEntry
+public class AbDlgEntry
 {
     [JsonProperty("id")]
     public int Id { get; set; }
@@ -30,3 +30,5 @@ public class DialogueEntry
     [JsonProperty("usage")]
     public string Usage { get; set; }
 }
+
+//TODO: Implement editor

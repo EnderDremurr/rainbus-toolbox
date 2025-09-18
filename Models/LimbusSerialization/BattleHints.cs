@@ -34,6 +34,7 @@ public class BattleAnnouncerEntry
     [JsonProperty("dlg")]
     public string Dialogue { get; set; }
 }
+//TODO: Implement editor
 
 //PersonalityVoiceDlg/Voice_* (Character personality voice lines)+
 
@@ -54,6 +55,7 @@ public class PersonalityVoiceEntry
     [JsonProperty("dlg")]
     public string Dialogue { get; set; }
 }
+//TODO: Implement editor
 
 //EGOVoiceDig/VoiceEGO* (EGO ability voice lines) +
 public class EGOVoiceFile : LocalizationFileBase, ILocalizationContainer<EGOVoiceEntry>
@@ -73,7 +75,7 @@ public class EGOVoiceEntry
     [JsonProperty("dlg")]
     public string Dialogue { get; set; }
 }
-
+//TODO: Implement editor
 
 //StoryTheater* (Story theater UI and notes)+
 public class StoryTheaterFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
@@ -96,6 +98,8 @@ public class StageNodeFile : LocalizationFileBase, ILocalizationContainer<Generi
     [JsonProperty("dataList")]
     public List<GenericIdTitle> DataList { get; set; }
 }
+//TODO: Implement editor
+
 //DungeonNode* (Dungeon narrative content)
 public class DungeonNodeFile : LocalizationFileBase, ILocalizationContainer<DungeonNodeItem>
 {
@@ -111,46 +115,13 @@ public class DungeonNodeItem
     [JsonProperty("stageList")]
     public List<GenericIdTitleDesc> StageList { get; set; } = new List<GenericIdTitleDesc>();
 }
+//TODO: Implement editor
 
 
-//Passives* (Passive abilities)
-public class PassivesFile : LocalizationFileBase, ILocalizationContainer<GenericIdNameDesc>
-{
-    [JsonProperty("dataList")]
-    public List<GenericIdNameDesc> DataList { get; set; }
-}
 
-[FilePattern("Bufs*")] // bufs with one f!!! (its like that in game)
-public class BuffsFile : LocalizationFileBase, ILocalizationContainer<Buff>
-{
-    [JsonProperty("dataList")]
-    public List<Buff> DataList { get; set; }
-}
 
-public class Buff
-{
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
 
-    [JsonProperty("name")]
-    public string Name { get; set; } = string.Empty;
 
-    [JsonProperty("desc")]
-    public string Desc { get; set; } = string.Empty;
-
-    [JsonProperty("summary")]
-    public string Summary { get; set; } = string.Empty;
-
-    [JsonProperty("undefined")]
-    public string Undefined { get; set; } = string.Empty;
-}
-//EGOGift* (EGO gifts)
-[FilePattern("EGOGift*")]
-public class EGOGiftFile : LocalizationFileBase, ILocalizationContainer<GenericIdNameDesc>
-{
-    [JsonProperty("dataList")]
-    public List<GenericIdNameDesc> DataList { get; set; }
-}
 
 //AbnormalityGuides* (Abnormality descriptions)
 public class AbnormalityGuideFile
@@ -185,6 +156,7 @@ public class AbnormalityStory
     [JsonProperty("story")]
     public string Story { get; set; } = string.Empty;
 }
+//TODO: Implement editor
 
 //Enemies* (Enemy data)
 public class EnemyFile
@@ -192,31 +164,8 @@ public class EnemyFile
     [JsonProperty("dataList")]
     public List<GenericIdNameDesc> DataList { get; set; }
 }
+//TODO: Implement editor
 
-//BattleKeywords* (Battle terminology)
-public class BattleKeywordFile
-{
-    [JsonProperty("dataList")]
-    public List<BattleKeyword> DataList { get; set; }
-}
-
-public class BattleKeyword
-{
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
-    [JsonProperty("name")]
-    public string Name { get; set; } = string.Empty;
-
-    [JsonProperty("desc")]
-    public string Description { get; set; } = string.Empty;
-
-    [JsonProperty("summary")]
-    public string Summary { get; set; } = string.Empty;
-
-    [JsonProperty("undefined")]
-    public string Undefined { get; set; } = "-";
-}
 
 
 
@@ -226,7 +175,7 @@ public class UITextFile
     [JsonProperty("dataList")]
     public List<GenericIdContent> DataList { get; set; }
 }
-
+//TODO: Implement editor
 
 
 //

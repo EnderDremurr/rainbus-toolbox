@@ -1,0 +1,223 @@
+<UserControl
+    d:DesignHeight="800"
+    d:DesignWidth="1200"
+    mc:Ignorable="d"
+    x:Class="RainbusToolbox.Views.PassiveTranslationEditor"
+    x:DataType="viewModels:PassiveTranslationEditorViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:RainbusToolbox.ViewModels"
+    xmlns:views="clr-namespace:RainbusToolbox.Views"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!--  Main Content - Vertical Split  -->
+        <Grid
+            ColumnDefinitions="*,*"
+            Grid.Row="1"
+            IsVisible="{Binding IsFileLoaded}"
+            Margin="20,0,20,15">
+
+            <!--  Reference Section (Left)  -->
+            <Border
+                ClipToBounds="True"
+                Grid.Column="0"
+                Margin="0,0,10,0">
+                <Panel>
+                    <!--  Background Image  -->
+                    <Image
+                        HorizontalAlignment="Stretch"
+                        Source="avares://RainbusToolbox/Assets/SkillBG.png"
+                        Stretch="Uniform"
+                        StretchDirection="Both"
+                        VerticalAlignment="Stretch" />
+
+                    <!--  Content Area  -->
+                    <Border Margin="72,54,114,195">
+                        <ScrollViewer>
+                            <StackPanel Margin="15">
+                                <!--  Section Title  -->
+                                <TextBlock
+                                    FontFamily="{StaticResource MikodacsFont}"
+                                    FontSize="18"
+                                    FontWeight="Bold"
+                                    Foreground="White"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,0,0,10"
+                                    Text="Reference" />
+
+                                <!--  Passive ID  -->
+                                <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Text="Passive ID: "
+                                        Width="120" />
+                                    <TextBlock
+                                        FontSize="24"
+                                        Foreground="White"
+                                        Text="{Binding ReferenceItem.Id}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--  Passive Title  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Title:" />
+                                    <TextBox
+                                        Background="Transparent"
+                                        IsReadOnly="True"
+                                        Text="{Binding ReferenceItem.Name}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--  Passive Description  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Description:" />
+                                    <TextBox
+                                        Background="Transparent"
+                                        IsReadOnly="True"
+                                        MinHeight="100"
+                                        Text="{Binding ReferenceItem.Desc}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Panel>
+            </Border>
+
+            <!--  Editor Section (Right)  -->
+            <Border
+                ClipToBounds="True"
+                Grid.Column="1"
+                Margin="10,0,0,0">
+                <Panel>
+                    <!--  Background Image  -->
+                    <Image
+                        HorizontalAlignment="Stretch"
+                        Source="avares://RainbusToolbox/Assets/SkillBG.png"
+                        Stretch="Uniform"
+                        StretchDirection="Both"
+                        VerticalAlignment="Stretch" />
+
+                    <!--  Content Area  -->
+                    <Border Margin="72,54,114,195">
+                        <ScrollViewer>
+                            <StackPanel Margin="15">
+                                <!--  Section Title  -->
+                                <TextBlock
+                                    FontFamily="{StaticResource MikodacsFont}"
+                                    FontSize="18"
+                                    FontWeight="Bold"
+                                    Foreground="White"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,0,0,10"
+                                    Text="Editor" />
+
+                                <!--  Passive ID  -->
+                                <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Text="Passive ID: "
+                                        Width="120" />
+                                    <TextBlock
+                                        FontSize="24"
+                                        Foreground="White"
+                                        Text="{Binding CurrentItem.Id}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--  Passive Title  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Title:" />
+                                    <TextBox
+                                        Background="Transparent"
+                                        Text="{Binding CurrentItem.Name, Mode=TwoWay}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--  Passive Description  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Description:" />
+                                    <TextBox
+                                        AcceptsReturn="True"
+                                        Background="Transparent"
+                                        MinHeight="100"
+                                        Text="{Binding CurrentItem.Desc, Mode=TwoWay}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Panel>
+            </Border>
+        </Grid>
+
+        <!--  Navigation Container  -->
+        <StackPanel
+            Grid.Row="2"
+            HorizontalAlignment="Center"
+            IsVisible="{Binding IsFileLoaded}"
+            Margin="20,5,20,20"
+            Orientation="Horizontal">
+
+            <!--  Passive Navigation Section  -->
+            <StackPanel Orientation="Horizontal">
+                <Button
+                    Click="OnPreviousClick"
+                    Content="◀ Previous"
+                    IsEnabled="{Binding CanGoPrevious}"
+                    Margin="0,0,10,0"
+                    Width="200" />
+                <Border
+                    Background="Transparent"
+                    CornerRadius="4"
+                    Padding="12,6">
+                    <TextBlock
+                        FontFamily="{StaticResource MikodacsFont}"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        Text="{Binding NavigationText}"
+                        Width="150" />
+                </Border>
+                <Button
+                    Click="OnNextClick"
+                    Content="Next ▶"
+                    IsEnabled="{Binding CanGoNext}"
+                    Margin="10,0,0,0"
+                    Width="200" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

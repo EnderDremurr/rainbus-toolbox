@@ -12,11 +12,12 @@ public static class FileToObjectCaster
     public static List<Type> LocalizationFileTypes { get; } =
     [
         typeof(BuffsFile),
-        typeof(DialogueFile),
+        typeof(AbDlgFile),
         typeof(SkillsFile),
         typeof(BattleHintsFile),
         typeof(StoryDataFile),
         typeof(PanicInfoFile),
+        typeof(PassivesFile),
         typeof(EGOGiftFile),
         
     ];  

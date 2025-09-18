@@ -23,6 +23,8 @@ public partial class FilesTabViewModel : ObservableObject
     }
     public void OnParseButtonClick(object? sender, RoutedEventArgs e)
     {
-        _repositoryManager.ParseNewAdditionsFromGame();
+        var mergingService = new FileMergingService();
+        mergingService.PullFilesFromTheGameAsync(_repositoryManager.PathToLocalization,
+            _repositoryManager.PathToReferenceLocalization);
     }
 }
