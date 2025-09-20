@@ -9,7 +9,7 @@ namespace RainbusToolbox.Models.Data;
 
 public static class FileToObjectCaster
 {
-    public static List<Type> LocalizationFileTypes { get; } =
+    private static List<Type> LocalizationFileTypes { get; } =
     [
         typeof(BuffsFile),
         typeof(AbDlgFile),

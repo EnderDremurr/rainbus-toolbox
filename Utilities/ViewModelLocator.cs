@@ -2,19 +2,11 @@ using System;
 using Microsoft.Extensions.DependencyInjection;
 using RainbusToolbox.ViewModels;
 
-public class ViewModelLocator
+public class ViewModelLocator(IServiceProvider serviceProvider)
 {
-    private readonly IServiceProvider _serviceProvider;
-    
-    public ViewModelLocator(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-    
     public ReleaseTabViewModel ReleaseTabViewModel => 
-        _serviceProvider.GetRequiredService<ReleaseTabViewModel>();
+        serviceProvider.GetRequiredService<ReleaseTabViewModel>();
     
-    // Add other ViewModels as needed
     public MainWindowViewModel MainWindowViewModel => 
-        _serviceProvider.GetRequiredService<MainWindowViewModel>();
+        serviceProvider.GetRequiredService<MainWindowViewModel>();
 }

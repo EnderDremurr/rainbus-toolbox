@@ -18,16 +18,12 @@ namespace RainbusToolbox.Utilities
     }
 
     // A very lightweight ICommand implementation
-    public class RelayCommand<T> : ICommand
+    public class RelayCommand<T>(Action<T> execute) : ICommand
     {
-        private readonly Action<T> _execute;
+        public bool CanExecute(object? parameter) => true;
 
-        public RelayCommand(Action<T> execute) => _execute = execute;
+        public void Execute(object? parameter) => execute((T)parameter!);
 
-        public bool CanExecute(object parameter) => true;
-
-        public void Execute(object parameter) => _execute((T)parameter);
-
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler? CanExecuteChanged;
     }
 }

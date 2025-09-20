@@ -10,6 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Folder Include="Assets\Buttons\" />
         <Folder Include="Assets\Fonts\" />
         <AvaloniaResource Include="Assets\**"/>
         <AvaloniaResource Include="Assets\Fonts\Pretendard.ttf" />

@@ -20,7 +20,7 @@ public partial class BattleHintsEditorViewModel : TranslationEditorViewModel<Bat
 
         // Clear and populate the observable collection from the file's list
         ObservableDataList.Clear();
-        foreach (var item in EditableFile.DataList)
+        foreach (var item in EditableFile?.DataList)
             ObservableDataList.Add(item);
 
         // Subscribe to changes in the observable collection if needed

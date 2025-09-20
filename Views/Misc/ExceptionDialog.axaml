@@ -126,7 +126,6 @@
             Margin="0,15,0,0"
             Orientation="Horizontal">
             <Button
-                Classes="accent"
                 Click="OnCopyButtonClick"
                 Content="Copy Error Details"
                 x:Name="CopyButton" />

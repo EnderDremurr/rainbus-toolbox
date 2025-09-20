@@ -153,7 +153,7 @@ public partial class FilesTabViewModel : ObservableObject
     private bool CanExecuteCancel() => IsProcessing;
 
     [RelayCommand]
-    private void ReplaceAllTagsWithMeshes()
+    public void ReplaceAllTagsWithMeshes()
     {
         _keyWordConversionService.ReplaceEveryTagWithMesh(_repositoryManager.PathToLocalization);
     }

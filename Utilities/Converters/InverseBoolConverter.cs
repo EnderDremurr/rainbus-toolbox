@@ -8,14 +8,14 @@ namespace RainbusToolbox.Utilities.Converters
     {
         public static InverseBoolConverter Instance { get; } = new InverseBoolConverter();
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            return value is bool b ? !b : true;
+            return value is not true;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            return value is bool b ? !b : true;
+            return value is not true;
         }
     }
 }
