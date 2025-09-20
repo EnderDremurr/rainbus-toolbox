@@ -20,70 +20,21 @@ public class TextMarkupProcessor
 
         try
         {
-            // Step 1: Process bracket tags [Key:Value] and [SimpleTag]
-            var processed = ProcessBracketTags(raw);
-
-            // Step 2: Convert to Inline objects
-            return ParseToInlines(processed);
+            // Direct parsing without text preprocessing - this prevents corruption
+            return ParseToInlines(raw);
         }
         catch (Exception ex)
         {
             // Return error message as plain text on parsing failure
             return new List<Inline>
             {
-                new Run($"Parse Error: {ex.Message}") { Foreground = Brushes.Red }
+                new Run($"Parse Error: {ex.Message}") 
+                { 
+                    Foreground = Brushes.Red,
+                    FontFamily = new FontFamily("avares://RainbusToolbox/Assets/Fonts/Pretendard.ttf#Pretendard")
+                }
             };
         }
-    }
-
-    private static string ProcessBracketTags(string text)
-    {
-        // Handle [Key:Value] format first
-        var keyValuePattern = @"\[([^:]+):([^\]]+)\]";
-        text = Regex.Replace(text, keyValuePattern, match =>
-        {
-            var key = match.Groups[1].Value.Trim();
-            var value = match.Groups[2].Value.Trim();
-            return FormatByKey(key, value);
-        });
-
-        // Handle simple [Tag] format
-        var simpleTagPattern = @"\[([^\]:]+)\]";
-        text = Regex.Replace(text, simpleTagPattern, match =>
-        {
-            var tag = match.Groups[1].Value.Trim();
-            return FormatSimpleTag(tag);
-        });
-
-        return text;
-    }
-
-    private static string FormatByKey(string key, string value)
-    {
-        // Define formatting rules based on key type
-        return key.ToLower() switch
-        {
-            "skillname" => $"<color=#4A9EFF><b>{value}</b></color>",
-            "damage" => $"<color=#FF4444><b>{value}</b></color>",
-            "heal" => $"<color=#44FF44><b>{value}</b></color>",
-            "rarity" => $"<color=#FFD700><i>{value}</i></color>",
-            "effect" => $"<color=#88CCFF>{value}</color>",
-            "number" => $"<color=#FFAA44><b>{value}</b></color>",
-            _ => $"<color=#CCCCCC>{value}</color>" // Default formatting
-        };
-    }
-
-    private static string FormatSimpleTag(string tag)
-    {
-        // Format simple tags as styled headers
-        return tag.ToLower() switch
-        {
-            "endskillhead" => "<color=#FF8844><b>[END SKILL]</b></color>",
-            "onsucceedattack" => "<color=#88FF44><b>[ON HIT]</b></color>",
-            "endskill" => "<color=#4488FF><b>[PASSIVE]</b></color>",
-            "tabexplain" => "", // Remove this tag
-            _ => $"<color=#AAAAAA><b>[{tag.ToUpper()}]</b></color>"
-        };
     }
 
     private static List<Inline> ParseToInlines(string text)
@@ -97,9 +48,10 @@ public class TextMarkupProcessor
         var currentText = "";
 
         while (position < text.Length)
+        {
             if (text[position] == '[' && HasBracketTag(text, position))
             {
-                // Handle [Key] and [Key:`Value`] tags
+                // Add any accumulated text before processing bracket tag
                 if (!string.IsNullOrEmpty(currentText))
                 {
                     inlines.Add(CreateRun(currentText, currentFormat));
@@ -109,13 +61,13 @@ public class TextMarkupProcessor
                 var bracketInfo = ExtractBracketTag(text, position);
                 position = bracketInfo.EndPosition;
 
-                // TODO: Implement proper bracket tag processing later
-                // For now, just add as purple colored text
-                inlines.Add(new Run(bracketInfo.Tag) { Foreground = new SolidColorBrush(Color.Parse("#800080")) });
+                // Process bracket tag and add as inline
+                var bracketInline = ProcessBracketTag(bracketInfo.Tag);
+                inlines.Add(bracketInline);
             }
             else if (text[position] == '<' && HasAngleBracketTag(text, position))
             {
-                // Add any accumulated text before processing tag
+                // Add any accumulated text before processing angle bracket tag
                 if (!string.IsNullOrEmpty(currentText))
                 {
                     inlines.Add(CreateRun(currentText, currentFormat));
@@ -128,8 +80,7 @@ public class TextMarkupProcessor
 
                 ProcessAngleBracketTag(tagInfo.Tag, formatStack, ref currentFormat, inlines);
             }
-            else if (text[position] == '\n' ||
-                     (text[position] == '\r' && position + 1 < text.Length && text[position + 1] == '\n'))
+            else if (text[position] == '\n' || (text[position] == '\r' && position + 1 < text.Length && text[position + 1] == '\n'))
             {
                 // Handle newlines
                 if (!string.IsNullOrEmpty(currentText))
@@ -151,11 +102,94 @@ public class TextMarkupProcessor
                 currentText += text[position];
                 position++;
             }
+        }
 
         // Add any remaining text
-        if (!string.IsNullOrEmpty(currentText)) inlines.Add(CreateRun(currentText, currentFormat));
+        if (!string.IsNullOrEmpty(currentText)) 
+            inlines.Add(CreateRun(currentText, currentFormat));
 
         return inlines;
+    }
+
+    private static Run ProcessBracketTag(string fullTag)
+    {
+        // Check if it's a key:value format [Key:`Value`]
+        var keyValueMatch = Regex.Match(fullTag, @"^\[([^:]+):`([^`]+)`\]$");
+        if (keyValueMatch.Success)
+        {
+            var key = keyValueMatch.Groups[1].Value.Trim();
+            var value = keyValueMatch.Groups[2].Value.Trim();
+            return CreateFormattedBracketRun(key, value, true);
+        }
+
+        // Check if it's a simple tag [Tag]
+        var simpleMatch = Regex.Match(fullTag, @"^\[([^\]]+)\]$");
+        if (simpleMatch.Success)
+        {
+            var tag = simpleMatch.Groups[1].Value.Trim();
+            return CreateFormattedBracketRun(tag, tag, false);
+        }
+
+        // Fallback: return as purple text
+        return new Run(fullTag)
+        {
+            Foreground = new SolidColorBrush(Color.Parse("#800080")),
+            FontFamily = new FontFamily("avares://RainbusToolbox/Assets/Fonts/Pretendard.ttf#Pretendard")
+        };
+    }
+
+    private static Run CreateFormattedBracketRun(string key, string displayText, bool isKeyValue)
+    {
+        var color = GetBracketTagColor(key.ToLower());
+        var formattedText = FormatBracketTag(key.ToLower(), displayText, isKeyValue);
+
+        return new Run(formattedText)
+        {
+            Foreground = new SolidColorBrush(color),
+            FontFamily = new FontFamily("avares://RainbusToolbox/Assets/Fonts/Pretendard.ttf#Pretendard"),
+            FontWeight = FontWeight.Bold
+        };
+    }
+
+    private static Color GetBracketTagColor(string key)
+    {
+        return key switch
+        {
+            "cantidentify" => Color.Parse("#FF6B6B"),
+            "beforeattack" => Color.Parse("#4ECDC4"),
+            "endskill" => Color.Parse("#45B7D1"),
+            "onsucceedattack" => Color.Parse("#96CEB4"),
+            "tabexplain" => Color.Parse("#FFEAA7"),
+            
+            
+            // Default color for unknown tags
+            _ => Color.Parse("#CCCCCC")
+        };
+    }
+
+    private static string FormatBracketTag(string key, string displayText, bool isKeyValue)
+    {
+        if (isKeyValue)
+        {
+            // For [Key:`Value`] format, show the value in a styled way
+            return key switch
+            {
+                _ => displayText
+            };
+        }
+        else
+        {
+            // For simple [Tag] format, show formatted tag name
+            return key switch
+            {
+                "cantidentify" => "[НЕОПОЗНАН]",
+                "beforeattack" => "[ПЕРЕД АТАКОЙ]",
+                "endskill" => "[КОНЕЦ НАВЫКА]",
+                "onsucceedattack" => "[ПРИ ПОПАДАНИИ]",
+                "tabexplain" => "", // Remove completely
+                _ => $"[{displayText.ToUpper()}]"
+            };
+        }
     }
 
     private static bool HasBracketTag(string text, int position)
@@ -198,14 +232,16 @@ public class TextMarkupProcessor
         if (tag.StartsWith("/"))
         {
             // Closing tag - restore previous format
-            if (formatStack.Count > 0) currentFormat = formatStack.Pop();
+            if (formatStack.Count > 0) 
+                currentFormat = formatStack.Pop();
         }
         else if (tag.StartsWith("color="))
         {
             // Color tag - push current format and apply color
             formatStack.Push(currentFormat.Clone());
             var colorValue = tag.Substring(6);
-            if (TryParseColor(colorValue, out var color)) currentFormat.Color = color;
+            if (TryParseColor(colorValue, out var color)) 
+                currentFormat.Color = color;
         }
         else if (tag.StartsWith("sprite name="))
         {
@@ -215,15 +251,14 @@ public class TextMarkupProcessor
             {
                 var spriteName = match.Groups[1].Value;
                 var spriteInline = CreateSpriteInline(spriteName);
-                if (spriteInline != null) inlines.Add(spriteInline);
+                if (spriteInline != null) 
+                    inlines.Add(spriteInline);
             }
         }
         else if (tag.StartsWith("link="))
         {
-            // TODO: Implement proper link functionality later (tooltips, click handlers, etc.)
-            // For now, just remove the link tags and show content as normal text
-            // The content between <link="..."> and </link> will be processed normally
-            // but the link tags themselves are ignored
+            // TODO: Implement proper link functionality later
+            // For now, just ignore link tags
         }
         else if (tag == "u")
         {
@@ -245,23 +280,24 @@ public class TextMarkupProcessor
 
     private static void ApplyStyle(string styleName, ref TextFormat format)
     {
-        // Define available styles
         switch (styleName.ToLower())
         {
             case "highlight":
                 format.Color = Color.Parse("#FFFF00"); // Yellow
                 format.IsUnderlined = true;
                 break;
-            // TODO: Add more styles as needed
         }
     }
 
     private static Run CreateRun(string text, TextFormat format)
     {
-        var run = new Run(text);
-
-        if (format.Color.HasValue)
-            run.Foreground = new SolidColorBrush(format.Color.Value);
+        var run = new Run(text)
+        {
+            FontFamily = new FontFamily("avares://RainbusToolbox/Assets/Fonts/Pretendard.ttf#Pretendard"),
+            Foreground = format.Color.HasValue 
+                ? new SolidColorBrush(format.Color.Value) 
+                : Brushes.White
+        };
 
         if (format.IsBold)
             run.FontWeight = FontWeight.Bold;
@@ -272,10 +308,6 @@ public class TextMarkupProcessor
         if (format.IsUnderlined)
             run.TextDecorations = TextDecorations.Underline;
 
-        // TODO: Link functionality would need to be handled at TextBlock level
-        // Individual Run elements don't support cursor or click events
-        // You would need to implement this in the parent TextBlock that contains the inlines
-
         return run;
     }
 
@@ -283,12 +315,7 @@ public class TextMarkupProcessor
     {
         try
         {
-            // Try to load the specific sprite first
             var bitmap = LoadSprite(spriteName);
-            if (bitmap == null)
-                // If not found, try placeholder
-                bitmap = LoadSprite("Placeholder");
-
             if (bitmap != null)
             {
                 var image = new Image
@@ -303,34 +330,74 @@ public class TextMarkupProcessor
                 return new InlineUIContainer(image);
             }
         }
-        catch
+        catch (Exception ex)
         {
-            // Ignore sprite loading errors and fall through to fallback
+            System.Diagnostics.Debug.WriteLine($"Failed to load sprite '{spriteName}': {ex.Message}");
         }
 
-        // Final fallback: return text representation
+        try
+        {
+            var placeholderBitmap = LoadSprite("Placeholder");
+            if (placeholderBitmap != null)
+            {
+                var placeholderImage = new Image
+                {
+                    Source = placeholderBitmap,
+                    Width = 18,
+                    Height = 18,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(1, 0),
+                    Opacity = 0.7
+                };
+
+                return new InlineUIContainer(placeholderImage);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to load placeholder sprite: {ex.Message}");
+        }
+
         return new InlineUIContainer(new TextBlock
         {
             Text = $"[{spriteName}]",
             Foreground = Brushes.Orange,
-            FontSize = 12
+            FontSize = 12,
+            VerticalAlignment = VerticalAlignment.Center,
+            FontFamily = new FontFamily("avares://RainbusToolbox/Assets/Fonts/Pretendard.ttf#Pretendard")
         });
     }
 
     private static Bitmap? LoadSprite(string spriteName)
     {
-        try
+        var possiblePaths = new[]
         {
-            // Try to load from /Assets/Icons/
-            var path = $"avares://YourApp/Assets/Icons/{spriteName}.png";
-            var uri = new Uri(path);
-            return new Bitmap(AssetLoader.Open(uri));
-        }
-        catch
+            $"avares://RainbusToolbox/Assets/Icons/{spriteName}.png",
+            $"avares://RainbusToolbox/Assets/Sprites/{spriteName}.png", 
+            $"avares://RainbusToolbox/Assets/{spriteName}.png",
+            $"avares://RainbusToolbox/Icons/{spriteName}.png"
+        };
+
+        foreach (var path in possiblePaths)
         {
-            // Sprite loading failed
-            return null;
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"Trying to load sprite from: {path}");
+                var uri = new Uri(path);
+                var stream = AssetLoader.Open(uri);
+                var bitmap = new Bitmap(stream);
+                System.Diagnostics.Debug.WriteLine($"Successfully loaded sprite from: {path}");
+                return bitmap;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to load from {path}: {ex.Message}");
+                continue;
+            }
         }
+
+        System.Diagnostics.Debug.WriteLine($"Failed to load sprite '{spriteName}' from any path");
+        return null;
     }
 
     private static bool TryParseColor(string colorStr, out Color color)
@@ -340,8 +407,8 @@ public class TextMarkupProcessor
         if (string.IsNullOrEmpty(colorStr))
             return false;
 
-        // Handle hex colors
         if (colorStr.StartsWith("#"))
+        {
             try
             {
                 color = Color.Parse(colorStr);
@@ -351,8 +418,8 @@ public class TextMarkupProcessor
             {
                 return false;
             }
+        }
 
-        // Handle named colors
         try
         {
             color = Color.Parse(colorStr);
@@ -364,7 +431,6 @@ public class TextMarkupProcessor
         }
     }
 
-    // Helper class to track formatting state
     private class TextFormat
     {
         public Color? Color { get; set; }

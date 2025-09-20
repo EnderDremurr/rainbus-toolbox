@@ -210,7 +210,7 @@
                                         TextWrapping="Wrap" />
                                 </StackPanel>
 
-                                <!--  Skill Description  -->
+                                <!--  Skill Description - Editor Section  -->
                                 <StackPanel Margin="0,0,0,10">
                                     <TextBlock
                                         FontFamily="{StaticResource MikodacsFont}"
@@ -219,15 +219,27 @@
                                         Foreground="White"
                                         Margin="0,0,0,5"
                                         Text="Description:" />
-                                    <TextBox
-                                        AcceptsReturn="True"
-                                        Background="Transparent"
-                                        MinHeight="60"
-                                        Text="{Binding CurrentLevel.Desc, Mode=TwoWay}"
-                                        TextWrapping="Wrap" />
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBox
+                                            AcceptsReturn="True"
+                                            Background="Transparent"
+                                            Grid.Column="0"
+                                            MinHeight="60"
+                                            Text="{Binding CurrentLevel.Desc, Mode=TwoWay}"
+                                            TextWrapping="Wrap" />
+                                        <Button
+                                            Click="OnPreviewCurrentDescClick"
+                                            Content="👁"
+                                            FontSize="14"
+                                            Grid.Column="1"
+                                            Height="30"
+                                            Margin="5,0,0,0"
+                                            ToolTip.Tip="Preview Rich Text"
+                                            Width="30" />
+                                    </Grid>
                                 </StackPanel>
 
-                                <!--  Coin Descriptions  -->
+                                <!--  Coin Descriptions - Editor Section  -->
                                 <StackPanel>
                                     <TextBlock
                                         FontFamily="{StaticResource MikodacsFont}"
@@ -239,12 +251,25 @@
                                     <ItemsControl ItemsSource="{Binding CurrentCoinDescs}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBox
-                                                    AcceptsReturn="True"
-                                                    Background="Transparent"
-                                                    MinHeight="40"
-                                                    Text="{Binding Desc, Mode=TwoWay}"
-                                                    TextWrapping="Wrap" />
+                                                <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,2">
+                                                    <TextBox
+                                                        AcceptsReturn="True"
+                                                        Background="Transparent"
+                                                        Grid.Column="0"
+                                                        MinHeight="40"
+                                                        Text="{Binding Desc, Mode=TwoWay}"
+                                                        TextWrapping="Wrap" />
+                                                    <Button
+                                                        Click="OnPreviewCurrentCoinClick"
+                                                        Content="👁"
+                                                        FontSize="12"
+                                                        Grid.Column="1"
+                                                        Height="25"
+                                                        Margin="5,0,0,0"
+                                                        Tag="{Binding}"
+                                                        ToolTip.Tip="Preview Rich Text"
+                                                        Width="25" />
+                                                </Grid>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
