@@ -2,6 +2,7 @@
     RequestedThemeVariant="Default"
     x:Class="RainbusToolbox.App"
     xmlns="https://github.com/avaloniaui"
+    xmlns:global="clr-namespace:RainbusToolbox.Utilities"
     xmlns:local="using:RainbusToolbox"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
@@ -21,22 +22,48 @@
         <FluentTheme />
 
         <Style Selector="TextBox.invisible">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="Margin" Value="0" />
+            <Setter Property="Template">
+                <ControlTemplate TargetType="TextBox">
+                    <Grid>
+                        <!--  The editable text surface  -->
+                        <Border
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            x:Name="PART_BorderElement">
+                            <ScrollViewer
+                                HorizontalScrollBarVisibility="Hidden"
+                                Margin="0"
+                                Padding="0"
+                                VerticalScrollBarVisibility="Hidden"
+                                x:Name="PART_ContentHost">
+                                <TextPresenter
+                                    Background="Transparent"
+                                    CaretBrush="{TemplateBinding CaretBrush}"
+                                    Margin="0"
+                                    SelectionBrush="{TemplateBinding SelectionBrush}"
+                                    SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                                    Text="{TemplateBinding Text}"
+                                    TextWrapping="{TemplateBinding TextWrapping}"
+                                    x:Name="PART_TextPresenter" />
+                            </ScrollViewer>
+                        </Border>
+
+                        <!--  Eye button in bottom-right  -->
+                        <Button
+                            Command="{x:Static global:GlobalCommandHandler.CreatePreviewCommand}"
+                            CommandParameter="{TemplateBinding Text}"
+                            Height="20"
+                            HorizontalAlignment="Right"
+                            Margin="4"
+                            VerticalAlignment="Bottom"
+                            Width="20" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter>
         </Style>
-        <Style Selector="TextBox.invisible:focus /template/ Border#PART_BorderElement">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-        </Style>
-        <Style Selector="TextBox.invisible:pointerover /template/ Border#PART_BorderElement">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-        </Style>
+
+
 
         <Style Selector="TextBlock">
             <Setter Property="FontFamily" Value="avares://RainbusToolbox/Assets/Fonts/Pretendard.ttf#Pretendard" />
@@ -231,6 +258,7 @@
             <!--  defaults you can override per control  -->
             <Setter Property="Foreground" Value="White" />
             <Setter Property="CaretBrush" Value="White" />
+            <Setter Property="MinHeight" Value="60" />
             <!--  use a visible semi-transparent blue by default; change it to suit your art  -->
             <Setter Property="SelectionBrush" Value="#66007ACC" />
             <Setter Property="SelectionForegroundBrush" Value="Black" />

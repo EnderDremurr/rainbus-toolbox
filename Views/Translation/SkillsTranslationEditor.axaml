@@ -213,6 +213,7 @@
                                     <TextBox
                                         AcceptsReturn="True"
                                         Background="Transparent"
+                                        Classes="invisible"
                                         MinHeight="60"
                                         Text="{Binding CurrentLevel.Desc, Mode=TwoWay}"
                                         TextWrapping="Wrap" />
@@ -233,6 +234,7 @@
                                                 <TextBox
                                                     AcceptsReturn="True"
                                                     Background="Transparent"
+                                                    Classes="invisible"
                                                     MinHeight="40"
                                                     Text="{Binding Desc, Mode=TwoWay}"
                                                     TextWrapping="Wrap" />
