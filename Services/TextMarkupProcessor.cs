@@ -343,11 +343,11 @@ public class TextMarkupProcessor
                 var placeholderImage = new Image
                 {
                     Source = placeholderBitmap,
-                    Width = 18,
-                    Height = 18,
+                    Width = 28,
+                    Height = 28,
                     VerticalAlignment = VerticalAlignment.Center,
-                    Margin = new Thickness(1, 0),
-                    Opacity = 0.7
+                    Margin = new Thickness(2, 0),
+                    Opacity = 1
                 };
 
                 return new InlineUIContainer(placeholderImage);

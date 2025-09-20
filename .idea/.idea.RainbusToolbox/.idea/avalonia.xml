@@ -8,7 +8,10 @@
         <entry key="Views/ExceptionDialog.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/MainWindow.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Misc/ExceptionDialog.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Misc/InitializationWindow.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Misc/InputDialog.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Misc/RichTextPreviewWindow.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Misc/SettingsWindow.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/OverviewTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/ReleaseTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/SkillsTranslationTab.axaml" value="RainbusToolbox.csproj" />

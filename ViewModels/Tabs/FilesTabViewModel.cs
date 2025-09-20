@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Interactivity;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RainbusToolbox.Models.Managers;
@@ -77,10 +76,10 @@ public partial class FilesTabViewModel : ObservableObject
                             // Extract stats if available
                             if (message.Contains("Added:") && message.Contains("Merged:"))
                             {
-                                var addedStart = message.IndexOf("Added: ") + 7;
-                                var mergedStart = message.IndexOf("Merged: ") + 8;
-                                var addedEnd = message.IndexOf(",", addedStart);
-                                var mergedEnd = message.IndexOf(")", mergedStart);
+                                var addedStart = message.IndexOf("Added: ", StringComparison.Ordinal) + 7;
+                                var mergedStart = message.IndexOf("Merged: ", StringComparison.Ordinal) + 8;
+                                var addedEnd = message.IndexOf(",", addedStart, StringComparison.Ordinal);
+                                var mergedEnd = message.IndexOf(")", mergedStart, StringComparison.Ordinal);
                                 
                                 if (addedEnd > addedStart && mergedEnd > mergedStart)
                                 {
@@ -128,7 +127,7 @@ public partial class FilesTabViewModel : ObservableObject
             // Show error notification if available
             try
             {
-                App.Current.ShowErrorNotificationAsync($"Ошибка при обработке файлов: {ex.Message}", "Ошибка");
+               _ = App.Current.ShowErrorNotificationAsync($"Ошибка при обработке файлов: {ex.Message}", "Ошибка");
             }
             catch
             {
