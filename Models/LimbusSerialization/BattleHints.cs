@@ -18,64 +18,12 @@ public class BattleHintsFile : LocalizationFileBase, ILocalizationContainer<Gene
 
 
 
-// BattleAnnouncerDlg/Announcer* (Battle announcer dialogue) +
-[FilePattern("Announcer*")]
-public class BattleAnnouncerFile : LocalizationFileBase, ILocalizationContainer<BattleAnnouncerEntry>
-{
-    [JsonProperty("dataList")]
-    public List<BattleAnnouncerEntry> DataList { get; set; }
-}
 
-public class BattleAnnouncerEntry
-{
-    [JsonProperty("id")]
-    public string Id { get; set; }
 
-    [JsonProperty("dlg")]
-    public string Dialogue { get; set; }
-}
-//TODO: Implement editor
 
-//PersonalityVoiceDlg/Voice_* (Character personality voice lines)+
 
-public class PersonalityVoiceFile : LocalizationFileBase, ILocalizationContainer<PersonalityVoiceEntry>
-{
-    [JsonProperty("dataList")]
-    public List<PersonalityVoiceEntry> DataList { get; set; }
-}
 
-public class PersonalityVoiceEntry
-{
-    [JsonProperty("id")]
-    public string Id { get; set; }
 
-    [JsonProperty("desc")]
-    public string Description { get; set; }
-
-    [JsonProperty("dlg")]
-    public string Dialogue { get; set; }
-}
-//TODO: Implement editor
-
-//EGOVoiceDig/VoiceEGO* (EGO ability voice lines) +
-public class EGOVoiceFile : LocalizationFileBase, ILocalizationContainer<EGOVoiceEntry>
-{
-    [JsonProperty("dataList")]
-    public List<EGOVoiceEntry> DataList { get; set; }
-}
-
-public class EGOVoiceEntry
-{
-    [JsonProperty("id")]
-    public string Id { get; set; }
-
-    [JsonProperty("desc")]
-    public string Description { get; set; }
-
-    [JsonProperty("dlg")]
-    public string Dialogue { get; set; }
-}
-//TODO: Implement editor
 
 //StoryTheater* (Story theater UI and notes)+
 public class StoryTheaterFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
@@ -123,40 +71,7 @@ public class DungeonNodeItem
 
 
 
-//AbnormalityGuides* (Abnormality descriptions)
-public class AbnormalityGuideFile
-{
-    [JsonProperty("dataList")]
-    public List<AbnormalityGuide> DataList { get; set; }
-}
 
-public class AbnormalityGuide
-{
-    [JsonProperty("id")]
-    public int Id { get; set; }
-
-    [JsonProperty("codeName")]
-    public string CodeName { get; set; } = string.Empty;
-
-    [JsonProperty("name")]
-    public string Name { get; set; } = string.Empty;
-
-    [JsonProperty("clue")]
-    public string Clue { get; set; } = string.Empty;
-
-    [JsonProperty("storyList")]
-    public List<AbnormalityStory> StoryList { get; set; }
-}
-
-public class AbnormalityStory
-{
-    [JsonProperty("level")]
-    public int Level { get; set; }
-
-    [JsonProperty("story")]
-    public string Story { get; set; } = string.Empty;
-}
-//TODO: Implement editor
 
 //Enemies* (Enemy data)
 public class EnemyFile

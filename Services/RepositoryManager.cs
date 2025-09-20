@@ -167,7 +167,7 @@ public class RepositoryManager
 
     #region Serialization
 
-    public LocalizationFileBase? GetObjectFromPath(string path, LocalizationFileBase? file = null)
+    public LocalizationFileBase GetObjectFromPath(string path, LocalizationFileBase? file = null)
     {
         string rawFile;
         try
@@ -182,20 +182,25 @@ public class RepositoryManager
 
         var targetType = file?.GetType() ?? FileToObjectCaster.GetType(path);
         if (targetType == null)
-        {
             Console.WriteLine("Unable to determine file type from path pattern.");
-            return null;
-        }
+        
 
         LocalizationFileBase? deserialized;
-        try
+        if (targetType == null || targetType == typeof(UnidentifiedFile))
         {
-            deserialized = (LocalizationFileBase?)JsonConvert.DeserializeObject(rawFile, targetType);
+            deserialized = new UnidentifiedFile();
         }
-        catch
+        else
         {
-            Console.WriteLine("File type differentiates from selected object type, please check manually.");
-            return null;
+            try
+            {
+                deserialized = (LocalizationFileBase?)JsonConvert.DeserializeObject(rawFile, targetType);
+            }
+            catch (Exception ex)
+            {
+                App.Current.HandleGlobalExceptionAsync(ex);
+                return null;
+            }
         }
 
         if (deserialized == null)
@@ -212,8 +217,11 @@ public class RepositoryManager
     }
 
 
-    public LocalizationFileBase? GetReference(LocalizationFileBase refTo)
+    public LocalizationFileBase? GetReference(LocalizationFileBase? refTo)
     {
+        if(refTo == null)
+            return null;
+        
         if (string.IsNullOrEmpty(refTo.FileName) || string.IsNullOrEmpty(refTo.FullPath))
             return null;
 
@@ -250,7 +258,23 @@ public class RepositoryManager
 
         try
         {
-            var json = JsonConvert.SerializeObject(obj, Formatting.Indented);
+            string json;
+        
+            // Check if it's an UnidentifiedFile type
+            if (obj.GetType().Name == "UnidentifiedFile" || obj is UnidentifiedFile)
+            {
+                // For UnidentifiedFile, serialize as plain object without type information
+                json = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.None
+                });
+            }
+            else
+            {
+                // For other types, use normal serialization
+                json = JsonConvert.SerializeObject(obj, Formatting.Indented);
+            }
+        
             File.WriteAllText(obj.FullPath, json, new UTF8Encoding(false));
             return true;
         }

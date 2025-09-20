@@ -14,26 +14,6 @@
         <global:TextToFontSizeConverter x:Key="TextToFontSizeConverter" />
     </UserControl.Resources>
 
-    <UserControl.Styles>
-        <Style Selector="TextBox.invisible">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="Margin" Value="0" />
-        </Style>
-        <Style Selector="TextBox.invisible:focus /template/ Border#PART_BorderElement">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-        </Style>
-        <Style Selector="TextBox.invisible:pointerover /template/ Border#PART_BorderElement">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-        </Style>
-    </UserControl.Styles>
-
     <Grid RowDefinitions="*,Auto">
 
         <!--  Main Content - Side by Side Layout  -->

@@ -1,0 +1,324 @@
+<UserControl
+    d:DesignHeight="800"
+    d:DesignWidth="1200"
+    mc:Ignorable="d"
+    x:Class="RainbusToolbox.Views.SkillsEgoTranslationEditor"
+    x:DataType="vm:SkillsEgoTranslationEditorViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:RainbusToolbox.ViewModels"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!--  Main Content - Vertical Split  -->
+        <Grid
+            ColumnDefinitions="*,*"
+            Grid.Row="1"
+            IsVisible="{Binding IsFileLoaded}"
+            Margin="20,0,20,15">
+
+            <!--  Reference Section (Left)  -->
+            <Border
+                ClipToBounds="True"
+                Grid.Column="0"
+                Margin="0,0,10,0">
+                <Panel>
+                    <Image
+                        HorizontalAlignment="Stretch"
+                        Source="avares://RainbusToolbox/Assets/SkillBG.png"
+                        Stretch="Uniform"
+                        StretchDirection="Both"
+                        VerticalAlignment="Stretch" />
+
+                    <Border Margin="72,54,114,195">
+                        <ScrollViewer>
+                            <StackPanel Margin="15">
+                                <TextBlock
+                                    FontFamily="{StaticResource MikodacsFont}"
+                                    FontSize="18"
+                                    FontWeight="Bold"
+                                    Foreground="White"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,0,0,10"
+                                    Text="Reference" />
+
+                                <!--  Skill Info  -->
+                                <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Text="Skill ID: "
+                                        Width="80" />
+                                    <TextBlock
+                                        FontSize="28"
+                                        Foreground="White"
+                                        Text="{Binding ReferenceItem.Id}" />
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="20,0,0,0"
+                                        Text="Level: "
+                                        Width="60" />
+                                    <TextBlock
+                                        FontSize="28"
+                                        Foreground="White"
+                                        Text="{Binding ReferenceLevel.Level}" />
+                                </StackPanel>
+
+                                <!--  Skill Name  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Name:" />
+                                    <TextBox
+                                        Background="Transparent"
+                                        IsReadOnly="True"
+                                        Text="{Binding ReferenceLevel.AbnormalityName}"
+                                        TextWrapping="Wrap" />
+                                    <TextBox
+                                        Background="Transparent"
+                                        IsReadOnly="True"
+                                        Text="{Binding ReferenceLevel.Name}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--  Skill Description  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Description:" />
+                                    <TextBox
+                                        Background="Transparent"
+                                        IsReadOnly="True"
+                                        MinHeight="60"
+                                        Text="{Binding ReferenceLevel.Desc}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--  Coin Descriptions  -->
+                                <StackPanel>
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Coin Descriptions:" />
+                                    <ItemsControl ItemsSource="{Binding ReferenceCoinDescs}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBox
+                                                    Background="Transparent"
+                                                    IsReadOnly="True"
+                                                    MinHeight="40"
+                                                    Text="{Binding Desc}"
+                                                    TextWrapping="Wrap" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Panel>
+            </Border>
+
+            <!--  Editor Section (Right)  -->
+            <Border
+                ClipToBounds="True"
+                Grid.Column="1"
+                Margin="10,0,0,0">
+                <Panel>
+                    <Image
+                        HorizontalAlignment="Stretch"
+                        Source="avares://RainbusToolbox/Assets/SkillBG.png"
+                        Stretch="Uniform"
+                        StretchDirection="Both"
+                        VerticalAlignment="Stretch" />
+
+                    <Border Margin="72,54,114,195">
+                        <ScrollViewer>
+                            <StackPanel Margin="15">
+                                <TextBlock
+                                    FontFamily="{StaticResource MikodacsFont}"
+                                    FontSize="18"
+                                    FontWeight="Bold"
+                                    Foreground="White"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,0,0,10"
+                                    Text="Editor" />
+
+                                <!--  Skill Info  -->
+                                <Grid ColumnDefinitions="Auto,*,Auto,*" Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Grid.Column="0"
+                                        Text="Skill ID: " />
+                                    <TextBlock
+                                        FontSize="28"
+                                        Foreground="White"
+                                        Grid.Column="1"
+                                        Margin="5,0,20,0"
+                                        Text="{Binding CurrentItem.Id}" />
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Grid.Column="2"
+                                        Text="Level: " />
+                                    <TextBlock
+                                        FontSize="28"
+                                        Foreground="White"
+                                        Grid.Column="3"
+                                        Margin="5,0,0,0"
+                                        Text="{Binding CurrentLevel.Level}" />
+                                </Grid>
+
+                                <!--  Skill Name  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Name:" />
+                                    <TextBox
+                                        Background="Transparent"
+                                        Text="{Binding CurrentLevel.AbnormalityName, Mode=TwoWay}"
+                                        TextWrapping="Wrap" />
+                                    <TextBox
+                                        Background="Transparent"
+                                        Text="{Binding CurrentLevel.Name, Mode=TwoWay}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--  Skill Description  -->
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Description:" />
+                                    <TextBox
+                                        AcceptsReturn="True"
+                                        Background="Transparent"
+                                        MinHeight="60"
+                                        Text="{Binding CurrentLevel.Desc, Mode=TwoWay}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--  Coin Descriptions  -->
+                                <StackPanel>
+                                    <TextBlock
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Margin="0,0,0,5"
+                                        Text="Coin Descriptions:" />
+                                    <ItemsControl ItemsSource="{Binding CurrentCoinDescs}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBox
+                                                    AcceptsReturn="True"
+                                                    Background="Transparent"
+                                                    MinHeight="40"
+                                                    Text="{Binding Desc, Mode=TwoWay}"
+                                                    TextWrapping="Wrap" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Panel>
+            </Border>
+        </Grid>
+
+        <!--  Navigation  -->
+        <StackPanel
+            Grid.Row="2"
+            HorizontalAlignment="Center"
+            IsVisible="{Binding IsFileLoaded}"
+            Margin="20,5,20,20"
+            Orientation="Horizontal">
+
+            <!--  Skill Navigation  -->
+            <StackPanel Margin="0,0,30,0" Orientation="Horizontal">
+                <Button
+                    Click="OnPreviousSkillClick"
+                    Content="◀ Prev Skill"
+                    IsEnabled="{Binding CanGoPrevious}"
+                    Margin="0,0,10,0"
+                    Width="200" />
+                <Border
+                    Background="Transparent"
+                    CornerRadius="4"
+                    Padding="12,6">
+                    <TextBlock
+                        FontFamily="{StaticResource MikodacsFont}"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        Text="{Binding NavigationText}"
+                        Width="100" />
+                </Border>
+                <Button
+                    Click="OnNextSkillClick"
+                    Content="Next Skill ▶"
+                    IsEnabled="{Binding CanGoNext}"
+                    Margin="10,0,0,0"
+                    Width="200" />
+            </StackPanel>
+
+            <!--  Level Navigation  -->
+            <StackPanel Orientation="Horizontal">
+                <Button
+                    Click="OnPreviousLevelClick"
+                    Content="◀ Prev Level"
+                    IsEnabled="{Binding CanGoPreviousLevel}"
+                    Margin="0,0,10,0"
+                    Width="200" />
+                <Border
+                    Background="Transparent"
+                    CornerRadius="4"
+                    Padding="8,4">
+                    <TextBlock
+                        FontFamily="{StaticResource MikodacsFont}"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        Text="{Binding LevelNavigationText}"
+                        Width="100" />
+                </Border>
+                <Button
+                    Click="OnNextLevelClick"
+                    Content="Next Level ▶"
+                    IsEnabled="{Binding CanGoNextLevel}"
+                    Margin="10,0,0,0"
+                    Width="200" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

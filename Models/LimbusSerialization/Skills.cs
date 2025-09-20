@@ -46,3 +46,5 @@ public class CoinDesc
     [JsonProperty("desc")]
     public string Desc { get; set; } = string.Empty;
 }
+
+

@@ -1,0 +1,27 @@
+using Avalonia.Controls;
+using Avalonia.Interactivity;
+using System.ComponentModel;
+using RainbusToolbox.Utilities.Data;
+using RainbusToolbox.ViewModels;
+
+namespace RainbusToolbox.Views
+{
+    public partial class AbnormalityGuideTranslationEditor : UserControl, IFileEditor
+    {
+        public AbnormalityGuideTranslationEditorViewModel VM => (AbnormalityGuideTranslationEditorViewModel)DataContext!;
+
+        public AbnormalityGuideTranslationEditor()
+        {
+            InitializeComponent();
+            DataContext ??= new AbnormalityGuideTranslationEditorViewModel();
+        }
+
+        private void OnPreviousClick(object? sender, RoutedEventArgs e) => VM.GoPrevious();
+
+        private void OnNextClick(object? sender, RoutedEventArgs e) => VM.GoNext();
+
+        public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((AbnormalityGuideFile)file);
+
+        public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((AbnormalityGuideFile)file);
+    }
+}

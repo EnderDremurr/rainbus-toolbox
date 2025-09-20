@@ -3,11 +3,10 @@ using Newtonsoft.Json;
 
 namespace RainbusToolbox.Utilities.Data;
 
-//Passives* (Passive abilities)
-[FilePattern("Passives*")]
-public class PassivesFile : LocalizationFileBase, ILocalizationContainer<GenericIdNameDesc>
+
+[FilePattern("Egos.json")]
+public class EgoNames : LocalizationFileBase, ILocalizationContainer<GenericIdNameDesc>
 {
     [JsonProperty("dataList")]
     public List<GenericIdNameDesc> DataList { get; set; }
 }
-//TODO: Implement editor

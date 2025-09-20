@@ -13,13 +13,18 @@ public static class FileToObjectCaster
     [
         typeof(BuffsFile),
         typeof(AbDlgFile),
+        typeof(SkillsEgoFile),
         typeof(SkillsFile),
         typeof(BattleHintsFile),
         typeof(StoryDataFile),
         typeof(PanicInfoFile),
         typeof(PassivesFile),
         typeof(EGOGiftFile),
-        
+        typeof(BattleAnnouncerFile),
+        typeof(PersonalityVoiceFile),
+        typeof(EGOVoiceFile),
+        typeof(AbnormalityGuideFile),
+        typeof(UnidentifiedFile)
     ];  
     
     public static Type? GetType(string pathToFile)

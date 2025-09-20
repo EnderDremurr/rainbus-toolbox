@@ -16,13 +16,18 @@
         <entry key="Views/Tabs/ReleaseTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Tabs/TranslationTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Tabs/UpdaterTab.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Translation/AbnormalityGuideTranslationEditor.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Translation/BattleAnnouncerTranslationEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Translation/BattleHintsEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Translation/BattleHintsTranslationEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Translation/BuffTranslationEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Translation/EGOGiftTranslationEditor.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Translation/EGOVoiceTranslationEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Translation/GenericTranslationEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Translation/PanicTranslationEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Translation/PassiveTranslationEditor.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Translation/PersonalityVoiceTranslationEditor.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Translation/SkillsEgoTranslationEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Translation/SkillsTranslationEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Translation/StoryTranslationEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/TranslationTab.axaml" value="RainbusToolbox.csproj" />

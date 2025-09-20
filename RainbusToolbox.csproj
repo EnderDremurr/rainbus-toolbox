@@ -84,5 +84,9 @@
         <DependentUpon>OverviewTab.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\Translation\SkillsEgoTranslationEditor.axaml.cs">
+        <DependentUpon>SkillsEgoTranslationEditor.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 </Project>

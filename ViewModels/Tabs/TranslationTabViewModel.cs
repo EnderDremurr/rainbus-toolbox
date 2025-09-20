@@ -33,11 +33,20 @@ public partial class TranslationTabViewModel : ObservableObject
     {
         { typeof(StoryDataFile), new StoryTranslationEditor() },
         { typeof(EGOGiftFile), new EGOGiftTranslationEditor() },
+        {typeof(SkillsEgoFile), new SkillsEgoTranslationEditor()},
         { typeof(SkillsFile), new SkillsTranslationEditor() },
         {typeof(BattleHintsFile), new BattleHintsTranslationEditor()},
         { typeof(PanicInfoFile), new PanicTranslationEditor() },
         {typeof(PassivesFile), new PassiveTranslationEditor()},
-        { typeof(BuffsFile), new BuffTranslationEditor() }
+        {typeof(BattleAnnouncerFile), new BattleAnnouncerTranslationEditor()},
+        { typeof(BuffsFile), new BuffTranslationEditor() },
+        {typeof(PersonalityVoiceFile), new PersonalityVoiceTranslationEditor()},
+        {typeof(EGOVoiceFile), new EGOVoiceTranslationEditor()},
+        {typeof(AbnormalityGuideFile), new AbnormalityGuideTranslationEditor()},
+        {typeof(UnidentifiedFile), new GenericTranslationEditor()}
+        
+        
+        
     };
     private readonly IFileEditor _genericEditor = new GenericTranslationEditor();
     
@@ -91,6 +100,7 @@ public partial class TranslationTabViewModel : ObservableObject
 
         var file = _repositoryManager.GetObjectFromPath(filePath);
         var refFile = _repositoryManager.GetReference(file!);
+        
         CurrentEditor.SetFileToEdit(file!);
         CurrentEditor.SetReferenceFile(refFile!);
         
@@ -99,6 +109,12 @@ public partial class TranslationTabViewModel : ObservableObject
     [RelayCommand]
     public void SaveObjectFromCurrentEditor()
     {
+        if (CurrentEditor is GenericTranslationEditor ed)
+        {
+            ed.SaveUnknownFile();
+            return;
+        }
+        
         if (CurrentEditor is UserControl editor && editor.DataContext is not null)
         {
             var vm = editor.DataContext;

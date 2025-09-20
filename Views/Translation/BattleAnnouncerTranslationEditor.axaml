@@ -1,0 +1,123 @@
+<UserControl
+    d:DesignHeight="800"
+    d:DesignWidth="1200"
+    mc:Ignorable="d"
+    x:Class="RainbusToolbox.Views.BattleAnnouncerTranslationEditor"
+    x:DataType="viewModels:BattleAnnouncerTranslationEditorViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:RainbusToolbox.ViewModels"
+    xmlns:views="clr-namespace:RainbusToolbox.Views"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!--  Main Content - Horizontal Split  -->
+        <Grid
+            Grid.Row="1"
+            IsVisible="{Binding IsFileLoaded}"
+            Margin="20,0,20,15"
+            RowDefinitions="*,*">
+
+            <!--  Reference Section (Top)  -->
+            <Border
+                ClipToBounds="True"
+                Grid.Row="0"
+                Margin="0,0,0,10">
+                <!--  overlay children so Image is background and controls float on top  -->
+                <Grid>
+                    <!--  Background Image  -->
+                    <Image
+                        HorizontalAlignment="Stretch"
+                        Name="ReferenceBgImage"
+                        SizeChanged="OnBackgroundSizeChanged"
+                        Source="avares://RainbusToolbox/Assets/AnnouncerBG.png"
+                        Stretch="Uniform"
+                        StretchDirection="Both"
+                        VerticalAlignment="Stretch" />
+
+                    <!--  Content Area (overlay)  -->
+                    <ScrollViewer>
+                        <TextBox
+                            AcceptsReturn="True"
+                            Background="Transparent"
+                            Classes="invisible"
+                            FontSize="32"
+                            IsReadOnly="True"
+                            Margin="{Binding ReferenceMargins}"
+                            MaxWidth="900"
+                            Text="{Binding ReferenceItem.Dialogue}"
+                            TextWrapping="Wrap" />
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <!--  Editor Section (Bottom)  -->
+            <Border
+                ClipToBounds="True"
+                Grid.Row="1"
+                Margin="0,10,0,0">
+                <Grid>
+                    <!--  Background Image  -->
+                    <Image
+                        HorizontalAlignment="Stretch"
+                        Name="EditorBgImage"
+                        SizeChanged="OnBackgroundSizeChanged"
+                        Source="avares://RainbusToolbox/Assets/AnnouncerBG.png"
+                        Stretch="Uniform"
+                        StretchDirection="Both"
+                        VerticalAlignment="Stretch" />
+
+                    <!--  Content Area (overlay)  -->
+                    <ScrollViewer>
+                        <TextBox
+                            AcceptsReturn="True"
+                            Background="Transparent"
+                            Classes="invisible"
+                            FontSize="32"
+                            Margin="{Binding EditorMargins}"
+                            MaxWidth="900"
+                            Text="{Binding CurrentItem.Dialogue, Mode=TwoWay}"
+                            TextWrapping="Wrap" />
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!--  Navigation Container  -->
+        <StackPanel
+            Grid.Row="2"
+            HorizontalAlignment="Center"
+            IsVisible="{Binding IsFileLoaded}"
+            Margin="20,5,20,20"
+            Orientation="Horizontal">
+
+            <StackPanel Orientation="Horizontal">
+                <Button
+                    Click="OnPreviousClick"
+                    Content="◀ Previous"
+                    IsEnabled="{Binding CanGoPrevious}"
+                    Margin="0,0,10,0"
+                    Width="200" />
+                <Border
+                    Background="Transparent"
+                    CornerRadius="4"
+                    Padding="12,6">
+                    <TextBlock
+                        FontFamily="{StaticResource MikodacsFont}"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        Text="{Binding NavigationText}"
+                        Width="150" />
+                </Border>
+                <Button
+                    Click="OnNextClick"
+                    Content="Next ▶"
+                    IsEnabled="{Binding CanGoNext}"
+                    Margin="10,0,0,0"
+                    Width="200" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

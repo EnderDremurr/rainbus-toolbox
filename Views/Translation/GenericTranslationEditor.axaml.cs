@@ -1,24 +1,32 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using RainbusToolbox.Utilities.Data;
+using RainbusToolbox.ViewModels;
 
-namespace RainbusToolbox.Views.Translation;
-
-public partial class GenericTranslationEditor : UserControl, IFileEditor
+namespace RainbusToolbox.Views.Translation
 {
-    public GenericTranslationEditor()
+    public partial class GenericTranslationEditor : UserControl, IFileEditor
     {
-        InitializeComponent();
-    }
+        public GenericTranslationEditorViewModel VM => (GenericTranslationEditorViewModel)DataContext!;
 
-    public void SetFileToEdit(LocalizationFileBase file)
-    {
-        throw new System.NotImplementedException();
-    }
+        public GenericTranslationEditor()
+        {
+            InitializeComponent();
+            DataContext ??= new GenericTranslationEditorViewModel();
+        }
 
-    public void SetReferenceFile(LocalizationFileBase file)
-    {
-        throw new System.NotImplementedException();
+        public void SetFileToEdit(LocalizationFileBase file)
+        {
+            VM.LoadEditableFile(file);
+        }
+
+        public void SetReferenceFile(LocalizationFileBase file)
+        {
+            VM.LoadReferenceFile(file);
+        }
+
+        public void SaveUnknownFile()
+        {
+            VM.SaveEditableFile();
+        }
     }
 }
