@@ -250,40 +250,66 @@ public class RepositoryManager
     }
 
     public bool SaveObjectToFile(LocalizationFileBase obj)
+{
+    Console.WriteLine("=== SaveObjectToFile Debug Start ===");
+    Console.WriteLine($"Object type: {obj?.GetType().Name}");
+    Console.WriteLine($"FileName: '{obj?.FileName}'");
+    Console.WriteLine($"FullPath: '{obj?.FullPath}'");
+    
+    if (string.IsNullOrEmpty(obj.FileName) || string.IsNullOrEmpty(obj.FullPath))
     {
-        if (string.IsNullOrEmpty(obj.FileName) || string.IsNullOrEmpty(obj.FullPath))
-            return false;
-
-        Directory.CreateDirectory(Path.GetDirectoryName(obj.FullPath)!);
-
-        try
-        {
-            string json;
-        
-            // Check if it's an UnidentifiedFile type
-            if (obj.GetType().Name == "UnidentifiedFile" || obj is UnidentifiedFile)
-            {
-                // For UnidentifiedFile, serialize as plain object without type information
-                json = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.None
-                });
-            }
-            else
-            {
-                // For other types, use normal serialization
-                json = JsonConvert.SerializeObject(obj, Formatting.Indented);
-            }
-        
-            File.WriteAllText(obj.FullPath, json, new UTF8Encoding(false));
-            return true;
-        }
-        catch (Exception e)
-        {
-            _ = App.Current.HandleNonFatalExceptionAsync(e);
-            return false;
-        }
+        Console.WriteLine("ERROR: FileName or FullPath is null/empty - returning false");
+        return false;
     }
+
+    var directoryPath = Path.GetDirectoryName(obj.FullPath);
+    Console.WriteLine($"Directory path: '{directoryPath}'");
+    
+    Directory.CreateDirectory(directoryPath!);
+    Console.WriteLine("Directory created/verified");
+
+    try
+    {
+        string json;
+        
+        Console.WriteLine($"Checking if object is UnidentifiedFile...");
+        Console.WriteLine($"GetType().Name == 'UnidentifiedFile': {obj.GetType().Name == "UnidentifiedFile"}");
+        Console.WriteLine($"obj is UnidentifiedFile: {obj is UnidentifiedFile}");
+    
+        // Check if it's an UnidentifiedFile type
+        if (obj.GetType().Name == "UnidentifiedFile" || obj is UnidentifiedFile)
+        {
+            Console.WriteLine("Using UnidentifiedFile serialization (no type info)");
+            // For UnidentifiedFile, serialize as plain object without type information
+            json = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.None
+            });
+        }
+        else
+        {
+            Console.WriteLine("Using normal serialization");
+            // For other types, use normal serialization
+            json = JsonConvert.SerializeObject(obj, Formatting.Indented);
+        }
+        
+        Console.WriteLine($"JSON length: {json?.Length ?? 0} characters");
+    
+        File.WriteAllText(obj.FullPath, json, new UTF8Encoding(false));
+        Console.WriteLine("File written successfully");
+        Console.WriteLine("=== SaveObjectToFile Debug End - SUCCESS ===");
+        return true;
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine($"ERROR: Exception occurred: {e.Message}");
+        Console.WriteLine($"Exception type: {e.GetType().Name}");
+        Console.WriteLine($"Stack trace: {e.StackTrace}");
+        Console.WriteLine("=== SaveObjectToFile Debug End - EXCEPTION ===");
+        _ = App.Current.HandleNonFatalExceptionAsync(e);
+        return false;
+    }
+}
 
     #endregion
 
