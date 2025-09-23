@@ -34,6 +34,14 @@ public class RepositoryManager
 
     #endregion
 
+    #region ConstantItems
+
+    public string PathToEgoNames => Path.Combine(PathToLocalization, "Egos.json");
+    public EgoNames EgoNames;
+    public EgoNames EgoNamesReference;
+
+    #endregion
+
     private string FindRepositoryPath(string originalPath)
     {
         if (Repository.IsValid(originalPath))
@@ -160,6 +168,9 @@ public class RepositoryManager
         {
             IsValid = false;
         }
+
+        EgoNames = (EgoNames)GetObjectFromPath(PathToEgoNames);
+        EgoNamesReference = (EgoNames)GetReference(EgoNames)!;
     }
 
     #endregion

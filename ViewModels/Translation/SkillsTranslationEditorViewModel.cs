@@ -14,7 +14,7 @@ public partial class SkillsTranslationEditorViewModel : TranslationEditorViewMod
     [ObservableProperty] private SkillLevel? _referenceLevel;
 
     [ObservableProperty] private bool _canGoNextLevel;
-    [ObservableProperty] private bool _canGoPreviousLevel;
+    [ObservableProperty] private bool _canGoPreviousLevel; 
 
     [ObservableProperty] private string _levelNavigationText = "";
 
@@ -31,6 +31,7 @@ public partial class SkillsTranslationEditorViewModel : TranslationEditorViewMod
         UpdateReference();
         UpdateNavigation();
         OnPropertyChanged(nameof(IsFileLoaded));
+        
     }
 
     public void LoadReferenceFile(SkillsFile file)

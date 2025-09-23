@@ -20,7 +20,7 @@
         <Grid
             ColumnDefinitions="*,*"
             Grid.Row="0"
-            IsVisible="{Binding IsEGOGiftLoaded}"
+            IsVisible="{Binding IsFileLoaded}"
             Margin="20,15,20,15">
 
             <!--  Reference Section (Left)  -->
@@ -112,7 +112,7 @@
         <StackPanel
             Grid.Row="1"
             HorizontalAlignment="Center"
-            IsVisible="{Binding IsEGOGiftLoaded}"
+            IsVisible="{Binding IsFileLoaded}"
             Margin="20,15,20,20"
             Orientation="Horizontal">
             <Button

@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using RainbusToolbox.Models.Data;
+using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Utilities.Data;
 
 namespace RainbusToolbox.ViewModels;
@@ -13,6 +14,11 @@ public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorView
     [ObservableProperty] private SkillEgoLevel? _currentLevel;
     [ObservableProperty] private SkillEgoLevel? _referenceLevel;
 
+    private string currentId;
+    [ObservableProperty] private string _currentEgoName;
+    [ObservableProperty] private string _referenceEgoName;
+
+
     [ObservableProperty] private bool _canGoNextLevel;
     [ObservableProperty] private bool _canGoPreviousLevel;
 
@@ -20,8 +26,31 @@ public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorView
 
     public ObservableCollection<CoinDesc> ReferenceCoinDescs { get; } = new();
     public ObservableCollection<CoinDesc> CurrentCoinDescs { get; } = new();
+    
+    private RepositoryManager _repositoryManager;
+    public SkillsEgoTranslationEditorViewModel()
+    {
+        _repositoryManager = (App.Current.ServiceProvider.GetService(typeof(RepositoryManager)) as RepositoryManager)!;
+    }
 
+    
+    private void GetCurrentSkillsEgoName()
+    {
+        if (CurrentItem == null) return;
+        currentId = CurrentItem.Id.ToString()[..5];
 
+        CurrentEgoName = _repositoryManager.EgoNames.DataList.FirstOrDefault(i => i.Id.ToString() == currentId)?.Name.ToString() ?? "Не найдено =(";
+        ReferenceEgoName = _repositoryManager.EgoNamesReference.DataList.FirstOrDefault(i => i.Id.ToString() == currentId)?.Name.ToString() ?? "Не найдено =(";
+    }
+    
+    partial void OnCurrentEgoNameChanged(string value)
+    {
+        //Todo: Attach this shit to save button, but for now i think its fine
+        _repositoryManager.EgoNames.DataList.FirstOrDefault(i => i.Id.ToString() == currentId)!.Name = value;
+        _repositoryManager.SaveObjectToFile(_repositoryManager.EgoNames);
+    }
+    
+    
     public override void LoadEditableFile(SkillsEgoFile file)
     {
         base.LoadEditableFile(file);
@@ -31,6 +60,7 @@ public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorView
         UpdateReference();
         UpdateNavigation();
         OnPropertyChanged(nameof(IsFileLoaded));
+        GetCurrentSkillsEgoName();
     }
 
     public void LoadReferenceFile(SkillsEgoFile file)
@@ -47,6 +77,8 @@ public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorView
         UpdateCurrent();
         UpdateReference();
         UpdateNavigation();
+
+        GetCurrentSkillsEgoName();
     }
 
     public void GoNextSkill()
@@ -57,6 +89,8 @@ public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorView
         UpdateCurrent();
         UpdateReference();
         UpdateNavigation();
+
+        GetCurrentSkillsEgoName();
     }
 
     public void GoPreviousLevel()

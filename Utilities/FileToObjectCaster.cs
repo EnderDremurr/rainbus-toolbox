@@ -24,7 +24,8 @@ public static class FileToObjectCaster
         typeof(PersonalityVoiceFile),
         typeof(EGOVoiceFile),
         typeof(AbnormalityGuideFile),
-        typeof(UnidentifiedFile)
+        typeof(UnidentifiedFile),
+        typeof(EgoNames)
     ];  
     
     public static Type? GetType(string pathToFile)

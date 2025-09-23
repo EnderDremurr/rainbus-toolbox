@@ -109,20 +109,45 @@ public partial class TranslationTabViewModel : ObservableObject
     [RelayCommand]
     public void SaveObjectFromCurrentEditor()
     {
+        Console.WriteLine("=== SaveObjectFromCurrentEditor Debug Start ===");
+        Console.WriteLine($"CurrentEditor: {CurrentEditor}");
+        Console.WriteLine($"CurrentEditor type: {CurrentEditor?.GetType().Name}");
+    
         if (CurrentEditor is GenericTranslationEditor ed)
         {
+            Console.WriteLine("Taking GenericTranslationEditor path");
             ed.SaveUnknownFile();
             return;
         }
-        
+    
+        Console.WriteLine($"CurrentEditor is UserControl: {CurrentEditor is UserControl}");
         if (CurrentEditor is UserControl editor && editor.DataContext is not null)
         {
+            Console.WriteLine($"Editor DataContext type: {editor.DataContext.GetType().Name}");
+        
             var vm = editor.DataContext;
             var prop = vm.GetType().GetProperty("EditableFile");
+            Console.WriteLine($"EditableFile property found: {prop != null}");
+        
             var obj = prop?.GetValue(vm);
+            Console.WriteLine($"EditableFile value: {obj}");
+            Console.WriteLine($"EditableFile type: {obj?.GetType().Name}");
 
             if (obj is LocalizationFileBase file)
+            {
+                Console.WriteLine("Object is LocalizationFileBase - calling SaveObjectToFile");
                 _repositoryManager.SaveObjectToFile(file);
+            }
+            else
+            {
+                Console.WriteLine("Object is NOT LocalizationFileBase");
+            }
         }
+        else
+        {
+            Console.WriteLine("CurrentEditor is not UserControl or DataContext is null");
+        }
+    
+        Console.WriteLine("=== SaveObjectFromCurrentEditor Debug End ===");
     }
 }
