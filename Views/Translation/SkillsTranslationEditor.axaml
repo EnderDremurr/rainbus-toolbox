@@ -228,7 +228,7 @@
                                         Foreground="White"
                                         Margin="0,0,0,5"
                                         Text="Coin Descriptions:" />
-                                    <ItemsControl ItemsSource="{Binding CurrentCoinDescs}">
+                                    <ItemsControl ItemsSource="{Binding CurrentCoinDescs}" MaxWidth="{Binding RelativeSource={RelativeSource AncestorType=StackPanel}, Path=Width}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBox

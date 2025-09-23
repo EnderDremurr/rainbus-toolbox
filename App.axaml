@@ -3,6 +3,7 @@
     x:Class="RainbusToolbox.App"
     xmlns="https://github.com/avaloniaui"
     xmlns:global="clr-namespace:RainbusToolbox.Utilities"
+    xmlns:global1="clr-namespace:"
     xmlns:local="using:RainbusToolbox"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
@@ -16,51 +17,34 @@
         <!--  Custom font registration  -->
         <FontFamily x:Key="PretendardFont">avares://RainbusToolbox/Assets/Fonts/Pretendard.ttf#Pretendard</FontFamily>
         <FontFamily x:Key="MikodacsFont">avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs Regular</FontFamily>
+        <global1:TextBoxTextConverter x:Key="TextBoxTextConverter" />
     </Application.Resources>
 
     <Application.Styles>
         <FluentTheme />
 
         <Style Selector="TextBox.invisible">
-            <Setter Property="Template">
-                <ControlTemplate TargetType="TextBox">
-                    <Grid>
-                        <!--  The editable text surface  -->
-                        <Border
-                            Background="Transparent"
-                            BorderBrush="Transparent"
-                            BorderThickness="0"
-                            x:Name="PART_BorderElement">
-                            <ScrollViewer
-                                HorizontalScrollBarVisibility="Hidden"
-                                Margin="0"
-                                Padding="0"
-                                VerticalScrollBarVisibility="Hidden"
-                                x:Name="PART_ContentHost">
-                                <TextPresenter
-                                    Background="Transparent"
-                                    CaretBrush="{TemplateBinding CaretBrush}"
-                                    Margin="0"
-                                    SelectionBrush="{TemplateBinding SelectionBrush}"
-                                    SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
-                                    Text="{TemplateBinding Text}"
-                                    TextWrapping="{TemplateBinding TextWrapping}"
-                                    x:Name="PART_TextPresenter" />
-                            </ScrollViewer>
-                        </Border>
-
-                        <!--  Eye button in bottom-right  -->
-                        <Button
-                            Command="{x:Static global:GlobalCommandHandler.CreatePreviewCommand}"
-                            CommandParameter="{TemplateBinding Text}"
-                            Height="20"
-                            HorizontalAlignment="Right"
-                            Margin="4"
-                            VerticalAlignment="Bottom"
-                            Width="20" />
-                    </Grid>
-                </ControlTemplate>
-            </Setter>
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Watermark" Value="No text found" />
+            <Setter Property="SelectionBrush" Value="Brown" />
+            <Setter Property="global:ContextMenuHelper.EnableTextPreview" Value="True" />
+        </Style>
+        <Style Selector="TextBox.invisible:focus /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        <Style Selector="TextBox.invisible:pointerover /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        <Style Selector="TextBox.invisible /template/ ScrollViewer#PART_ContentHost">
+            <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
         </Style>
 
 

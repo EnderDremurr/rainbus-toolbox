@@ -28,7 +28,7 @@ public class RepositoryManager
     public string RepositoryRoot { get; private set; }
     public string PathToLocalization => Path.Combine(_dataManager.Settings.RepositoryPath!, LocalizationFolder);
     public string PathToReferenceLocalization;
-    public string PathToDistribution { get; private set; }
+    public string PathToDistribution => Path.Combine(_dataManager.Settings.RepositoryPath!, ".dist");
 
     // Game paths
 

@@ -128,8 +128,23 @@
                                 AcceptsTab="False"
                                 Classes="framed"
                                 Height="60"
+                                IsVisible="{Binding Option2}"
                                 Margin="5,0"
                                 Text="{Binding RoleToPing, Mode=TwoWay}" />
+
+                            <CheckBox
+                                Content="Прикрепить картинку в дискорде"
+                                IsChecked="{Binding AttachAnImage}"
+                                Margin="5,0" />
+                            <TextBlock
+                                Classes="header"
+                                IsVisible="{Binding AttachAnImage}"
+                                Text="{Binding SelectedFileName}" />
+                            <Button
+                                Command="{Binding SelectFile}"
+                                Content="Выбрать файл"
+                                Height="40"
+                                IsVisible="{Binding AttachAnImage}" />
                         </StackPanel>
                     </Border>
                 </StackPanel>

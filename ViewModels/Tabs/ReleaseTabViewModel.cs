@@ -11,6 +11,7 @@ using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Services;
+using RainbusToolbox.Views;
 
 namespace RainbusToolbox.ViewModels;
 
@@ -87,6 +88,10 @@ public partial class ReleaseTabViewModel : ObservableObject
     [ObservableProperty]
     private string _editorText = string.Empty;
 
+    [ObservableProperty]
+    private string _selectedFileName = "файл не выбран";
+    private string _selectedFilePath = string.Empty;
+
     // General section checkboxes
     [ObservableProperty]
     private bool _mustAppendLauncherLink;
@@ -100,6 +105,9 @@ public partial class ReleaseTabViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _option1;
+
+    [ObservableProperty]
+    private bool _attachAnImage;
 
     [ObservableProperty]
     private bool _option2;
@@ -125,22 +133,22 @@ public partial class ReleaseTabViewModel : ObservableObject
     }
 
     #endregion
-
-    private Window GetMainWindow()
-    {
-        if (Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            return desktop.MainWindow;
-        }
-        return null;
-    }
+    
 
 
     #region Commands
-    
 
     [RelayCommand]
-    private async Task Submit()
+    public async Task SelectFile()
+    {
+        var dialog = new OpenFileDialog();
+        var result = await dialog.ShowAsync(App.Current.ServiceProvider.GetService(typeof(MainWindow)) as MainWindow);
+        _selectedFilePath = result[0];
+        SelectedFileName = Path.GetFileName(_selectedFilePath);
+    }
+
+    [RelayCommand]
+    public async Task Submit()
     {
         if (string.IsNullOrWhiteSpace(Version))
         {
@@ -181,7 +189,7 @@ public partial class ReleaseTabViewModel : ObservableObject
                 if (Option2 && !string.IsNullOrWhiteSpace(RoleToPing))
                     discordMessage += $"\n\n\n\n<@&{RoleToPing}>";
                 
-                await _discordManager.SendMessageAsync(discordMessage);
+                await _discordManager.SendMessageAsync(discordMessage, _selectedFilePath);
             }
 
             // Success message

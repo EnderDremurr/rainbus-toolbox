@@ -290,12 +290,12 @@ public partial class App : Application
             services.AddSingleton<KeyWordConversionService>();
 
             // Windows and VMs
-            services.AddTransient<MainWindow>();
-            services.AddTransient<MainWindowViewModel>();
+            services.AddSingleton<MainWindow>();
+            services.AddSingleton<MainWindowViewModel>();
             services.AddTransient<InitializationWindow>();
             services.AddTransient<InitializationWindowViewModel>();
             services.AddTransient<SettingsWindow>();
-            services.AddTransient<ReleaseTabViewModel>();
+            services.AddSingleton<ReleaseTabViewModel>();
             services.AddSingleton<ViewModelLocator>();
 
             _serviceProvider = services.BuildServiceProvider();

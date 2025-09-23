@@ -30,11 +30,7 @@ public class DiscordManager
         if (string.IsNullOrWhiteSpace(webhookUrl))
         {
             Client = null;
-            ShowMessageAsync(window,
-                "Внимание спасибо за внимание",
-                "Ты не указал вебхук, без него сообщение в дс не сможет отправится",
-                ButtonEnum.Ok,
-                Icon.Info);
+            _ = App.Current.ShowErrorNotificationAsync("Не указан вебхук");
             return;
         }
 
@@ -44,62 +40,22 @@ public class DiscordManager
         }
         catch
         {
-            Client = null;  
-            ShowMessageAsync(window,
-                "АШЫЫЫЫЫЫЫЫЫЫЫЫЫБКААААААААА",
-                "Вебхук что ты вписал хуйня ебаная, поставь другой",
-                ButtonEnum.Ok,
-                Icon.Error);
+            Client = null;
+            _ = App.Current.ShowErrorNotificationAsync("Вебхук что ты вписал хуйня ебаная, поставь другой");
         }
-    }
-
-    /// <summary>
-    /// Safely shows a message box, handling cases where the main window is not yet open or already closed.
-    /// </summary>
-    private async Task ShowMessageAsync(Window window, string title, string message, ButtonEnum buttons, Icon icon)
-    {
-        // Wait until the window is visible
-        if (window != null && !window.IsVisible)
-        {
-            var tcs = new TaskCompletionSource<bool>();
-
-            void Handler(object sender, EventArgs e)
-            {
-                window.Opened -= Handler;
-                tcs.SetResult(true);
-            }
-
-            window.Opened += Handler;
-            await tcs.Task;
-        }
-
-        var msgBox = MessageBoxManager.GetMessageBoxStandard(
-            title,
-            message,
-            buttons,
-            icon,
-            WindowStartupLocation.CenterScreen
-        );
-
-        // Show modal attached to window
-        if (window != null && window.IsVisible)
-        {
-            await msgBox.ShowWindowDialogAsync(window);
-        }
-        else
-        {
-            // fallback, should rarely hit
-            await msgBox.ShowWindowAsync();
-        }
-    }
-
-    public void SendMessage(string message)
-    {
-        Client?.SendMessageAsync(message);
     }
     
-    public async Task SendMessageAsync(string message)
+    
+    public async Task SendMessageAsync(string message, string? imagePath = null)
     {
-        await Client.SendMessageAsync(message);
+        if (Client == null)
+        {
+            _ = App.Current.ShowErrorNotificationAsync("Ошибка при отправке сообщения, чето поломалась. Проверь вебхук в настройках");
+            return;
+        }
+        if(imagePath != null)
+            await Client.SendFileAsync(imagePath, message);
+        else
+            await Client.SendMessageAsync(message);
     }
 }

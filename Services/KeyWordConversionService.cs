@@ -17,16 +17,25 @@ public class KeyWordConversionService
     private const string FileUrl =
         "https://raw.githubusercontent.com/kimght/LimbusCompanyRuMTL/main/data/build/keyword_colors.txt";
 
-    private readonly Regex tagRegex = new(@"\[[^\]:]+:`[^`]+`\]", RegexOptions.Compiled);
+    private readonly Regex tagRegex = new(@"\[[^:\]]+:[`*'][^`*']+[`*']\]", RegexOptions.Compiled);
     private readonly PersistentDataManager _dataManager;
 
+    private bool _isInitialized;
     public Dictionary<string, string> KeywordToColorMap { get; private set; } = new();
 
     public KeyWordConversionService(PersistentDataManager dataManager)
     {
         _dataManager = dataManager;
-        InitializeAsync();
     }
+
+    public async Task EnsureInitializedAsync()
+    {
+        if (_isInitialized) return;
+
+        await InitializeAsync();
+        _isInitialized = true;
+    }
+
 
     public async Task InitializeAsync()
     {
@@ -59,8 +68,6 @@ public class KeyWordConversionService
             KeywordToColorMap = new Dictionary<string, string>();
         }
     }
-
-
 
 
     private bool MergeJsonObjectsAdditive(JObject target, JObject source)
@@ -258,7 +265,6 @@ public class KeyWordConversionService
     }
 
 
-
     public string GetMeshFromTag(string tag)
     {
         // Validate the tag format
@@ -269,17 +275,19 @@ public class KeyWordConversionService
         string tagKeyword;
         string tagFill;
 
-        // Check for the backtick pattern
-        var backtickIndex = inner.IndexOf(":`");
-        if (backtickIndex >= 0)
+        // Check for delimiter patterns (backtick, asterisk, or single quote)
+        var delimiterIndex = inner.IndexOfAny(['`', '*', '\'']);
+        if (delimiterIndex >= 0 && inner[delimiterIndex - 1] == ':')
         {
-            tagKeyword = inner.Substring(0, backtickIndex);
-            // Grab everything between the backticks
-            var endBacktick = inner.IndexOf('`', backtickIndex + 2);
-            if (endBacktick < 0)
-                throw new ArgumentException("Invalid tag format: missing closing backtick");
+            var delimiter = inner[delimiterIndex];
+            tagKeyword = inner.Substring(0, delimiterIndex - 1);
 
-            tagFill = inner.Substring(backtickIndex + 2, endBacktick - (backtickIndex + 2));
+            // Find the closing delimiter
+            var endDelimiter = inner.IndexOf(delimiter, delimiterIndex + 1);
+            if (endDelimiter < 0)
+                throw new ArgumentException($"Invalid tag format: missing closing {delimiter}");
+
+            tagFill = inner.Substring(delimiterIndex + 1, endDelimiter - (delimiterIndex + 1));
         }
         else
         {
@@ -294,8 +302,7 @@ public class KeyWordConversionService
         // If no color found, return original tag unchanged
         if (actualKey == null || !KeywordToColorMap.ContainsKey(actualKey)) return tag;
 
-        var color = KeywordToColorMap[actualKey];
-
+        var color = KeywordToColorMap[actualKey].Trim('`', ' '); // Remove backticks and spaces
         var mesh =
             $"<sprite name=\\\"{actualKey}\\\"><color={color}><u><link=\\\"{actualKey}\\\"><noparse>{tagFill}</noparse></link></u></color>";
 
@@ -303,15 +310,16 @@ public class KeyWordConversionService
     }
 
 
-
-    public void ReplaceEveryTagWithMesh(string path)
+    public async Task ReplaceEveryTagWithMesh(string path)
     {
         if (!Directory.Exists(path))
             throw new DirectoryNotFoundException($"Directory not found: {path}");
+        await EnsureInitializedAsync();
+
 
         // Exclude JSON files from general processing to avoid corruption
         var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories)
-            .Where(f => !f.EndsWith(".json", StringComparison.OrdinalIgnoreCase));
+            .Where(f => f.EndsWith(".json", StringComparison.OrdinalIgnoreCase));
 
         foreach (var file in files)
             try
@@ -321,16 +329,45 @@ public class KeyWordConversionService
                 var originalTime = File.GetLastWriteTime(file);
 
                 var content = File.ReadAllText(file, encoding);
+                var matches = tagRegex.Matches(content);
+                if (matches.Count > 0)
+                    Console.WriteLine($"Found {matches.Count} matches in {Path.GetFileName(file)}");
+                var replacedContent = tagRegex.Replace(content, match =>
+                {
+                    Console.WriteLine($"Processing match: '{match.Value}'");
+                    var result = GetMeshFromTag(match.Value);
+                    Console.WriteLine($"Original: '{match.Value}'");
+                    Console.WriteLine($"Result:   '{result}'");
+                    Console.WriteLine($"Are they equal? {match.Value == result}");
+                    return result;
+                });
 
-                var replacedContent = tagRegex.Replace(content, match => { return GetMeshFromTag(match.Value); });
+                Console.WriteLine($"Content changed: {content != replacedContent}");
+                Console.WriteLine($"Original content length: {content.Length}");
+                Console.WriteLine($"Replaced content length: {replacedContent.Length}");
 
-                // Only write if content actually changed
+// Let's also check character-by-character if they're close in length
+                if (Math.Abs(content.Length - replacedContent.Length) < 100)
+                    for (var i = 0; i < Math.Min(content.Length, replacedContent.Length); i++)
+                        if (content[i] != replacedContent[i])
+                        {
+                            Console.WriteLine($"First difference at position {i}:");
+                            Console.WriteLine(
+                                $"Original: '{content.Substring(Math.Max(0, i - 10), Math.Min(20, content.Length - i + 10))}'");
+                            Console.WriteLine(
+                                $"Replaced: '{replacedContent.Substring(Math.Max(0, i - 10), Math.Min(20, replacedContent.Length - i + 10))}'");
+                            break;
+                        }
+
                 if (content != replacedContent)
                 {
-                    // Write with UTF-8 no BOM to avoid encoding issues
+                    Console.WriteLine($"Writing changes to {Path.GetFileName(file)}");
                     File.WriteAllText(file, replacedContent, new UTF8Encoding(false));
-                    // Restore original timestamp
                     File.SetLastWriteTime(file, originalTime);
+                }
+                else
+                {
+                    Console.WriteLine($"No changes detected in {Path.GetFileName(file)} - content comparison failed");
                 }
             }
             catch (Exception ex)
@@ -346,5 +383,4 @@ public class KeyWordConversionService
         reader.Peek(); // Force encoding detection
         return reader.CurrentEncoding;
     }
-
 }

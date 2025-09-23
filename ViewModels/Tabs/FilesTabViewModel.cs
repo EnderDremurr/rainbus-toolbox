@@ -152,9 +152,10 @@ public partial class FilesTabViewModel : ObservableObject
     private bool CanExecuteCancel() => IsProcessing;
 
     [RelayCommand]
-    public void ReplaceAllTagsWithMeshes()
+    public async void ReplaceAllTagsWithMeshes() // This runs immediately
     {
-        _keyWordConversionService.ReplaceEveryTagWithMesh(_repositoryManager.PathToLocalization);
+        // Dictionary might still be empty!
+        await _keyWordConversionService.ReplaceEveryTagWithMesh(_repositoryManager.PathToLocalization);
     }
 
     // Remove the old event handler method since we're using Command now
