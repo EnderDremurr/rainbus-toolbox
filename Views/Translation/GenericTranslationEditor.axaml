@@ -5,7 +5,10 @@
     x:Class="RainbusToolbox.Views.Translation.GenericTranslationEditor"
     x:DataType="viewModels:GenericTranslationEditorViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:avaloniaEdit="https://github.com/avaloniaui/avaloniaedit"
+    xmlns:behaviors="clr-namespace:RainbusToolbox.Behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:RainbusToolbox.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
@@ -40,15 +43,15 @@
                     <!--  Reference JSON Content  -->
                     <ScrollViewer Margin="0,35,0,0">
                         <TextBox
-                            AcceptsReturn="True"
                             Background="Transparent"
-                            FontFamily="Cascadia Code,Consolas,Courier New"
+                            Classes="invisible"
                             FontSize="12"
                             Foreground="White"
                             IsReadOnly="True"
-                            Text="{Binding ReferenceJson}"
-                            TextWrapping="NoWrap" />
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            Text="{Binding ReferenceJson}" />
                     </ScrollViewer>
+
                 </Panel>
             </Border>
 
@@ -71,25 +74,17 @@
                             FontWeight="Bold"
                             Foreground="LightGreen"
                             Text="Editor (Editable)" />
-                        <TextBlock
-                            FontSize="12"
-                            Foreground="Orange"
-                            IsVisible="{Binding HasParseError}"
-                            Margin="10,0,0,0"
-                            Text="⚠️ Invalid JSON"
-                            VerticalAlignment="Center" />
                     </StackPanel>
 
                     <!--  Editable JSON Content  -->
                     <ScrollViewer Margin="0,35,0,0">
                         <TextBox
-                            AcceptsReturn="True"
                             Background="Transparent"
-                            FontFamily="Cascadia Code,Consolas,Courier New"
+                            Classes="invisible"
                             FontSize="12"
                             Foreground="White"
-                            Text="{Binding EditableJson, Mode=TwoWay}"
-                            TextWrapping="NoWrap" />
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            Text="{Binding EditableJson, Mode=TwoWay}" />
                     </ScrollViewer>
                 </Panel>
             </Border>

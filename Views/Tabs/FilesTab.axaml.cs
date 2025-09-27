@@ -14,7 +14,6 @@ public partial class FilesTab : UserControl
     {
         InitializeComponent();
         DataContext = _viewModel = new FilesTabViewModel();
-        // Pull the RepositoryManager out of DI
     }
 
 }

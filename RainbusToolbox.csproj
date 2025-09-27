@@ -27,6 +27,8 @@
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="Avalonia.Xaml.Interactions" Version="11.3.0.6" />
+        <PackageReference Include="AvaloniaEdit.TextMate" Version="11.3.0" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
         <PackageReference Include="Discord.Net" Version="3.18.0" />
         <PackageReference Include="Discord.Net.Webhook" Version="3.18.0" />

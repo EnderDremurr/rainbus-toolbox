@@ -1,14 +1,13 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
-using RainbusToolbox.Models.Data;
 using RainbusToolbox.Utilities.Data;
 
 namespace RainbusToolbox.ViewModels;
 
 public partial class SkillsTranslationEditorViewModel : TranslationEditorViewModel<SkillsFile, Skill>
 {
-    private int _currentLevelIndex = 0;
+    private int _currentLevelIndex;
 
     [ObservableProperty] private SkillLevel? _currentLevel;
     [ObservableProperty] private SkillLevel? _referenceLevel;
@@ -17,10 +16,23 @@ public partial class SkillsTranslationEditorViewModel : TranslationEditorViewMod
     [ObservableProperty] private bool _canGoPreviousLevel; 
 
     [ObservableProperty] private string _levelNavigationText = "";
+    
+    public string SkillName 
+    {
+        get => CurrentItem?.LevelList?.FirstOrDefault()?.Name ?? string.Empty;
+        set 
+        {
+            if (CurrentItem?.LevelList != null)
+            {
+                foreach (var level in CurrentItem.LevelList)
+                    level.Name = value;
+                OnPropertyChanged();
+            }
+        }
+    }
 
-    public ObservableCollection<CoinDesc> ReferenceCoinDescs { get; } = new();
-    public ObservableCollection<CoinDesc> CurrentCoinDescs { get; } = new();
-
+    public ObservableCollection<CoinListItemViewModel> CurrentCoins { get; } = new();
+    public ObservableCollection<CoinListItemViewModel> ReferenceCoins { get; } = new();
 
     public override void LoadEditableFile(SkillsFile file)
     {
@@ -34,7 +46,7 @@ public partial class SkillsTranslationEditorViewModel : TranslationEditorViewMod
         
     }
 
-    public void LoadReferenceFile(SkillsFile file)
+    public override void LoadReferenceFile(SkillsFile file)
     {
         ReferenceFile = file;
         UpdateReference();
@@ -71,7 +83,7 @@ public partial class SkillsTranslationEditorViewModel : TranslationEditorViewMod
 
     public void GoNextLevel()
     {
-        if (EditableFile == null || _currentItem == null || _currentLevelIndex >= _currentItem.LevelList.Count - 1) return;
+        if (EditableFile == null || CurrentItem == null || _currentLevelIndex >= CurrentItem.LevelList.Count - 1) return;
         _currentLevelIndex++;
         UpdateCurrent();
         UpdateReference();
@@ -82,31 +94,31 @@ public partial class SkillsTranslationEditorViewModel : TranslationEditorViewMod
     {
         if (EditableFile != null && EditableFile.DataList.Count > 0)
         {
-            _currentItem = EditableFile.DataList[CurrentIndex];
-            if (_currentItem.LevelList.Count > _currentLevelIndex)
-                CurrentLevel = _currentItem.LevelList[_currentLevelIndex];
-            else
-                CurrentLevel = null;
+            CurrentItem  = EditableFile.DataList[CurrentIndex];
+            CurrentLevel = CurrentItem .LevelList.Count > _currentLevelIndex ? CurrentItem .LevelList[_currentLevelIndex] : null;
 
-            // Update CurrentCoinDescs
-            CurrentCoinDescs.Clear();
+            CurrentCoins.Clear();
             if (CurrentLevel != null)
             {
-                foreach (var coin in CurrentLevel.CoinList.SelectMany(c => c.CoinDescs))
-                    CurrentCoinDescs.Add(coin);
+                int coinIndex = 1;
+                foreach (var coin in CurrentLevel.CoinList)
+                {
+                    var vm = new CoinListItemViewModel { Index = coinIndex++ };
+                    foreach (var desc in coin.CoinDescs)
+                        vm.Descs.Add(desc);
+                    CurrentCoins.Add(vm);
+                }
             }
         }
+        OnPropertyChanged(nameof(SkillName));
     }
 
     private void UpdateReference()
     {
         if (ReferenceFile != null && ReferenceFile.DataList.Count > CurrentIndex)
         {
-            _referenceItem = ReferenceFile.DataList[CurrentIndex];
-            if (_referenceItem.LevelList.Count > _currentLevelIndex)
-                ReferenceLevel = _referenceItem.LevelList[_currentLevelIndex];
-            else
-                ReferenceLevel = null;
+            ReferenceItem = ReferenceFile.DataList.First(r => r.Id.ToString() == CurrentItem.Id.ToString());
+            ReferenceLevel = ReferenceItem.LevelList.Count > _currentLevelIndex ? ReferenceItem.LevelList[_currentLevelIndex] : null;
         }
         else
         {
@@ -114,24 +126,29 @@ public partial class SkillsTranslationEditorViewModel : TranslationEditorViewMod
             ReferenceLevel = null;
         }
 
-        // Update ReferenceCoinDescs
-        ReferenceCoinDescs.Clear();
+        ReferenceCoins.Clear();
         if (ReferenceLevel != null)
         {
-            foreach (var coin in ReferenceLevel.CoinList.SelectMany(c => c.CoinDescs))
-                ReferenceCoinDescs.Add(coin);
+            int coinIndex = 1;
+            foreach (var coin in ReferenceLevel.CoinList)
+            {
+                var vm = new CoinListItemViewModel { Index = coinIndex++ };
+                foreach (var desc in coin.CoinDescs)
+                    vm.Descs.Add(desc);
+                ReferenceCoins.Add(vm);
+            }
         }
     }
 
-    private void UpdateNavigation()
+    protected override void UpdateNavigation()
     {
         CanGoPrevious = CurrentIndex > 0;
         CanGoNext = EditableFile != null && CurrentIndex < EditableFile.DataList.Count - 1;
 
-        CanGoPreviousLevel = _currentItem?.LevelList != null && _currentLevelIndex > 0;
-        CanGoNextLevel = _currentItem?.LevelList != null && _currentLevelIndex < (_currentItem.LevelList.Count - 1);
+        CanGoPreviousLevel = CurrentItem?.LevelList != null && _currentLevelIndex > 0;
+        CanGoNextLevel = CurrentItem?.LevelList != null && _currentLevelIndex < (CurrentItem.LevelList.Count - 1);
 
         NavigationText = $"{CurrentIndex + 1} / {EditableFile?.DataList.Count ?? 0}";
-        LevelNavigationText = _currentItem?.LevelList != null ? $"{_currentLevelIndex + 1} / {_currentItem.LevelList.Count}" : "";
+        LevelNavigationText = CurrentItem?.LevelList != null ? $"{_currentLevelIndex + 1} / {CurrentItem.LevelList.Count}" : "";
     }
 }

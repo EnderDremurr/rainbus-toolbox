@@ -68,7 +68,7 @@ public partial class TranslationTabViewModel : ObservableObject
             },
             FilePickerFileTypes.All
         };
-
+    
         var files = await storage.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "Select Translation File",

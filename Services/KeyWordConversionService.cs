@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,21 +13,16 @@ using RainbusToolbox.Models.Managers;
 
 namespace RainbusToolbox.Services;
 
-public class KeyWordConversionService
+public class KeyWordConversionService(PersistentDataManager dataManager)
 {
     private const string FileUrl =
         "https://raw.githubusercontent.com/kimght/LimbusCompanyRuMTL/main/data/build/keyword_colors.txt";
 
     private readonly Regex tagRegex = new(@"\[[^:\]]+:[`*'][^`*']+[`*']\]", RegexOptions.Compiled);
-    private readonly PersistentDataManager _dataManager;
+    private readonly PersistentDataManager _dataManager = dataManager;
 
     private bool _isInitialized;
     public Dictionary<string, string> KeywordToColorMap { get; private set; } = new();
-
-    public KeyWordConversionService(PersistentDataManager dataManager)
-    {
-        _dataManager = dataManager;
-    }
 
     public async Task EnsureInitializedAsync()
     {
@@ -310,7 +306,8 @@ public class KeyWordConversionService
     }
 
 
-    public async Task ReplaceEveryTagWithMesh(string path)
+    public async Task ReplaceEveryTagWithMesh(string path, CancellationToken cancellationToken = default,
+        IProgress<string>? progress = null)
     {
         if (!Directory.Exists(path))
             throw new DirectoryNotFoundException($"Directory not found: {path}");
@@ -320,8 +317,16 @@ public class KeyWordConversionService
         // Exclude JSON files from general processing to avoid corruption
         var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories)
             .Where(f => f.EndsWith(".json", StringComparison.OrdinalIgnoreCase));
+        var totalFiles = files.Count();
+        
+        progress?.Report($"Starting replacement for {totalFiles} files...");
+        
+        var processedCount = 0;
+        var replacedCount = 0;
 
         foreach (var file in files)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
             try
             {
                 // Preserve original encoding and timestamp
@@ -346,7 +351,7 @@ public class KeyWordConversionService
                 Console.WriteLine($"Original content length: {content.Length}");
                 Console.WriteLine($"Replaced content length: {replacedContent.Length}");
 
-// Let's also check character-by-character if they're close in length
+                
                 if (Math.Abs(content.Length - replacedContent.Length) < 100)
                     for (var i = 0; i < Math.Min(content.Length, replacedContent.Length); i++)
                         if (content[i] != replacedContent[i])
@@ -363,18 +368,27 @@ public class KeyWordConversionService
                 {
                     Console.WriteLine($"Writing changes to {Path.GetFileName(file)}");
                     File.WriteAllText(file, replacedContent, new UTF8Encoding(false));
-                    File.SetLastWriteTime(file, originalTime);
+                    replacedCount++;
                 }
                 else
                 {
                     Console.WriteLine($"No changes detected in {Path.GetFileName(file)} - content comparison failed");
                 }
+
+                processedCount++;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error processing {file}: {ex.Message}");
             }
-    }
+            progress?.Report($"Processed {processedCount}/{totalFiles} files (Replaced: {replacedCount})");
+        
+            if (processedCount % 10 == 0)
+                await Task.Delay(1, cancellationToken);
+        }
+        
+        progress?.Report($"Completed! Processed {totalFiles} files, {replacedCount} files were modified");
+}
 
 
     private static Encoding GetFileEncoding(string filename)

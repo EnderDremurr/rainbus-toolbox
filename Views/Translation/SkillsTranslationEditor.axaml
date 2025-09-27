@@ -34,102 +34,86 @@
                     <Border Margin="72,54,114,195">
                         <ScrollViewer>
                             <StackPanel Margin="15">
-                                <TextBlock
-                                    FontFamily="{StaticResource MikodacsFont}"
-                                    FontSize="18"
-                                    FontWeight="Bold"
-                                    Foreground="White"
-                                    HorizontalAlignment="Center"
-                                    Margin="0,0,0,10"
-                                    Text="Reference" />
-
-                                <!--  Skill Info  -->
-                                <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
-                                    <TextBlock
-                                        FontFamily="{StaticResource MikodacsFont}"
-                                        FontSize="28"
-                                        FontWeight="SemiBold"
-                                        Foreground="White"
-                                        Text="Skill ID: "
-                                        Width="80" />
-                                    <TextBlock
-                                        FontSize="28"
-                                        Foreground="White"
-                                        Text="{Binding ReferenceItem.Id}" />
-                                    <TextBlock
-                                        FontFamily="{StaticResource MikodacsFont}"
-                                        FontSize="28"
-                                        FontWeight="SemiBold"
-                                        Foreground="White"
-                                        Margin="20,0,0,0"
-                                        Text="Level: "
-                                        Width="60" />
-                                    <TextBlock
-                                        FontSize="28"
-                                        Foreground="White"
-                                        Text="{Binding ReferenceLevel.Level}" />
-                                </StackPanel>
-
-                                <!--  Skill Name  -->
+                                <!--  Skill Name and Level  -->
                                 <StackPanel Margin="0,0,0,10">
-                                    <TextBlock
-                                        FontFamily="{StaticResource MikodacsFont}"
-                                        FontSize="28"
-                                        FontWeight="SemiBold"
-                                        Foreground="White"
-                                        Margin="0,0,0,5"
-                                        Text="Name:" />
                                     <TextBox
                                         Background="Transparent"
-                                        IsReadOnly="True"
+                                        Classes="invisible"
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="32"
                                         Text="{Binding ReferenceLevel.Name}"
                                         TextWrapping="Wrap" />
+
+                                    <!--  Level with label and value in same row  -->
+                                    <Grid Margin="0,10,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock
+                                            FontFamily="{StaticResource MikodacsFont}"
+                                            FontSize="28"
+                                            FontWeight="SemiBold"
+                                            Foreground="White"
+                                            Grid.Column="0"
+                                            Text="Level:"
+                                            VerticalAlignment="Center" />
+
+                                        <TextBlock
+                                            FontFamily="{StaticResource MikodacsFont}"
+                                            FontSize="28"
+                                            Foreground="White"
+                                            Grid.Column="1"
+                                            Margin="5,0,0,0"
+                                            Text="{Binding ReferenceLevel.Level}"
+                                            VerticalAlignment="Center" />
+                                    </Grid>
                                 </StackPanel>
 
-                                <!--  Skill Description  -->
-                                <StackPanel Margin="0,0,0,10">
-                                    <TextBlock
-                                        FontFamily="{StaticResource MikodacsFont}"
-                                        FontSize="28"
-                                        FontWeight="SemiBold"
-                                        Foreground="White"
-                                        Margin="0,0,0,5"
-                                        Text="Description:" />
-                                    <TextBox
-                                        Background="Transparent"
-                                        IsReadOnly="True"
-                                        MinHeight="60"
-                                        Text="{Binding ReferenceLevel.Desc}"
-                                        TextWrapping="Wrap" />
-                                </StackPanel>
+                                <!--  Invisible spacing  -->
+                                <Border Background="Transparent" Height="20" />
 
                                 <!--  Coin Descriptions  -->
                                 <StackPanel>
-                                    <TextBlock
-                                        FontFamily="{StaticResource MikodacsFont}"
-                                        FontSize="28"
-                                        FontWeight="SemiBold"
-                                        Foreground="White"
-                                        Margin="0,0,0,5"
-                                        Text="Coin Descriptions:" />
-                                    <ItemsControl ItemsSource="{Binding ReferenceCoinDescs}">
+                                    <ItemsControl ItemsSource="{Binding ReferenceCoins}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBox
-                                                    Background="Transparent"
-                                                    IsReadOnly="True"
-                                                    MinHeight="40"
-                                                    Text="{Binding Desc}"
-                                                    TextWrapping="Wrap" />
+                                                <StackPanel Margin="0,0,0,10">
+                                                    <TextBlock
+                                                        Classes="invisible"
+                                                        FontFamily="{StaticResource MikodacsFont}"
+                                                        FontSize="24"
+                                                        FontWeight="Bold"
+                                                        Foreground="White"
+                                                        Text="{Binding Index, StringFormat='Coin {0}'}" />
+
+                                                    <ItemsControl ItemsSource="{Binding Descs}">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <TextBox
+                                                                    AcceptsReturn="True"
+                                                                    Background="Transparent"
+                                                                    Classes="invisible"
+                                                                    Margin="0,0,0,5"
+                                                                    MinHeight="40"
+                                                                    Text="{Binding Desc}"
+                                                                    TextWrapping="Wrap" />
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </StackPanel>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                 </StackPanel>
+
                             </StackPanel>
                         </ScrollViewer>
                     </Border>
                 </Panel>
             </Border>
+
 
             <!--  Editor Section (Right)  -->
             <Border
@@ -147,106 +131,86 @@
                     <Border Margin="72,54,114,195">
                         <ScrollViewer>
                             <StackPanel Margin="15">
-                                <TextBlock
-                                    FontFamily="{StaticResource MikodacsFont}"
-                                    FontSize="18"
-                                    FontWeight="Bold"
-                                    Foreground="White"
-                                    HorizontalAlignment="Center"
-                                    Margin="0,0,0,10"
-                                    Text="Editor" />
-
-                                <!--  Skill Info  -->
-                                <Grid ColumnDefinitions="Auto,*,Auto,*" Margin="0,0,0,10">
-                                    <TextBlock
-                                        FontFamily="{StaticResource MikodacsFont}"
-                                        FontSize="28"
-                                        FontWeight="SemiBold"
-                                        Foreground="White"
-                                        Grid.Column="0"
-                                        Text="Skill ID: " />
-                                    <TextBlock
-                                        FontSize="28"
-                                        Foreground="White"
-                                        Grid.Column="1"
-                                        Margin="5,0,20,0"
-                                        Text="{Binding CurrentItem.Id}" />
-                                    <TextBlock
-                                        FontFamily="{StaticResource MikodacsFont}"
-                                        FontSize="28"
-                                        FontWeight="SemiBold"
-                                        Foreground="White"
-                                        Grid.Column="2"
-                                        Text="Level: " />
-                                    <TextBlock
-                                        FontSize="28"
-                                        Foreground="White"
-                                        Grid.Column="3"
-                                        Margin="5,0,0,0"
-                                        Text="{Binding CurrentLevel.Level}" />
-                                </Grid>
-
-                                <!--  Skill Name  -->
+                                <!--  Skill Name and Level  -->
                                 <StackPanel Margin="0,0,0,10">
-                                    <TextBlock
-                                        FontFamily="{StaticResource MikodacsFont}"
-                                        FontSize="28"
-                                        FontWeight="SemiBold"
-                                        Foreground="White"
-                                        Margin="0,0,0,5"
-                                        Text="Name:" />
                                     <TextBox
-                                        Background="Transparent"
-                                        Text="{Binding CurrentLevel.Name, Mode=TwoWay}"
-                                        TextWrapping="Wrap" />
-                                </StackPanel>
-
-                                <!--  Skill Description  -->
-                                <StackPanel Margin="0,0,0,10">
-                                    <TextBlock
-                                        FontFamily="{StaticResource MikodacsFont}"
-                                        FontSize="28"
-                                        FontWeight="SemiBold"
-                                        Foreground="White"
-                                        Margin="0,0,0,5"
-                                        Text="Description:" />
-                                    <TextBox
-                                        AcceptsReturn="True"
                                         Background="Transparent"
                                         Classes="invisible"
-                                        MinHeight="60"
-                                        Text="{Binding CurrentLevel.Desc, Mode=TwoWay}"
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="32"
+                                        Text="{Binding SkillName, Mode=TwoWay}"
                                         TextWrapping="Wrap" />
+
+                                    <!--  Level with label and value in same row  -->
+                                    <Grid Margin="0,10,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock
+                                            FontFamily="{StaticResource MikodacsFont}"
+                                            FontSize="28"
+                                            FontWeight="SemiBold"
+                                            Foreground="White"
+                                            Grid.Column="0"
+                                            Text="Level:"
+                                            VerticalAlignment="Center" />
+
+                                        <TextBlock
+                                            FontFamily="{StaticResource MikodacsFont}"
+                                            FontSize="28"
+                                            Foreground="White"
+                                            Grid.Column="1"
+                                            Margin="5,0,0,0"
+                                            Text="{Binding CurrentLevel.Level}"
+                                            VerticalAlignment="Center" />
+                                    </Grid>
                                 </StackPanel>
+
+                                <!--  Invisible spacing  -->
+                                <Border Background="Transparent" Height="20" />
 
                                 <!--  Coin Descriptions  -->
                                 <StackPanel>
-                                    <TextBlock
-                                        FontFamily="{StaticResource MikodacsFont}"
-                                        FontSize="28"
-                                        FontWeight="SemiBold"
-                                        Foreground="White"
-                                        Margin="0,0,0,5"
-                                        Text="Coin Descriptions:" />
-                                    <ItemsControl ItemsSource="{Binding CurrentCoinDescs}" MaxWidth="{Binding RelativeSource={RelativeSource AncestorType=StackPanel}, Path=Width}">
+                                    <ItemsControl ItemsSource="{Binding CurrentCoins}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBox
-                                                    AcceptsReturn="True"
-                                                    Background="Transparent"
-                                                    Classes="invisible"
-                                                    MinHeight="40"
-                                                    Text="{Binding Desc, Mode=TwoWay}"
-                                                    TextWrapping="Wrap" />
+                                                <StackPanel Margin="0,0,0,10">
+                                                    <TextBlock
+                                                        Classes="invisible"
+                                                        FontFamily="{StaticResource MikodacsFont}"
+                                                        FontSize="24"
+                                                        FontWeight="Bold"
+                                                        Foreground="White"
+                                                        Text="{Binding Index, StringFormat='Coin {0}'}" />
+
+                                                    <ItemsControl ItemsSource="{Binding Descs}">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <TextBox
+                                                                    AcceptsReturn="True"
+                                                                    Background="Transparent"
+                                                                    Classes="invisible"
+                                                                    Margin="0,0,0,5"
+                                                                    MinHeight="40"
+                                                                    Text="{Binding Desc, Mode=TwoWay}"
+                                                                    TextWrapping="Wrap" />
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </StackPanel>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                 </StackPanel>
+
                             </StackPanel>
                         </ScrollViewer>
                     </Border>
                 </Panel>
             </Border>
+
         </Grid>
 
         <!--  Navigation  -->

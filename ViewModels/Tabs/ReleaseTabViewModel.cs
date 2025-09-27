@@ -180,14 +180,14 @@ public partial class ReleaseTabViewModel : ObservableObject
             // Handle Discord section options - only send if SendToDiscord is checked
             if (SendToDiscord)
             {
-                var discordMessage = $"# v{Version}\n\n" + EditorText;
+                var discordMessage = $"# RCR v{Version}!!!\n" + EditorText;
                 
                 if (MustAppendLauncherLink)
                     discordMessage += "\n\n[Лаунчер для переводов](<https://github.com/kimght/LimbusLocalizationManager/releases>)";
                 if (Option1)
                     discordMessage += "\n\n[Ссылка на релиз](<https://github.com/enqenqenqenqenq/RCR/releases/latest>)";
                 if (Option2 && !string.IsNullOrWhiteSpace(RoleToPing))
-                    discordMessage += $"\n\n\n\n<@&{RoleToPing}>";
+                    discordMessage += $"\n<@&{RoleToPing}>";
                 
                 await _discordManager.SendMessageAsync(discordMessage, _selectedFilePath);
             }

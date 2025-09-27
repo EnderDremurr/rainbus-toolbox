@@ -7,6 +7,12 @@ using RainbusToolbox.Utilities.Data;
 
 namespace RainbusToolbox.ViewModels;
 
+public class CoinListItemViewModel
+{
+    public int Index { get; set; } // Coin 1, Coin 2...
+    public ObservableCollection<CoinDesc> Descs { get; } = new();
+}
+
 public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorViewModel<SkillsEgoFile, SkillEgo>
 {
     private int _currentLevelIndex = 0;
@@ -18,22 +24,51 @@ public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorView
     [ObservableProperty] private string _currentEgoName;
     [ObservableProperty] private string _referenceEgoName;
 
-
     [ObservableProperty] private bool _canGoNextLevel;
     [ObservableProperty] private bool _canGoPreviousLevel;
 
     [ObservableProperty] private string _levelNavigationText = "";
 
-    public ObservableCollection<CoinDesc> ReferenceCoinDescs { get; } = new();
-    public ObservableCollection<CoinDesc> CurrentCoinDescs { get; } = new();
+    public ObservableCollection<CoinListItemViewModel> CurrentCoins { get; } = new();
+    public ObservableCollection<CoinListItemViewModel> ReferenceCoins { get; } = new();
     
+    
+
     private RepositoryManager _repositoryManager;
     public SkillsEgoTranslationEditorViewModel()
     {
         _repositoryManager = (App.Current.ServiceProvider.GetService(typeof(RepositoryManager)) as RepositoryManager)!;
     }
 
+    public string SkillName
+    {
+        get => CurrentItem?.LevelList?.FirstOrDefault()?.Name ?? string.Empty;
+        set
+        {
+            if (CurrentItem?.LevelList != null)
+            {
+                foreach (var level in CurrentItem.LevelList)
+                    level.Name = value;
+                OnPropertyChanged();
+            }
+        }
+    }
     
+    public string AbnormalityName
+    {
+        get => CurrentItem?.LevelList?.FirstOrDefault()?.AbnormalityName ?? string.Empty;
+        set
+        {
+            if (CurrentItem?.LevelList != null)
+            {
+                foreach (var level in CurrentItem.LevelList)
+                    level.AbnormalityName = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+    
+
     private void GetCurrentSkillsEgoName()
     {
         if (CurrentItem == null) return;
@@ -42,15 +77,13 @@ public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorView
         CurrentEgoName = _repositoryManager.EgoNames.DataList.FirstOrDefault(i => i.Id.ToString() == currentId)?.Name.ToString() ?? "Не найдено =(";
         ReferenceEgoName = _repositoryManager.EgoNamesReference.DataList.FirstOrDefault(i => i.Id.ToString() == currentId)?.Name.ToString() ?? "Не найдено =(";
     }
-    
+
     partial void OnCurrentEgoNameChanged(string value)
     {
-        //Todo: Attach this shit to save button, but for now i think its fine
         _repositoryManager.EgoNames.DataList.FirstOrDefault(i => i.Id.ToString() == currentId)!.Name = value;
         _repositoryManager.SaveObjectToFile(_repositoryManager.EgoNames);
     }
-    
-    
+
     public override void LoadEditableFile(SkillsEgoFile file)
     {
         base.LoadEditableFile(file);
@@ -77,7 +110,6 @@ public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorView
         UpdateCurrent();
         UpdateReference();
         UpdateNavigation();
-
         GetCurrentSkillsEgoName();
     }
 
@@ -89,7 +121,6 @@ public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorView
         UpdateCurrent();
         UpdateReference();
         UpdateNavigation();
-
         GetCurrentSkillsEgoName();
     }
 
@@ -121,21 +152,28 @@ public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorView
             else
                 CurrentLevel = null;
 
-            // Update CurrentCoinDescs
-            CurrentCoinDescs.Clear();
+            CurrentCoins.Clear();
             if (CurrentLevel != null)
             {
-                foreach (var coin in CurrentLevel.CoinList.SelectMany(c => c.CoinDescs))
-                    CurrentCoinDescs.Add(coin);
+                int coinIndex = 1;
+                foreach (var coin in CurrentLevel.CoinList)
+                {
+                    var vm = new CoinListItemViewModel { Index = coinIndex++ };
+                    foreach (var desc in coin.CoinDescs)
+                        vm.Descs.Add(desc);
+                    CurrentCoins.Add(vm);
+                }
             }
         }
+        OnPropertyChanged(nameof(SkillName));
+        OnPropertyChanged(nameof(AbnormalityName));
     }
 
     private void UpdateReference()
     {
         if (ReferenceFile != null && ReferenceFile.DataList.Count > CurrentIndex)
         {
-            _referenceItem = ReferenceFile.DataList[CurrentIndex];
+            _referenceItem = ReferenceFile.DataList.First(r => r.Id.ToString() == _currentItem.Id.ToString());
             if (_referenceItem.LevelList.Count > _currentLevelIndex)
                 ReferenceLevel = _referenceItem.LevelList[_currentLevelIndex];
             else
@@ -147,12 +185,17 @@ public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorView
             ReferenceLevel = null;
         }
 
-        // Update ReferenceCoinDescs
-        ReferenceCoinDescs.Clear();
+        ReferenceCoins.Clear();
         if (ReferenceLevel != null)
         {
-            foreach (var coin in ReferenceLevel.CoinList.SelectMany(c => c.CoinDescs))
-                ReferenceCoinDescs.Add(coin);
+            int coinIndex = 1;
+            foreach (var coin in ReferenceLevel.CoinList)
+            {
+                var vm = new CoinListItemViewModel { Index = coinIndex++ };
+                foreach (var desc in coin.CoinDescs)
+                    vm.Descs.Add(desc);
+                ReferenceCoins.Add(vm);
+            }
         }
     }
 

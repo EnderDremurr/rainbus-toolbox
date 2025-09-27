@@ -46,7 +46,7 @@
 
         <Button
             Classes="header"
-            Command="{Binding ReplaceAllTagsWithMeshes}"
+            Command="{Binding ReplaceAllTagsWithMeshesAsync}"
             Content="Заменить все теги формата [Key:'Value'] на html/TMPro"
             Height="80"
             HorizontalAlignment="Center"

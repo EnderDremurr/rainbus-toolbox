@@ -159,8 +159,8 @@ public class FileMergingService
             
                 try
                 {
-                    CastToJsonAndMerge(existingFilePath, referenceFile);
-                    expandedFiles++;
+                    var isMerged = CastToJsonAndMerge(existingFilePath, referenceFile);
+                    if(isMerged) expandedFiles++;
                 }
                 catch (Exception ex)
                 {
@@ -186,8 +186,9 @@ public class FileMergingService
         return Path.Combine(Path.GetDirectoryName(path) ?? "", cleanFileName);
     }
 
-    private void CastToJsonAndMerge(string destinationPath, string sourcePath)
+    private bool CastToJsonAndMerge(string destinationPath, string sourcePath)
     {
+        var isDirty = false;
         try
         {
             // Read files with explicit encoding
@@ -198,7 +199,7 @@ public class FileMergingService
             if (string.IsNullOrWhiteSpace(sourceContent))
             {
                 Console.WriteLine($"Skipping empty source file: {sourcePath}");
-                return;
+                return false;
             }
             
             // Check for Git merge conflict markers and offer to clean them
@@ -229,7 +230,7 @@ public class FileMergingService
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Failed to save cleaned destination file: {ex.Message}");
-                    return;
+                    return false;
                 }
             }
             
@@ -238,14 +239,14 @@ public class FileMergingService
             {
                 Console.WriteLine($"Skipping file that appears to contain HTML/XML instead of JSON: {sourcePath}");
                 Console.WriteLine($"First 200 characters: {sourceContent.Substring(0, Math.Min(200, sourceContent.Length))}");
-                return;
+                return false;
             }
             
             // Additional validation for common JSON corruption indicators
             if (sourceContent.Contains("<!DOCTYPE") || sourceContent.Contains("<html") || sourceContent.Contains("<?xml"))
             {
                 Console.WriteLine($"Skipping file that contains HTML/XML markers: {sourcePath}");
-                return;
+                return false;
             }
             
             JObject deserializedDestination;
@@ -291,7 +292,7 @@ public class FileMergingService
             if (sourceDataList == null)
             {
                 Console.WriteLine($"Warning: No DataList or dataList found in source file: {sourcePath}");
-                return;
+                return false;
             }
         
             if (destinationDataList == null)
@@ -337,6 +338,7 @@ public class FileMergingService
                             if (existingItem[property.Name] == null)
                             {
                                 existingItem.Add(property.Name, property.Value?.DeepClone());
+                                isDirty = true;
                             }
                         }
                     }
@@ -346,6 +348,7 @@ public class FileMergingService
                     // Add new item
                     destinationDataList.Add(sourceItem.DeepClone());
                     existingIds.Add(sourceId);
+                    isDirty = true;
                 }
             }
         
@@ -363,6 +366,8 @@ public class FileMergingService
             Console.WriteLine($"Unexpected error processing {destinationPath}: {ex.Message}");
             throw;
         }
+
+        return isDirty;
     }
 
     private string CleanGitConflictMarkers(string content)

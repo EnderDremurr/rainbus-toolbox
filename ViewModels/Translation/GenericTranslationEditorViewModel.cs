@@ -35,14 +35,18 @@ public partial class GenericTranslationEditorViewModel : ObservableObject
         try
         {
             var raw = File.ReadAllText(file.FullPath);
-            // Parse the JSON first, then serialize with formatting
             var parsedJson = JsonConvert.DeserializeObject(raw);
             ReferenceJson = JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
+        
+            // Debug output
+            System.Diagnostics.Debug.WriteLine($"ReferenceJson set to: {ReferenceJson.Length} characters");
+        
             FileTypeName = file.GetType().Name;
         }
         catch (Exception ex)
         {
             ReferenceJson = $"Error loading reference file: {ex.Message}";
+            System.Diagnostics.Debug.WriteLine($"Error in LoadReferenceFile: {ex.Message}");
         }
     }
 
