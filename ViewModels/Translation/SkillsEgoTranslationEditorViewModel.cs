@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -61,8 +62,12 @@ public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorView
         {
             if (CurrentItem?.LevelList != null)
             {
+                Console.WriteLine($"Updating {CurrentItem.LevelList.Count} levels with: {value}");
                 foreach (var level in CurrentItem.LevelList)
+                {
                     level.AbnormalityName = value;
+                    Console.WriteLine($"Set level AbnormalityName to: {level.AbnormalityName}");
+                }
                 OnPropertyChanged();
             }
         }
