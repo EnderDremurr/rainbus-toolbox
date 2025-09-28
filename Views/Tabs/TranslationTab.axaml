@@ -4,6 +4,7 @@
     mc:Ignorable="d"
     x:Class="RainbusToolbox.Views.TranslationTab"
     x:DataType="vm:TranslationTabViewModel"
+    x:Name="TopLevelControl"
     xmlns="https://github.com/avaloniaui"
     xmlns:conv="clr-namespace:RainbusToolbox.Utilities.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -75,7 +76,7 @@
                 <!--  Right: Save Button  -->
                 <Button
                     Command="{Binding SaveObjectFromCurrentEditorCommand}"
-                    Content="Сохранить"
+                    Content="Сохранить и закрыть"
                     Grid.Column="2"
                     IsEnabled="{Binding IsFileLoaded}"
                     VerticalAlignment="Center"
@@ -92,10 +93,15 @@
 
         <!--  Welcome / Empty State  -->
         <Border Grid.Row="1" IsVisible="{Binding IsFileLoaded, Converter={StaticResource InverseBoolConverter}}">
+
+
+
+
             <StackPanel
                 HorizontalAlignment="Center"
                 Spacing="20"
                 VerticalAlignment="Center">
+
                 <TextBlock
                     FontSize="28"
                     FontWeight="Bold"
@@ -113,6 +119,30 @@
                     Margin="0,20,0,0"
                     Orientation="Horizontal"
                     Spacing="30" />
+
+                <!--  Shortcut Buttons  -->
+                <ItemsControl ItemsSource="{Binding FileShortcuts}" Margin="0,30,0,0">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="6" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button
+                                Command="{Binding OpenCommand}"
+                                CommandParameter="{Binding FullPath}"
+                                Content="{Binding Alias}"
+                                Height="100"
+                                IsEnabled="True"
+                                Margin="10"
+                                Width="300">
+                                <!--  Simple content binding  -->
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </StackPanel>
         </Border>
     </Grid>
