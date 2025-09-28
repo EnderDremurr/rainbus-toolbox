@@ -1,5 +1,5 @@
 # Rainbus Toolbox
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: GPL-3.0](https://img.shields.io/badge/License-GPL-3.0-yellow.svg)](LICENSE)
 [![Latest Release](https://img.shields.io/github/v/release/enderdremurr/rainbus-toolbox?color=blue)](https://github.com/enderdremurr/rainbus-toolbox/releases)
 [![Downloads](https://img.shields.io/github/downloads/enderdremurr/rainbus-toolbox/total?color=green)](https://github.com/enderdremurr/rainbus-toolbox/releases)
 [![Activity](https://img.shields.io/github/commit-activity/m/enderdremurr/rainbus-toolbox?color=orange)](https://github.com/enderdremurr/rainbus-toolbox/commits/main)
