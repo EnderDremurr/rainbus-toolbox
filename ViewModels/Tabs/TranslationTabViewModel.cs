@@ -29,26 +29,25 @@ public partial class TranslationTabViewModel : ObservableObject
     [ObservableProperty]
     private IFileEditor? _currentEditor;
 
-    private readonly Dictionary<Type, IFileEditor> _editorMap = new()
+    private readonly Dictionary<Type, Type> _editorMap = new()
     {
-        { typeof(StoryDataFile), new StoryTranslationEditor() },
-        { typeof(EGOGiftFile), new EGOGiftTranslationEditor() },
-        {typeof(SkillsEgoFile), new SkillsEgoTranslationEditor()},
-        { typeof(SkillsFile), new SkillsTranslationEditor() },
-        {typeof(BattleHintsFile), new BattleHintsTranslationEditor()},
-        { typeof(PanicInfoFile), new PanicTranslationEditor() },
-        {typeof(PassivesFile), new PassiveTranslationEditor()},
-        {typeof(BattleAnnouncerFile), new BattleAnnouncerTranslationEditor()},
-        { typeof(BuffsFile), new BuffTranslationEditor() },
-        {typeof(PersonalityVoiceFile), new PersonalityVoiceTranslationEditor()},
-        {typeof(EGOVoiceFile), new EGOVoiceTranslationEditor()},
-        {typeof(AbnormalityGuideFile), new AbnormalityGuideTranslationEditor()},
-        {typeof(UnidentifiedFile), new GenericTranslationEditor()}
+        { typeof(StoryDataFile), typeof(StoryTranslationEditor) },
+        { typeof(EGOGiftFile), typeof(EGOGiftTranslationEditor) },
+        {typeof(SkillsEgoFile), typeof(SkillsEgoTranslationEditor)},
+        { typeof(SkillsFile), typeof(SkillsTranslationEditor) },
+        {typeof(BattleHintsFile), typeof(BattleHintsTranslationEditor)},
+        { typeof(PanicInfoFile), typeof(PanicTranslationEditor) },
+        {typeof(PassivesFile), typeof(PassiveTranslationEditor)},
+        {typeof(BattleAnnouncerFile), typeof(BattleAnnouncerTranslationEditor)},
+        { typeof(BuffsFile), typeof(BuffTranslationEditor) },
+        {typeof(PersonalityVoiceFile), typeof(PersonalityVoiceTranslationEditor)},
+        {typeof(EGOVoiceFile), typeof(EGOVoiceTranslationEditor)},
+        {typeof(AbnormalityGuideFile), typeof(AbnormalityGuideTranslationEditor)},
+        {typeof(UnidentifiedFile), typeof(GenericTranslationEditor)}
         
         
         
     };
-    private readonly IFileEditor _genericEditor = new GenericTranslationEditor();
     
     private RepositoryManager _repositoryManager = (App.Current.ServiceProvider.GetService(typeof(RepositoryManager)) as RepositoryManager)!;
 
@@ -89,9 +88,11 @@ public partial class TranslationTabViewModel : ObservableObject
 
         var detectedType = FileToObjectCaster.GetType(filePath);
 
-        CurrentEditor = detectedType != null && _editorMap.TryGetValue(detectedType, out var value)
+        var editorType = detectedType != null && _editorMap.TryGetValue(detectedType, out var value)
             ? value
-            : _genericEditor;
+            : typeof(GenericTranslationEditor);
+        
+        CurrentEditor = (IFileEditor)Activator.CreateInstance(editorType)!;
 
         FileName = Path.GetFileName(filePath);
         FileType = detectedType?.Name ?? "Unknown";

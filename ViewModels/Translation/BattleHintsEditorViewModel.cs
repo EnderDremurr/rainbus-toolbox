@@ -9,10 +9,10 @@ using RainbusToolbox.ViewModels;
 
 public partial class BattleHintsEditorViewModel : TranslationEditorViewModel<BattleHintsFile, GenericIdContent>
 {
-    [ObservableProperty] private string _newHintText;
+    [ObservableProperty] private string _newHintText = "";
 
     // Observable collection bound to the UI
-    public ObservableCollection<GenericIdContent> ObservableDataList { get; } = new();
+    public ObservableCollection<GenericIdContent> ObservableDataList { get; } = [];
 
     public override void LoadEditableFile(BattleHintsFile file)
     {
@@ -24,7 +24,7 @@ public partial class BattleHintsEditorViewModel : TranslationEditorViewModel<Bat
             ObservableDataList.Add(item);
 
         // Subscribe to changes in the observable collection if needed
-        ObservableDataList.CollectionChanged += (s, e) =>
+        ObservableDataList.CollectionChanged += (_, _) =>
         {
             // Keep the underlying list in sync for serialization
             EditableFile.DataList = ObservableDataList.ToList();
