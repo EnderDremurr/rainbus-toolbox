@@ -20,7 +20,7 @@ public partial class BattleHintsEditorViewModel : TranslationEditorViewModel<Bat
 
         // Clear and populate the observable collection from the file's list
         ObservableDataList.Clear();
-        foreach (var item in EditableFile?.DataList)
+        foreach (var item in EditableFile?.DataList!)
             ObservableDataList.Add(item);
 
         // Subscribe to changes in the observable collection if needed
@@ -32,7 +32,7 @@ public partial class BattleHintsEditorViewModel : TranslationEditorViewModel<Bat
     }
 
     [RelayCommand]
-    private void AddHint()
+    public void AddHint()
     {
         if (string.IsNullOrWhiteSpace(NewHintText)) return;
 
@@ -51,7 +51,7 @@ public partial class BattleHintsEditorViewModel : TranslationEditorViewModel<Bat
     }
 
     [RelayCommand]
-    private void DeleteHint(string id)
+    public void DeleteHint(string id)
     {
         var hint = ObservableDataList.FirstOrDefault(h => int.Parse(h.Id) == int.Parse(id));
         if (hint != null)
