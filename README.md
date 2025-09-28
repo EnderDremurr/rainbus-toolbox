@@ -31,7 +31,8 @@ Rainbus Toolbox — кроссплатформенная альтернатив�
 #### Функционал
 ##### Перевод сюжета > [WIP]
 - Визуальный редактор файлов StoryData, работает но пока выглядит не совсем красиво, будет доработан.
-<img width="1920" height="933" alt="image" src="https://github.com/user-attachments/assets/10a9cff5-fa82-47c1-be69-1c487dd04b14" />
+<img width="1920" height="926" alt="image" src="https://github.com/user-attachments/assets/864f8393-5197-4dc8-8ee1-392db3e7e44d" />
+
 
 ##### Перевод ЭГО гифтов > [WIP]
 <img width="1920" height="933" alt="image" src="https://github.com/user-attachments/assets/c6354457-a401-43e3-b8ca-a8ea1ac3949b" />
