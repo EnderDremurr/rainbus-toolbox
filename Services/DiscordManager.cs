@@ -14,37 +14,15 @@ namespace RainbusToolbox.Models.Managers;
 
 public class DiscordManager
 {
-    private PersistentDataManager _dataManager;
     public DiscordWebhookClient? Client { get; private set; }
-    public DiscordManager(PersistentDataManager manager)
+    public DiscordManager(string webhookUrl)
     {
-        _dataManager = manager;
-        
-        TryInitialize();
-    }
-
-    public void TryInitialize(Window window = null)
-    {
-        var webhookUrl = _dataManager.Settings.DiscordWebHook;
-
-        if (string.IsNullOrWhiteSpace(webhookUrl))
-        {
-            Client = null;
-            _ = App.Current.ShowErrorNotificationAsync("Не указан вебхук");
+        if(!ValidateWebhook(webhookUrl))
             return;
-        }
-
-        try
-        {
-            Client = new DiscordWebhookClient(webhookUrl);
-        }
-        catch
-        {
-            Client = null;
-            _ = App.Current.ShowErrorNotificationAsync("Вебхук что ты вписал хуйня ебаная, поставь другой");
-        }
+        
+        Client = new DiscordWebhookClient(webhookUrl);
     }
-    
+
     
     public async Task SendMessageAsync(string message, string? imagePath = null)
     {
@@ -57,5 +35,29 @@ public class DiscordManager
             await Client.SendFileAsync(imagePath, message);
         else
             await Client.SendMessageAsync(message);
+    }
+
+
+
+    public static bool ValidateWebhook(string? webhookUrl)
+    {
+
+        if (string.IsNullOrWhiteSpace(webhookUrl))
+        {
+            _ = App.Current.ShowErrorNotificationAsync("Не указан вебхук");
+            return false;
+        }
+
+        try
+        {
+            var cl = new DiscordWebhookClient(webhookUrl);
+        }
+        catch
+        {
+            _ = App.Current.ShowErrorNotificationAsync("Вебхук что ты вписал хуйня ебаная, поставь другой");
+            return false;
+        }
+        
+        return true;
     }
 }

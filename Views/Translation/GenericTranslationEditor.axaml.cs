@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Utilities.Data;
 using RainbusToolbox.ViewModels;
 
@@ -23,6 +24,8 @@ namespace RainbusToolbox.Views.Translation
         {
             VM.LoadReferenceFile(file);
         }
+
+        public void AskEditorToSave(RepositoryManager repositoryManager) => VM.SaveEditableFile();
 
         public void SaveUnknownFile()
         {

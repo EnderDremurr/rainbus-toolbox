@@ -10,6 +10,7 @@ using RainbusToolbox.Services;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
+using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.Views;
@@ -31,5 +32,6 @@ public partial class SkillsEgoTranslationEditor : UserControl, IFileEditor
 
     public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((SkillsEgoFile)file);
     public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((SkillsEgoFile)file);
+    public void AskEditorToSave(RepositoryManager repositoryManager) => VM.SaveCurrentFile(repositoryManager);
 
 }

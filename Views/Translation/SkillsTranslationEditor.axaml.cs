@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using RainbusToolbox.Models.Data;
+using RainbusToolbox.Models.Managers;
 using RainbusToolbox.ViewModels;
 using RainbusToolbox.Utilities.Data;
 
@@ -23,4 +24,5 @@ public partial class SkillsTranslationEditor : UserControl, IFileEditor
 
     public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((SkillsFile)file);
     public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((SkillsFile)file);
+    public void AskEditorToSave(RepositoryManager repositoryManager) => VM.SaveCurrentFile(repositoryManager);
 }

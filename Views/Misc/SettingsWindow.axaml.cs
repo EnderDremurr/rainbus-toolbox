@@ -12,7 +12,6 @@ public partial class SettingsWindow : Window
 {
     private PersistentDataManager _dataManager;
     private GithubManager _githubManager;
-    private DiscordManager _discordManager;
     private RepositoryManager _repositoryManager;
 
     private TextBox _discordWebHookBox;
@@ -20,12 +19,11 @@ public partial class SettingsWindow : Window
     private TextBlock _gitHubTokenStatusTextBlock;
     private TextBox _pathToLimbus;
 
-    public SettingsWindow(PersistentDataManager manager, DiscordManager discordManager, GithubManager githubManager, RepositoryManager repositoryManager)
+    public SettingsWindow(PersistentDataManager manager, GithubManager githubManager, RepositoryManager repositoryManager)
     {
         InitializeComponent();
 
         _dataManager = manager;
-        _discordManager = discordManager;
         _githubManager = githubManager;
         _repositoryManager = repositoryManager;
 
@@ -82,13 +80,32 @@ public partial class SettingsWindow : Window
 
     private void SaveSettings()
     {
-        // Always read the current value of the webhook box
-        _dataManager.Settings.DiscordWebHook = _discordWebHookBox.Text;
-        _dataManager.Settings.RepositoryPath = _repoPathTextBox.Text;
-        _dataManager.Settings.PathToLimbus = LimbusPathTextBox.Text;
-        _dataManager.Save();
-        _discordManager.TryInitialize(this);
-        _repositoryManager.TryInitialize();
+        var isDirty = false;
+        var didRepoChange = false;
+        
+        var settingsCache = _dataManager.Settings;
+        if (settingsCache.DiscordWebHook != _discordWebHookBox.Text && DiscordManager.ValidateWebhook(_discordWebHookBox.Text))
+        {
+            _dataManager.Settings.DiscordWebHook = _discordWebHookBox.Text;
+            isDirty = true;
+        }
+        if (settingsCache.RepositoryPath != _repoPathTextBox.Text)
+        {
+            _dataManager.Settings.RepositoryPath = _repoPathTextBox.Text;
+            isDirty = true;
+            didRepoChange = true;
+        }
+        if (settingsCache.PathToLimbus != _pathToLimbus.Text)
+        {
+            _dataManager.Settings.PathToLimbus = _pathToLimbus.Text;
+            isDirty = true;
+        }
+        
+        if(isDirty)
+            _dataManager.Save();
+        
+        if(didRepoChange)
+            _repositoryManager.TryInitialize();
     }
     private void ToggleWebhookVisibility_Click(object sender, RoutedEventArgs e)
     {

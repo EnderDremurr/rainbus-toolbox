@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using System.ComponentModel;
+using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Utilities.Data;
 using RainbusToolbox.ViewModels;
 
@@ -23,6 +24,7 @@ namespace RainbusToolbox.Views
         public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((BattleAnnouncerFile)file);
 
         public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((BattleAnnouncerFile)file);
+        public void AskEditorToSave(RepositoryManager repositoryManager) => VM.SaveCurrentFile(repositoryManager);
         
         private void OnBackgroundSizeChanged(object? sender, Avalonia.Controls.SizeChangedEventArgs e)
         {

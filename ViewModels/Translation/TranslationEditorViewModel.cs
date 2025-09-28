@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Utilities.Data;
 
 namespace RainbusToolbox.ViewModels;
@@ -71,5 +72,12 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
         CanGoPrevious = CurrentIndex > 0;
         CanGoNext = EditableFile != null && CurrentIndex < EditableFile.DataList.Count - 1;
         NavigationText = $"{CurrentIndex + 1} / {EditableFile?.DataList.Count ?? 0}";
+    }
+
+    public virtual void SaveCurrentFile(RepositoryManager repositoryManager)
+    {
+        if(EditableFile == null)
+            return;
+        repositoryManager.SaveObjectToFile(EditableFile);
     }
 }

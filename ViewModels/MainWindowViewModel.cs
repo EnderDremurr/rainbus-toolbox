@@ -20,7 +20,6 @@ public partial class MainWindowViewModel : ObservableObject
 {
     #region Fields
     private readonly PersistentDataManager _dataManager;
-    private readonly DiscordManager _discordManager;
     private readonly GithubManager _githubManager;
     private readonly RepositoryManager _repositoryManager;
     private readonly IServiceProvider _serviceProvider;
@@ -73,14 +72,12 @@ public partial class MainWindowViewModel : ObservableObject
     #region Constructor
     public MainWindowViewModel(
         PersistentDataManager dataManager,
-        DiscordManager discordManager,
         GithubManager githubManager,
         RepositoryManager repositoryManager,
         IServiceProvider serviceProvider,
         ReleaseTabViewModel releaseTabViewModel)
     {
         _dataManager = dataManager;
-        _discordManager = discordManager;
         _githubManager = githubManager;
         _repositoryManager = repositoryManager;
         _serviceProvider = serviceProvider;

@@ -32,6 +32,7 @@ namespace RainbusToolbox.Views
         public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((BuffsFile)file);
 
         public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((BuffsFile)file);
+        public void AskEditorToSave(RepositoryManager repositoryManager) => VM.SaveCurrentFile(repositoryManager);
     }
 
 }

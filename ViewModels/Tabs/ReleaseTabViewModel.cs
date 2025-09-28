@@ -19,7 +19,6 @@ public partial class ReleaseTabViewModel : ObservableObject
 {
     #region Fields
     private readonly PersistentDataManager _dataManager;
-    private readonly DiscordManager _discordManager;
     private readonly GithubManager _githubManager;
     private readonly RepositoryManager _repositoryManager;
     private readonly KeyWordConversionService _keyWordConversionService;
@@ -30,13 +29,11 @@ public partial class ReleaseTabViewModel : ObservableObject
     #region Constructor
     public ReleaseTabViewModel(
         PersistentDataManager dataManager, 
-        DiscordManager discordManager, 
         GithubManager githubManager, 
         RepositoryManager repositoryManager,
         KeyWordConversionService keyWordConversionService)
     {
         _dataManager = dataManager;
-        _discordManager = discordManager;
         _githubManager = githubManager;
         _repositoryManager = repositoryManager;
         _keyWordConversionService = keyWordConversionService;
@@ -178,8 +175,10 @@ public partial class ReleaseTabViewModel : ObservableObject
             await _githubManager.CreateReleaseAsync($"RCR v{Version}", EditorText, package);
 
             // Handle Discord section options - only send if SendToDiscord is checked
-            if (SendToDiscord)
+            if (SendToDiscord && DiscordManager.ValidateWebhook(_dataManager.Settings.DiscordWebHook))
             {
+                var discordManager = new DiscordManager(_dataManager.Settings.DiscordWebHook!);
+                
                 var discordMessage = $"# RCR v{Version}!!!\n" + EditorText;
                 
                 if (MustAppendLauncherLink)
@@ -189,7 +188,7 @@ public partial class ReleaseTabViewModel : ObservableObject
                 if (Option2 && !string.IsNullOrWhiteSpace(RoleToPing))
                     discordMessage += $"\n<@&{RoleToPing}>";
                 
-                await _discordManager.SendMessageAsync(discordMessage, _selectedFilePath);
+                await discordManager.SendMessageAsync(discordMessage, _selectedFilePath);
             }
 
             // Success message

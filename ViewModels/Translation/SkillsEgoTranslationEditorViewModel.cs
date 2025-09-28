@@ -2,7 +2,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
-using RainbusToolbox.Models.Data;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Utilities.Data;
 
@@ -11,19 +10,23 @@ namespace RainbusToolbox.ViewModels;
 public class CoinListItemViewModel
 {
     public int Index { get; set; } // Coin 1, Coin 2...
-    public ObservableCollection<CoinDesc> Descs { get; } = new();
+    public ObservableCollection<CoinDesc> Descs { get; } = [];
 }
 
-public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorViewModel<SkillsEgoFile, SkillEgo>
+public partial class SkillsEgoTranslationEditorViewModel(
+    string currentId = "",
+    string currentEgoName = "",
+    string referenceEgoName = "")
+    : TranslationEditorViewModel<SkillsEgoFile, SkillEgo>
 {
-    private int _currentLevelIndex = 0;
+    private int _currentLevelIndex;
 
     [ObservableProperty] private SkillEgoLevel? _currentLevel;
     [ObservableProperty] private SkillEgoLevel? _referenceLevel;
 
-    private string currentId;
-    [ObservableProperty] private string _currentEgoName;
-    [ObservableProperty] private string _referenceEgoName;
+    private string _currentId = currentId;
+    [ObservableProperty] private string _currentEgoName = currentEgoName;
+    [ObservableProperty] private string _referenceEgoName = referenceEgoName;
 
     [ObservableProperty] private bool _canGoNextLevel;
     [ObservableProperty] private bool _canGoPreviousLevel;
@@ -35,15 +38,11 @@ public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorView
     
     
 
-    private RepositoryManager _repositoryManager;
-    public SkillsEgoTranslationEditorViewModel()
-    {
-        _repositoryManager = (App.Current.ServiceProvider.GetService(typeof(RepositoryManager)) as RepositoryManager)!;
-    }
+    private readonly RepositoryManager _repositoryManager = (App.Current.ServiceProvider.GetService(typeof(RepositoryManager)) as RepositoryManager)!;
 
     public string SkillName
     {
-        get => CurrentItem?.LevelList?.FirstOrDefault()?.Name ?? string.Empty;
+        get => CurrentItem?.LevelList.FirstOrDefault()?.Name ?? string.Empty;
         set
         {
             if (CurrentItem?.LevelList != null)
@@ -57,7 +56,7 @@ public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorView
     
     public string AbnormalityName
     {
-        get => CurrentItem?.LevelList?.FirstOrDefault()?.AbnormalityName ?? string.Empty;
+        get => CurrentItem?.LevelList.FirstOrDefault()?.AbnormalityName ?? string.Empty;
         set
         {
             if (CurrentItem?.LevelList != null)
@@ -77,15 +76,15 @@ public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorView
     private void GetCurrentSkillsEgoName()
     {
         if (CurrentItem == null) return;
-        currentId = CurrentItem.Id.ToString()[..5];
+        _currentId = CurrentItem.Id.ToString()[..5];
 
-        CurrentEgoName = _repositoryManager.EgoNames.DataList.FirstOrDefault(i => i.Id.ToString() == currentId)?.Name.ToString() ?? "Не найдено =(";
-        ReferenceEgoName = _repositoryManager.EgoNamesReference.DataList.FirstOrDefault(i => i.Id.ToString() == currentId)?.Name.ToString() ?? "Не найдено =(";
+        CurrentEgoName = _repositoryManager.EgoNames.DataList.FirstOrDefault(i => i.Id.ToString() == _currentId)?.Name.ToString() ?? "Не найдено =(";
+        ReferenceEgoName = _repositoryManager.EgoNamesReference.DataList.FirstOrDefault(i => i.Id.ToString() == _currentId)?.Name.ToString() ?? "Не найдено =(";
     }
 
     partial void OnCurrentEgoNameChanged(string value)
     {
-        _repositoryManager.EgoNames.DataList.FirstOrDefault(i => i.Id.ToString() == currentId)!.Name = value;
+        _repositoryManager.EgoNames.DataList.FirstOrDefault(i => i.Id.ToString() == _currentId)!.Name = value;
         _repositoryManager.SaveObjectToFile(_repositoryManager.EgoNames);
     }
 
@@ -101,7 +100,7 @@ public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorView
         GetCurrentSkillsEgoName();
     }
 
-    public void LoadReferenceFile(SkillsEgoFile file)
+    public override void LoadReferenceFile(SkillsEgoFile file)
     {
         base.LoadReferenceFile(file);
         UpdateReference();
@@ -140,7 +139,7 @@ public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorView
 
     public void GoNextLevel()
     {
-        if (EditableFile == null || _currentItem == null || _currentLevelIndex >= _currentItem.LevelList.Count - 1) return;
+        if (EditableFile == null || CurrentItem == null || _currentLevelIndex >= CurrentItem.LevelList.Count - 1) return;
         _currentLevelIndex++;
         UpdateCurrent();
         UpdateReference();
@@ -149,13 +148,10 @@ public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorView
 
     private void UpdateCurrent()
     {
-        if (EditableFile != null && EditableFile.DataList.Count > 0)
+        if (EditableFile is { DataList.Count: > 0 })
         {
-            _currentItem = EditableFile.DataList[CurrentIndex];
-            if (_currentItem.LevelList.Count > _currentLevelIndex)
-                CurrentLevel = _currentItem.LevelList[_currentLevelIndex];
-            else
-                CurrentLevel = null;
+            CurrentItem = EditableFile.DataList[CurrentIndex];
+            CurrentLevel = CurrentItem.LevelList.Count > _currentLevelIndex ? CurrentItem.LevelList[_currentLevelIndex] : null;
 
             CurrentCoins.Clear();
             if (CurrentLevel != null)
@@ -178,11 +174,8 @@ public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorView
     {
         if (ReferenceFile != null && ReferenceFile.DataList.Count > CurrentIndex)
         {
-            _referenceItem = ReferenceFile.DataList.First(r => r.Id.ToString() == _currentItem.Id.ToString());
-            if (_referenceItem.LevelList.Count > _currentLevelIndex)
-                ReferenceLevel = _referenceItem.LevelList[_currentLevelIndex];
-            else
-                ReferenceLevel = null;
+            CurrentItem = ReferenceFile.DataList.First(r => r.Id.ToString() == CurrentItem?.Id.ToString());
+            ReferenceLevel = CurrentItem.LevelList.Count > _currentLevelIndex ? CurrentItem.LevelList[_currentLevelIndex] : null;
         }
         else
         {
@@ -204,15 +197,15 @@ public partial class SkillsEgoTranslationEditorViewModel : TranslationEditorView
         }
     }
 
-    private void UpdateNavigation()
+    protected override void UpdateNavigation()
     {
         CanGoPrevious = CurrentIndex > 0;
         CanGoNext = EditableFile != null && CurrentIndex < EditableFile.DataList.Count - 1;
 
-        CanGoPreviousLevel = _currentItem?.LevelList != null && _currentLevelIndex > 0;
-        CanGoNextLevel = _currentItem?.LevelList != null && _currentLevelIndex < (_currentItem.LevelList.Count - 1);
+        CanGoPreviousLevel = CurrentItem?.LevelList != null && _currentLevelIndex > 0;
+        CanGoNextLevel = CurrentItem?.LevelList != null && _currentLevelIndex < (CurrentItem.LevelList.Count - 1);
 
         NavigationText = $"{CurrentIndex + 1} / {EditableFile?.DataList.Count ?? 0}";
-        LevelNavigationText = _currentItem?.LevelList != null ? $"{_currentLevelIndex + 1} / {_currentItem.LevelList.Count}" : "";
+        LevelNavigationText = CurrentItem?.LevelList != null ? $"{_currentLevelIndex + 1} / {CurrentItem.LevelList.Count}" : "";
     }
 }

@@ -82,7 +82,7 @@
                         Classes="framed"
                         Height="60"
                         PasswordChar="*"
-                        Width="300"
+                        Width="500"
                         x:Name="DiscordWebHookBox" />
                     <Button
                         Click="ToggleWebhookVisibility_Click"
@@ -107,7 +107,7 @@
                         Classes="framed"
                         Height="60"
                         IsReadOnly="True"
-                        Width="300"
+                        Width="500"
                         x:Name="RepoPathTextBox" />
                     <Button
                         Click="BrowseFolder_Click"
@@ -130,7 +130,7 @@
                         Classes="framed"
                         Height="60"
                         IsReadOnly="True"
-                        Width="300"
+                        Width="500"
                         x:Name="LimbusPathTextBox" />
                     <Button
                         Click="BrowseLimbusFolder_Click"

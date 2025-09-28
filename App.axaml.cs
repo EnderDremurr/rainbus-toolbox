@@ -285,7 +285,6 @@ public partial class App : Application
             // Singletons
             services.AddSingleton<PersistentDataManager>();
             services.AddSingleton<RepositoryManager>();
-            services.AddSingleton<DiscordManager>();
             services.AddSingleton<GithubManager>();
             services.AddSingleton<KeyWordConversionService>();
 
