@@ -34,7 +34,6 @@ namespace RainbusToolbox.Utilities
         {
             var contextMenu = new ContextMenu();
 
-            // Preview menu item
             var previewItem = new MenuItem { Header = "Превью" };
             previewItem.Click += (s, e) =>
             {
@@ -45,11 +44,21 @@ namespace RainbusToolbox.Utilities
             };
             contextMenu.Items.Add(previewItem);
 
-            // Process with Angela menu item
             var angelaItem = new MenuItem { Header = "Process with Angela" };
             angelaItem.Click += async (s, e) =>
             {
-                await ProcessTextWithAngela(textBox);
+                // Show loading window
+                var loading = new LoadingWindow();
+                loading.Show();
+
+                try
+                {
+                    await ProcessTextWithAngela(textBox);
+                }
+                finally
+                {
+                    loading.Close();
+                }
             };
             contextMenu.Items.Add(angelaItem);
 
@@ -60,15 +69,15 @@ namespace RainbusToolbox.Utilities
         {
             string text = string.Empty;
             TextBox textBox = null;
-            
+
             Console.WriteLine("Received Angela command.");
-            
+
             if (parameter is TextBox tb)
             {
                 textBox = tb;
                 text = textBox.Text ?? string.Empty;
             }
-            else
+            else if (parameter != null)
             {
                 var textProperty = parameter.GetType().GetProperty("Text");
                 if (textProperty != null)

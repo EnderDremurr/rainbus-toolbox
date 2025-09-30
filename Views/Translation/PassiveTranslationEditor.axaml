@@ -89,6 +89,7 @@
                                         Text="Description:" />
                                     <TextBox
                                         Background="Transparent"
+                                        Classes="invisible"
                                         IsReadOnly="True"
                                         MinHeight="100"
                                         Text="{Binding ReferenceItem.Desc}"
@@ -171,6 +172,7 @@
                                     <TextBox
                                         AcceptsReturn="True"
                                         Background="Transparent"
+                                        Classes="invisible"
                                         MinHeight="100"
                                         Text="{Binding CurrentItem.Desc, Mode=TwoWay}"
                                         TextWrapping="Wrap" />
