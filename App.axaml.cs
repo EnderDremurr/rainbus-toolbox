@@ -1,14 +1,8 @@
-using System;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
-using Avalonia.Markup.Xaml;
+using Avalonia.Markup.Xaml; 
 using Avalonia.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using RainbusToolbox.Models.Managers;

@@ -4,6 +4,7 @@
     <option name="projectPerEditor">
       <map>
         <entry key="App.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Resources/Language.ru.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/BattleHintsTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/ExceptionDialog.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/MainWindow.axaml" value="RainbusToolbox.csproj" />

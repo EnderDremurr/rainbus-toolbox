@@ -1,14 +1,8 @@
-using System;
-using System.Collections.ObjectModel;
 using System.IO;
-using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MsBox.Avalonia;
-using MsBox.Avalonia.Enums;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Services;
 using RainbusToolbox.Views;
@@ -22,8 +16,8 @@ public partial class ReleaseTabViewModel : ObservableObject
     private readonly GithubManager _githubManager;
     private readonly RepositoryManager _repositoryManager;
     private readonly KeyWordConversionService _keyWordConversionService;
-    private string _username = "Unknown";
-    private string _repoName = "Unknown";
+    private string _username = AppLang.Unknown;
+    private string _repoName = AppLang.Unknown;
     #endregion
 
     #region Constructor
@@ -98,7 +92,7 @@ public partial class ReleaseTabViewModel : ObservableObject
 
     // Discord section checkboxes
     [ObservableProperty]
-    private bool _sendToDiscord;
+    private bool _sendToDiscord = true;
 
     [ObservableProperty]
     private bool _option1;
@@ -139,8 +133,8 @@ public partial class ReleaseTabViewModel : ObservableObject
     public async Task SelectFile()
     {
         var dialog = new OpenFileDialog();
-        var result = await dialog.ShowAsync(App.Current.ServiceProvider.GetService(typeof(MainWindow)) as MainWindow);
-        _selectedFilePath = result[0];
+        var result = await dialog.ShowAsync((App.Current.ServiceProvider.GetService(typeof(MainWindow)) as MainWindow)!);
+        if (result != null) _selectedFilePath = result[0];
         SelectedFileName = Path.GetFileName(_selectedFilePath);
     }
 
@@ -149,16 +143,16 @@ public partial class ReleaseTabViewModel : ObservableObject
     {
         if (string.IsNullOrWhiteSpace(Version))
         {
-            var messageBox = MessageBoxManager.GetMessageBoxStandard("Ошибка",
-                "Необходимо указать версию релиза", ButtonEnum.Ok);
+            var messageBox = MessageBoxManager.GetMessageBoxStandard(AppLang.ErrorTitle,
+                AppLang.NoReleaseVersionSpecified);
             await messageBox.ShowAsync();
             return;
         }
 
         if (string.IsNullOrEmpty(_dataManager.Settings.GitHubToken))
         {
-            var messageBox = MessageBoxManager.GetMessageBoxStandard("Ошибка",
-                "Сначала нужно залогинится в GitHub", ButtonEnum.Ok);
+            var messageBox = MessageBoxManager.GetMessageBoxStandard(AppLang.ErrorTitle,
+                AppLang.NoGithubLogin);
             await messageBox.ShowAsync();
             return;
         }
@@ -170,21 +164,26 @@ public partial class ReleaseTabViewModel : ObservableObject
 
             // Package the localization
             var package = await Task.Run(() => LocalizationPackager.PackageLocalization(Version, _repositoryManager));
-
+            
+            
+            
             // Create GitHub release
-            await _githubManager.CreateReleaseAsync($"RCR v{Version}", EditorText, package);
+
+            var localizationName = _repositoryManager.GetRepoDisplayName(_repositoryManager.Repository);
+            
+            await _githubManager.CreateReleaseAsync($"{localizationName} v{Version}", EditorText, package);
 
             // Handle Discord section options - only send if SendToDiscord is checked
             if (SendToDiscord && DiscordManager.ValidateWebhook(_dataManager.Settings.DiscordWebHook))
             {
                 var discordManager = new DiscordManager(_dataManager.Settings.DiscordWebHook!);
                 
-                var discordMessage = $"# RCR v{Version}!!!\n" + EditorText;
+                var discordMessage = $"#{localizationName} v{Version}!!!\n" + EditorText;
                 
                 if (MustAppendLauncherLink)
-                    discordMessage += "\n\n[Лаунчер для переводов](<https://github.com/kimght/LimbusLocalizationManager/releases>)";
-                if (Option1)
-                    discordMessage += "\n\n[Ссылка на релиз](<https://github.com/enqenqenqenqenq/RCR/releases/latest>)";
+                    discordMessage += $"\n\n[{AppLang.LocalizationManagerHyperlink}](<https://github.com/kimght/LimbusLocalizationManager/releases>)";
+                //if (Option1) TODO:implement later
+                    //discordMessage += $"\n\n[Ссылка на релиз](<https://github.com/enqenqenqenqenq/RCR/releases/latest>)";
                 if (Option2 && !string.IsNullOrWhiteSpace(RoleToPing))
                     discordMessage += $"\n<@&{RoleToPing}>";
                 
@@ -192,13 +191,13 @@ public partial class ReleaseTabViewModel : ObservableObject
             }
 
             // Success message
-            var successBox = MessageBoxManager.GetMessageBoxStandard("Успех",
-                $"Релиз v{Version} успешно создан!", ButtonEnum.Ok);
+            var successBox = MessageBoxManager.GetMessageBoxStandard(AppLang.SuccessTitle,
+                string.Format(AppLang.ReleaseCreationSuccess, Version));
             await successBox.ShowAsync();
         }
         catch (Exception ex)
         {
-            App.Current.HandleGlobalExceptionAsync(ex);
+            _ = App.Current.HandleGlobalExceptionAsync(ex);
         }
         finally
         {

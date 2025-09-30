@@ -339,6 +339,11 @@ public class RepositoryManager
         return new Signature(name, email, DateTimeOffset.Now);
     }
 
+    public string GetRepoDisplayName(Repository repo)
+    {
+        return repo.Head.RemoteName;
+    }
+
     private FetchOptions CreateFetchOptions()
     {
         return new FetchOptions
