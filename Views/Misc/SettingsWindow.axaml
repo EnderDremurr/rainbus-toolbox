@@ -139,6 +139,37 @@
                         Width="120" />
                 </StackPanel>
 
+                <StackPanel
+                    Orientation="Horizontal"
+                    Spacing="10"
+                    VerticalAlignment="Center">
+                    <TextBlock
+                        Text="Angela token:"
+                        VerticalAlignment="Center"
+                        Width="150" />
+                    <TextBox
+                        Classes="framed"
+                        Height="60"
+                        Width="500"
+                        x:Name="AngelaTokenBox" />
+                </StackPanel>
+
+                <StackPanel
+                    Orientation="Horizontal"
+                    Spacing="10"
+                    VerticalAlignment="Center">
+                    <TextBlock
+                        Text="Angela prompt:"
+                        VerticalAlignment="Center"
+                        Width="150" />
+                    <TextBox
+                        AcceptsReturn="True"
+                        Classes="framed"
+                        Height="600"
+                        Width="500"
+                        x:Name="AngelaPromptBox" />
+                </StackPanel>
+
             </StackPanel>
         </Grid>
     </Grid>

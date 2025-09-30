@@ -1,9 +1,6 @@
-using System;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using System.Threading.Tasks;
 using RainbusToolbox.Models.Managers;
 
 namespace RainbusToolbox;
@@ -14,11 +11,6 @@ public partial class SettingsWindow : Window
     private GithubManager _githubManager;
     private RepositoryManager _repositoryManager;
 
-    private TextBox _discordWebHookBox;
-    private TextBox _repoPathTextBox;
-    private TextBlock _gitHubTokenStatusTextBlock;
-    private TextBox _pathToLimbus;
-
     public SettingsWindow(PersistentDataManager manager, GithubManager githubManager, RepositoryManager repositoryManager)
     {
         InitializeComponent();
@@ -26,30 +18,24 @@ public partial class SettingsWindow : Window
         _dataManager = manager;
         _githubManager = githubManager;
         _repositoryManager = repositoryManager;
-
-        _discordWebHookBox = this.FindControl<TextBox>("DiscordWebHookBox");
-        _repoPathTextBox = this.FindControl<TextBox>("RepoPathTextBox");
-        _gitHubTokenStatusTextBlock = this.FindControl<TextBlock>("GitHubTokenStatusTextBlock");
-        _pathToLimbus = this.FindControl<TextBox>("LimbusPathTextBox");
         
-
         LoadSettings();
 
         // Save settings when window is closing
-        this.Closing += (_, __) => SaveSettings();
+        Closing += (_, _) => SaveSettings();
     }
 
     // Toolbar drag
     private void TitleBar_OnPointerPressed(object sender, PointerPressedEventArgs e)
     {
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
-            this.BeginMoveDrag(e);
+            BeginMoveDrag(e);
     }
 
     // Close button
     private void CloseButton_Click(object sender, RoutedEventArgs e)
     {
-        this.Close();
+        Close();
     }
 
     // Folder picker
@@ -58,7 +44,7 @@ public partial class SettingsWindow : Window
         var dialog = new OpenFolderDialog { Title = "Выбери папку с репозиторием" };
         var result = await dialog.ShowAsync(this);
         if (!string.IsNullOrEmpty(result))
-            _repoPathTextBox.Text = result;
+            RepoPathTextBox.Text = result;
     }
     
     private async void BrowseLimbusFolder_Click(object sender, RoutedEventArgs e)
@@ -75,7 +61,7 @@ public partial class SettingsWindow : Window
         await _githubManager.RequestGithubAuthAsync(this);
 
         var isAuthorized = !string.IsNullOrEmpty(_dataManager.Settings.GitHubToken);
-        _gitHubTokenStatusTextBlock.Text = isAuthorized ? "Ты залогинен" : "Ты не залогинен";
+        GitHubTokenStatusTextBlock.Text = isAuthorized ? "Ты залогинен" : "Ты не залогинен";
     }
 
     private void SaveSettings()
@@ -84,22 +70,35 @@ public partial class SettingsWindow : Window
         var didRepoChange = false;
         
         var settingsCache = _dataManager.Settings;
-        if (settingsCache.DiscordWebHook != _discordWebHookBox.Text && DiscordManager.ValidateWebhook(_discordWebHookBox.Text))
+        if (settingsCache.DiscordWebHook != DiscordWebHookBox.Text && DiscordManager.ValidateWebhook(DiscordWebHookBox.Text))
         {
-            _dataManager.Settings.DiscordWebHook = _discordWebHookBox.Text;
+            _dataManager.Settings.DiscordWebHook = DiscordWebHookBox.Text;
             isDirty = true;
         }
-        if (settingsCache.RepositoryPath != _repoPathTextBox.Text)
+        if (settingsCache.RepositoryPath != RepoPathTextBox.Text)
         {
-            _dataManager.Settings.RepositoryPath = _repoPathTextBox.Text;
+            _dataManager.Settings.RepositoryPath = RepoPathTextBox.Text;
             isDirty = true;
             didRepoChange = true;
         }
-        if (settingsCache.PathToLimbus != _pathToLimbus.Text)
+        if (settingsCache.PathToLimbus != LimbusPathTextBox.Text)
         {
-            _dataManager.Settings.PathToLimbus = _pathToLimbus.Text;
+            _dataManager.Settings.PathToLimbus = LimbusPathTextBox.Text;
             isDirty = true;
         }
+
+        if (AngelaTokenBox.Text != settingsCache.DeepSeekToken)
+        {
+            _dataManager.Settings.DeepSeekToken= AngelaTokenBox.Text;
+            isDirty = true;
+        }
+
+        if (AngelaPromptBox.Text != settingsCache.AngelaPrompt)
+        {
+            _dataManager.Settings.AngelaPrompt = AngelaPromptBox.Text;
+            isDirty = true;
+        }
+        
         
         if(isDirty)
             _dataManager.Save();
@@ -127,14 +126,19 @@ public partial class SettingsWindow : Window
         try
         {
             var data = _dataManager.Settings;
-            _discordWebHookBox.Text = data.DiscordWebHook ?? "";
-            _repoPathTextBox.Text = data.RepositoryPath ?? "";
+            DiscordWebHookBox.Text = data.DiscordWebHook ?? "";
+            RepoPathTextBox.Text = data.RepositoryPath ?? "";
             LimbusPathTextBox.Text = data.PathToLimbus ?? "";
+            AngelaPromptBox.Text = data.AngelaPrompt ?? "";
+            AngelaTokenBox.Text = data.DeepSeekToken ?? "";
 
-            _gitHubTokenStatusTextBlock.Text = string.IsNullOrEmpty(data.GitHubToken)
+            GitHubTokenStatusTextBlock.Text = string.IsNullOrEmpty(data.GitHubToken)
                 ? "Ты не залогинен"
                 : "Ты залогинен";
         }
-        catch { }
+        catch (Exception ex)
+        {
+            _ = App.Current.HandleGlobalExceptionAsync(ex);
+        }
     }
 }

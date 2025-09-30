@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
-using Avalonia.Markup.Xaml; 
+using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using RainbusToolbox.Models.Managers;
@@ -17,7 +17,7 @@ public partial class App : Application
     private IServiceProvider _serviceProvider;
     public IServiceProvider ServiceProvider => _serviceProvider;
     public static ViewModelLocator Locator { get; private set; }
-    public static new App Current => (App)Application.Current!;
+    public new static App Current => (App)Application.Current!;
 
     public override void Initialize()
     {
@@ -28,9 +28,7 @@ public partial class App : Application
     private void SetupExceptionHandlers()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
             desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
-        }
 
         // CLR-level unhandled exceptions (non-UI threads)
         AppDomain.CurrentDomain.UnhandledException += (_, e) =>
@@ -76,7 +74,7 @@ public partial class App : Application
     public async Task HandleNonFatalExceptionAsync(Exception exception, string? userFriendlyMessage = null)
     {
         Console.WriteLine($"Non-fatal exception: {FormatExceptionText(exception)}"); // log to console
-        
+
         await Dispatcher.UIThread.InvokeAsync(async () =>
         {
             try
@@ -130,16 +128,12 @@ public partial class App : Application
                 dialog.Content = stackPanel;
 
                 var desktopLifetime = ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-                Window? parentWindow = desktopLifetime?.MainWindow;
+                var parentWindow = desktopLifetime?.MainWindow;
 
                 if (parentWindow != null)
-                {
                     await dialog.ShowDialog(parentWindow);
-                }
                 else
-                {
                     dialog.Show();
-                }
             }
             catch (Exception ex)
             {
@@ -154,16 +148,12 @@ public partial class App : Application
         var dialog = new ExceptionDialog(errorText);
 
         var desktopLifetime = ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-        Window? parentWindow = desktopLifetime?.MainWindow;
+        var parentWindow = desktopLifetime?.MainWindow;
 
         if (parentWindow != null)
-        {
             await dialog.ShowDialog(parentWindow);
-        }
         else
-        {
             dialog.Show();
-        }
 
         desktopLifetime?.Shutdown();
     }
@@ -206,7 +196,7 @@ public partial class App : Application
             IsReadOnly = true,
             AcceptsReturn = true,
             TextWrapping = Avalonia.Media.TextWrapping.Wrap,
-            Height = 200,
+            Height = 200
         };
 
         detailsExpander.Content = detailsText;
@@ -233,16 +223,12 @@ public partial class App : Application
         dialog.Content = mainPanel;
 
         var desktopLifetime = ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-        Window? parentWindow = desktopLifetime?.MainWindow;
+        var parentWindow = desktopLifetime?.MainWindow;
 
         if (parentWindow != null)
-        {
             await dialog.ShowDialog(parentWindow);
-        }
         else
-        {
             dialog.Show();
-        }
     }
 
     private string FormatExceptionText(Exception exception)
@@ -281,6 +267,7 @@ public partial class App : Application
             services.AddSingleton<RepositoryManager>();
             services.AddSingleton<GithubManager>();
             services.AddSingleton<KeyWordConversionService>();
+            services.AddSingleton<Angela>();
 
             // Windows and VMs
             services.AddSingleton<MainWindow>();
