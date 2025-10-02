@@ -1,6 +1,4 @@
-using System;
 using System.IO;
-using System.Linq;
 using System.Text;
 using LibGit2Sharp;
 using Newtonsoft.Json;
@@ -169,7 +167,7 @@ public class RepositoryManager
             IsValid = false;
         }
 
-        EgoNames = (EgoNames)GetObjectFromPath(PathToEgoNames);
+        EgoNames = (EgoNames)GetObjectFromPath(PathToEgoNames)!;
         EgoNamesReference = (EgoNames)GetReference(EgoNames)!;
     }
 
@@ -178,7 +176,7 @@ public class RepositoryManager
 
     #region Serialization
 
-    public LocalizationFileBase GetObjectFromPath(string path, LocalizationFileBase? file = null)
+    public LocalizationFileBase? GetObjectFromPath(string path, LocalizationFileBase? file = null)
     {
         string rawFile;
         try
@@ -187,13 +185,13 @@ public class RepositoryManager
         }
         catch
         {
-            Console.WriteLine("Unable to read file, please check manually.");
+            Console.WriteLine(AppLang.CorruptedFileNotice);
             return null;
         }
 
         var targetType = file?.GetType() ?? FileToObjectCaster.GetType(path);
         if (targetType == null)
-            Console.WriteLine("Unable to determine file type from path pattern.");
+            Console.WriteLine(AppLang.FileIsUnknown);
         
 
         LocalizationFileBase? deserialized;
@@ -209,7 +207,7 @@ public class RepositoryManager
             }
             catch (Exception ex)
             {
-                App.Current.HandleGlobalExceptionAsync(ex);
+                _ = App.Current.HandleGlobalExceptionAsync(ex);
                 return null;
             }
         }
@@ -341,14 +339,27 @@ public class RepositoryManager
 
     public string GetRepoDisplayName(Repository repo)
     {
-        return repo.Head.RemoteName;
+        var remote = repo.Network.Remotes[repo.Head.RemoteName];
+        if (remote == null) return string.Empty;
+
+        var url = remote.Url;
+
+        if (url.Contains(":") && !url.StartsWith("http"))
+        {
+            url = url.Split(':').Last();
+        }
+
+        var name = Path.GetFileNameWithoutExtension(url);
+
+        return name;
     }
+
 
     private FetchOptions CreateFetchOptions()
     {
         return new FetchOptions
         {
-            CredentialsProvider = (_url, _user, _cred) =>
+            CredentialsProvider = (_, _, _) =>
                 new UsernamePasswordCredentials
                 {
                     Username = "token",
@@ -361,7 +372,7 @@ public class RepositoryManager
     {
         return new PushOptions
         {
-            CredentialsProvider = (_url, _user, _cred) =>
+            CredentialsProvider = (_, _, _) =>
                 new UsernamePasswordCredentials
                 {
                     Username = "x-access-token",
@@ -464,36 +475,36 @@ public class RepositoryManager
 
                 if (changes.Any())
                 {
-                    Console.WriteLine($"Found {changes.Count} local changes to commit.");
+                    Console.WriteLine(AppLang.GitFoundNLocalChangesToCommit, changes.Count);
                     CommitLocalChanges("Synchronization of local and remote changes [RainbusToolbox]");
-                    Console.WriteLine("Local changes committed.");
+                    Console.WriteLine(AppLang.GitLocalChangesCommited);
                     ahead++; // we just added a commit
                 }
                 else
                 {
                     var untracked = status.Where(s => s.State == FileStatus.NewInWorkdir).ToList();
                     if (untracked.Any())
-                        Console.WriteLine($"Found {untracked.Count} untracked files (not committed).");
+                        Console.WriteLine(AppLang.GitFoundNotTrackedFiles, untracked.Count);
                 }
             }
             else
             {
-                Console.WriteLine("No local changes to commit.");
+                Console.WriteLine(AppLang.GitNoLocalChanges);
             }
 
             // Step 4: Push if ahead
             if (ahead > 0)
             {
-                Console.WriteLine($"Local branch is ahead by {ahead} commit(s). Pushing...");
+                Console.WriteLine(AppLang.GitLocalIsAheadNotice, ahead);
                 PushToOrigin();
-                Console.WriteLine("Push completed.");
+                Console.WriteLine(AppLang.GitPushCompleted);
             }
             else
             {
-                Console.WriteLine("No local commits to push.");
+                Console.WriteLine(AppLang.GitNoLocalCommits);
             }
 
-            Console.WriteLine("Synchronization with origin completed successfully.");
+            Console.WriteLine(AppLang.GitSyncSuccess);
         }
         catch (Exception ex)
         {
@@ -542,11 +553,11 @@ public class RepositoryManager
 
             if (behind == 0)
             {
-                Console.WriteLine("No remote commits to pull (up to date).");
+                Console.WriteLine(AppLang.GitLocalUpToDate);
                 return;
             }
 
-            Console.WriteLine($"Local is behind by {behind} commit(s). Updating...");
+            Console.WriteLine(AppLang.GitLocalBehind, behind);
 
             // Step 4: Check if fast-forward possible
             var mergeBase = Repository.ObjectDatabase.FindMergeBase(localCommit, remoteCommit);
@@ -555,7 +566,7 @@ public class RepositoryManager
             if (canFastForward)
             {
                 Repository.Reset(ResetMode.Hard, remoteCommit);
-                Console.WriteLine($"Fast-forwarded to {remoteCommit.Sha.Substring(0, 8)}");
+                Console.WriteLine(AppLang.GitFastForward, remoteCommit.Sha.Substring(0, 8));
             }
             else
             {
@@ -571,16 +582,15 @@ public class RepositoryManager
                 switch (mergeResult.Status)
                 {
                     case MergeStatus.UpToDate:
-                        Console.WriteLine("Already up to date after merge.");
+                        Console.WriteLine(AppLang.GitUpToDateAfterMerge);
                         break;
 
                     case MergeStatus.FastForward:
-                        Console.WriteLine($"Fast-forwarded to {remoteCommit.Sha.Substring(0, 8)}");
+                        Console.WriteLine(AppLang.GitFastForward, remoteCommit.Sha.Substring(0, 8));
                         break;
 
                     case MergeStatus.NonFastForward:
-                        Console.WriteLine(
-                            $"Merged successfully. New commit: {Repository.Head.Tip.Sha.Substring(0, 8)}");
+                        Console.WriteLine(AppLang.GitMergeSuccess, Repository.Head.Tip.Sha.Substring(0, 8));
                         break;
 
                     case MergeStatus.Conflicts:
@@ -603,20 +613,20 @@ public class RepositoryManager
             if (conflictedFiles.Any())
             {
                 var conflictList = string.Join("\n", conflictedFiles.Select(f => $"  {f}"));
-                App.Current.HandleGlobalExceptionAsync(
+                _ = App.Current.HandleGlobalExceptionAsync(
                     new Exception($"Pull failed due to checkout conflicts:\n{conflictList}", ex)
                 );
             }
             else
             {
-                App.Current.HandleGlobalExceptionAsync(
+                _ = App.Current.HandleGlobalExceptionAsync(
                     new Exception($"Pull failed due to checkout conflicts. {ex.Message}", ex)
                 );
             }
         }
         catch (Exception ex)
         {
-            App.Current.HandleGlobalExceptionAsync(
+            _ = App.Current.HandleGlobalExceptionAsync(
                 new Exception($"Pull failed: {ex.Message}", ex)
             );
         }
@@ -664,7 +674,7 @@ public class RepositoryManager
 
                 if (localCommit.Sha == remoteCommit.Sha)
                 {
-                    Console.WriteLine("Already up to date with remote.");
+                    Console.WriteLine(AppLang.GitUpToDate);
                     return;
                 }
             }
@@ -672,7 +682,7 @@ public class RepositoryManager
             // Create push options with GitHub token
             var pushOptions = new PushOptions
             {
-                CredentialsProvider = (url, user, cred) =>
+                CredentialsProvider = (_, _, _) =>
                     new UsernamePasswordCredentials
                     {
                         Username = "token", // GitHub uses "token" as username for personal access tokens
@@ -680,19 +690,18 @@ public class RepositoryManager
                     }
             };
 
-            // Construct the refspec
             var refSpec = $"refs/heads/{currentBranch.FriendlyName}:refs/heads/{currentBranch.FriendlyName}";
 
-            Console.WriteLine($"Pushing branch '{currentBranch.FriendlyName}' to origin...");
+            Console.WriteLine(AppLang.PushingBranchProcess, currentBranch.FriendlyName);
 
             // Perform the push
             Repository.Network.Push(remote, refSpec, pushOptions);
 
-            Console.WriteLine($"Successfully pushed branch '{currentBranch.FriendlyName}' to origin.");
+            Console.WriteLine(AppLang.PushingBranchSuccess, currentBranch.FriendlyName);
         }
         catch (NonFastForwardException ex)
         {
-            App.Current.HandleGlobalExceptionAsync(
+            _ = App.Current.HandleGlobalExceptionAsync(
                 new Exception($"Push rejected because the remote contains work that you do not have locally. " +
                               $"Try pulling from origin first to integrate remote changes.\n" +
                               $"Details: {ex.Message}", ex)
@@ -701,7 +710,7 @@ public class RepositoryManager
         catch (LibGit2SharpException ex) when (ex.Message.Contains("authentication") || ex.Message.Contains("401") ||
                                                ex.Message.Contains("403"))
         {
-            App.Current.HandleGlobalExceptionAsync(
+            _ = App.Current.HandleGlobalExceptionAsync(
                 new Exception($"Authentication failed during push. Please check your GitHub token.\n" +
                               $"Make sure the token has 'repo' permissions and is not expired.\n" +
                               $"Details: {ex.Message}", ex)
@@ -709,14 +718,14 @@ public class RepositoryManager
         }
         catch (LibGit2SharpException ex) when (ex.Message.Contains("network") || ex.Message.Contains("timeout"))
         {
-            App.Current.HandleGlobalExceptionAsync(
+            _ = App.Current.HandleGlobalExceptionAsync(
                 new Exception($"Network error during push. Please check your internet connection.\n" +
                               $"Details: {ex.Message}", ex)
             );
         }
         catch (LibGit2SharpException ex) when (ex.Message.Contains("permission") || ex.Message.Contains("access"))
         {
-            App.Current.HandleGlobalExceptionAsync(
+            _ = App.Current.HandleGlobalExceptionAsync(
                 new Exception($"Permission denied during push. Please check repository access rights.\n" +
                               $"Make sure your GitHub token has write access to this repository.\n" +
                               $"Details: {ex.Message}", ex)
@@ -724,7 +733,7 @@ public class RepositoryManager
         }
         catch (LibGit2SharpException ex)
         {
-            App.Current.HandleGlobalExceptionAsync(
+            _ = App.Current.HandleGlobalExceptionAsync(
                 new Exception($"Git push failed: {ex.Message}\n" +
                               $"This could be due to:\n" +
                               $"- Invalid or expired GitHub token\n" +
@@ -736,7 +745,7 @@ public class RepositoryManager
         }
         catch (Exception ex)
         {
-            App.Current.HandleGlobalExceptionAsync(
+            _ = App.Current.HandleGlobalExceptionAsync(
                 new Exception($"Unexpected error during push: {ex.Message}", ex)
             );
         }

@@ -39,4 +39,58 @@
     <data name="ReleaseCreationSuccess" xml:space="preserve">
         <value>Successfully created release v{0}!</value>
     </data>
+    <data name="PushingBranchProcess" xml:space="preserve">
+        <value>Pushing branch '{0}' to origin...</value>
+    </data>
+    <data name="PushingBranchSuccess" xml:space="preserve">
+        <value>Successfully pushed branch '{0}' to origin.</value>
+    </data>
+    <data name="GitUpToDate" xml:space="preserve">
+        <value>Already up to date with remote.</value>
+    </data>
+    <data name="GitSyncSuccess" xml:space="preserve">
+        <value>Synchronization with origin completed successfully.</value>
+    </data>
+    <data name="GitNoLocalCommits" xml:space="preserve">
+        <value>No local commits to push.</value>
+    </data>
+    <data name="GitLocalUpToDate" xml:space="preserve">
+        <value>No remote commits to pull (up to date).</value>
+    </data>
+    <data name="GitLocalBehind" xml:space="preserve">
+        <value>Local is behind by {0} commit(s). Updating...</value>
+    </data>
+    <data name="GitUpToDateAfterMerge" xml:space="preserve">
+        <value>Already up to date after merge.</value>
+    </data>
+    <data name="GitMergeSuccess" xml:space="preserve">
+        <value>Merged successfully. New commit: {0}</value>
+    </data>
+    <data name="GitFastForward" xml:space="preserve">
+        <value>Fast-forwarded to {0}</value>
+    </data>
+    <data name="GitPushCompleted" xml:space="preserve">
+        <value>Push completed.</value>
+    </data>
+    <data name="GitLocalIsAheadNotice" xml:space="preserve">
+        <value>Local branch is ahead by {0} commit(s). Pushing...</value>
+    </data>
+    <data name="GitNoLocalChanges" xml:space="preserve">
+        <value>No local changes to commit.</value>
+    </data>
+    <data name="GitFoundNotTrackedFiles" xml:space="preserve">
+        <value>Found {0} untracked files (not committed).</value>
+    </data>
+    <data name="GitLocalChangesCommited" xml:space="preserve">
+        <value>Local changes committed.</value>
+    </data>
+    <data name="GitFoundNLocalChangesToCommit" xml:space="preserve">
+        <value>Found {0} local changes to commit.</value>
+    </data>
+    <data name="FileIsUnknown" xml:space="preserve">
+        <value>Unable to determine file type from path pattern.</value>
+    </data>
+    <data name="CorruptedFileNotice" xml:space="preserve">
+        <value>Unable to read file, please check manually.</value>
+    </data>
 </root>

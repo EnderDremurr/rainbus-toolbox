@@ -86,5 +86,113 @@ namespace RainbusToolbox.Resources {
                 return ResourceManager.GetString("ReleaseCreationSuccess", resourceCulture);
             }
         }
+        
+        internal static string PushingBranchProcess {
+            get {
+                return ResourceManager.GetString("PushingBranchProcess", resourceCulture);
+            }
+        }
+        
+        internal static string PushingBranchSuccess {
+            get {
+                return ResourceManager.GetString("PushingBranchSuccess", resourceCulture);
+            }
+        }
+        
+        internal static string GitUpToDate {
+            get {
+                return ResourceManager.GetString("GitUpToDate", resourceCulture);
+            }
+        }
+        
+        internal static string GitSyncSuccess {
+            get {
+                return ResourceManager.GetString("GitSyncSuccess", resourceCulture);
+            }
+        }
+        
+        internal static string GitNoLocalCommits {
+            get {
+                return ResourceManager.GetString("GitNoLocalCommits", resourceCulture);
+            }
+        }
+        
+        internal static string GitLocalUpToDate {
+            get {
+                return ResourceManager.GetString("GitLocalUpToDate", resourceCulture);
+            }
+        }
+        
+        internal static string GitLocalBehind {
+            get {
+                return ResourceManager.GetString("GitLocalBehind", resourceCulture);
+            }
+        }
+        
+        internal static string GitUpToDateAfterMerge {
+            get {
+                return ResourceManager.GetString("GitUpToDateAfterMerge", resourceCulture);
+            }
+        }
+        
+        internal static string GitMergeSuccess {
+            get {
+                return ResourceManager.GetString("GitMergeSuccess", resourceCulture);
+            }
+        }
+        
+        internal static string GitFastForward {
+            get {
+                return ResourceManager.GetString("GitFastForward", resourceCulture);
+            }
+        }
+        
+        internal static string GitPushCompleted {
+            get {
+                return ResourceManager.GetString("GitPushCompleted", resourceCulture);
+            }
+        }
+        
+        internal static string GitLocalIsAheadNotice {
+            get {
+                return ResourceManager.GetString("GitLocalIsAheadNotice", resourceCulture);
+            }
+        }
+        
+        internal static string GitNoLocalChanges {
+            get {
+                return ResourceManager.GetString("GitNoLocalChanges", resourceCulture);
+            }
+        }
+        
+        internal static string GitFoundNotTrackedFiles {
+            get {
+                return ResourceManager.GetString("GitFoundNotTrackedFiles", resourceCulture);
+            }
+        }
+        
+        internal static string GitLocalChangesCommited {
+            get {
+                return ResourceManager.GetString("GitLocalChangesCommited", resourceCulture);
+            }
+        }
+        
+        internal static string GitFoundNLocalChangesToCommit {
+            get {
+                return ResourceManager.GetString("GitFoundNLocalChangesToCommit", resourceCulture);
+            }
+        }
+        
+        internal static string FileIsUnknown {
+            get {
+                return ResourceManager.GetString("FileIsUnknown", resourceCulture);
+            }
+        }
+        
+        internal static string CorruptedFileNotice {
+            get {
+                return ResourceManager.GetString("CorruptedFileNotice", resourceCulture);
+            }
+        }
     }
 }

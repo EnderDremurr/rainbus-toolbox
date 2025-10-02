@@ -178,7 +178,7 @@ public partial class ReleaseTabViewModel : ObservableObject
             {
                 var discordManager = new DiscordManager(_dataManager.Settings.DiscordWebHook!);
                 
-                var discordMessage = $"#{localizationName} v{Version}!!!\n" + EditorText;
+                var discordMessage = $"# {localizationName} v{Version}!!!\n" + EditorText;
                 
                 if (MustAppendLauncherLink)
                     discordMessage += $"\n\n[{AppLang.LocalizationManagerHyperlink}](<https://github.com/kimght/LimbusLocalizationManager/releases>)";
