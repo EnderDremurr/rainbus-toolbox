@@ -25,10 +25,6 @@ namespace RainbusToolbox.Views
             DataContext ??= new BuffTranslationEditorViewModel();
         }
 
-        private void OnPreviousClick(object? sender, RoutedEventArgs e) => VM.GoPrevious();
-
-        private void OnNextClick(object? sender, RoutedEventArgs e) => VM.GoNext();
-
         public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((BuffsFile)file);
 
         public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((BuffsFile)file);

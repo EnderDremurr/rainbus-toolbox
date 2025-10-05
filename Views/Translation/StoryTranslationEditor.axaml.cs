@@ -17,10 +17,6 @@ public partial class StoryTranslationEditor : UserControl, IFileEditor
         DataContext ??= new StoryTranslationEditorViewModel();
     }
 
-    private void OnPreviousClick(object? sender, RoutedEventArgs e) => VM.GoPrevious();
-
-    private void OnNextClick(object? sender, RoutedEventArgs e) => VM.GoNext();
-
     public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((StoryDataFile)file);
 
     public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((StoryDataFile)file);

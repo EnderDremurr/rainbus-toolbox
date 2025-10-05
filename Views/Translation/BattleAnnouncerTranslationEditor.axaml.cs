@@ -16,11 +16,6 @@ namespace RainbusToolbox.Views
             InitializeComponent();
             DataContext ??= new BattleAnnouncerTranslationEditorViewModel();
         }
-
-        private void OnPreviousClick(object? sender, RoutedEventArgs e) => VM.GoPrevious();
-
-        private void OnNextClick(object? sender, RoutedEventArgs e) => VM.GoNext();
-
         public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((BattleAnnouncerFile)file);
 
         public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((BattleAnnouncerFile)file);

@@ -195,9 +195,24 @@
             <!--  Passive Navigation Section  -->
             <StackPanel Orientation="Horizontal">
                 <Button
-                    Click="OnPreviousClick"
-                    Content="◀ Previous"
+                    Command="{Binding GoPrevious}"
+                    CommandParameter="1"
+                    Content="◀1"
                     IsEnabled="{Binding CanGoPrevious}"
+                    Margin="0,0,10,0"
+                    Width="200" />
+                <Button
+                    Command="{Binding GoPrevious}"
+                    CommandParameter="5"
+                    Content="◀5"
+                    IsEnabled="{Binding CanGoPreviousFive}"
+                    Margin="0,0,10,0"
+                    Width="200" />
+                <Button
+                    Command="{Binding GoPrevious}"
+                    CommandParameter="10"
+                    Content="◀10"
+                    IsEnabled="{Binding CanGoPreviousTen}"
                     Margin="0,0,10,0"
                     Width="200" />
                 <Border
@@ -213,9 +228,24 @@
                         Width="150" />
                 </Border>
                 <Button
-                    Click="OnNextClick"
-                    Content="Next ▶"
+                    Command="{Binding GoNext}"
+                    CommandParameter="1"
+                    Content="1▶"
                     IsEnabled="{Binding CanGoNext}"
+                    Margin="10,0,0,0"
+                    Width="200" />
+                <Button
+                    Command="{Binding GoNext}"
+                    CommandParameter="5"
+                    Content="5▶"
+                    IsEnabled="{Binding CanGoNextFive}"
+                    Margin="10,0,0,0"
+                    Width="200" />
+                <Button
+                    Command="{Binding GoNext}"
+                    CommandParameter="10"
+                    Content="10▶"
+                    IsEnabled="{Binding CanGoNextTen}"
                     Margin="10,0,0,0"
                     Width="200" />
             </StackPanel>

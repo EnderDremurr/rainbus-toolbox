@@ -17,10 +17,6 @@ public partial class EGOGiftTranslationEditor : UserControl, IFileEditor
         DataContext ??= new EGOGiftTranslationEditorViewModel();
     }
 
-    private void OnPreviousClick(object? sender, RoutedEventArgs e) => VM.GoPrevious();
-
-    private void OnNextClick(object? sender, RoutedEventArgs e) => VM.GoNext();
-
     public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((EGOGiftFile)file);
 
     public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((EGOGiftFile)file);

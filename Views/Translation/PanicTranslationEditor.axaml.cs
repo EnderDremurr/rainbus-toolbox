@@ -25,9 +25,6 @@ namespace RainbusToolbox.Views
             DataContext ??= new PanicTranslationEditorViewModel();
         }
 
-        private void OnPreviousClick(object? sender, RoutedEventArgs e) => VM.GoPrevious();
-
-        private void OnNextClick(object? sender, RoutedEventArgs e) => VM.GoNext();
 
         public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((PanicInfoFile)file);
 
