@@ -44,8 +44,10 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
         UpdateReferenceItem();
     }
 
-    public virtual void GoPrevious(int step)
+    public virtual void GoPrevious(object stepObj)
     {
+        var step = int.Parse(stepObj.ToString() ?? throw new InvalidOperationException());
+        
         switch (step)
         {
             case 1:
@@ -70,8 +72,10 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
         UpdateNavigation();
     }
 
-    public virtual void GoNext(int step)
+    public virtual void GoNext(object stepObj)
     {
+        var step = int.Parse(stepObj.ToString() ?? throw new InvalidOperationException());
+        
         switch (step)
         {
             case 1:
