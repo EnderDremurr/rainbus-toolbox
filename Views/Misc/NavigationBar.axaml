@@ -1,5 +1,5 @@
 <UserControl
-    d:DesignHeight="450"
+    d:DesignHeight="80"
     d:DesignWidth="800"
     mc:Ignorable="d"
     x:Class="RainbusToolbox.Views.Misc.NavigationBar"
@@ -8,61 +8,90 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!--  Passive Navigation Section  -->
-    <StackPanel Orientation="Horizontal">
-        <Button
-            Command="{Binding GoPrevious}"
-            CommandParameter="5"
-            Content="◀ 5"
-            IsEnabled="{Binding CanGoPreviousFive}"
-            Margin="0,0,10,0"
-            Width="200" />
-        <Button
-            Command="{Binding GoPrevious}"
-            CommandParameter="10"
-            Content="◀ 10"
-            IsEnabled="{Binding CanGoPreviousTen}"
-            Margin="0,0,10,0"
-            Width="200" />
-        <Button
-            Command="{Binding GoPrevious}"
-            CommandParameter="1"
-            Content="◀ 1"
-            IsEnabled="{Binding CanGoPrevious}"
-            Margin="0,0,10,0"
-            Width="200" />
-        <Border
-            Background="Transparent"
-            CornerRadius="4"
-            Padding="12,6">
-            <TextBlock
-                FontFamily="{StaticResource MikodacsFont}"
-                FontSize="16"
-                FontWeight="SemiBold"
-                Foreground="White"
-                Text="{Binding NavigationText}"
-                Width="150" />
-        </Border>
-        <Button
-            Command="{Binding GoNext}"
-            CommandParameter="1"
-            Content="1 ▶"
-            IsEnabled="{Binding CanGoNext}"
-            Margin="10,0,0,0"
-            Width="200" />
-        <Button
-            Command="{Binding GoNext}"
-            CommandParameter="5"
-            Content="5 ▶"
-            IsEnabled="{Binding CanGoNextFive}"
-            Margin="10,0,0,0"
-            Width="200" />
-        <Button
-            Command="{Binding GoNext}"
-            CommandParameter="10"
-            Content="10 ▶"
-            IsEnabled="{Binding CanGoNextTen}"
-            Margin="10,0,0,0"
-            Width="200" />
-    </StackPanel>
+
+    <!--  Navigation Bar  -->
+    <Border
+        Background="#202020"
+        CornerRadius="6"
+        Padding="12">
+        <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
+
+            <!--  Left Section  -->
+            <StackPanel
+                Orientation="Horizontal"
+                Spacing="6"
+                VerticalAlignment="Center">
+                <Button
+                    Command="{Binding GoPrevious}"
+                    CommandParameter="10"
+                    Content="◀ 10"
+                    Height="32"
+                    IsEnabled="{Binding CanGoPreviousTen}"
+                    Width="70" />
+                <Button
+                    Command="{Binding GoPrevious}"
+                    CommandParameter="5"
+                    Content="◀ 5"
+                    Height="32"
+                    IsEnabled="{Binding CanGoPreviousFive}"
+                    Width="60" />
+                <Button
+                    Command="{Binding GoPrevious}"
+                    CommandParameter="1"
+                    Content="◀ 1"
+                    Height="32"
+                    IsEnabled="{Binding CanGoPrevious}"
+                    Width="60" />
+            </StackPanel>
+
+            <!--  Center Section  -->
+            <Border
+                Background="Transparent"
+                CornerRadius="4"
+                Grid.Column="1"
+                HorizontalAlignment="Center"
+                Padding="8"
+                VerticalAlignment="Center">
+                <TextBlock
+                    FontFamily="{StaticResource MikodacsFont}"
+                    FontSize="20"
+                    FontWeight="Bold"
+                    Foreground="White"
+                    Text="{Binding NavigationText}"
+                    TextAlignment="Center"
+                    VerticalAlignment="Center"
+                    Width="200" />
+            </Border>
+
+            <!--  Right Section  -->
+            <StackPanel
+                Grid.Column="2"
+                Orientation="Horizontal"
+                Spacing="6"
+                VerticalAlignment="Center">
+                <Button
+                    Command="{Binding GoNext}"
+                    CommandParameter="1"
+                    Content="1 ▶"
+                    Height="32"
+                    IsEnabled="{Binding CanGoNext}"
+                    Width="60" />
+                <Button
+                    Command="{Binding GoNext}"
+                    CommandParameter="5"
+                    Content="5 ▶"
+                    Height="32"
+                    IsEnabled="{Binding CanGoNextFive}"
+                    Width="60" />
+                <Button
+                    Command="{Binding GoNext}"
+                    CommandParameter="10"
+                    Content="10 ▶"
+                    Height="32"
+                    IsEnabled="{Binding CanGoNextTen}"
+                    Width="70" />
+            </StackPanel>
+
+        </Grid>
+    </Border>
 </UserControl>

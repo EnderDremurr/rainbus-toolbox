@@ -120,14 +120,13 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
 
     protected virtual void UpdateNavigation()
     {
-        CanGoPrevious = EditableFile != null && EditableFile.DataList.Count > CurrentIndex;
-        CanGoNext = EditableFile != null && CurrentIndex < EditableFile.DataList.Count - 1;
-        
-        CanGoPreviousFive = EditableFile != null && CurrentIndex < EditableFile.DataList.Count - 5;
-        CanGoNextFive = EditableFile != null && EditableFile.DataList.Count > CurrentIndex + 5;
-        
-        CanGoPreviousTen = EditableFile != null && CurrentIndex < EditableFile.DataList.Count - 10;
-        CanGoNextTen = EditableFile != null && CurrentIndex < EditableFile.DataList.Count - 10;
+        CanGoPrevious = EditableFile != null && CurrentIndex >= 1;
+        CanGoPreviousFive = EditableFile != null && CurrentIndex >= 5;
+        CanGoPreviousTen = EditableFile != null && CurrentIndex >= 10;
+
+        CanGoNext = EditableFile != null && CurrentIndex + 1 < EditableFile.DataList.Count;
+        CanGoNextFive = EditableFile != null && CurrentIndex + 5 < EditableFile.DataList.Count;
+        CanGoNextTen = EditableFile != null && CurrentIndex + 10 < EditableFile.DataList.Count;
         
         NavigationText = $"{CurrentIndex + 1} / {EditableFile?.DataList.Count ?? 0}";
     }
