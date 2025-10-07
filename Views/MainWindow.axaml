@@ -15,10 +15,18 @@
     <Grid>
         <!--  Background  -->
         <Image
-            HorizontalAlignment="Center"
-            Source="/Assets/ReleaseBG.png"
+            HorizontalAlignment="Stretch"
+            Source="avares://RainbusToolbox/Assets/ReleaseBG.png"
             Stretch="UniformToFill"
-            VerticalAlignment="Center" />
+            VerticalAlignment="Stretch"
+            ZIndex="0"
+            x:Name="Bg">
+            <Image.Transitions>
+                <Transitions>
+                    <DoubleTransition Duration="0:0:0.3" Property="Opacity" />
+                </Transitions>
+            </Image.Transitions>
+        </Image>
 
         <Grid>
             <Grid.RowDefinitions>
@@ -115,7 +123,11 @@
             </Grid>
 
             <!--  Tabs  -->
-            <TabControl Grid.Row="1" Margin="0,10,0,10">
+
+            <TabControl
+                Grid.Row="1"
+                Margin="0,10,0,10"
+                x:Name="MainTabs">
                 <TabControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <DockPanel LastChildFill="False" />

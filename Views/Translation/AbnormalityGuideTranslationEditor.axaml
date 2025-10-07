@@ -7,6 +7,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:misc="clr-namespace:RainbusToolbox.Views.Misc"
     xmlns:viewModels="clr-namespace:RainbusToolbox.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
@@ -227,6 +228,7 @@
                                         Text="Name:" />
                                     <TextBox
                                         Background="Transparent"
+                                        Classes="invisible"
                                         Text="{Binding CurrentItem.Name, Mode=TwoWay}"
                                         TextWrapping="Wrap" />
                                 </StackPanel>
@@ -243,6 +245,7 @@
                                     <TextBox
                                         AcceptsReturn="True"
                                         Background="Transparent"
+                                        Classes="invisible"
                                         MinHeight="80"
                                         Text="{Binding CurrentItem.Clue, Mode=TwoWay}"
                                         TextWrapping="Wrap" />
@@ -276,6 +279,7 @@
                                                         <TextBox
                                                             AcceptsReturn="True"
                                                             Background="Transparent"
+                                                            Classes="invisible"
                                                             MinHeight="60"
                                                             Text="{Binding Story, Mode=TwoWay}"
                                                             TextWrapping="Wrap" />
@@ -293,70 +297,8 @@
         </Grid>
 
         <!--  Navigation Container  -->
-        <StackPanel
-            Grid.Row="2"
-            HorizontalAlignment="Center"
-            IsVisible="{Binding IsFileLoaded}"
-            Margin="20,5,20,20"
-            Orientation="Horizontal">
-
-            <!--  Abnormality Navigation Section  -->
-            <StackPanel Orientation="Horizontal">
-                <Button
-                    Command="{Binding GoPrevious}"
-                    CommandParameter="1"
-                    Content="◀1"
-                    IsEnabled="{Binding CanGoPrevious}"
-                    Margin="0,0,10,0"
-                    Width="200" />
-                <Button
-                    Command="{Binding GoPrevious}"
-                    CommandParameter="5"
-                    Content="◀5"
-                    IsEnabled="{Binding CanGoPreviousFive}"
-                    Margin="0,0,10,0"
-                    Width="200" />
-                <Button
-                    Command="{Binding GoPrevious}"
-                    CommandParameter="10"
-                    Content="◀10"
-                    IsEnabled="{Binding CanGoPreviousTen}"
-                    Margin="0,0,10,0"
-                    Width="200" />
-                <Border
-                    Background="Transparent"
-                    CornerRadius="4"
-                    Padding="12,6">
-                    <TextBlock
-                        FontFamily="{StaticResource MikodacsFont}"
-                        FontSize="16"
-                        FontWeight="SemiBold"
-                        Foreground="White"
-                        Text="{Binding NavigationText}"
-                        Width="150" />
-                </Border>
-                <Button
-                    Command="{Binding GoNext}"
-                    CommandParameter="1"
-                    Content="1▶"
-                    IsEnabled="{Binding CanGoNext}"
-                    Margin="10,0,0,0"
-                    Width="200" />
-                <Button
-                    Command="{Binding GoNext}"
-                    CommandParameter="5"
-                    Content="5▶"
-                    IsEnabled="{Binding CanGoNextFive}"
-                    Margin="10,0,0,0"
-                    Width="200" />
-                <Button
-                    Command="{Binding GoNext}"
-                    CommandParameter="10"
-                    Content="10▶"
-                    IsEnabled="{Binding CanGoNextTen}"
-                    Margin="10,0,0,0"
-                    Width="200" />
-            </StackPanel>
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <misc:NavigationBar />
         </StackPanel>
     </Grid>
 </UserControl>

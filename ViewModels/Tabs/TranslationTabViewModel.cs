@@ -190,6 +190,16 @@ public partial class TranslationTabViewModel : ObservableObject
             new() { Alias = "Скиллы айдишек Синклера", FullPath = Path.Combine(root, $"Skills_personality-10.json"), Desc = "-" },
             new() { Alias = "Скиллы айдишек Отис", FullPath = Path.Combine(root, $"Skills_personality-11.json"), Desc = "-" },
             new() { Alias = "Скиллы айдишек Грегора", FullPath = Path.Combine(root, $"Skills_personality-12.json"), Desc = "-" },
+            
+            new() { Alias = "Пассивки ЭГО", FullPath = Path.Combine(root, $"Passive_Ego.json"), Desc = "-" },
+            new() { Alias = "Пассивки скиллов", FullPath = Path.Combine(root, $"Passives.json"), Desc = "-" },
+            new() { Alias = "Кейворды скиллов", FullPath = Path.Combine(root, $"SkillTag.json"), Desc = "-" },
+            new() { Alias = "Кейворды", FullPath = Path.Combine(root, $"Bufs.json"), Desc = "-" },
+            new() { Alias = "Battle кейворды", FullPath = Path.Combine(root, $"BattleKeywords.json"), Desc = "-" },
+            new() { Alias = "Баффы мобов в миррорке", FullPath = Path.Combine(root, $"MirrorDungeonEnemyBuffDesc.json"), Desc = "-" },
+            new() { Alias = "Описания баффов", FullPath = Path.Combine(root, $"BuffAbilities.json"), Desc = "-" },
+            new() { Alias = "Battle UI Text", FullPath = Path.Combine(root, $"BattleUIText.json"), Desc = "-" },
+            
         };
 
         
