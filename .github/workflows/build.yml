@@ -1,4 +1,4 @@
-name: Release Rainbus Toolbox (Self-hosted Linux)
+name: Release Rainbus Toolbox
 
 on:
   release:
@@ -7,35 +7,27 @@ on:
 
 jobs:
   build:
-    runs-on: ["self-hosted", "Linux", "X64"]
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Add preinstalled .NET to PATH
-        run: echo "$HOME/dotnet:$HOME/dotnet/tools:$PATH" >> $GITHUB_PATH
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
 
       - name: Set version
         id: version
         run: |
-          # Extract tag name
           VERSION="${GITHUB_REF##refs/tags/}"
-          
-          # Fallback for manual runs
           if [ -z "$VERSION" ]; then
             VERSION="0.0.0-local"
           fi
-      
-          # Remove leading 'v' if present
           VERSION="${VERSION#v}"
-      
-          # Replace any invalid characters with '-' (just in case)
           VERSION=$(echo "$VERSION" | tr -c '[:alnum:].+-' '-')
-      
-          # Remove trailing '-' if any
           VERSION="${VERSION%-}"
-      
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Build Linux
@@ -62,9 +54,9 @@ jobs:
           tar -czf RainbusToolbox-osx-x64-${VERSION}.tar.gz -C out/osx-x64 .
 
       - name: Upload release assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           gh release upload "$VERSION" RainbusToolbox-linux-x64-${VERSION}.tar.gz --clobber
           gh release upload "$VERSION" RainbusToolbox-win-x64-${VERSION}.zip --clobber
           gh release upload "$VERSION" RainbusToolbox-osx-x64-${VERSION}.tar.gz --clobber
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}  # <-- Use your PAT here
