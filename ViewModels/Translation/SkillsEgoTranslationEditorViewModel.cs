@@ -174,8 +174,8 @@ public partial class SkillsEgoTranslationEditorViewModel(
     {
         if (ReferenceFile != null && ReferenceFile.DataList.Count > CurrentIndex)
         {
-            CurrentItem = ReferenceFile.DataList.First(r => r.Id.ToString() == CurrentItem?.Id.ToString());
-            ReferenceLevel = CurrentItem.LevelList.Count > _currentLevelIndex ? CurrentItem.LevelList[_currentLevelIndex] : null;
+            ReferenceItem = ReferenceFile.DataList.First(r => r.Id.ToString() == CurrentItem?.Id.ToString());
+            ReferenceLevel = ReferenceItem.LevelList.Count > _currentLevelIndex ? ReferenceItem.LevelList[_currentLevelIndex] : null;
         }
         else
         {
