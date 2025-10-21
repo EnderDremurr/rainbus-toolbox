@@ -93,4 +93,10 @@
     <data name="CorruptedFileNotice" xml:space="preserve">
         <value>Unable to read file, please check manually.</value>
     </data>
+    <data name="AbnormalityRenameStart" xml:space="preserve">
+        <value>Updating {0} levels with: {1}</value>
+    </data>
+    <data name="AbnormalityRenameProcess" xml:space="preserve">
+        <value>Set level AbnormalityName to: {0}</value>
+    </data>
 </root>

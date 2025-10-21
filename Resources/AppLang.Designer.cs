@@ -194,5 +194,17 @@ namespace RainbusToolbox.Resources {
                 return ResourceManager.GetString("CorruptedFileNotice", resourceCulture);
             }
         }
+        
+        internal static string AbnormalityRenameStart {
+            get {
+                return ResourceManager.GetString("AbnormalityRenameStart", resourceCulture);
+            }
+        }
+        
+        internal static string AbnormalityRenameProcess {
+            get {
+                return ResourceManager.GetString("AbnormalityRenameProcess", resourceCulture);
+            }
+        }
     }
 }

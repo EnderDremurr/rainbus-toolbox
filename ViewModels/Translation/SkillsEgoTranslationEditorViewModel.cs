@@ -1,6 +1,4 @@
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Utilities.Data;
@@ -61,11 +59,11 @@ public partial class SkillsEgoTranslationEditorViewModel(
         {
             if (CurrentItem?.LevelList != null)
             {
-                Console.WriteLine($"Updating {CurrentItem.LevelList.Count} levels with: {value}");
+                Console.WriteLine(AppLang.AbnormalityRenameStart, CurrentItem.LevelList.Count, value);
                 foreach (var level in CurrentItem.LevelList)
                 {
                     level.AbnormalityName = value;
-                    Console.WriteLine($"Set level AbnormalityName to: {level.AbnormalityName}");
+                    Console.WriteLine(AppLang.AbnormalityRenameProcess, level.AbnormalityName);
                 }
                 OnPropertyChanged();
             }
