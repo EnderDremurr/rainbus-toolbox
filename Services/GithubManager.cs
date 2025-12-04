@@ -163,7 +163,7 @@ public async Task CreateReleaseAsync(string releaseName, string releaseDescripti
     using var http = new HttpClient();
     http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
     http.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RainbusToolbox", "1.0"));
-    http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("token", _dataManager.Settings.GitHubToken);
+    http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _dataManager.Settings.GitHubToken);
 
     // 2. Check if release/tag already exists
     var checkResponse = await http.GetAsync($"https://api.github.com/repos/{owner}/{repo}/releases/tags/{sanitizedTag}");
