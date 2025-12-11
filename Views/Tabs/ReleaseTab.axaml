@@ -172,7 +172,7 @@
                         FontFamily="{StaticResource MikodacsFont}"
                         FontSize="32"
                         Foreground="Gray"
-                        Text="?.?.?"
+                        Text="{Binding VersionDisplay}"
                         VerticalAlignment="Center" />
                 </StackPanel>
 
@@ -190,15 +190,17 @@
                     <RadioButton
                         Content="Global "
                         GroupName="VersionRadio"
+                        IsChecked="{Binding GlobalVersion}"
                         Name="GlobalVersionRadio" />
                     <RadioButton
                         Content="Major "
                         GroupName="VersionRadio"
+                        IsChecked="{Binding MajorVersion}"
                         Name="MajorVersionRadio" />
                     <RadioButton
                         Content="Minor "
                         GroupName="VersionRadio"
-                        IsChecked="True"
+                        IsChecked="{Binding MinorVersion}"
                         IsDefault="True"
                         Name="MinorVersionRadio" />
                 </StackPanel>
@@ -207,7 +209,7 @@
                 <Button
                     Classes="header"
                     Command="{Binding SubmitCommand}"
-                    Content="Сделать релиз версии ?.?.?"
+                    Content="Сделать релиз новой версии"
                     Height="80"
                     HorizontalAlignment="Center"
                     Width="360" />

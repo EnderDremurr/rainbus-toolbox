@@ -32,15 +32,14 @@ public partial class ReleaseTabViewModel : ObservableObject
         _repositoryManager = repositoryManager;
         _keyWordConversionService = keyWordConversionService;
 
-        // Set default values for checkboxes
         MustAppendLauncherLink = true;
         MergeWithReadme = true;
         SendToDiscord = false;
         Option1 = false;
         Option2 = false;
         
-        // Explicitly ensure loading is false on startup
         IsLoading = false;
+        VersionDisplay = _repositoryManager.GetLatestReleaseSemantic();
 
     }
     #endregion
@@ -99,6 +98,17 @@ public partial class ReleaseTabViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _attachAnImage;
+    
+    [ObservableProperty]
+    private bool _globalVersion;
+    [ObservableProperty]
+    private bool _majorVersion;
+    [ObservableProperty]
+    private bool _minorVersion = true;
+    
+    [ObservableProperty]
+    private string _versionDisplay;
+    
 
     [ObservableProperty]
     private bool _option2;
@@ -106,9 +116,6 @@ public partial class ReleaseTabViewModel : ObservableObject
     [ObservableProperty]
     private string _roleToPing = string.Empty;
 
-    // Version and loading
-    [ObservableProperty]
-    private string _version = string.Empty;
 
     [ObservableProperty]
     private bool _isLoading;
@@ -141,14 +148,6 @@ public partial class ReleaseTabViewModel : ObservableObject
     [RelayCommand]
     public async Task Submit()
     {
-        if (string.IsNullOrWhiteSpace(Version))
-        {
-            var messageBox = MessageBoxManager.GetMessageBoxStandard(AppLang.ErrorTitle,
-                AppLang.NoReleaseVersionSpecified);
-            await messageBox.ShowAsync();
-            return;
-        }
-
         if (string.IsNullOrEmpty(_dataManager.Settings.GitHubToken))
         {
             var messageBox = MessageBoxManager.GetMessageBoxStandard(AppLang.ErrorTitle,
@@ -160,25 +159,46 @@ public partial class ReleaseTabViewModel : ObservableObject
         try
         {
             IsLoading = true;
+            var currentVersion = _repositoryManager.GetLatestReleaseSemantic();
+            var parts = currentVersion.Split('.');
+            int major = int.Parse(parts[0]);
+            int minor = int.Parse(parts[1]);
+            int patch = int.Parse(parts[2]);
 
+            if (GlobalVersion)
+            {
+                major++;
+                minor = 0;
+                patch = 0;
+            }
+            else if (MajorVersion)
+            {
+                minor++;
+                patch = 0;
+            }
+            else if (MinorVersion)
+            {
+                patch++;
+            }
+
+            var nextVersion = $"{major}.{minor}.{patch}";
 
             // Package the localization
-            var package = await Task.Run(() => LocalizationPackager.PackageLocalization(Version, _repositoryManager));
-            
-            
+            var package = await Task.Run(() => LocalizationPackager.PackageLocalization(nextVersion, _repositoryManager));
+
             
             // Create GitHub release
 
             var localizationName = _repositoryManager.GetRepoDisplayName(_repositoryManager.Repository);
             
-            await _githubManager.CreateReleaseAsync($"{localizationName} v{Version}", EditorText, package);
+            await _githubManager.CreateReleaseAsync($"{localizationName} v{nextVersion}", EditorText, package);
 
             // Handle Discord section options - only send if SendToDiscord is checked
             if (SendToDiscord && DiscordManager.ValidateWebhook(_dataManager.Settings.DiscordWebHook))
             {
                 var discordManager = new DiscordManager(_dataManager.Settings.DiscordWebHook!);
                 
-                var discordMessage = $"# {localizationName} v{Version}!!!\n" + EditorText;
+                var discordMessage = $"# {localizationName} v{nextVersion}!!!\n" + EditorText;
                 
                 if (MustAppendLauncherLink)
                     discordMessage += $"\n\n[{AppLang.LocalizationManagerHyperlink}](<https://github.com/kimght/LimbusLocalizationManager/releases>)";
@@ -192,7 +212,7 @@ public partial class ReleaseTabViewModel : ObservableObject
 
             // Success message
             var successBox = MessageBoxManager.GetMessageBoxStandard(AppLang.SuccessTitle,
-                string.Format(AppLang.ReleaseCreationSuccess, Version));
+                string.Format(AppLang.ReleaseCreationSuccess, nextVersion));
             await successBox.ShowAsync();
         }
         catch (Exception ex)
@@ -201,6 +221,7 @@ public partial class ReleaseTabViewModel : ObservableObject
         }
         finally
         {
+            VersionDisplay = _repositoryManager.GetLatestReleaseSemantic();
             IsLoading = false;
         }
     }

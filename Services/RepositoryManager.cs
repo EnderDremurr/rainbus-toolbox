@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using LibGit2Sharp;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -368,18 +369,6 @@ public class RepositoryManager
         };
     }
 
-    private PushOptions CreatePushOptions()
-    {
-        return new PushOptions
-        {
-            CredentialsProvider = (_, _, _) =>
-                new UsernamePasswordCredentials
-                {
-                    Username = "x-access-token",
-                    Password = _dataManager.Settings.GitHubToken
-                }
-        };
-    }
 
     private Branch GetTrackedBranch(Branch branch, Remote remote)
     {
@@ -748,6 +737,51 @@ public class RepositoryManager
             _ = App.Current.HandleGlobalExceptionAsync(
                 new Exception($"Unexpected error during push: {ex.Message}", ex)
             );
+        }
+    }
+    
+    public string GetLatestReleaseSemantic()
+    {
+        try
+        {
+            // Get all tags and sort by the commit date they point to
+            var tags = Repository.Tags
+                .Select(t => new 
+                { 
+                    Tag = t,
+                    Commit = t.PeeledTarget as Commit
+                })
+                .Where(x => x.Commit != null)
+                .OrderByDescending(x => x.Commit.Committer.When)
+                .ToList();
+        
+            if (!tags.Any())
+            {
+                Console.WriteLine("No tags found in repository. Defaulting to 1.0.0");
+                return "1.0.0";
+            }
+
+            // Regex pattern to match semantic versioning (e.g., 1.3.2, 1.3.19, 1.20.3, etc.)
+            var semVerPattern = @"(\d+\.\d+\.\d+)";
+        
+            foreach (var tagInfo in tags)
+            {
+                var match = Regex.Match(tagInfo.Tag.FriendlyName, semVerPattern);
+                if (match.Success)
+                {
+                    var version = match.Groups[1].Value;
+                    Console.WriteLine($"Found latest release: {tagInfo.Tag.FriendlyName} as {version}");
+                    return version;
+                }
+            }
+        
+            Console.WriteLine("Version not found, defaulting to 1.0.0");
+            return "1.0.0";
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to get latest release: {ex.Message}. Defaulting to 1.0.0");
+            return "1.0.0";
         }
     }
 
