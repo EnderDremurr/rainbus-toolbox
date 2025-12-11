@@ -311,7 +311,6 @@
                 <Button
                     Click="OnPreviousSkillClick"
                     Content="◀ Prev Skill"
-                    IsEnabled="{Binding CanGoPrevious}"
                     Margin="0,0,10,0"
                     Width="200" />
                 <Border
@@ -329,7 +328,6 @@
                 <Button
                     Click="OnNextSkillClick"
                     Content="Next Skill ▶"
-                    IsEnabled="{Binding CanGoNext}"
                     Margin="10,0,0,0"
                     Width="200" />
             </StackPanel>

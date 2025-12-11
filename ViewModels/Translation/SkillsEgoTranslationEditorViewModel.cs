@@ -197,8 +197,6 @@ public partial class SkillsEgoTranslationEditorViewModel(
 
     protected override void UpdateNavigation()
     {
-        CanGoPrevious = CurrentIndex > 0;
-        CanGoNext = EditableFile != null && CurrentIndex < EditableFile.DataList.Count - 1;
 
         CanGoPreviousLevel = CurrentItem?.LevelList != null && _currentLevelIndex > 0;
         CanGoNextLevel = CurrentItem?.LevelList != null && _currentLevelIndex < (CurrentItem.LevelList.Count - 1);

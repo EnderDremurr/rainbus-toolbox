@@ -15,16 +15,6 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
     [ObservableProperty] protected TItem? _currentItem;
     [ObservableProperty] protected TItem? _referenceItem;
 
-    #region Navigation
-
-    [ObservableProperty] protected bool _canGoPrevious;
-    [ObservableProperty] protected bool _canGoNext;
-    [ObservableProperty] protected bool _canGoPreviousFive;
-    [ObservableProperty] protected bool _canGoNextFive;
-    [ObservableProperty] protected bool _canGoPreviousTen;
-    [ObservableProperty] protected bool _canGoNextTen;
-
-    #endregion
 
     public bool IsFileLoaded => EditableFile != null && EditableFile.DataList.Count > 0;
 
@@ -46,26 +36,19 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
 
     public virtual void GoPrevious(object stepObj)
     {
-        var step = int.Parse(stepObj.ToString() ?? throw new InvalidOperationException());
+        var step = int.Parse(stepObj.ToString() ?? throw new InvalidOperationException()) * -1;
         
-        switch (step)
-        {
-            case 1:
-                if(!CanGoPrevious)
-                    return;
-                CurrentIndex--;
-                break;
-            case 5:
-                if(!CanGoPreviousFive)
-                    return;
-                CurrentIndex -= 5;
-                break;
-            case 10:
-                if(!CanGoPreviousTen)
-                    return;
-                CurrentIndex -= 10;
-                break;
-        }
+        if(EditableFile == null)
+            return;
+        
+        var maxIndex = EditableFile.DataList.Count - 1;
+
+        var tempIndex = CurrentIndex + step;
+        if(tempIndex >= maxIndex)
+            tempIndex = maxIndex;
+        if(tempIndex < 0)
+            tempIndex = 0;
+        CurrentIndex = tempIndex;
         
         UpdateCurrentItem();
         UpdateReferenceItem();
@@ -76,32 +59,25 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
     {
         var step = int.Parse(stepObj.ToString() ?? throw new InvalidOperationException());
         
-        switch (step)
-        {
-            case 1:
-                if(!CanGoNext)
-                    return;
-                CurrentIndex++;
-                break;
-            case 5:
-                if(!CanGoNextFive)
-                    return;
-                CurrentIndex += 5;
-                break;
-            case 10:
-                if(!CanGoNextTen)
-                    return;
-                CurrentIndex += 10;
-                break;
-        }
+        if(EditableFile == null)
+            return;
         
-        
+        var maxIndex = EditableFile.DataList.Count - 1;
+
+        var tempIndex = CurrentIndex + step;
+        if(tempIndex >= maxIndex)
+            tempIndex = maxIndex;
+        if(tempIndex < 0)
+            tempIndex = 0;
+        CurrentIndex = tempIndex;
         
         
         UpdateCurrentItem();
         UpdateReferenceItem(); 
         UpdateNavigation();
     }
+    
+    
 
     protected virtual void UpdateCurrentItem()
     {
@@ -120,14 +96,6 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
 
     protected virtual void UpdateNavigation()
     {
-        CanGoPrevious = EditableFile != null && CurrentIndex >= 1;
-        CanGoPreviousFive = EditableFile != null && CurrentIndex >= 5;
-        CanGoPreviousTen = EditableFile != null && CurrentIndex >= 10;
-
-        CanGoNext = EditableFile != null && CurrentIndex + 1 < EditableFile.DataList.Count;
-        CanGoNextFive = EditableFile != null && CurrentIndex + 5 < EditableFile.DataList.Count;
-        CanGoNextTen = EditableFile != null && CurrentIndex + 10 < EditableFile.DataList.Count;
-        
         NavigationText = $"{CurrentIndex + 1} / {EditableFile?.DataList.Count ?? 0}";
     }
 

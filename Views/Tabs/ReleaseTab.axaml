@@ -157,32 +157,57 @@
                 Spacing="10"
                 VerticalAlignment="Bottom">
 
-                <!--  Version label + textbox  -->
                 <StackPanel
                     HorizontalAlignment="Center"
                     Orientation="Horizontal"
                     Spacing="5">
+
+                    <TextBlock
+                        FontFamily="{StaticResource MikodacsFont}"
+                        FontSize="24"
+                        Foreground="White"
+                        Text="Прошлая версия:  "
+                        VerticalAlignment="Center" />
+                    <TextBlock
+                        FontFamily="{StaticResource MikodacsFont}"
+                        FontSize="32"
+                        Foreground="Gray"
+                        Text="?.?.?"
+                        VerticalAlignment="Center" />
+                </StackPanel>
+
+                <StackPanel
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal"
+                    Spacing="5">
+
                     <TextBlock
                         FontFamily="{StaticResource MikodacsFont}"
                         FontSize="32"
                         Foreground="White"
-                        Text="Выпустить версию:"
+                        Text="Тип версии: "
                         VerticalAlignment="Center" />
-                    <TextBox
-                        Classes="framed"
-                        Height="60"
-                        LostFocus="VersionTextBox_OnLostFocus"
-                        Text="{Binding Version, Mode=TwoWay}"
-                        TextChanging="VersionTextBox_OnTextChanging"
-                        VerticalAlignment="Center"
-                        Width="160" />
+                    <RadioButton
+                        Content="Global "
+                        GroupName="VersionRadio"
+                        Name="GlobalVersionRadio" />
+                    <RadioButton
+                        Content="Major "
+                        GroupName="VersionRadio"
+                        Name="MajorVersionRadio" />
+                    <RadioButton
+                        Content="Minor "
+                        GroupName="VersionRadio"
+                        IsChecked="True"
+                        IsDefault="True"
+                        Name="MinorVersionRadio" />
                 </StackPanel>
 
                 <!--  Submit button  -->
                 <Button
                     Classes="header"
                     Command="{Binding SubmitCommand}"
-                    Content="В РЕЛИЗ!!!"
+                    Content="Сделать релиз версии ?.?.?"
                     Height="80"
                     HorizontalAlignment="Center"
                     Width="360" />
