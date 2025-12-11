@@ -12,6 +12,7 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
 
     
     [ObservableProperty] protected string _navigationText = "";
+    [ObservableProperty] protected string _navigationCountText = "";
     [ObservableProperty] protected TItem? _currentItem;
     [ObservableProperty] protected TItem? _referenceItem;
 
@@ -76,6 +77,29 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
         UpdateReferenceItem(); 
         UpdateNavigation();
     }
+
+    partial void OnNavigationTextChanged(string value)
+    {
+        if (int.TryParse(value, out var userIndex) && userIndex > 0)
+        {
+            GoCustom();
+        }
+    }
+    public virtual void GoCustom()
+    {
+        var index = int.Parse(NavigationText.ToString() ?? throw new InvalidOperationException()) - 1;
+        var sanitizedStep = index;
+        if(index < 0) index = 0;
+        if(index > EditableFile.DataList.Count - 1) index = EditableFile.DataList.Count;
+        
+        if (CurrentIndex != index)
+        {
+            CurrentIndex = index;
+            UpdateCurrentItem();
+            UpdateReferenceItem();
+            UpdateNavigation();
+        }
+    }
     
     
 
@@ -96,7 +120,8 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
 
     protected virtual void UpdateNavigation()
     {
-        NavigationText = $"{CurrentIndex + 1} / {EditableFile?.DataList.Count ?? 0}";
+        NavigationText = $"{CurrentIndex + 1}";
+        NavigationCountText = $" / {EditableFile?.DataList.Count ?? 0}";
     }
 
     public virtual void SaveCurrentFile(RepositoryManager repositoryManager)

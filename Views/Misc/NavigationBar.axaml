@@ -52,15 +52,28 @@
                 HorizontalAlignment="Center"
                 Padding="8"
                 VerticalAlignment="Center">
-                <TextBlock
-                    FontFamily="{StaticResource MikodacsFont}"
-                    FontSize="20"
-                    FontWeight="Bold"
-                    Foreground="White"
-                    Text="{Binding NavigationText}"
-                    TextAlignment="Center"
-                    VerticalAlignment="Center"
-                    Width="200" />
+                <StackPanel Orientation="Horizontal">
+                    <TextBox
+                        FontFamily="{StaticResource MikodacsFont}"
+                        FontSize="20"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Text="{Binding NavigationText}"
+                        TextAlignment="Right"
+                        VerticalAlignment="Center"
+                        Width="80" />
+                    <TextBlock
+                        FontFamily="{StaticResource MikodacsFont}"
+                        FontSize="20"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Text="{Binding NavigationCountText}"
+                        TextAlignment="Left"
+                        VerticalAlignment="Center"
+                        Width="80" />
+                </StackPanel>
+
+
             </Border>
 
             <!--  Right Section  -->
