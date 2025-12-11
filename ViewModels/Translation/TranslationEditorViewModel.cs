@@ -90,7 +90,7 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
         var index = int.Parse(NavigationText.ToString() ?? throw new InvalidOperationException()) - 1;
         var sanitizedStep = index;
         if(index < 0) index = 0;
-        if(index > EditableFile.DataList.Count - 1) index = EditableFile.DataList.Count;
+        if(index > EditableFile.DataList.Count - 1) index = EditableFile.DataList.Count - 1;
         
         if (CurrentIndex != index)
         {

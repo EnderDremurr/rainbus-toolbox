@@ -49,7 +49,8 @@
                             Foreground="White"
                             IsReadOnly="True"
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                            Text="{Binding ReferenceJson}" />
+                            Text="{Binding ReferenceJson}"
+                            TextWrapping="Wrap" />
                     </ScrollViewer>
 
                 </Panel>
@@ -84,7 +85,8 @@
                             FontSize="12"
                             Foreground="White"
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                            Text="{Binding EditableJson, Mode=TwoWay}" />
+                            Text="{Binding EditableJson, Mode=TwoWay}"
+                            TextWrapping="Wrap" />
                     </ScrollViewer>
                 </Panel>
             </Border>
