@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
@@ -31,7 +32,7 @@ public class DiscordManager
             _ = App.Current.ShowErrorNotificationAsync("Ошибка при отправке сообщения, чето поломалась. Проверь вебхук в настройках");
             return;
         }
-        if(imagePath != null)
+        if(!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
             await Client.SendFileAsync(imagePath, message);
         else
             await Client.SendMessageAsync(message);
