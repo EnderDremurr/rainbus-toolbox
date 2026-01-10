@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RainbusToolbox.Models.Data;
 using RainbusToolbox.Utilities.Data;
+using Version = System.Version;
 
 namespace RainbusToolbox.Models.Managers;
 
@@ -744,39 +745,51 @@ public class RepositoryManager
     {
         try
         {
-            // Get all tags and sort by the commit date they point to
+            var semVerPattern = @"(\d+)\.(\d+)\.(\d+)";
+        
+            // Get all tags with valid semantic versions
             var tags = Repository.Tags
                 .Select(t => new 
                 { 
                     Tag = t,
-                    Commit = t.PeeledTarget as Commit
+                    Match = Regex.Match(t.FriendlyName, semVerPattern)
                 })
-                .Where(x => x.Commit != null)
-                .OrderByDescending(x => x.Commit.Committer.When)
+                .Where(x => x.Match.Success)
+                .Select(x => 
+                {
+                    try
+                    {
+                        return new
+                        {
+                            x.Tag,
+                            Version = new System.Version(
+                                int.Parse(x.Match.Groups[1].Value),
+                                int.Parse(x.Match.Groups[2].Value),
+                                int.Parse(x.Match.Groups[3].Value)
+                            ),
+                            VersionString = x.Match.Groups[0].Value,
+                            IsValid = true
+                        };
+                    }
+                    catch
+                    {
+                        Console.WriteLine($"Skipping tag {x.Tag.FriendlyName} - invalid version format");
+                        return new { x.Tag, Version = (System.Version)null, VersionString = "", IsValid = false };
+                    }
+                })
+                .Where(x => x.IsValid)
+                .OrderByDescending(x => x.Version)
                 .ToList();
-        
+    
             if (!tags.Any())
             {
                 Console.WriteLine("No tags found in repository. Defaulting to 1.0.0");
                 return "1.0.0";
             }
 
-            // Regex pattern to match semantic versioning (e.g., 1.3.2, 1.3.19, 1.20.3, etc.)
-            var semVerPattern = @"(\d+\.\d+\.\d+)";
-        
-            foreach (var tagInfo in tags)
-            {
-                var match = Regex.Match(tagInfo.Tag.FriendlyName, semVerPattern);
-                if (match.Success)
-                {
-                    var version = match.Groups[1].Value;
-                    Console.WriteLine($"Found latest release: {tagInfo.Tag.FriendlyName} as {version}");
-                    return version;
-                }
-            }
-        
-            Console.WriteLine("Version not found, defaulting to 1.0.0");
-            return "1.0.0";
+            var latest = tags.First();
+            Console.WriteLine($"Found latest release: {latest.Tag.FriendlyName} as {latest.VersionString}");
+            return latest.VersionString;
         }
         catch (Exception ex)
         {
