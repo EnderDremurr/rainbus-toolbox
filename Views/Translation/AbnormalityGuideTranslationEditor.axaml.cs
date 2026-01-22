@@ -17,9 +17,9 @@ namespace RainbusToolbox.Views
             DataContext ??= new AbnormalityGuideTranslationEditorViewModel();
         }
 
-        public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((AbnormalityGuideFile)file);
+        public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((AbnormalityGuideContentLocalizationFile)file);
 
-        public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((AbnormalityGuideFile)file);
+        public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((AbnormalityGuideContentLocalizationFile)file);
         public void AskEditorToSave(RepositoryManager repositoryManager) => VM.SaveCurrentFile(repositoryManager);
     }
 }

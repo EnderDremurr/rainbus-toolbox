@@ -59,10 +59,6 @@
         <DependentUpon>InputDialogue.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Views\Translation\SkillsTranslationEditor.axaml.cs">
-        <DependentUpon>SkillsTranslationTab.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
       <Compile Update="Views\Translation\StoryTranslationEditor.axaml.cs">
         <DependentUpon>TranslationTab.axaml</DependentUpon>
         <SubType>Code</SubType>

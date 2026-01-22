@@ -25,9 +25,9 @@ namespace RainbusToolbox.Views
             DataContext ??= new BuffTranslationEditorViewModel();
         }
 
-        public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((BuffsFile)file);
+        public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((BufLocalizationFile)file);
 
-        public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((BuffsFile)file);
+        public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((BufLocalizationFile)file);
         public void AskEditorToSave(RepositoryManager repositoryManager) => VM.SaveCurrentFile(repositoryManager);
     }
 

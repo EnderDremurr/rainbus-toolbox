@@ -17,9 +17,9 @@ namespace RainbusToolbox.Views
             DataContext ??= new PassiveTranslationEditorViewModel();
         }
 
-        public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((PassivesFile)file);
+        public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((PassiveLocalizationFile)file);
 
-        public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((PassivesFile)file);
+        public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((PassiveLocalizationFile)file);
         public void AskEditorToSave(RepositoryManager repositoryManager) => VM.SaveCurrentFile(repositoryManager);
     }
 }

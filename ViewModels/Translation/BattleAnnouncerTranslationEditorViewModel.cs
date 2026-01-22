@@ -5,7 +5,7 @@ using RainbusToolbox.Utilities.Data;
 namespace RainbusToolbox.ViewModels;
 
 public class BattleAnnouncerTranslationEditorViewModel
-    : TranslationEditorViewModel<BattleAnnouncerFile, BattleAnnouncerEntry>
+    : TranslationEditorViewModel<AnnouncerVoiceLocalizationFile, AnnouncerVoice>
 {
     // Original image size (AnnouncerBG.png)
     private const double BaseWidth = 673.0;

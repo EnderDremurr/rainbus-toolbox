@@ -17,9 +17,9 @@ namespace RainbusToolbox.Views
             DataContext ??= new PersonalityVoiceTranslationEditorViewModel();
         }
 
-        public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((PersonalityVoiceFile)file);
+        public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((PersonalityVoiceLocalizationFile)file);
 
-        public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((PersonalityVoiceFile)file);
+        public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((PersonalityVoiceLocalizationFile)file);
         public void AskEditorToSave(RepositoryManager repositoryManager) => VM.SaveCurrentFile(repositoryManager);
     }
 }

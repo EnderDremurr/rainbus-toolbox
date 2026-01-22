@@ -15,12 +15,12 @@ public partial class SkillsEgoTranslationEditorViewModel(
     string currentId = "",
     string currentEgoName = "",
     string referenceEgoName = "")
-    : TranslationEditorViewModel<SkillsEgoFile, SkillEgo>
+    : TranslationEditorViewModel<SkillLocalizationFile, Skill>
 {
     private int _currentLevelIndex;
 
-    [ObservableProperty] private SkillEgoLevel? _currentLevel;
-    [ObservableProperty] private SkillEgoLevel? _referenceLevel;
+    [ObservableProperty] private SkillLevel? _currentLevel;
+    [ObservableProperty] private SkillLevel? _referenceLevel;
 
     private string _currentId = currentId;
     [ObservableProperty] private string _currentEgoName = currentEgoName;
@@ -69,7 +69,11 @@ public partial class SkillsEgoTranslationEditorViewModel(
             }
         }
     }
-    
+
+    public bool HasAnAbnormalityName
+    {
+        get => !string.IsNullOrEmpty(CurrentItem?.LevelList.FirstOrDefault()?.AbnormalityName);
+    }
 
     private void GetCurrentSkillsEgoName()
     {
@@ -80,13 +84,8 @@ public partial class SkillsEgoTranslationEditorViewModel(
         ReferenceEgoName = _repositoryManager.EgoNamesReference.DataList.FirstOrDefault(i => i.Id.ToString() == _currentId)?.Name.ToString() ?? "Не найдено =(";
     }
 
-    partial void OnCurrentEgoNameChanged(string value)
-    {
-        _repositoryManager.EgoNames.DataList.FirstOrDefault(i => i.Id.ToString() == _currentId)!.Name = value;
-        _repositoryManager.SaveObjectToFile(_repositoryManager.EgoNames);
-    }
 
-    public override void LoadEditableFile(SkillsEgoFile file)
+    public override void LoadEditableFile(SkillLocalizationFile file)
     {
         base.LoadEditableFile(file);
         CurrentIndex = 0;
@@ -98,7 +97,7 @@ public partial class SkillsEgoTranslationEditorViewModel(
         GetCurrentSkillsEgoName();
     }
 
-    public override void LoadReferenceFile(SkillsEgoFile file)
+    public override void LoadReferenceFile(SkillLocalizationFile file)
     {
         base.LoadReferenceFile(file);
         UpdateReference();
@@ -166,6 +165,7 @@ public partial class SkillsEgoTranslationEditorViewModel(
         }
         OnPropertyChanged(nameof(SkillName));
         OnPropertyChanged(nameof(AbnormalityName));
+        OnPropertyChanged(nameof(HasAnAbnormalityName));
     }
 
     private void UpdateReference()

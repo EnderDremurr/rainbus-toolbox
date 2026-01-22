@@ -16,9 +16,9 @@ namespace RainbusToolbox.Views
             InitializeComponent();
             DataContext ??= new BattleAnnouncerTranslationEditorViewModel();
         }
-        public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((BattleAnnouncerFile)file);
+        public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((AnnouncerVoiceLocalizationFile)file);
 
-        public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((BattleAnnouncerFile)file);
+        public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((AnnouncerVoiceLocalizationFile)file);
         public void AskEditorToSave(RepositoryManager repositoryManager) => VM.SaveCurrentFile(repositoryManager);
         
         private void OnBackgroundSizeChanged(object? sender, Avalonia.Controls.SizeChangedEventArgs e)

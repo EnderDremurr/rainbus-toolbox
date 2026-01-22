@@ -4,173 +4,114 @@ using System.Linq;
 using System.Reflection;
 using RainbusToolbox.Utilities.Data;
 using System.IO;
+using RainbusToolbox.Models.Managers;
 
 namespace RainbusToolbox.Models.Data;
 
 public static class FileToObjectCaster
 {
-    private static List<Type> LocalizationFileTypes { get; } =
-    [
-        typeof(BuffsFile),
-        typeof(AbDlgFile),
-        typeof(SkillsEgoFile),
-        typeof(SkillsFile),
-        typeof(BattleHintsFile),
-        typeof(StoryDataFile),
-        typeof(PanicInfoFile),
-        typeof(PassivesFile),
-        typeof(EGOGiftFile),
-        typeof(BattleAnnouncerFile),
-        typeof(PersonalityVoiceFile),
-        typeof(EGOVoiceFile),
-        typeof(AbnormalityGuideFile),
-        typeof(UnidentifiedFile),
-        typeof(EgoNames)
-    ];  
-    
-    public static Type? GetType(string pathToFile)
+    public static readonly Dictionary<string, Type> Map = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase)
     {
-        var type = LocalizationFileTypes.FirstOrDefault(t => 
-            t.GetCustomAttribute<FilePatternAttribute>()?.Pattern is { } pattern && 
-            MatchesPattern(pathToFile, pattern));
-
-        return type;
-    }
+        { "ui", typeof(UiLocalizationFile) },
+        { "character", typeof(CharacterLocalizationFile) },
+        { "personality", typeof(PersonalityLocalizationFile) },
+        { "enemy", typeof(EnemyLocalizationFile) },
+        { "ego", typeof(EgoLocalizationFile) },
+        { "skill", typeof(SkillLocalizationFile) },
+        { "passive", typeof(PassiveLocalizationFile) },
+        { "buf", typeof(BufLocalizationFile) },
+        { "buffAbilities", typeof(BuffAbilitiesLocalizationFile) },
+        { "item", typeof(ItemLocalizationFile) },
+        { "keyword", typeof(KeywordLocalizationFile) },
+        { "skillTag", typeof(SkillTagLocalizationFile) },
+        { "abnormalityEvents", typeof(AbnormalityEventsLocalizationFile) },
+        { "abnormalityCharDlgs", typeof(AbnormalityCharDlgsLocalizationFile) },
+        { "attributeText", typeof(AttributeTextLocalizationFile) },
+        { "abnormalityGuideContent", typeof(AbnormalityGuideContentLocalizationFile) },
+        { "keywordDictionary", typeof(KeywordDictionaryLocalizationFile) },
+        { "actionEvents", typeof(ActionEventsLocalizationFile) },
+        { "egoGifts", typeof(EgoGiftsLocalizationFile) },
+        { "stageChapter", typeof(StageChapterLocalizationFile) },
+        { "stagePart", typeof(StagePartLocalizationFile) },
+        { "stageNodeInfo", typeof(StageNodeInfoLocalizationFile) },
+        { "dungeonNodeInfo", typeof(DungeonNodeInfoLocalizationFile) },
+        { "storyDungeonNodeInfo", typeof(StoryDungeonNodeInfoLocalizationFile) },
+        { "railwayDungeonNodeInfo", typeof(RailwayDungeonNodeInfoLocalizationFile) },
+        { "railwayDungeon", typeof(RailwayDungeonLocalizationFile) },
+        { "dungeonArea", typeof(DungeonAreaLocalizationFile) },
+        { "quest", typeof(QuestLocalizationFile) },
+        { "storyTheater", typeof(StoryTheaterLocalizationFile) },
+        { "announcer", typeof(AnnouncerLocalizationFile) },
+        { "normalBattleHint", typeof(NormalBattleHintLocalizationFile) },
+        { "abBattleHint", typeof(AbBattleHintLocalizationFile) },
+        { "battleResultHint", typeof(BattleResultHintLocalizationFile) },
+        { "tutorialDesc", typeof(TutorialDescLocalizationFile) },
+        { "personalityVoice", typeof(PersonalityVoiceLocalizationFile) },
+        { "announcerVoice", typeof(AnnouncerVoiceLocalizationFile) },
+        { "egoVoice", typeof(EgoVoiceLocalizationFile) },
+        { "battleSpeechBubble", typeof(BattleSpeechBubbleLocalizationFile) },
+        { "iapProduct", typeof(IapProductLocalizationFile) },
+        { "iapSticker", typeof(IapStickerLocalizationFile) },
+        { "getConditionText", typeof(GetConditionTextLocalizationFile) },
+        { "choiceEventResult", typeof(ChoiceEventResultLocalizationFile) },
+        { "battlePassMission", typeof(BattlePassMissionLocalizationFile) },
+        { "gachaTitle", typeof(GachaTitleLocalizationFile) },
+        { "gachaNotice", typeof(GachaNoticeLocalizationFile) },
+        { "introduceCharacter", typeof(IntroduceCharacterLocalizationFile) },
+        { "userBanner", typeof(UserBannerLocalizationFile) },
+        { "userTicketL", typeof(UserTicketLLocalizationFile) },
+        { "userTicketR", typeof(UserTicketRLocalizationFile) },
+        { "userTicketEGOBg", typeof(UserTicketEGOBgLocalizationFile) },
+        { "bgmLyrics", typeof(BgmLyricsLocalizationFile) },
+        { "threadDungeon", typeof(ThreadDungeonLocalizationFile) },
+        { "railwayDungeonStationName", typeof(RailwayDungeonStationNameLocalizationFile) },
+        { "railwayDungeonBuff", typeof(RailwayDungeonBuffLocalizationFile) },
+        { "dungeonName", typeof(DungeonNameLocalizationFile) },
+        { "mentalCondition", typeof(MentalConditionLocalizationFile) },
+        { "danteNote", typeof(DanteNoteLocalizationFile) },
+        { "danteNoteCategoryKeyword", typeof(DanteNoteCategoryKeywordLocalizationFile) },
+        { "panicInfo", typeof(PanicInfoLocalizationFile) },
+        { "dungeonStartBuffs", typeof(DungeonStartBuffsLocalizationFile) },
+        { "egoGiftCategory", typeof(EgoGiftCategoryLocalizationFile) },
+        { "mirrorDungeonEgoGiftLockedDesc", typeof(MirrorDungeonEgoGiftLockedDescLocalizationFile) },
+        { "danteAbility", typeof(DanteAbilityLocalizationFile) },
+        { "mirrorDungeonTheme", typeof(MirrorDungeonThemeLocalizationFile) },
+        { "unlockCode", typeof(UnlockCodeLocalizationFile) },
+        { "scenarioModelCodes", typeof(ScenarioModelCodesLocalizationFile) },
+        { "story", typeof(StoryLocalizationFile) },
+        { "announcerVoiceType", typeof(AnnouncerVoiceTypeLocalizationFile) },
+        { "mirrorDungeonRentalName", typeof(MirrorDungeonRentalNameLocalizationFile) },
+        { "projectGSLessonName", typeof(ProjectGSLessonNameLocalizationFile) },
+        { "projectGSComboName", typeof(ProjectGSComboNameLocalizationFile) },
+    };
     
-    private static bool MatchesPattern(string filePath, string pattern)
+    public static Type? GetType(string pathToFile, RepositoryManager repositoryManager)
     {
-        // Normalize path separators for cross-platform compatibility
-        filePath = filePath.Replace('\\', '/');
-        pattern = pattern.Replace('\\', '/');
-        
-        // Handle folder patterns like "Story/*"
-        if (pattern.EndsWith("/*"))
+        Console.WriteLine($"Recevied a cast request for file <{pathToFile}>");
+        var fileName = Path.GetFileNameWithoutExtension(pathToFile);
+        var isKnownFile = repositoryManager.DeveloperFileTypeMap.TryGetValue(fileName, out var knownFileType);
+        Console.WriteLine($"Supposed file type is <{knownFileType}>");
+        // TODO: make custom check for storyData file if no file type, as OG list doesn't have these at all
+        if (!isKnownFile || knownFileType is null)
         {
-            string folderPattern = pattern.Substring(0, pattern.Length - 2);
+            if(IsStoryFile(pathToFile))
+                return typeof(StoryDataFile);
+            if (fileName == "BattleHint")
+                return typeof(NormalBattleHintLocalizationFile);
             
-            // Check if the file is in the specified folder
-            var fileDirectory = Path.GetDirectoryName(filePath)?.Replace('\\', '/');
-            
-            if (folderPattern.Contains("*"))
-            {
-                // Handle patterns like "*/Story/*" or "Data/*/Story/*"
-                return MatchesFolderPattern(fileDirectory, folderPattern);
-            }
-            else
-            {
-                // Simple folder check like "Story/*"
-                return fileDirectory != null && 
-                       (fileDirectory.Equals(folderPattern, StringComparison.OrdinalIgnoreCase) ||
-                        fileDirectory.EndsWith("/" + folderPattern, StringComparison.OrdinalIgnoreCase));
-            }
-        }
-        
-        // For filename patterns, extract just the filename
-        var fileName = Path.GetFileName(filePath);
-        
-        // Handle exact matches (no wildcards)
-        if (!pattern.Contains("*"))
-        {
-            return string.Equals(fileName, pattern, StringComparison.OrdinalIgnoreCase);
-        }
-
-        // Convert wildcard pattern to regex-like matching for filenames
-        if (pattern.StartsWith("*") && pattern.EndsWith("*") && !pattern.EndsWith("/*"))
-        {
-            // *text* - contains
-            string searchText = pattern.Substring(1, pattern.Length - 2);
-            return fileName.Contains(searchText, StringComparison.OrdinalIgnoreCase);
-        }
-        else if (pattern.StartsWith("*"))
-        {
-            // *text - ends with
-            string suffix = pattern.Substring(1);
-            return fileName.EndsWith(suffix, StringComparison.OrdinalIgnoreCase);
-        }
-        else if (pattern.EndsWith("*") && !pattern.EndsWith("/*"))
-        {
-            // text* - starts with
-            string prefix = pattern.Substring(0, pattern.Length - 1);
-            return fileName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase);
-        }
-
-        return false;
+            return null;
+        };
+        var isKnown = Map.TryGetValue(knownFileType, out var type);
+        return isKnown ? type : null;
     }
-    
-    private static bool MatchesFolderPattern(string? actualPath, string folderPattern)
+
+    private static bool IsStoryFile(string pathToFile)
     {
-        if (actualPath == null) return false;
-        
-        // Split paths into segments
-        var actualSegments = actualPath.Split('/', StringSplitOptions.RemoveEmptyEntries);
-        var patternSegments = folderPattern.Split('/', StringSplitOptions.RemoveEmptyEntries);
-        
-        // Simple wildcard matching for folder patterns
-        int actualIndex = 0;
-        int patternIndex = 0;
-        
-        while (patternIndex < patternSegments.Length && actualIndex < actualSegments.Length)
-        {
-            string patternSegment = patternSegments[patternIndex];
-            
-            if (patternSegment == "*")
-            {
-                // Wildcard matches any single segment
-                actualIndex++;
-                patternIndex++;
-            }
-            else if (patternSegment.Contains("*"))
-            {
-                // Handle wildcards within segment names
-                if (MatchesSegmentPattern(actualSegments[actualIndex], patternSegment))
-                {
-                    actualIndex++;
-                    patternIndex++;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                // Exact segment match
-                if (actualSegments[actualIndex].Equals(patternSegment, StringComparison.OrdinalIgnoreCase))
-                {
-                    actualIndex++;
-                    patternIndex++;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
-        
-        // Check if we matched all pattern segments
-        return patternIndex == patternSegments.Length;
-    }
+        var directoryPath = Path.GetDirectoryName(pathToFile);
+        if (string.IsNullOrEmpty(directoryPath))
+            return false;
     
-    private static bool MatchesSegmentPattern(string segment, string pattern)
-    {
-        if (pattern == "*") return true;
-        
-        if (pattern.StartsWith("*") && pattern.EndsWith("*"))
-        {
-            string searchText = pattern.Substring(1, pattern.Length - 2);
-            return segment.Contains(searchText, StringComparison.OrdinalIgnoreCase);
-        }
-        else if (pattern.StartsWith("*"))
-        {
-            string suffix = pattern.Substring(1);
-            return segment.EndsWith(suffix, StringComparison.OrdinalIgnoreCase);
-        }
-        else if (pattern.EndsWith("*"))
-        {
-            string prefix = pattern.Substring(0, pattern.Length - 1);
-            return segment.StartsWith(prefix, StringComparison.OrdinalIgnoreCase);
-        }
-        
-        return segment.Equals(pattern, StringComparison.OrdinalIgnoreCase);
+        var pathParts = directoryPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        return pathParts.Any(part => part.Equals("StoryData", StringComparison.OrdinalIgnoreCase));
     }
 }

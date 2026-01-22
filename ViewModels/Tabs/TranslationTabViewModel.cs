@@ -15,8 +15,6 @@ using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Utilities.Data;
 using RainbusToolbox.Views;
 using RainbusToolbox.Views.Translation;
-using EGOGiftFile = RainbusToolbox.Utilities.Data.EGOGiftFile;
-using SkillsFile = RainbusToolbox.Utilities.Data.SkillsFile;
 
 namespace RainbusToolbox.ViewModels;
 
@@ -42,17 +40,16 @@ public partial class TranslationTabViewModel : ObservableObject
     private readonly Dictionary<Type, Type> _editorMap = new()
     {
         { typeof(StoryDataFile), typeof(StoryTranslationEditor) },
-        { typeof(EGOGiftFile), typeof(EGOGiftTranslationEditor) },
-        { typeof(SkillsEgoFile), typeof(SkillsEgoTranslationEditor) },
-        { typeof(SkillsFile), typeof(SkillsTranslationEditor) },
-        { typeof(BattleHintsFile), typeof(BattleHintsTranslationEditor) },
-        { typeof(PanicInfoFile), typeof(PanicTranslationEditor) },
-        { typeof(PassivesFile), typeof(PassiveTranslationEditor) },
-        { typeof(BattleAnnouncerFile), typeof(BattleAnnouncerTranslationEditor) },
-        { typeof(BuffsFile), typeof(BuffTranslationEditor) },
-        { typeof(PersonalityVoiceFile), typeof(PersonalityVoiceTranslationEditor) },
-        { typeof(EGOVoiceFile), typeof(EGOVoiceTranslationEditor) },
-        { typeof(AbnormalityGuideFile), typeof(AbnormalityGuideTranslationEditor) },
+        { typeof(EgoGiftsLocalizationFile), typeof(EGOGiftTranslationEditor) },
+        { typeof(SkillLocalizationFile), typeof(SkillsEgoTranslationEditor) },
+        { typeof(NormalBattleHintLocalizationFile), typeof(BattleHintsTranslationEditor) },
+        { typeof(PanicInfoLocalizationFile), typeof(PanicTranslationEditor) },
+        { typeof(PassiveLocalizationFile), typeof(PassiveTranslationEditor) },
+        { typeof(AnnouncerVoiceLocalizationFile), typeof(BattleAnnouncerTranslationEditor) },
+        { typeof(BufLocalizationFile), typeof(BuffTranslationEditor) },
+        { typeof(PersonalityVoiceLocalizationFile), typeof(PersonalityVoiceTranslationEditor) },
+        { typeof(EgoVoiceLocalizationFile), typeof(EGOVoiceTranslationEditor) },
+        { typeof(AbnormalityGuideContentLocalizationFile), typeof(AbnormalityGuideTranslationEditor) },
         { typeof(UnidentifiedFile), typeof(GenericTranslationEditor) }
     };
 
@@ -98,7 +95,7 @@ public partial class TranslationTabViewModel : ObservableObject
     {
         if (!File.Exists(filePath)) return;
 
-        var detectedType = FileToObjectCaster.GetType(filePath);
+        var detectedType = FileToObjectCaster.GetType(filePath, _repositoryManager);
 
         var editorType = detectedType != null && _editorMap.TryGetValue(detectedType, out var value)
             ? value

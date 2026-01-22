@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -5,6 +6,7 @@ using LibGit2Sharp;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RainbusToolbox.Models.Data;
+using RainbusToolbox.Utilities;
 using RainbusToolbox.Utilities.Data;
 using Version = System.Version;
 
@@ -32,13 +34,17 @@ public class RepositoryManager
 
     // Game paths
 
+    public string PathToGameRoot => _dataManager.Settings.PathToLimbus!;
     #endregion
 
     #region ConstantItems
 
     public string PathToEgoNames => Path.Combine(PathToLocalization, "Egos.json");
-    public EgoNames EgoNames;
-    public EgoNames EgoNamesReference;
+    public EgoLocalizationFile EgoNames;
+    public EgoLocalizationFile EgoNamesReference;
+
+    public string PathToFileMap => Path.Combine(PathToGameRoot, "LimbusCompany_Data/Assets/Resources_moved/Localize/RemoteLocalizeFileList.json");
+    public readonly Dictionary<string, string> DeveloperFileTypeMap = new Dictionary<string, string>();
 
     #endregion
 
@@ -72,74 +78,10 @@ public class RepositoryManager
     public RepositoryManager(PersistentDataManager dataManager)
     {
         _dataManager = dataManager;
+        ParseFileMap();
         TryInitialize();
     }
 
-
-    public void ParseNewAdditionsFromGame()
-    {
-        var pathToGame = Path.Combine(_dataManager.Settings.PathToLimbus!, ReferenceLangAppendage);
-        var pathToLocalization = Path.Combine(_dataManager.Settings.RepositoryPath!, LocalizationFolder);
-
-        Directory.CreateDirectory(pathToLocalization);
-
-        var gameFiles = Directory.GetFiles(pathToGame, "*.json", SearchOption.AllDirectories);
-
-        foreach (var gameFile in gameFiles)
-        {
-            var relativePath = Path.GetRelativePath(pathToGame, gameFile);
-
-            // Sanitize the file name by removing "EN_" prefix
-            var fileName = Path.GetFileName(relativePath);
-            if (fileName.StartsWith("EN_")) fileName = fileName.Substring(3); // Remove first 3 chars ("EN_")
-
-            var relativeDirectory = Path.GetDirectoryName(relativePath)!;
-            var localizationFile = Path.Combine(pathToLocalization, relativeDirectory, fileName);
-
-            Directory.CreateDirectory(Path.GetDirectoryName(localizationFile)!);
-
-            if (!File.Exists(localizationFile))
-            {
-                File.Copy(gameFile, localizationFile);
-            }
-            else
-            {
-                var gameJson = JObject.Parse(File.ReadAllText(gameFile));
-                var localizationJson = JObject.Parse(File.ReadAllText(localizationFile));
-
-                if (MergeJsonObjects(gameJson, localizationJson))
-                    File.WriteAllText(localizationFile, localizationJson.ToString(Formatting.Indented));
-            }
-        }
-
-        CommitLocalChanges("Merged new files from the game [Rainbus Toolbox]");
-    }
-
-    private bool MergeJsonObjects(JToken source, JToken target)
-    {
-        var updated = false;
-
-        if (source is JObject sourceObj && target is JObject targetObj)
-            foreach (var prop in sourceObj.Properties())
-                if (targetObj[prop.Name] == null)
-                {
-                    targetObj[prop.Name] = prop.Value.DeepClone();
-                    updated = true;
-                }
-                else
-                {
-                    updated |= MergeJsonObjects(prop.Value, targetObj[prop.Name]!);
-                }
-        else if (source is JArray sourceArr && target is JArray targetArr)
-            foreach (var item in sourceArr)
-                if (!targetArr.Any(t => JToken.DeepEquals(t, item)))
-                {
-                    targetArr.Add(item.DeepClone());
-                    updated = true;
-                }
-
-        return updated;
-    }
 
 
     #region Initialization
@@ -169,8 +111,24 @@ public class RepositoryManager
             IsValid = false;
         }
 
-        EgoNames = (EgoNames)GetObjectFromPath(PathToEgoNames)!;
-        EgoNamesReference = (EgoNames)GetReference(EgoNames)!;
+        EgoNames = (EgoLocalizationFile)GetObjectFromPath(PathToEgoNames)!;
+        EgoNamesReference = (EgoLocalizationFile)GetReference(EgoNames)!;
+    }
+
+    public void ParseFileMap()
+    {
+        var json = File.ReadAllText(PathToFileMap);
+        var parsed = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(json);
+
+        foreach (var entry in parsed!)
+        {
+            var type = entry.Key;
+            var fileNames = entry.Value;
+            foreach (var fileName in fileNames)
+            {
+                DeveloperFileTypeMap.TryAdd(fileName, type);
+            }
+        }
     }
 
     #endregion
@@ -191,7 +149,7 @@ public class RepositoryManager
             return null;
         }
 
-        var targetType = file?.GetType() ?? FileToObjectCaster.GetType(path);
+        var targetType = file?.GetType() ?? FileToObjectCaster.GetType(path,this);
         if (targetType == null)
             Console.WriteLine(AppLang.FileIsUnknown);
         
@@ -205,7 +163,12 @@ public class RepositoryManager
         {
             try
             {
-                deserialized = (LocalizationFileBase?)JsonConvert.DeserializeObject(rawFile, targetType);
+                deserialized = (LocalizationFileBase?)JsonConvert.DeserializeObject(
+                    rawFile,
+                    targetType,
+                    LocalizationJsonSettings.Default
+                );
+
             }
             catch (Exception ex)
             {
@@ -262,6 +225,7 @@ public class RepositoryManager
 
     public bool SaveObjectToFile(LocalizationFileBase obj)
 {
+    
     Console.WriteLine("=== SaveObjectToFile Debug Start ===");
     Console.WriteLine($"Object type: {obj?.GetType().Name}");
     Console.WriteLine($"FileName: '{obj?.FileName}'");
@@ -292,16 +256,23 @@ public class RepositoryManager
         {
             Console.WriteLine("Using UnidentifiedFile serialization (no type info)");
             // For UnidentifiedFile, serialize as plain object without type information
-            json = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.None
-            });
+            json = JsonConvert.SerializeObject(
+                obj,
+                Formatting.Indented,
+                LocalizationJsonSettings.Unidentified
+            );
+
         }
         else
         {
             Console.WriteLine("Using normal serialization");
             // For other types, use normal serialization
-            json = JsonConvert.SerializeObject(obj, Formatting.Indented);
+            json = JsonConvert.SerializeObject(
+                obj,
+                Formatting.Indented,
+                LocalizationJsonSettings.Default
+            );
+
         }
         
         Console.WriteLine($"JSON length: {json?.Length ?? 0} characters");

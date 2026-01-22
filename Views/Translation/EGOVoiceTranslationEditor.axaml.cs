@@ -17,9 +17,9 @@ namespace RainbusToolbox.Views
             DataContext ??= new EGOVoiceTranslationEditorViewModel();
         }
 
-        public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((EGOVoiceFile)file);
+        public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((EgoVoiceLocalizationFile)file);
 
-        public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((EGOVoiceFile)file);
+        public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((EgoVoiceLocalizationFile)file);
         public void AskEditorToSave(RepositoryManager repositoryManager) => VM.SaveCurrentFile(repositoryManager);
     }
 }

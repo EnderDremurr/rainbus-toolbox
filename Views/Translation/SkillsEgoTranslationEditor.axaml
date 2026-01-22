@@ -44,28 +44,17 @@
                                     FontWeight="SemiBold"
                                     Foreground="White"
                                     HorizontalAlignment="Left"
+                                    IsEnabled="{Binding HasAnAbnormalityName}"
+                                    IsVisible="{Binding HasAnAbnormalityName}"
                                     Margin="0,0,0,10"
                                     Text="{Binding ReferenceLevel.AbnormalityName}"
                                     TextWrapping="Wrap" />
-
-                                <!--  Current Ego Name  -->
-                                <TextBox
-                                    Classes="invisible"
-                                    FontFamily="{StaticResource MikodacsFont}"
-                                    FontSize="42"
-                                    FontWeight="SemiBold"
-                                    Foreground="White"
-                                    HorizontalAlignment="Right"
-                                    Margin="0,0,0,10"
-                                    Text="{Binding ReferenceEgoName}"
-                                    TextAlignment="Right"
-                                    TextWrapping="Wrap"
-                                    Width="700" />
 
                                 <!--  Separator  -->
                                 <Separator
                                     Background="Gray"
                                     Height="2"
+                                    IsVisible="{Binding HasAnAbnormalityName}"
                                     Margin="0,0,0,10" />
 
                                 <!--  Skill Name and Level  -->
@@ -183,28 +172,18 @@
                                     FontWeight="SemiBold"
                                     Foreground="White"
                                     HorizontalAlignment="Left"
+                                    IsEnabled="{Binding HasAnAbnormalityName}"
+                                    IsVisible="{Binding HasAnAbnormalityName}"
                                     Margin="0,0,0,10"
                                     Text="{Binding AbnormalityName, Mode=TwoWay}"
                                     TextWrapping="Wrap" />
 
-                                <!--  Current Ego Name  -->
-                                <TextBox
-                                    Classes="invisible"
-                                    FontFamily="{StaticResource MikodacsFont}"
-                                    FontSize="42"
-                                    FontWeight="SemiBold"
-                                    Foreground="White"
-                                    HorizontalAlignment="Right"
-                                    Margin="0,0,0,10"
-                                    Text="{Binding CurrentEgoName}"
-                                    TextAlignment="Right"
-                                    TextWrapping="Wrap"
-                                    Width="700" />
 
                                 <!--  Separator  -->
                                 <Separator
                                     Background="Gray"
                                     Height="2"
+                                    IsVisible="{Binding HasAnAbnormalityName}"
                                     Margin="0,0,0,10" />
 
                                 <!--  Skill Name and Level  -->

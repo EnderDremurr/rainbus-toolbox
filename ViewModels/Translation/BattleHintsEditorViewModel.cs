@@ -7,14 +7,14 @@ using Avalonia.Threading;
 using RainbusToolbox.Utilities.Data;
 using RainbusToolbox.ViewModels;
 
-public partial class BattleHintsEditorViewModel : TranslationEditorViewModel<BattleHintsFile, GenericIdContent>
+public partial class BattleHintsEditorViewModel : TranslationEditorViewModel<NormalBattleHintLocalizationFile, GenericIdContent>
 {
     [ObservableProperty] private string _newHintText = "";
 
     // Observable collection bound to the UI
     public ObservableCollection<GenericIdContent> ObservableDataList { get; } = [];
 
-    public override void LoadEditableFile(BattleHintsFile file)
+    public override void LoadEditableFile(NormalBattleHintLocalizationFile file)
     {
         base.LoadEditableFile(file);
 

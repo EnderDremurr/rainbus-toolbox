@@ -19,8 +19,8 @@ public partial class BattleHintsTranslationEditor : UserControl, IFileEditor
         InitializeComponent();
         DataContext ??= new BattleHintsEditorViewModel();
     }
-    public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((BattleHintsFile)file);
+    public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((NormalBattleHintLocalizationFile)file);
 
-    public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((BattleHintsFile)file);
+    public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((NormalBattleHintLocalizationFile)file);
     public void AskEditorToSave(RepositoryManager repositoryManager) => VM.SaveCurrentFile(repositoryManager);
 }

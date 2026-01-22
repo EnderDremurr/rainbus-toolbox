@@ -26,9 +26,9 @@ namespace RainbusToolbox.Views
         }
 
 
-        public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((PanicInfoFile)file);
+        public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((PanicInfoLocalizationFile)file);
 
-        public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((PanicInfoFile)file);
+        public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((PanicInfoLocalizationFile)file);
         public void AskEditorToSave(RepositoryManager repositoryManager) => VM.SaveCurrentFile(repositoryManager);
     }
 }

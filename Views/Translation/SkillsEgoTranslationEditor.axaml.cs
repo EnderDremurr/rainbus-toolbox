@@ -30,8 +30,8 @@ public partial class SkillsEgoTranslationEditor : UserControl, IFileEditor
     private void OnPreviousLevelClick(object? sender, RoutedEventArgs e) => VM.GoPreviousLevel();
     private void OnNextLevelClick(object? sender, RoutedEventArgs e) => VM.GoNextLevel();
 
-    public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((SkillsEgoFile)file);
-    public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((SkillsEgoFile)file);
+    public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((SkillLocalizationFile)file);
+    public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((SkillLocalizationFile)file);
     public void AskEditorToSave(RepositoryManager repositoryManager) => VM.SaveCurrentFile(repositoryManager);
 
 }

@@ -5,4 +5,4 @@ using RainbusToolbox.Utilities.Data;
 
 namespace RainbusToolbox.ViewModels;
 
-public partial class EGOGiftTranslationEditorViewModel : TranslationEditorViewModel<EGOGiftFile, GenericIdNameDesc>;
+public partial class EGOGiftTranslationEditorViewModel : TranslationEditorViewModel<EgoGiftsLocalizationFile, EgoGift>;

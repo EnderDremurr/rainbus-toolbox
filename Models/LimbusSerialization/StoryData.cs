@@ -17,17 +17,17 @@ public class StoryDataItem
     public int Id { get; set; }
 
     [JsonProperty("model")]
-    public string? Model { get; set; } // Optional
+    public string? Model { get; set; }
 
     [JsonProperty("teller")]
-    public string? Teller { get; set; } // Optional
+    public string? Teller { get; set; }
 
     [JsonProperty("title")]
-    public string? Title { get; set; } // Optional
+    public string? Title { get; set; }
 
     [JsonProperty("place")]
-    public string? Place { get; set; } // Optional
+    public string? Place { get; set; }
 
     [JsonProperty("content")]
-    public string Content { get; set; } = string.Empty; // Always present
+    public string Content { get; set; } = string.Empty;
 }
