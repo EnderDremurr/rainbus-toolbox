@@ -24,9 +24,6 @@ public partial class SkillsEgoTranslationEditor : UserControl, IFileEditor
         InitializeComponent();
         DataContext ??= new SkillsEgoTranslationEditorViewModel();
     }
-
-    private void OnPreviousSkillClick(object? sender, RoutedEventArgs e) => VM.GoPreviousSkill();
-    private void OnNextSkillClick(object? sender, RoutedEventArgs e) => VM.GoNextSkill();
     private void OnPreviousLevelClick(object? sender, RoutedEventArgs e) => VM.GoPreviousLevel();
     private void OnNextLevelClick(object? sender, RoutedEventArgs e) => VM.GoNextLevel();
 

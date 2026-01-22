@@ -7,6 +7,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:misc="clr-namespace:RainbusToolbox.Views.Misc"
     xmlns:vm="clr-namespace:RainbusToolbox.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
@@ -286,29 +287,8 @@
             Orientation="Horizontal">
 
             <!--  Skill Navigation  -->
-            <StackPanel Margin="0,0,30,0" Orientation="Horizontal">
-                <Button
-                    Click="OnPreviousSkillClick"
-                    Content="◀ Prev Skill"
-                    Margin="0,0,10,0"
-                    Width="200" />
-                <Border
-                    Background="Transparent"
-                    CornerRadius="4"
-                    Padding="12,6">
-                    <TextBlock
-                        FontFamily="{StaticResource MikodacsFont}"
-                        FontSize="16"
-                        FontWeight="SemiBold"
-                        Foreground="White"
-                        Text="{Binding NavigationText}"
-                        Width="100" />
-                </Border>
-                <Button
-                    Click="OnNextSkillClick"
-                    Content="Next Skill ▶"
-                    Margin="10,0,0,0"
-                    Width="200" />
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <misc:NavigationBar />
             </StackPanel>
 
             <!--  Level Navigation  -->

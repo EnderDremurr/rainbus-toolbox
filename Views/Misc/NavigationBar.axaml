@@ -26,21 +26,18 @@
                     CommandParameter="10"
                     Content="◀ 10"
                     Height="32"
-                    IsEnabled="{Binding CanGoPreviousTen}"
                     Width="70" />
                 <Button
                     Command="{Binding GoPrevious}"
                     CommandParameter="5"
                     Content="◀ 5"
                     Height="32"
-                    IsEnabled="{Binding CanGoPreviousFive}"
                     Width="60" />
                 <Button
                     Command="{Binding GoPrevious}"
                     CommandParameter="1"
                     Content="◀ 1"
                     Height="32"
-                    IsEnabled="{Binding CanGoPrevious}"
                     Width="60" />
             </StackPanel>
 
@@ -87,21 +84,18 @@
                     CommandParameter="1"
                     Content="1 ▶"
                     Height="32"
-                    IsEnabled="{Binding CanGoNext}"
                     Width="60" />
                 <Button
                     Command="{Binding GoNext}"
                     CommandParameter="5"
                     Content="5 ▶"
                     Height="32"
-                    IsEnabled="{Binding CanGoNextFive}"
                     Width="60" />
                 <Button
                     Command="{Binding GoNext}"
                     CommandParameter="10"
                     Content="10 ▶"
                     Height="32"
-                    IsEnabled="{Binding CanGoNextTen}"
                     Width="70" />
             </StackPanel>
 

@@ -102,25 +102,50 @@ public partial class SkillsEgoTranslationEditorViewModel(
         base.LoadReferenceFile(file);
         UpdateReference();
     }
-
-    public void GoPreviousSkill()
+    
+    public override void GoPrevious(object stepObj)
     {
-        if (CurrentIndex <= 0) return;
-        CurrentIndex--;
+        var step = int.Parse(stepObj.ToString() ?? throw new InvalidOperationException()) * -1;
+        
+        if(EditableFile == null)
+            return;
+        
+        var maxIndex = EditableFile.DataList.Count - 1;
+
+        var tempIndex = CurrentIndex + step;
+        if(tempIndex >= maxIndex)
+            tempIndex = maxIndex;
+        if(tempIndex < 0)
+            tempIndex = 0;
+        CurrentIndex = tempIndex;
         _currentLevelIndex = 0;
-        UpdateCurrent();
-        UpdateReference();
+        
+        UpdateCurrentItem();
+        UpdateReferenceItem();
         UpdateNavigation();
         GetCurrentSkillsEgoName();
     }
 
-    public void GoNextSkill()
+    public override void GoNext(object stepObj)
     {
-        if (EditableFile == null || CurrentIndex >= EditableFile.DataList.Count - 1) return;
-        CurrentIndex++;
+        var step = int.Parse(stepObj.ToString() ?? throw new InvalidOperationException());
+        
+        if(EditableFile == null)
+            return;
+        
+        var maxIndex = EditableFile.DataList.Count - 1;
+
+        var tempIndex = CurrentIndex + step;
+        if(tempIndex >= maxIndex)
+            tempIndex = maxIndex;
+        if(tempIndex < 0)
+            tempIndex = 0;
+        CurrentIndex = tempIndex;
         _currentLevelIndex = 0;
-        UpdateCurrent();
-        UpdateReference();
+        
+        
+        UpdateCurrentItem();
+        UpdateReferenceItem(); 
         UpdateNavigation();
         GetCurrentSkillsEgoName();
     }
