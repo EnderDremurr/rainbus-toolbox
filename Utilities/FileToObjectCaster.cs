@@ -91,7 +91,6 @@ public static class FileToObjectCaster
         var fileName = Path.GetFileNameWithoutExtension(pathToFile);
         var isKnownFile = repositoryManager.DeveloperFileTypeMap.TryGetValue(fileName, out var knownFileType);
         Console.WriteLine($"Supposed file type is <{knownFileType}>");
-        // TODO: make custom check for storyData file if no file type, as OG list doesn't have these at all
         if (!isKnownFile || knownFileType is null)
         {
             if(IsStoryFile(pathToFile))

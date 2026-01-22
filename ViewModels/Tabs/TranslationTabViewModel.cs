@@ -160,8 +160,10 @@ public partial class TranslationTabViewModel : ObservableObject
             new() { Alias = "Баттл хинты (загрузка)", FullPath = Path.Combine(root, $"BattleHint.json"), Desc = "-" },
             new() { Alias = "Баттл хинты (обычная битва)", FullPath = Path.Combine(root, $"BattleHint_NormalBattle.json"), Desc = "-" },
             new() { Alias = "Баттл хинты (битва с аномалией)", FullPath = Path.Combine(root, $"BattleHint_AbnorBattle.json"), Desc = "-" },
-            new() { Alias = "Старые ЭГО", FullPath = Path.Combine(root, $"Skills_Ego.json"), Desc = "эго, что были добавлены в игру давно, все грешники в одном файле" },
+            new() { Alias = "Представления (Куриный шашлычок)", FullPath = Path.Combine(root, $"IntroductionPreset.json"), Desc = "-" },
             
+            
+            new() { Alias = "Старые ЭГО", FullPath = Path.Combine(root, $"Skills_Ego.json"), Desc = "эго, что были добавлены в игру давно, все грешники в одном файле" },
             new() { Alias = "Эго И Сана", FullPath = Path.Combine(root, $"Skills_Ego_Personality-01.json"), Desc = "-" },
             new() { Alias = "Эго Фауст", FullPath = Path.Combine(root, $"Skills_Ego_Personality-02.json"), Desc = "-" },
             new() { Alias = "Эго Дон", FullPath = Path.Combine(root, $"Skills_Ego_Personality-03.json"), Desc = "-" },
