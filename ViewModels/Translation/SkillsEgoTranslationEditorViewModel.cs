@@ -90,8 +90,8 @@ public partial class SkillsEgoTranslationEditorViewModel(
         base.LoadEditableFile(file);
         CurrentIndex = 0;
         _currentLevelIndex = 0;
-        UpdateCurrent();
-        UpdateReference();
+        UpdateCurrentItem();
+        UpdateReferenceItem();
         UpdateNavigation();
         OnPropertyChanged(nameof(IsFileLoaded));
         GetCurrentSkillsEgoName();
@@ -100,7 +100,7 @@ public partial class SkillsEgoTranslationEditorViewModel(
     public override void LoadReferenceFile(SkillLocalizationFile file)
     {
         base.LoadReferenceFile(file);
-        UpdateReference();
+        UpdateReferenceItem();
     }
     
     public override void GoPrevious(object stepObj)
@@ -154,8 +154,8 @@ public partial class SkillsEgoTranslationEditorViewModel(
     {
         if (_currentLevelIndex <= 0) return;
         _currentLevelIndex--;
-        UpdateCurrent();
-        UpdateReference();
+        UpdateCurrentItem();
+        UpdateReferenceItem();
         UpdateNavigation();
     }
 
@@ -163,12 +163,12 @@ public partial class SkillsEgoTranslationEditorViewModel(
     {
         if (EditableFile == null || CurrentItem == null || _currentLevelIndex >= CurrentItem.LevelList.Count - 1) return;
         _currentLevelIndex++;
-        UpdateCurrent();
-        UpdateReference();
+        UpdateCurrentItem();
+        UpdateReferenceItem();
         UpdateNavigation();
     }
 
-    private void UpdateCurrent()
+    protected override void UpdateCurrentItem()
     {
         if (EditableFile is { DataList.Count: > 0 })
         {
@@ -191,9 +191,11 @@ public partial class SkillsEgoTranslationEditorViewModel(
         OnPropertyChanged(nameof(SkillName));
         OnPropertyChanged(nameof(AbnormalityName));
         OnPropertyChanged(nameof(HasAnAbnormalityName));
+        OnPropertyChanged(nameof(CurrentLevel));
+        OnPropertyChanged(nameof(CurrentCoins));
     }
 
-    private void UpdateReference()
+    protected override void UpdateReferenceItem()
     {
         if (ReferenceFile != null && ReferenceFile.DataList.Count > CurrentIndex)
         {
@@ -218,6 +220,9 @@ public partial class SkillsEgoTranslationEditorViewModel(
                 ReferenceCoins.Add(vm);
             }
         }
+        
+        OnPropertyChanged(nameof(ReferenceLevel));
+        OnPropertyChanged(nameof(ReferenceCoins));
     }
 
     protected override void UpdateNavigation()

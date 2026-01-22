@@ -13,6 +13,7 @@
 
     <Grid RowDefinitions="Auto,*,Auto">
         <!--  Main Content - Vertical Split  -->
+
         <Grid
             ColumnDefinitions="*,*"
             Grid.Row="1"
