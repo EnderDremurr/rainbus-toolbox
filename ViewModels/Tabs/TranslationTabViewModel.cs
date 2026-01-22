@@ -50,7 +50,8 @@ public partial class TranslationTabViewModel : ObservableObject
         { typeof(PersonalityVoiceLocalizationFile), typeof(PersonalityVoiceTranslationEditor) },
         { typeof(EgoVoiceLocalizationFile), typeof(EGOVoiceTranslationEditor) },
         { typeof(AbnormalityGuideContentLocalizationFile), typeof(AbnormalityGuideTranslationEditor) },
-        { typeof(UnidentifiedFile), typeof(GenericTranslationEditor) }
+        { typeof(UnidentifiedFile), typeof(GenericTranslationEditor) },
+        {typeof(UiLocalizationFile), typeof(UiElementTranslationEditor)}
     };
 
     private RepositoryManager _repositoryManager =
