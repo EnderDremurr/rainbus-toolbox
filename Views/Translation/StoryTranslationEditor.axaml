@@ -26,8 +26,10 @@
                     Source="avares://RainbusToolbox/Assets/StoryBG.png" />
                 <Grid Margin="25,20,25,20">
                     <TextBlock
+                        Classes="invisible"
+                        FontSize="22"
                         HorizontalAlignment="Stretch"
-                        Margin="430,65,20,40"
+                        Margin="430,60,300,40"
                         Text="{Binding ReferenceItem.Content}"
                         TextWrapping="Wrap"
                         VerticalAlignment="Stretch" />
@@ -42,28 +44,51 @@
                             Margin="0,-40,0,0"
                             Source="avares://RainbusToolbox/Assets/StoryBGName.png"
                             Width="450" />
-                        <StackPanel
+                        <Grid
                             HorizontalAlignment="Center"
                             Margin="0,15,0,15"
-                            VerticalAlignment="Center">
+                            VerticalAlignment="Top">
                             <TextBlock
+                                FontFamily="{StaticResource MikodacsFont}"
+                                FontSize="28"
                                 FontWeight="Bold"
                                 HorizontalAlignment="Center"
+                                Margin="35,-13,0,0"
                                 MaxWidth="250"
-                                Text="{Binding DisplayTitleReference}">
+                                Text="{Binding DisplayTitleReference}"
+                                VerticalAlignment="Top">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect
+                                        BlurRadius="0"
+                                        Color="Black"
+                                        OffsetX="2"
+                                        OffsetY="2"
+                                        Opacity="0.8" />
+                                </TextBlock.Effect>
                                 <TextBlock.RenderTransform>
-                                    <RotateTransform Angle="-6" />
+                                    <RotateTransform Angle="-6.9" />
                                 </TextBlock.RenderTransform>
                             </TextBlock>
                             <TextBlock
+                                FontFamily="{StaticResource MikodacsFont}"
+                                FontSize="34"
                                 HorizontalAlignment="Center"
-                                MaxWidth="250"
-                                Text="{Binding DisplayTellerReference}">
+                                Margin="130,55,0,0"
+                                Text="{Binding DisplayTellerReference}"
+                                VerticalAlignment="Top">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect
+                                        BlurRadius="0"
+                                        Color="Black"
+                                        OffsetX="2"
+                                        OffsetY="2"
+                                        Opacity="0.8" />
+                                </TextBlock.Effect>
                                 <TextBlock.RenderTransform>
-                                    <RotateTransform Angle="-6" />
+                                    <RotateTransform Angle="-6.5" />
                                 </TextBlock.RenderTransform>
                             </TextBlock>
-                        </StackPanel>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>
@@ -92,14 +117,17 @@
                         AcceptsReturn="True"
                         Background="Transparent"
                         BorderThickness="0"
+                        Classes="invisible"
+                        FontSize="22"
                         HorizontalAlignment="Stretch"
-                        Margin="430,60,20,40"
+                        Margin="430,60,300,40"
                         Text="{Binding CurrentItem.Content, Mode=TwoWay}"
                         TextWrapping="Wrap"
                         VerticalAlignment="Stretch" />
                     <TextBox
                         Background="Transparent"
                         BorderThickness="0"
+                        Classes="invisible"
                         HorizontalAlignment="Center"
                         Margin="0,0,0,15"
                         Text="{Binding CurrentItem.Place, Mode=TwoWay}"
@@ -110,34 +138,59 @@
                             Margin="0,-40,0,0"
                             Source="avares://RainbusToolbox/Assets/StoryBGName.png"
                             Width="450" />
-                        <StackPanel
+                        <Grid
                             HorizontalAlignment="Center"
                             Margin="0,15,0,15"
-                            VerticalAlignment="Center">
+                            VerticalAlignment="Top">
                             <TextBox
                                 Background="Transparent"
                                 BorderThickness="0"
+                                Classes="invisible"
+                                FontFamily="{StaticResource MikodacsFont}"
+                                FontSize="28"
                                 FontWeight="Bold"
                                 HorizontalAlignment="Center"
                                 IsReadOnly="{Binding !CanEditTitle}"
-                                Margin="0,0,0,5"
+                                Margin="35,-13,0,0"
                                 MaxWidth="250"
-                                Text="{Binding DisplayTitle, Mode=TwoWay}">
+                                Text="{Binding DisplayTitle, Mode=TwoWay}"
+                                VerticalAlignment="Top">
+                                <TextBox.Effect>
+                                    <DropShadowEffect
+                                        BlurRadius="0"
+                                        Color="Black"
+                                        OffsetX="2"
+                                        OffsetY="2"
+                                        Opacity="0.8" />
+                                </TextBox.Effect>
                                 <TextBox.RenderTransform>
-                                    <RotateTransform Angle="-6" />
+                                    <RotateTransform Angle="-6.9" />
                                 </TextBox.RenderTransform>
                             </TextBox>
                             <TextBox
                                 Background="Transparent"
                                 BorderThickness="0"
+                                Classes="invisible"
+                                FontFamily="{StaticResource MikodacsFont}"
+                                FontSize="34"
                                 HorizontalAlignment="Center"
                                 IsReadOnly="{Binding !CanEditTeller}"
-                                Text="{Binding DisplayTeller, Mode=TwoWay}">
+                                Margin="130,55,0,0"
+                                Text="{Binding DisplayTeller, Mode=TwoWay}"
+                                VerticalAlignment="Top">
+                                <TextBox.Effect>
+                                    <DropShadowEffect
+                                        BlurRadius="0"
+                                        Color="Black"
+                                        OffsetX="2"
+                                        OffsetY="2"
+                                        Opacity="0.8" />
+                                </TextBox.Effect>
                                 <TextBox.RenderTransform>
-                                    <RotateTransform Angle="-6" />
+                                    <RotateTransform Angle="-6.5" />
                                 </TextBox.RenderTransform>
                             </TextBox>
-                        </StackPanel>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>
