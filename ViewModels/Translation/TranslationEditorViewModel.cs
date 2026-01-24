@@ -109,7 +109,6 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
             CurrentItem = EditableFile.DataList[CurrentIndex];
     }
 
-    // Add this new method
     protected virtual void UpdateReferenceItem()
     {
         if (ReferenceFile != null && ReferenceFile.DataList.Count > CurrentIndex)

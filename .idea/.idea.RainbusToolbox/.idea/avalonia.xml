@@ -37,6 +37,7 @@
         <entry key="Views/Translation/SkillsEgoTranslationEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Translation/SkillsTranslationEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Translation/StoryTranslationEditor.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Translation/UiElementTranslationEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/TranslationTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/UpdaterTab.axaml" value="RainbusToolbox.csproj" />
       </map>

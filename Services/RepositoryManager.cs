@@ -42,6 +42,10 @@ public class RepositoryManager
     public string PathToEgoNames => Path.Combine(PathToLocalization, "Egos.json");
     public EgoLocalizationFile EgoNames;
     public EgoLocalizationFile EgoNamesReference;
+    
+    public string PathToModelCodes => Path.Combine(PathToLocalization, "ScenarioModelCodes-AutoCreated.json");
+    public ScenarioModelCodesLocalizationFile ScenarioModelCodes;
+    public ScenarioModelCodesLocalizationFile ScenarioModelCodesReference;
 
     public string PathToFileMap => Path.Combine(PathToGameRoot, "LimbusCompany_Data/Assets/Resources_moved/Localize/RemoteLocalizeFileList.json");
     public readonly Dictionary<string, string> DeveloperFileTypeMap = new Dictionary<string, string>();
@@ -113,6 +117,9 @@ public class RepositoryManager
 
         EgoNames = (EgoLocalizationFile)GetObjectFromPath(PathToEgoNames)!;
         EgoNamesReference = (EgoLocalizationFile)GetReference(EgoNames)!;
+
+        ScenarioModelCodes = (ScenarioModelCodesLocalizationFile)GetObjectFromPath(PathToModelCodes)!;
+        ScenarioModelCodesReference = (ScenarioModelCodesLocalizationFile)GetReference(ScenarioModelCodes)!;
     }
 
     public void ParseFileMap()

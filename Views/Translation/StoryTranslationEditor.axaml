@@ -50,7 +50,7 @@
                                 FontWeight="Bold"
                                 HorizontalAlignment="Center"
                                 MaxWidth="250"
-                                Text="{Binding ReferenceItem.Title}">
+                                Text="{Binding DisplayTitleReference}">
                                 <TextBlock.RenderTransform>
                                     <RotateTransform Angle="-6" />
                                 </TextBlock.RenderTransform>
@@ -58,7 +58,7 @@
                             <TextBlock
                                 HorizontalAlignment="Center"
                                 MaxWidth="250"
-                                Text="{Binding ReferenceItem.Teller}">
+                                Text="{Binding DisplayTellerReference}">
                                 <TextBlock.RenderTransform>
                                     <RotateTransform Angle="-6" />
                                 </TextBlock.RenderTransform>
@@ -119,9 +119,10 @@
                                 BorderThickness="0"
                                 FontWeight="Bold"
                                 HorizontalAlignment="Center"
+                                IsReadOnly="{Binding !CanEditTitle}"
                                 Margin="0,0,0,5"
                                 MaxWidth="250"
-                                Text="{Binding CurrentItem.Title, Mode=TwoWay}">
+                                Text="{Binding DisplayTitle, Mode=TwoWay}">
                                 <TextBox.RenderTransform>
                                     <RotateTransform Angle="-6" />
                                 </TextBox.RenderTransform>
@@ -130,8 +131,8 @@
                                 Background="Transparent"
                                 BorderThickness="0"
                                 HorizontalAlignment="Center"
-                                IsReadOnly="True"
-                                Text="{Binding CurrentItem.Teller}">
+                                IsReadOnly="{Binding !CanEditTeller}"
+                                Text="{Binding DisplayTeller, Mode=TwoWay}">
                                 <TextBox.RenderTransform>
                                     <RotateTransform Angle="-6" />
                                 </TextBox.RenderTransform>
