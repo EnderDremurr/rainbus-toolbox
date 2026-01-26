@@ -25,16 +25,18 @@
                     Margin="240,0,0,0"
                     Source="avares://RainbusToolbox/Assets/StoryBG.png" />
                 <Grid Margin="25,20,25,20">
-                    <TextBlock
+                    <TextBox
                         Classes="invisible"
                         FontSize="22"
                         HorizontalAlignment="Stretch"
+                        IsReadOnly="True"
                         Margin="430,60,300,40"
                         Text="{Binding ReferenceItem.Content}"
                         TextWrapping="Wrap"
                         VerticalAlignment="Stretch" />
-                    <TextBlock
+                    <TextBox
                         HorizontalAlignment="Center"
+                        IsReadOnly="True"
                         Margin="0,0,0,15"
                         Text="{Binding ReferenceItem.Place}"
                         VerticalAlignment="Bottom" />
@@ -48,46 +50,48 @@
                             HorizontalAlignment="Center"
                             Margin="0,15,0,15"
                             VerticalAlignment="Top">
-                            <TextBlock
+                            <TextBox
                                 FontFamily="{StaticResource MikodacsFont}"
                                 FontSize="28"
                                 FontWeight="Bold"
                                 HorizontalAlignment="Center"
+                                IsReadOnly="True"
                                 Margin="35,-13,0,0"
                                 MaxWidth="250"
                                 Text="{Binding DisplayTitleReference}"
                                 VerticalAlignment="Top">
-                                <TextBlock.Effect>
+                                <TextBox.Effect>
                                     <DropShadowEffect
                                         BlurRadius="0"
                                         Color="Black"
                                         OffsetX="2"
                                         OffsetY="2"
                                         Opacity="0.8" />
-                                </TextBlock.Effect>
-                                <TextBlock.RenderTransform>
+                                </TextBox.Effect>
+                                <TextBox.RenderTransform>
                                     <RotateTransform Angle="-6.9" />
-                                </TextBlock.RenderTransform>
-                            </TextBlock>
-                            <TextBlock
+                                </TextBox.RenderTransform>
+                            </TextBox>
+                            <TextBox
                                 FontFamily="{StaticResource MikodacsFont}"
                                 FontSize="34"
                                 HorizontalAlignment="Center"
+                                IsReadOnly="True"
                                 Margin="130,55,0,0"
                                 Text="{Binding DisplayTellerReference}"
                                 VerticalAlignment="Top">
-                                <TextBlock.Effect>
+                                <TextBox.Effect>
                                     <DropShadowEffect
                                         BlurRadius="0"
                                         Color="Black"
                                         OffsetX="2"
                                         OffsetY="2"
                                         Opacity="0.8" />
-                                </TextBlock.Effect>
-                                <TextBlock.RenderTransform>
+                                </TextBox.Effect>
+                                <TextBox.RenderTransform>
                                     <RotateTransform Angle="-6.5" />
-                                </TextBlock.RenderTransform>
-                            </TextBlock>
+                                </TextBox.RenderTransform>
+                            </TextBox>
                         </Grid>
                     </Grid>
                 </Grid>
