@@ -61,6 +61,7 @@
                                 Margin="35,-13,0,0"
                                 MaxWidth="250"
                                 Text="{Binding DisplayTitleReference}"
+                                TextWrapping="Wrap"
                                 VerticalAlignment="Top">
                                 <TextBox.Effect>
                                     <DropShadowEffect
@@ -81,7 +82,9 @@
                                 HorizontalAlignment="Center"
                                 IsReadOnly="True"
                                 Margin="130,55,0,0"
+                                MaxWidth="350"
                                 Text="{Binding DisplayTellerReference}"
+                                TextWrapping="Wrap"
                                 VerticalAlignment="Top">
                                 <TextBox.Effect>
                                     <DropShadowEffect
@@ -161,6 +164,7 @@
                                 Margin="35,-13,0,0"
                                 MaxWidth="250"
                                 Text="{Binding DisplayTitle, Mode=TwoWay}"
+                                TextWrapping="Wrap"
                                 VerticalAlignment="Top">
                                 <TextBox.Effect>
                                     <DropShadowEffect
@@ -183,7 +187,9 @@
                                 HorizontalAlignment="Center"
                                 IsReadOnly="{Binding !CanEditTeller}"
                                 Margin="130,55,0,0"
+                                MaxWidth="350"
                                 Text="{Binding DisplayTeller, Mode=TwoWay}"
+                                TextWrapping="Wrap"
                                 VerticalAlignment="Top">
                                 <TextBox.Effect>
                                     <DropShadowEffect
