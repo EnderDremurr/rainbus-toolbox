@@ -78,10 +78,19 @@ public partial class SkillsEgoTranslationEditorViewModel(
     private void GetCurrentSkillsEgoName()
     {
         if (CurrentItem == null) return;
-        _currentId = CurrentItem.Id.ToString()[..5];
+    
+        var idString = CurrentItem.Id.ToString();
+    
+        _currentId = idString.Length >= 5 ? idString[..5] : idString;
+    
 
-        CurrentEgoName = _repositoryManager.EgoNames.DataList.FirstOrDefault(i => i.Id.ToString() == _currentId)?.Name.ToString() ?? "Не найдено =(";
-        ReferenceEgoName = _repositoryManager.EgoNamesReference.DataList.FirstOrDefault(i => i.Id.ToString() == _currentId)?.Name.ToString() ?? "Не найдено =(";
+        CurrentEgoName = _repositoryManager.EgoNames.DataList
+                             .FirstOrDefault(i => i.Id.ToString() == _currentId)?.Name.ToString() 
+                         ?? "Не найдено =(";
+        
+        ReferenceEgoName = _repositoryManager.EgoNamesReference.DataList
+                               .FirstOrDefault(i => i.Id.ToString() == _currentId)?.Name.ToString() 
+                           ?? "Не найдено =(";
     }
 
 
