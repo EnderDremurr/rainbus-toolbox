@@ -49,9 +49,11 @@
                                     Text="Reference" />
 
                                 <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
-                                    <TextBlock
-                                        FontSize="24"
+                                    <TextBox
+                                        Classes="invisible"
+                                        FontSize="18"
                                         Foreground="White"
+                                        IsReadOnly="True"
                                         Text="{Binding ReferenceItem.Content}"
                                         TextWrapping="Wrap" />
                                 </StackPanel>
@@ -91,8 +93,9 @@
                                     Text="Editor" />
 
                                 <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
-                                    <TextBlock
-                                        FontSize="24"
+                                    <TextBox
+                                        Classes="invisible"
+                                        FontSize="18"
                                         Foreground="White"
                                         Text="{Binding CurrentItem.Content}"
                                         TextWrapping="Wrap" />
