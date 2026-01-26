@@ -35,6 +35,7 @@
                         TextWrapping="Wrap"
                         VerticalAlignment="Stretch" />
                     <TextBox
+                        Classes="invisible"
                         HorizontalAlignment="Center"
                         IsReadOnly="True"
                         Margin="0,0,0,15"
@@ -51,6 +52,7 @@
                             Margin="0,15,0,15"
                             VerticalAlignment="Top">
                             <TextBox
+                                Classes="invisible"
                                 FontFamily="{StaticResource MikodacsFont}"
                                 FontSize="28"
                                 FontWeight="Bold"
@@ -73,6 +75,7 @@
                                 </TextBox.RenderTransform>
                             </TextBox>
                             <TextBox
+                                Classes="invisible"
                                 FontFamily="{StaticResource MikodacsFont}"
                                 FontSize="34"
                                 HorizontalAlignment="Center"
