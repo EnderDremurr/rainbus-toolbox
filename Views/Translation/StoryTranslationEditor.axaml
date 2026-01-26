@@ -6,10 +6,15 @@
     x:DataType="vm:StoryTranslationEditorViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:global="clr-namespace:"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:misc="clr-namespace:RainbusToolbox.Views.Misc"
     xmlns:vm="clr-namespace:RainbusToolbox.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <UserControl.Resources>
+        <global:TextToFontSizeConverter x:Key="TextToFontSizeConverter" />
+    </UserControl.Resources>
 
     <Grid RowDefinitions="Auto,*,Auto,*,Auto">
 
@@ -54,14 +59,15 @@
                             <TextBox
                                 Classes="invisible"
                                 FontFamily="{StaticResource MikodacsFont}"
-                                FontSize="28"
+                                FontSize="{Binding DisplayTitleReference, Converter={StaticResource TextToFontSizeConverter}}"
                                 FontWeight="Bold"
                                 HorizontalAlignment="Center"
                                 IsReadOnly="True"
                                 Margin="35,-13,0,0"
+                                MaxHeight="60"
                                 MaxWidth="250"
                                 Text="{Binding DisplayTitleReference}"
-                                TextWrapping="Wrap"
+                                TextWrapping="NoWrap"
                                 VerticalAlignment="Top">
                                 <TextBox.Effect>
                                     <DropShadowEffect
@@ -78,13 +84,14 @@
                             <TextBox
                                 Classes="invisible"
                                 FontFamily="{StaticResource MikodacsFont}"
-                                FontSize="34"
+                                FontSize="{Binding DisplayTellerReference, Converter={StaticResource TextToFontSizeConverter}}"
                                 HorizontalAlignment="Center"
                                 IsReadOnly="True"
                                 Margin="130,55,0,0"
-                                MaxWidth="350"
+                                MaxHeight="80"
+                                MaxWidth="300"
                                 Text="{Binding DisplayTellerReference}"
-                                TextWrapping="Wrap"
+                                TextWrapping="NoWrap"
                                 VerticalAlignment="Top">
                                 <TextBox.Effect>
                                     <DropShadowEffect
@@ -157,14 +164,15 @@
                                 BorderThickness="0"
                                 Classes="invisible"
                                 FontFamily="{StaticResource MikodacsFont}"
-                                FontSize="28"
+                                FontSize="{Binding DisplayTitle, Converter={StaticResource TextToFontSizeConverter}}"
                                 FontWeight="Bold"
                                 HorizontalAlignment="Center"
                                 IsReadOnly="{Binding !CanEditTitle}"
                                 Margin="35,-13,0,0"
+                                MaxHeight="60"
                                 MaxWidth="250"
                                 Text="{Binding DisplayTitle, Mode=TwoWay}"
-                                TextWrapping="Wrap"
+                                TextWrapping="NoWrap"
                                 VerticalAlignment="Top">
                                 <TextBox.Effect>
                                     <DropShadowEffect
@@ -183,13 +191,14 @@
                                 BorderThickness="0"
                                 Classes="invisible"
                                 FontFamily="{StaticResource MikodacsFont}"
-                                FontSize="34"
+                                FontSize="{Binding DisplayTeller, Converter={StaticResource TextToFontSizeConverter}}"
                                 HorizontalAlignment="Center"
                                 IsReadOnly="{Binding !CanEditTeller}"
                                 Margin="130,55,0,0"
-                                MaxWidth="350"
+                                MaxHeight="80"
+                                MaxWidth="300"
                                 Text="{Binding DisplayTeller, Mode=TwoWay}"
-                                TextWrapping="Wrap"
+                                TextWrapping="NoWrap"
                                 VerticalAlignment="Top">
                                 <TextBox.Effect>
                                     <DropShadowEffect
