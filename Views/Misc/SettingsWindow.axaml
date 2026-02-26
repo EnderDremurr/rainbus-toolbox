@@ -165,12 +165,13 @@
                         VerticalAlignment="Center">
                         <TextBlock
                             Text="Angela prompt:"
-                            VerticalAlignment="Center"
+                            VerticalAlignment="Top"
                             Width="150" />
                         <TextBox
                             AcceptsReturn="True"
                             Classes="framed"
-                            Height="400"
+                            Height="500"
+                            TextWrapping="Wrap"
                             Width="500"
                             x:Name="AngelaPromptBox" />
                     </StackPanel>

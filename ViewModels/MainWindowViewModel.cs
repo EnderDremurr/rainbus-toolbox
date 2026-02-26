@@ -111,10 +111,16 @@ public partial class MainWindowViewModel : ObservableObject
     public async Task ReparseUserDataAsync()
     {
         Username = await _githubManager.GetGithubDisplayNameAsync();
-        var remoteUrl = _repositoryManager.Repository.Network.Remotes["origin"].Url;
-        RepoName = Path.GetFileNameWithoutExtension(remoteUrl);
 
-        var repoChanges = _repositoryManager.CheckRepositoryChanges();
+        var (repoName, repoChanges) = await Task.Run(() =>
+        {
+            var remoteUrl = _repositoryManager.Repository.Network.Remotes["origin"].Url;
+            var name = Path.GetFileNameWithoutExtension(remoteUrl);
+            var changes = _repositoryManager.CheckRepositoryChanges();
+            return (name, changes);
+        });
+
+        RepoName = repoName;
         GitStatus = (repoChanges[0] == 0 && repoChanges[1] == 0) ? "✓" : $" {repoChanges[0]}↓ {repoChanges[1]}↑";
     }
     #endregion
