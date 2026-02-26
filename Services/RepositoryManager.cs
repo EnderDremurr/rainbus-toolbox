@@ -324,7 +324,7 @@ public class RepositoryManager
 
         var url = remote.Url;
 
-        if (url.Contains(":") && !url.StartsWith("http"))
+        if (url.Contains(':') && !url.StartsWith("http"))
         {
             url = url.Split(':').Last();
         }

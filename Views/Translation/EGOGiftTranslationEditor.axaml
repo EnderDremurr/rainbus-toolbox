@@ -15,7 +15,7 @@
         <global:TextToFontSizeConverter x:Key="TextToFontSizeConverter" />
     </UserControl.Resources>
 
-    <Grid RowDefinitions="*,Auto">
+    <Grid RowDefinitions="*,Auto,Auto">
 
         <!--  Main Content - Side by Side Layout  -->
         <Grid
@@ -110,8 +110,16 @@
         </Grid>
 
         <!--  Navigation  -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <misc:NavigationBar />
+        <StackPanel
+            Grid.Row="2"
+            HorizontalAlignment="Center"
+            IsVisible="{Binding IsFileLoaded}"
+            Margin="20,5,20,20"
+            Orientation="Horizontal">
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <misc:NavigationBar />
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>
