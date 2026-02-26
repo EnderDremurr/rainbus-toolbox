@@ -26,25 +26,16 @@
             Padding="20,15">
 
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <!--  Left: File select button  -->
-                    <ColumnDefinition Width="*" />
-                    <!--  Center: File type text  -->
-                    <ColumnDefinition Width="Auto" />
-                    <!--  Right: Save button  -->
-                </Grid.ColumnDefinitions>
-
                 <!--  Left: Select File Button  -->
                 <Button
                     Command="{Binding SelectFileCommand}"
                     Content="Выбрать файл"
+                    HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Width="320" />
 
                 <!--  Center: File type info  -->
                 <StackPanel
-                    Grid.Column="1"
                     HorizontalAlignment="Center"
                     Orientation="Horizontal"
                     Spacing="10"
@@ -58,7 +49,6 @@
                         Foreground="White"
                         Text="{Binding FileName}"
                         VerticalAlignment="Center" />
-
                     <Border
                         Background="#0E639C"
                         CornerRadius="12"
@@ -73,17 +63,24 @@
                     </Border>
                 </StackPanel>
 
-                <!--  Right: Save Button  -->
-                <Button
-                    Command="{Binding SaveObjectFromCurrentEditorCommand}"
-                    Content="Сохранить и закрыть"
-                    Grid.Column="2"
-                    IsEnabled="{Binding IsFileLoaded}"
-                    VerticalAlignment="Center"
-                    Width="320" />
+                <!--  Right: Save Buttons  -->
+                <StackPanel
+                    HorizontalAlignment="Right"
+                    IsVisible="{Binding IsFileLoaded}"
+                    Orientation="Horizontal"
+                    Spacing="10"
+                    VerticalAlignment="Center">
+                    <Button
+                        Command="{Binding SaveObjectFromCurrentEditorCommand}"
+                        Content="Сохранить"
+                        Width="320" />
+                    <Button
+                        Command="{Binding SaveObjectFromCurrentEditorAndClose}"
+                        Content="Сохранить и закрыть"
+                        Width="320" />
+                </StackPanel>
             </Grid>
         </Border>
-
 
         <!--  Dynamic Editor Content  -->
         <ContentControl
@@ -93,10 +90,6 @@
 
         <!--  Welcome / Empty State  -->
         <Border Grid.Row="1" IsVisible="{Binding IsFileLoaded, Converter={StaticResource InverseBoolConverter}}">
-
-
-
-
             <StackPanel
                 HorizontalAlignment="Center"
                 Spacing="20"
@@ -137,9 +130,7 @@
                                 Height="75"
                                 IsEnabled="True"
                                 Margin="10"
-                                Width="300">
-                                <!--  Simple content binding  -->
-                            </Button>
+                                Width="300" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

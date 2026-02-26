@@ -117,7 +117,7 @@ public partial class TranslationTabViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public void SaveObjectFromCurrentEditor()
+    public void SaveObjectFromCurrentEditorAndClose()
     {
         CurrentEditor?.AskEditorToSave(_repositoryManager);
         FileName = "Не выбран";
@@ -125,6 +125,12 @@ public partial class TranslationTabViewModel : ObservableObject
         CurrentEditor = null;
         IsFileLoaded = false;
         FileShortcuts = FileShortcuts;
+    }
+    
+    [RelayCommand]
+    public void SaveObjectFromCurrentEditor()
+    {
+        CurrentEditor?.AskEditorToSave(_repositoryManager);
     }
 
     private ObservableCollection<FileShortcut>? _fileShortcuts;
@@ -230,6 +236,4 @@ public partial class TranslationTabViewModel : ObservableObject
         }
     }
     
-    // Add this temporarily to debug
-    public string DebugCommands => string.Join(", ", this.GetType().GetProperties().Where(p => p.PropertyType.IsAssignableTo(typeof(ICommand))).Select(p => p.Name));
 }
