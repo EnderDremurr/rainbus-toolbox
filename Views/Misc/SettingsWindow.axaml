@@ -47,130 +47,136 @@
             </Grid>
 
             <!--  Content  -->
-            <StackPanel
+            <ScrollViewer
                 Grid.Row="1"
-                Margin="20"
-                Spacing="15"
-                VerticalAlignment="Top">
-
-                <!--  GitHub button + token placeholder  -->
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto">
                 <StackPanel
-                    Orientation="Horizontal"
-                    Spacing="10"
-                    VerticalAlignment="Center">
-                    <Button
-                        Click="SetGitHubToken_Click"
-                        Content="Залогинится"
-                        Width="150" />
-                    <TextBlock
-                        Foreground="White"
-                        Text="Ты не залогинен"
-                        VerticalAlignment="Center"
-                        x:Name="GitHubTokenStatusTextBlock" />
-                </StackPanel>
+                    Grid.Row="1"
+                    Margin="20"
+                    Spacing="15"
+                    VerticalAlignment="Top">
 
-                <!--  Discord WebHook  -->
-                <StackPanel
-                    Orientation="Horizontal"
-                    Spacing="10"
-                    VerticalAlignment="Center">
-                    <TextBlock
-                        Text="WebHook:"
-                        VerticalAlignment="Center"
-                        Width="150" />
-                    <TextBox
-                        Classes="framed"
-                        Height="60"
-                        PasswordChar="*"
-                        Width="500"
-                        x:Name="DiscordWebHookBox" />
-                    <Button
-                        Click="ToggleWebhookVisibility_Click"
-                        Content="Показать"
-                        Height="60"
-                        VerticalAlignment="Center"
-                        Width="120"
-                        x:Name="ToggleWebhookButton" />
-                </StackPanel>
+                    <!--  GitHub button + token placeholder  -->
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="10"
+                        VerticalAlignment="Center">
+                        <Button
+                            Click="SetGitHubToken_Click"
+                            Content="Залогинится"
+                            Width="150" />
+                        <TextBlock
+                            Foreground="White"
+                            Text="Ты не залогинен"
+                            VerticalAlignment="Center"
+                            x:Name="GitHubTokenStatusTextBlock" />
+                    </StackPanel>
 
-                <!--  Path to localization's repo  -->
-                <StackPanel
-                    Orientation="Horizontal"
-                    Spacing="10"
-                    VerticalAlignment="Center">
-                    <TextBlock
-                        Text="Путь к файлам перевода:"
-                        TextWrapping="Wrap"
-                        VerticalAlignment="Center"
-                        Width="150" />
-                    <TextBox
-                        Classes="framed"
-                        Height="60"
-                        IsReadOnly="True"
-                        Width="500"
-                        x:Name="RepoPathTextBox" />
-                    <Button
-                        Click="BrowseFolder_Click"
-                        Content="Выбрать"
-                        Height="60"
-                        Width="120" />
-                </StackPanel>
+                    <!--  Discord WebHook  -->
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="10"
+                        VerticalAlignment="Center">
+                        <TextBlock
+                            Text="WebHook:"
+                            VerticalAlignment="Center"
+                            Width="150" />
+                        <TextBox
+                            Classes="framed"
+                            Height="60"
+                            PasswordChar="*"
+                            Width="500"
+                            x:Name="DiscordWebHookBox" />
+                        <Button
+                            Click="ToggleWebhookVisibility_Click"
+                            Content="Показать"
+                            Height="60"
+                            VerticalAlignment="Center"
+                            Width="120"
+                            x:Name="ToggleWebhookButton" />
+                    </StackPanel>
 
-                <!--  Path to limbus company files  -->
-                <StackPanel
-                    Orientation="Horizontal"
-                    Spacing="10"
-                    VerticalAlignment="Center">
-                    <TextBlock
-                        Text="Путь к файлам игры:"
-                        TextWrapping="Wrap"
-                        VerticalAlignment="Center"
-                        Width="150" />
-                    <TextBox
-                        Classes="framed"
-                        Height="60"
-                        IsReadOnly="True"
-                        Width="500"
-                        x:Name="LimbusPathTextBox" />
-                    <Button
-                        Click="BrowseLimbusFolder_Click"
-                        Content="Выбрать"
-                        Height="60"
-                        Width="120" />
-                </StackPanel>
+                    <!--  Path to localization's repo  -->
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="10"
+                        VerticalAlignment="Center">
+                        <TextBlock
+                            Text="Путь к файлам перевода:"
+                            TextWrapping="Wrap"
+                            VerticalAlignment="Center"
+                            Width="150" />
+                        <TextBox
+                            Classes="framed"
+                            Height="60"
+                            IsReadOnly="True"
+                            Width="500"
+                            x:Name="RepoPathTextBox" />
+                        <Button
+                            Click="BrowseFolder_Click"
+                            Content="Выбрать"
+                            Height="60"
+                            Width="120" />
+                    </StackPanel>
 
-                <StackPanel
-                    Orientation="Horizontal"
-                    Spacing="10"
-                    VerticalAlignment="Center">
-                    <TextBlock
-                        Text="Angela token:"
-                        VerticalAlignment="Center"
-                        Width="150" />
-                    <TextBox
-                        Classes="framed"
-                        Height="60"
-                        Width="500"
-                        x:Name="AngelaTokenBox" />
-                </StackPanel>
+                    <!--  Path to limbus company files  -->
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="10"
+                        VerticalAlignment="Center">
+                        <TextBlock
+                            Text="Путь к файлам игры:"
+                            TextWrapping="Wrap"
+                            VerticalAlignment="Center"
+                            Width="150" />
+                        <TextBox
+                            Classes="framed"
+                            Height="60"
+                            IsReadOnly="True"
+                            Width="500"
+                            x:Name="LimbusPathTextBox" />
+                        <Button
+                            Click="BrowseLimbusFolder_Click"
+                            Content="Выбрать"
+                            Height="60"
+                            Width="120" />
+                    </StackPanel>
 
-                <StackPanel
-                    Orientation="Horizontal"
-                    Spacing="10"
-                    VerticalAlignment="Center">
-                    <TextBlock
-                        Text="Angela prompt:"
-                        VerticalAlignment="Center"
-                        Width="150" />
-                    <TextBox
-                        AcceptsReturn="True"
-                        Classes="framed"
-                        Height="600"
-                        Width="500"
-                        x:Name="AngelaPromptBox" />
-                </StackPanel>
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="10"
+                        VerticalAlignment="Center">
+                        <TextBlock
+                            Text="Angela token:"
+                            VerticalAlignment="Center"
+                            Width="150" />
+                        <TextBox
+                            Classes="framed"
+                            Height="60"
+                            PasswordChar="*"
+                            Width="500"
+                            x:Name="AngelaTokenBox" />
+                    </StackPanel>
 
-            </StackPanel>
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="10"
+                        VerticalAlignment="Center">
+                        <TextBlock
+                            Text="Angela prompt:"
+                            VerticalAlignment="Center"
+                            Width="150" />
+                        <TextBox
+                            AcceptsReturn="True"
+                            Classes="framed"
+                            Height="400"
+                            Width="500"
+                            x:Name="AngelaPromptBox" />
+                    </StackPanel>
+
+                </StackPanel>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </Window>
