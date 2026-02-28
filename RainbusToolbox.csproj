@@ -33,6 +33,7 @@
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
         <PackageReference Include="Discord.Net" Version="3.18.0" />
         <PackageReference Include="Discord.Net.Webhook" Version="3.18.0" />
+        <PackageReference Include="DiscordRichPresence" Version="1.6.1.70" />
         <PackageReference Include="LibGit2Sharp" Version="0.31.0" />
         <PackageReference Include="Markdig" Version="0.41.3" />
         <PackageReference Include="Markdown.Avalonia" Version="11.0.2" />

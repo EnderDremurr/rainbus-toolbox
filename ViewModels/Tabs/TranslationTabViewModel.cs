@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Avalonia.Controls;
+using RainbusToolbox.Utilities.Converters;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RainbusToolbox.Models;
 using RainbusToolbox.Models.Data;
 using RainbusToolbox.Models.Managers;
+using RainbusToolbox.Services;
 using RainbusToolbox.Utilities.Data;
 using RainbusToolbox.Views;
 using RainbusToolbox.Views.Translation;
@@ -31,10 +28,13 @@ public partial class TranslationTabViewModel : ObservableObject
 
     [ObservableProperty]
     private IFileEditor? _currentEditor;
+    
+    private DiscordRPCService _discordRpcService;
 
     public TranslationTabViewModel()
     {
         _ = InitShortcuts();
+        _discordRpcService = (App.Current.ServiceProvider.GetService(typeof(DiscordRPCService)) as DiscordRPCService)!;
     }
 
     private readonly Dictionary<Type, Type> _editorMap = new()
@@ -58,7 +58,7 @@ public partial class TranslationTabViewModel : ObservableObject
         (App.Current.ServiceProvider.GetService(typeof(RepositoryManager)) as RepositoryManager)!;
 
     [RelayCommand]
-    public async void SelectFile()
+    public async Task SelectFile()
     {
         var top =
             Avalonia.Application.Current!.ApplicationLifetime is
@@ -89,6 +89,8 @@ public partial class TranslationTabViewModel : ObservableObject
 
         var file = files[0];
         LoadFile(file.Path.LocalPath);
+        
+        
     }
 
     [RelayCommand]
@@ -114,6 +116,8 @@ public partial class TranslationTabViewModel : ObservableObject
 
         CurrentEditor.SetFileToEdit(file);
         CurrentEditor.SetReferenceFile(refFile!);
+        
+        _discordRpcService.SetState($"Делает перевоз файла {FileName} ({file.GetSanityName()})");
     }
 
     [RelayCommand]
@@ -125,6 +129,7 @@ public partial class TranslationTabViewModel : ObservableObject
         CurrentEditor = null;
         IsFileLoaded = false;
         FileShortcuts = FileShortcuts;
+        _discordRpcService.SetState("Готовится делать перевоз");
     }
     
     [RelayCommand]
@@ -235,5 +240,14 @@ public partial class TranslationTabViewModel : ObservableObject
             Console.WriteLine("FilePath is null or empty"); // Add this
         }
     }
+    
+    #region Events
+
+    public void OnTabOpened()
+    {
+        _discordRpcService.SetState("Готовится делать перевоз");
+    }
+
+    #endregion
     
 }

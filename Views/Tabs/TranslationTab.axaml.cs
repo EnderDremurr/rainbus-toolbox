@@ -1,6 +1,12 @@
+using System;
+using System.Linq;
+using System.Text;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Platform.Storage;
+using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using RainbusToolbox.ViewModels;
 
 namespace RainbusToolbox.Views;
@@ -11,35 +17,7 @@ public partial class TranslationTab : UserControl
     {
         InitializeComponent();
         DataContext ??= new TranslationTabViewModel();
+        
     }
 
-    private async void OnSelectFileClick(object sender, RoutedEventArgs e)
-    {
-        var storageProvider = TopLevel.GetTopLevel(this)?.StorageProvider;
-        if (storageProvider == null) return;
-
-        var fileTypes = new[]
-        {
-            new FilePickerFileType("Translation Files")
-            {
-                Patterns = new[] { "*.json" },
-                AppleUniformTypeIdentifiers = new[] { "public.json" },
-                MimeTypes = new[] { "application/json" }
-            },
-            FilePickerFileTypes.All
-        };
-
-        var files = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
-        {
-            Title = "Select Translation File",
-            AllowMultiple = false,
-            FileTypeFilter = fileTypes
-        });
-
-        if (files.Count > 0 && DataContext is TranslationTabViewModel vm)
-        {
-            var filePath = files[0].Path.LocalPath;
-            vm.LoadFileCommand.Execute(filePath);
-        }
-    }
 }

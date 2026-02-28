@@ -140,7 +140,7 @@
                     FontSize="20"
                     Foreground="White"
                     Header="Перевоз">
-                    <views:TranslationTab />
+                    <views:TranslationTab x:Name="TranslationTabControl" />
                 </TabItem>
 
                 <TabItem
@@ -149,7 +149,7 @@
                     FontSize="20"
                     Foreground="White"
                     Header="Выложить релиз">
-                    <views:ReleaseTab DataContext="{Binding ReleaseTabViewModel}" />
+                    <views:ReleaseTab DataContext="{Binding ReleaseTabViewModel}" x:Name="ReleaseTabControl" />
                 </TabItem>
 
                 <TabItem
@@ -158,7 +158,7 @@
                     FontSize="20"
                     Foreground="White"
                     Header="Файлы">
-                    <views:FilesTab />
+                    <views:FilesTab x:Name="FilesTabControl" />
                 </TabItem>
 
 

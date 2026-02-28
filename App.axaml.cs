@@ -268,6 +268,7 @@ public partial class App : Application
             services.AddSingleton<GithubManager>();
             services.AddSingleton<KeyWordConversionService>();
             services.AddSingleton<Angela>();
+            services.AddSingleton<DiscordRPCService>();
 
             // Windows and VMs
             services.AddSingleton<MainWindow>();

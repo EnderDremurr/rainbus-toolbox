@@ -227,4 +227,15 @@ public partial class ReleaseTabViewModel : ObservableObject
     }
     
     #endregion
+
+    #region Events
+
+    public void OnTabOpened()
+    {
+        var rpc = App.Current.ServiceProvider.GetService(typeof(DiscordRPCService)) as DiscordRPCService;
+        
+        rpc!.SetState("Делает жесткий релиз");
+    }
+
+    #endregion
 }

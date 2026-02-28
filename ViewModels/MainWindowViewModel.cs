@@ -12,6 +12,7 @@ using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using Microsoft.Extensions.DependencyInjection;
 using RainbusToolbox.Models.Managers;
+using RainbusToolbox.Services;
 using RainbusToolbox.Views;
 
 namespace RainbusToolbox.ViewModels;
@@ -23,6 +24,7 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly GithubManager _githubManager;
     private readonly RepositoryManager _repositoryManager;
     private readonly IServiceProvider _serviceProvider;
+    private readonly DiscordRPCService _discordRPCService;
     
     public ReleaseTabViewModel ReleaseTabViewModel { get; }
     
@@ -75,12 +77,14 @@ public partial class MainWindowViewModel : ObservableObject
         GithubManager githubManager,
         RepositoryManager repositoryManager,
         IServiceProvider serviceProvider,
-        ReleaseTabViewModel releaseTabViewModel)
+        ReleaseTabViewModel releaseTabViewModel,
+        DiscordRPCService discordRPCService)
     {
         _dataManager = dataManager;
         _githubManager = githubManager;
         _repositoryManager = repositoryManager;
         _serviceProvider = serviceProvider;
+        _discordRPCService = discordRPCService;
         
         ReleaseTabViewModel = releaseTabViewModel;
 
@@ -122,6 +126,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         RepoName = repoName;
         GitStatus = (repoChanges[0] == 0 && repoChanges[1] == 0) ? "✓" : $" {repoChanges[0]}↓ {repoChanges[1]}↑";
+        _discordRPCService.ProjectName = repoName;
     }
     #endregion
 

@@ -261,5 +261,16 @@ public partial class FilesTabViewModel : ObservableObject
     {
         await ReplaceAllTagsWithMeshesAsync();
     }
+    
+    #region Events
+
+    public void OnTabOpened()
+    {
+        var rpc = App.Current.ServiceProvider.GetService(typeof(DiscordRPCService)) as DiscordRPCService;
+        
+        rpc!.SetState("Люто обновляет файлы");
+    }
+
+    #endregion
 
 }
