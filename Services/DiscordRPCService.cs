@@ -13,16 +13,8 @@ public class DiscordRPCService
         _client.Initialize();
     }
     
-    private string _projectName = "Unknown";
-    public string ProjectName
-    {
-        get => _projectName;
-        set
-        {
-            _projectName = value;
-            SetState(null);
-        }
-    }
+    public string ProjectUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+    public string ProjectName = "Unknown";
     
     private CancellationTokenSource? _rpcDebounce;
 
@@ -30,9 +22,6 @@ public class DiscordRPCService
     {
         _rpcDebounce?.Cancel();
         _rpcDebounce = new CancellationTokenSource();
-        
-        if(ProjectName == "Unknown")
-            return;
         
         try
         {
@@ -47,8 +36,13 @@ public class DiscordRPCService
                 Assets = new Assets()
                 {
                     LargeImageKey = "icon",
-                    LargeImageText = "Кто прочитал тот лох",
-                }
+                    LargeImageUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                    LargeImageText = "Нажми сюда",
+                },
+                Buttons =
+                [
+                    new Button() { Label = "Открыть перевод", Url = ProjectUrl }
+                ]
             });
         }
         catch (TaskCanceledException) { }

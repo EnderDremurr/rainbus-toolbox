@@ -127,6 +127,8 @@ public partial class MainWindowViewModel : ObservableObject
         RepoName = repoName;
         GitStatus = (repoChanges[0] == 0 && repoChanges[1] == 0) ? "✓" : $" {repoChanges[0]}↓ {repoChanges[1]}↑";
         _discordRPCService.ProjectName = repoName;
+        _discordRPCService.ProjectUrl = _repositoryManager.Repository.Network.Remotes["origin"].Url;
+        _discordRPCService.SetState(null);
     }
     #endregion
 
