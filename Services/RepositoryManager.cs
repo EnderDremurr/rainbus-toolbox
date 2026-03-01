@@ -85,9 +85,7 @@ public class RepositoryManager
         ParseFileMap();
         TryInitialize();
     }
-
-
-
+    
     #region Initialization
 
     public void TryInitialize()
@@ -156,7 +154,7 @@ public class RepositoryManager
             return null;
         }
 
-        var targetType = file?.GetType() ?? FileToObjectCaster.GetType(path,this);
+        var targetType = file?.GetType() ?? FileToObjectCaster.GetType(path,DeveloperFileTypeMap);
         if (targetType == null)
             Console.WriteLine(AppLang.FileIsUnknown);
         

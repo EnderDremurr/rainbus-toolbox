@@ -206,5 +206,77 @@ namespace RainbusToolbox.Resources {
                 return ResourceManager.GetString("AbnormalityRenameProcess", resourceCulture);
             }
         }
+        
+        internal static string MainWindow_FoundBg {
+            get {
+                return ResourceManager.GetString("MainWindow_FoundBg", resourceCulture);
+            }
+        }
+        
+        internal static string MainWindow_FoundMainTabs {
+            get {
+                return ResourceManager.GetString("MainWindow_FoundMainTabs", resourceCulture);
+            }
+        }
+        
+        internal static string FileToObjectCaster_GetType_Supposed_file_type_is___0__ {
+            get {
+                return ResourceManager.GetString("FileToObjectCaster_GetType_Supposed_file_type_is___0__", resourceCulture);
+            }
+        }
+        
+        internal static string FileToObjectCaster_GetType_Recevied_a_cast_request_for_file___0__ {
+            get {
+                return ResourceManager.GetString("FileToObjectCaster_GetType_Recevied_a_cast_request_for_file___0__", resourceCulture);
+            }
+        }
+        
+        internal static string TranslationTabViewModel_InitShortcuts_Timeout_waiting_for_repository_root {
+            get {
+                return ResourceManager.GetString("TranslationTabViewModel_InitShortcuts_Timeout_waiting_for_repository_root", resourceCulture);
+            }
+        }
+        
+        internal static string TranslationTabViewModel_InitShortcuts_Getting_root {
+            get {
+                return ResourceManager.GetString("TranslationTabViewModel_InitShortcuts_Getting_root", resourceCulture);
+            }
+        }
+        
+        internal static string TranslationTabViewModel_InitShortcuts_Didn_t_receive_root_for_0_1_ms {
+            get {
+                return ResourceManager.GetString("TranslationTabViewModel_InitShortcuts_Didn_t_receive_root_for_0_1_ms", resourceCulture);
+            }
+        }
+        
+        internal static string TranslationTabViewModel_OpenShortcutFile_Calling_LoadFile {
+            get {
+                return ResourceManager.GetString("TranslationTabViewModel_OpenShortcutFile_Calling_LoadFile", resourceCulture);
+            }
+        }
+        
+        internal static string TranslationTabViewModel_OpenShortcutFile_FilePath_is_null_or_empty {
+            get {
+                return ResourceManager.GetString("TranslationTabViewModel_OpenShortcutFile_FilePath_is_null_or_empty", resourceCulture);
+            }
+        }
+        
+        internal static string TranslationTabViewModel_OpenShortcutFile_OpenShortcutFile_called_with___0_ {
+            get {
+                return ResourceManager.GetString("TranslationTabViewModel_OpenShortcutFile_OpenShortcutFile_called_with___0_", resourceCulture);
+            }
+        }
+        
+        internal static string TranslationTabViewModel_InitShortcuts_Repository_root___0_ {
+            get {
+                return ResourceManager.GetString("TranslationTabViewModel_InitShortcuts_Repository_root___0_", resourceCulture);
+            }
+        }
+        
+        internal static string TranslationTabViewModel_InitShortcuts_Created__0__shortcuts {
+            get {
+                return ResourceManager.GetString("TranslationTabViewModel_InitShortcuts_Created__0__shortcuts", resourceCulture);
+            }
+        }
     }
 }

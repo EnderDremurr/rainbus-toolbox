@@ -23,7 +23,7 @@ public class FileMergingService
             var expandedFiles = 0;
             var checkedFiles = 0;
         
-            progress?.Report("Starting file processing...");
+            progress.Report("Starting file processing...");
             Console.WriteLine("Starting file processing...");
             
             var localizationFiles = Directory.GetFiles(pathToLocalization, "*.json", SearchOption.AllDirectories).ToList();

@@ -3,7 +3,7 @@ using DiscordRPC;
 
 namespace RainbusToolbox.Services;
 
-public class DiscordRPCService
+public class DiscordRPCService : IDisposable
 {
     private DiscordRpcClient _client;
     
@@ -48,8 +48,10 @@ public class DiscordRPCService
         catch (TaskCanceledException) { }
     }
     
-    ~DiscordRPCService()
+    public void Dispose()
     {
+        _rpcDebounce?.Cancel();
+        _rpcDebounce?.Dispose();
         _client.Dispose();
     }
 }

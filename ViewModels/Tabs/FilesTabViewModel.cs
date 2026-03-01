@@ -11,16 +11,9 @@ namespace RainbusToolbox.ViewModels;
 
 public partial class FilesTabViewModel : ObservableObject
 {
-    private readonly RepositoryManager _repositoryManager;
-    private readonly KeyWordConversionService _keyWordConversionService;
+    private readonly RepositoryManager _repositoryManager = (App.Current.ServiceProvider.GetService(typeof(RepositoryManager)) as RepositoryManager)!;
+    private readonly KeyWordConversionService _keyWordConversionService = (App.Current.ServiceProvider.GetService(typeof(KeyWordConversionService)) as KeyWordConversionService)!;
     private CancellationTokenSource? _cancellationTokenSource;
-
-    public FilesTabViewModel()
-    {
-        _repositoryManager = (App.Current.ServiceProvider.GetService(typeof(RepositoryManager)) as RepositoryManager)!;
-        _keyWordConversionService =
-            (App.Current.ServiceProvider.GetService(typeof(KeyWordConversionService)) as KeyWordConversionService)!;
-    }
 
     [ObservableProperty]
     private bool _isProcessing;
@@ -255,11 +248,6 @@ public partial class FilesTabViewModel : ObservableObject
     private bool CanExecuteReplaceFiles()
     {
         return !IsProcessing;
-    }
-
-    public async void ReplaceAllTagsWithMeshes()
-    {
-        await ReplaceAllTagsWithMeshesAsync();
     }
     
     #region Events

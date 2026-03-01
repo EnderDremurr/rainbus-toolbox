@@ -9,4 +9,6 @@ public class FileShortcut
     public string Desc { get; set; }
     public bool DoesExist { get; set; }
     public ICommand OpenCommand { get; set; } 
+    
+    public string Group { get; set; } = "Прочее";
 }

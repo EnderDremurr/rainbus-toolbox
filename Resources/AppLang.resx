@@ -99,4 +99,40 @@
     <data name="AbnormalityRenameProcess" xml:space="preserve">
         <value>Set level AbnormalityName to: {0}</value>
     </data>
+    <data name="MainWindow_FoundBg" xml:space="preserve">
+        <value>Found Bg: {0}</value>
+    </data>
+    <data name="MainWindow_FoundMainTabs" xml:space="preserve">
+        <value>Found MainTabs: {0}</value>
+    </data>
+    <data name="FileToObjectCaster_GetType_Supposed_file_type_is___0__" xml:space="preserve">
+        <value>Supposed file type is &lt;{0}&gt;</value>
+    </data>
+    <data name="FileToObjectCaster_GetType_Recevied_a_cast_request_for_file___0__" xml:space="preserve">
+        <value>Recevied a cast request for file &lt;{0}&gt;</value>
+    </data>
+    <data name="TranslationTabViewModel_InitShortcuts_Timeout_waiting_for_repository_root" xml:space="preserve">
+        <value>Timeout waiting for repository root</value>
+    </data>
+    <data name="TranslationTabViewModel_InitShortcuts_Getting_root" xml:space="preserve">
+        <value>Getting root</value>
+    </data>
+    <data name="TranslationTabViewModel_InitShortcuts_Didn_t_receive_root_for_0_1_ms" xml:space="preserve">
+        <value>Didn't receive root for 0.1 ms</value>
+    </data>
+    <data name="TranslationTabViewModel_OpenShortcutFile_Calling_LoadFile" xml:space="preserve">
+        <value>Calling LoadFile</value>
+    </data>
+    <data name="TranslationTabViewModel_OpenShortcutFile_FilePath_is_null_or_empty" xml:space="preserve">
+        <value>FilePath is null or empty</value>
+    </data>
+    <data name="TranslationTabViewModel_OpenShortcutFile_OpenShortcutFile_called_with___0_" xml:space="preserve">
+        <value>OpenShortcutFile called with: {0}</value>
+    </data>
+    <data name="TranslationTabViewModel_InitShortcuts_Repository_root___0_" xml:space="preserve">
+        <value>Repository root: {0}</value>
+    </data>
+    <data name="TranslationTabViewModel_InitShortcuts_Created__0__shortcuts" xml:space="preserve">
+        <value>Created {0} shortcuts</value>
+    </data>
 </root>

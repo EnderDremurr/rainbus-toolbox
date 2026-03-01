@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 using RainbusToolbox.Models;
 using RainbusToolbox.Models.Data;
 using RainbusToolbox.Models.Managers;
+using RainbusToolbox.Resources;
 using RainbusToolbox.Services;
 using RainbusToolbox.Utilities.Data;
 using RainbusToolbox.Views;
@@ -54,7 +55,7 @@ public partial class TranslationTabViewModel : ObservableObject
         {typeof(UiLocalizationFile), typeof(UiElementTranslationEditor)}
     };
 
-    private RepositoryManager _repositoryManager =
+    private readonly RepositoryManager _repositoryManager =
         (App.Current.ServiceProvider.GetService(typeof(RepositoryManager)) as RepositoryManager)!;
 
     [RelayCommand]
@@ -93,12 +94,14 @@ public partial class TranslationTabViewModel : ObservableObject
         
     }
 
+    
+    
     [RelayCommand]
     public void LoadFile(string filePath)
     {
         if (!File.Exists(filePath)) return;
 
-        var detectedType = FileToObjectCaster.GetType(filePath, _repositoryManager);
+        var detectedType = FileToObjectCaster.GetType(filePath, _repositoryManager.DeveloperFileTypeMap);
 
         var editorType = detectedType != null && _editorMap.TryGetValue(detectedType, out var value)
             ? value
@@ -114,10 +117,10 @@ public partial class TranslationTabViewModel : ObservableObject
         var file = _repositoryManager.GetObjectFromPath(filePath);
         var refFile = _repositoryManager.GetReference(file);
 
-        CurrentEditor.SetFileToEdit(file);
+        CurrentEditor.SetFileToEdit(file!);
         CurrentEditor.SetReferenceFile(refFile!);
         
-        _discordRpcService.SetState($"Делает перевоз файла {FileName} ({file.GetSanityName()})");
+        _discordRpcService.SetState($"Делает перевоз файла {FileName} ({file!.GetSanityName()})");
     }
 
     [RelayCommand]
@@ -138,7 +141,7 @@ public partial class TranslationTabViewModel : ObservableObject
         CurrentEditor?.AskEditorToSave(_repositoryManager);
     }
 
-    private ObservableCollection<FileShortcut>? _fileShortcuts;
+    private ObservableCollection<FileShortcut> _fileShortcuts;
 
     public ObservableCollection<FileShortcut> FileShortcuts
     {
@@ -149,7 +152,7 @@ public partial class TranslationTabViewModel : ObservableObject
 
     private async Task InitShortcuts()
     {
-        Console.WriteLine("Getting root");
+        Console.WriteLine(AppLang.TranslationTabViewModel_InitShortcuts_Getting_root);
         var timeout = TimeSpan.FromSeconds(10); // 10 second timeout
         var start = DateTime.Now;
     
@@ -157,60 +160,57 @@ public partial class TranslationTabViewModel : ObservableObject
         {
             if (DateTime.Now - start > timeout)
             {
-                Console.WriteLine("Timeout waiting for repository root");
+                Console.WriteLine(AppLang.TranslationTabViewModel_InitShortcuts_Timeout_waiting_for_repository_root);
                 _fileShortcuts = new ObservableCollection<FileShortcut>();
                 return;
             }
-            Console.WriteLine("Didn't receive root for 0.1 ms");
+            Console.WriteLine(AppLang.TranslationTabViewModel_InitShortcuts_Didn_t_receive_root_for_0_1_ms);
             await Task.Delay(100);
         }
         var root = _repositoryManager.PathToLocalization;
-        Console.WriteLine($"Repository root: {root}");
+        Console.WriteLine(AppLang.TranslationTabViewModel_InitShortcuts_Repository_root___0_, root);
         
         var fileShortcuts = new ObservableCollection<FileShortcut>
         {
-            new() { Alias = "Баттл хинты (загрузка)", FullPath = Path.Combine(root, $"BattleHint.json"), Desc = "-" },
-            new() { Alias = "Баттл хинты (обычная битва)", FullPath = Path.Combine(root, $"BattleHint_NormalBattle.json"), Desc = "-" },
-            new() { Alias = "Баттл хинты (битва с аномалией)", FullPath = Path.Combine(root, $"BattleHint_AbnorBattle.json"), Desc = "-" },
-            new() { Alias = "Представления (Куриный шашлычок)", FullPath = Path.Combine(root, $"IntroductionPreset.json"), Desc = "-" },
+            new() { Alias = "Баттл хинты (загрузка)", FullPath = Path.Combine(root, $"BattleHint.json"), Desc = "-", Group = "Интерфейс"},
+            new() { Alias = "Баттл хинты (обычная битва)", FullPath = Path.Combine(root, $"BattleHint_NormalBattle.json"), Desc = "-", Group = "Интерфейс" },
+            new() { Alias = "Баттл хинты (битва с аномалией)", FullPath = Path.Combine(root, $"BattleHint_AbnorBattle.json"), Desc = "-", Group = "Интерфейс" },
+            new() { Alias = "Представления (Куриный шашлычок)", FullPath = Path.Combine(root, $"IntroductionPreset.json"), Desc = "-", Group = "Интерфейс" },
+            new() { Alias = "Кейворды скиллов", FullPath = Path.Combine(root, $"SkillTag.json"), Desc = "-", Group = "Интерфейс" },
+            new() { Alias = "Кейворды", FullPath = Path.Combine(root, $"Bufs.json"), Desc = "-", Group = "Интерфейс" },
+            new() { Alias = "Battle кейворды", FullPath = Path.Combine(root, $"BattleKeywords.json"), Desc = "-", Group = "Интерфейс" },
+            new() { Alias = "Баффы мобов в миррорке", FullPath = Path.Combine(root, $"MirrorDungeonEnemyBuffDesc.json"), Desc = "-", Group = "Интерфейс" },
+            new() { Alias = "Описания баффов", FullPath = Path.Combine(root, $"BuffAbilities.json"), Desc = "-", Group = "Интерфейс" },
+            new() { Alias = "Battle UI Text", FullPath = Path.Combine(root, $"BattleUIText.json"), Desc = "-", Group = "Интерфейс" },
             
+            new() { Alias = "Старые ЭГО", FullPath = Path.Combine(root, $"Skills_Ego.json"), Desc = "эго, что были добавлены в игру давно, все грешники в одном файле", Group = "ЭГО" },
+            new() { Alias = "Эго И Сана", FullPath = Path.Combine(root, $"Skills_Ego_Personality-01.json"), Desc = "-", Group = "ЭГО"},
+            new() { Alias = "Эго Фауст", FullPath = Path.Combine(root, $"Skills_Ego_Personality-02.json"), Desc = "-", Group = "ЭГО" },
+            new() { Alias = "Эго Дон", FullPath = Path.Combine(root, $"Skills_Ego_Personality-03.json"), Desc = "-", Group = "ЭГО" },
+            new() { Alias = "Эго Решу", FullPath = Path.Combine(root, $"Skills_Ego_Personality-04.json"), Desc = "-", Group = "ЭГО" },
+            new() { Alias = "Эго Мерсо", FullPath = Path.Combine(root, $"Skills_Ego_Personality-05.json"), Desc = "-", Group = "ЭГО" },
+            new() { Alias = "Эго Хонлу", FullPath = Path.Combine(root, $"Skills_Ego_Personality-06.json"), Desc = "-", Group = "ЭГО" },
+            new() { Alias = "Эго Хитклифа", FullPath = Path.Combine(root, $"Skills_Ego_Personality-07.json"), Desc = "-", Group = "ЭГО" },
+            new() { Alias = "Эго Ишмы", FullPath = Path.Combine(root, $"Skills_Ego_Personality-08.json"), Desc = "-", Group = "ЭГО" },
+            new() { Alias = "Эго Роди", FullPath = Path.Combine(root, $"Skills_Ego_Personality-09.json"), Desc = "-", Group = "ЭГО" },
+            new() { Alias = "Эго Синклера", FullPath = Path.Combine(root, $"Skills_Ego_Personality-10.json"), Desc = "-", Group = "ЭГО" },
+            new() { Alias = "Эго Отис", FullPath = Path.Combine(root, $"Skills_Ego_Personality-11.json"), Desc = "-", Group = "ЭГО" },
+            new() { Alias = "Эго Грегора", FullPath = Path.Combine(root, $"Skills_Ego_Personality-12.json"), Desc = "-", Group = "ЭГО" },
+            new() { Alias = "Пассивки ЭГО", FullPath = Path.Combine(root, $"Passive_Ego.json"), Desc = "-", Group = "ЭГО" },
             
-            new() { Alias = "Старые ЭГО", FullPath = Path.Combine(root, $"Skills_Ego.json"), Desc = "эго, что были добавлены в игру давно, все грешники в одном файле" },
-            new() { Alias = "Эго И Сана", FullPath = Path.Combine(root, $"Skills_Ego_Personality-01.json"), Desc = "-" },
-            new() { Alias = "Эго Фауст", FullPath = Path.Combine(root, $"Skills_Ego_Personality-02.json"), Desc = "-" },
-            new() { Alias = "Эго Дон", FullPath = Path.Combine(root, $"Skills_Ego_Personality-03.json"), Desc = "-" },
-            new() { Alias = "Эго Решу", FullPath = Path.Combine(root, $"Skills_Ego_Personality-04.json"), Desc = "-" },
-            new() { Alias = "Эго Мерсо", FullPath = Path.Combine(root, $"Skills_Ego_Personality-05.json"), Desc = "-" },
-            new() { Alias = "Эго Хонлу", FullPath = Path.Combine(root, $"Skills_Ego_Personality-06.json"), Desc = "-" },
-            new() { Alias = "Эго Хитклифа", FullPath = Path.Combine(root, $"Skills_Ego_Personality-07.json"), Desc = "-" },
-            new() { Alias = "Эго Ишмы", FullPath = Path.Combine(root, $"Skills_Ego_Personality-08.json"), Desc = "-" },
-            new() { Alias = "Эго Роди", FullPath = Path.Combine(root, $"Skills_Ego_Personality-09.json"), Desc = "-" },
-            new() { Alias = "Эго Синклера", FullPath = Path.Combine(root, $"Skills_Ego_Personality-10.json"), Desc = "-" },
-            new() { Alias = "Эго Отис", FullPath = Path.Combine(root, $"Skills_Ego_Personality-11.json"), Desc = "-" },
-            new() { Alias = "Эго Грегора", FullPath = Path.Combine(root, $"Skills_Ego_Personality-12.json"), Desc = "-" },
-            
-            new() { Alias = "Скиллы айдишек И Сана", FullPath = Path.Combine(root, $"Skills_personality-01.json"), Desc = "-" },
-            new() { Alias = "Скиллы айдишек Фауст", FullPath = Path.Combine(root, $"Skills_personality-02.json"), Desc = "-" },
-            new() { Alias = "Скиллы айдишек Дон", FullPath = Path.Combine(root, $"Skills_personality-03.json"), Desc = "-" },
-            new() { Alias = "Скиллы айдишек Решу", FullPath = Path.Combine(root, $"Skills_personality-04.json"), Desc = "-" },
-            new() { Alias = "Скиллы айдишек Мерсо", FullPath = Path.Combine(root, $"Skills_personality-05.json"), Desc = "-" },
-            new() { Alias = "Скиллы айдишек Хонлу", FullPath = Path.Combine(root, $"Skills_personality-06.json"), Desc = "-" },
-            new() { Alias = "Скиллы айдишек Хитклифа", FullPath = Path.Combine(root, $"Skills_personality-07.json"), Desc = "-" },
-            new() { Alias = "Скиллы айдишек Ишмы", FullPath = Path.Combine(root, $"Skills_personality-08.json"), Desc = "-" },
-            new() { Alias = "Скиллы айдишек Роди", FullPath = Path.Combine(root, $"Skills_personality-09.json"), Desc = "-" },
-            new() { Alias = "Скиллы айдишек Синклера", FullPath = Path.Combine(root, $"Skills_personality-10.json"), Desc = "-" },
-            new() { Alias = "Скиллы айдишек Отис", FullPath = Path.Combine(root, $"Skills_personality-11.json"), Desc = "-" },
-            new() { Alias = "Скиллы айдишек Грегора", FullPath = Path.Combine(root, $"Skills_personality-12.json"), Desc = "-" },
-            
-            new() { Alias = "Пассивки ЭГО", FullPath = Path.Combine(root, $"Passive_Ego.json"), Desc = "-" },
-            new() { Alias = "Пассивки скиллов", FullPath = Path.Combine(root, $"Passives.json"), Desc = "-" },
-            new() { Alias = "Кейворды скиллов", FullPath = Path.Combine(root, $"SkillTag.json"), Desc = "-" },
-            new() { Alias = "Кейворды", FullPath = Path.Combine(root, $"Bufs.json"), Desc = "-" },
-            new() { Alias = "Battle кейворды", FullPath = Path.Combine(root, $"BattleKeywords.json"), Desc = "-" },
-            new() { Alias = "Баффы мобов в миррорке", FullPath = Path.Combine(root, $"MirrorDungeonEnemyBuffDesc.json"), Desc = "-" },
-            new() { Alias = "Описания баффов", FullPath = Path.Combine(root, $"BuffAbilities.json"), Desc = "-" },
-            new() { Alias = "Battle UI Text", FullPath = Path.Combine(root, $"BattleUIText.json"), Desc = "-" },
-            
+            new() { Alias = "Скиллы айдишек И Сана", FullPath = Path.Combine(root, $"Skills_personality-01.json"), Desc = "-", Group = "Скиллы айдишек" },
+            new() { Alias = "Скиллы айдишек Фауст", FullPath = Path.Combine(root, $"Skills_personality-02.json"), Desc = "-", Group = "Скиллы айдишек" },
+            new() { Alias = "Скиллы айдишек Дон", FullPath = Path.Combine(root, $"Skills_personality-03.json"), Desc = "-", Group = "Скиллы айдишек" },
+            new() { Alias = "Скиллы айдишек Решу", FullPath = Path.Combine(root, $"Skills_personality-04.json"), Desc = "-", Group = "Скиллы айдишек" },
+            new() { Alias = "Скиллы айдишек Мерсо", FullPath = Path.Combine(root, $"Skills_personality-05.json"), Desc = "-", Group = "Скиллы айдишек" },
+            new() { Alias = "Скиллы айдишек Хонлу", FullPath = Path.Combine(root, $"Skills_personality-06.json"), Desc = "-", Group = "Скиллы айдишек" },
+            new() { Alias = "Скиллы айдишек Хитклифа", FullPath = Path.Combine(root, $"Skills_personality-07.json"), Desc = "-", Group = "Скиллы айдишек" },
+            new() { Alias = "Скиллы айдишек Ишмы", FullPath = Path.Combine(root, $"Skills_personality-08.json"), Desc = "-", Group = "Скиллы айдишек" },
+            new() { Alias = "Скиллы айдишек Роди", FullPath = Path.Combine(root, $"Skills_personality-09.json"), Desc = "-", Group = "Скиллы айдишек" },
+            new() { Alias = "Скиллы айдишек Синклера", FullPath = Path.Combine(root, $"Skills_personality-10.json"), Desc = "-", Group = "Скиллы айдишек" },
+            new() { Alias = "Скиллы айдишек Отис", FullPath = Path.Combine(root, $"Skills_personality-11.json"), Desc = "-", Group = "Скиллы айдишек" },
+            new() { Alias = "Скиллы айдишек Грегора", FullPath = Path.Combine(root, $"Skills_personality-12.json"), Desc = "-", Group = "Скиллы айдишек" },
+            new() { Alias = "Пассивки скиллов", FullPath = Path.Combine(root, $"Passives.json"), Desc = "-", Group = "Скиллы айдишек" },
         };
 
         
@@ -219,25 +219,29 @@ public partial class TranslationTabViewModel : ObservableObject
             shortcut.DoesExist = true/*File.Exists(shortcut.Path)*/;
             shortcut.OpenCommand = OpenShortcutFileCommand;
         }
-        Console.WriteLine($"Created {fileShortcuts.Count} shortcuts");
+        Console.WriteLine(AppLang.TranslationTabViewModel_InitShortcuts_Created__0__shortcuts, fileShortcuts.Count);
 
         _fileShortcuts = fileShortcuts;
         OnPropertyChanged(nameof(FileShortcuts));
+        OnPropertyChanged(nameof(GroupedShortcuts));
     }
 
+    public IEnumerable<IGrouping<string, FileShortcut>> GroupedShortcuts =>
+        _fileShortcuts?.GroupBy(s => s.Group) ?? Enumerable.Empty<IGrouping<string, FileShortcut>>();
+    
     [RelayCommand]
     public void OpenShortcutFile(string filePath)
     {
-        Console.WriteLine($"OpenShortcutFile called with: {filePath}"); // Add this
+        Console.WriteLine(AppLang.TranslationTabViewModel_OpenShortcutFile_OpenShortcutFile_called_with___0_, filePath);
     
         if (!string.IsNullOrEmpty(filePath))
         {
-            Console.WriteLine("Calling LoadFile"); // Add this
+            Console.WriteLine(AppLang.TranslationTabViewModel_OpenShortcutFile_Calling_LoadFile);
             LoadFile(filePath);
         }
         else
         {
-            Console.WriteLine("FilePath is null or empty"); // Add this
+            Console.WriteLine(AppLang.TranslationTabViewModel_OpenShortcutFile_FilePath_is_null_or_empty);
         }
     }
     

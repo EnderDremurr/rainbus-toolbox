@@ -1,4 +1,3 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
@@ -21,9 +20,6 @@ namespace RainbusToolbox.Views
             {
                 _bg = this.FindControl<Image>("Bg");
                 _mainTabs = this.FindControl<TabControl>("MainTabs");
-            
-                Console.WriteLine($"Found Bg: {_bg != null}");
-                Console.WriteLine($"Found MainTabs: {_mainTabs != null}");
 
                 if (_bg != null)
                 {
@@ -46,9 +42,7 @@ namespace RainbusToolbox.Views
             if (_bg == null || _mainTabs == null)
                 return;
             
-            Console.WriteLine($"Tab changed to index: {_mainTabs?.SelectedIndex}");
-            
-            string uri = _mainTabs.SelectedIndex switch
+            string uri = _mainTabs!.SelectedIndex switch
             {
                 0 => "avares://RainbusToolbox/Assets/TranslationBG.png",
                 1 => "avares://RainbusToolbox/Assets/ReleaseBG.png",

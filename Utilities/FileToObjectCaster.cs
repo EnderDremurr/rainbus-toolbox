@@ -1,16 +1,12 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using RainbusToolbox.Utilities.Data;
 using System.IO;
-using RainbusToolbox.Models.Managers;
 
 namespace RainbusToolbox.Models.Data;
 
 public static class FileToObjectCaster
 {
-    public static readonly Dictionary<string, Type> Map = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase)
+    public static readonly Dictionary<string, Type> Map = new(StringComparer.OrdinalIgnoreCase)
     {
         { "ui", typeof(UiLocalizationFile) },
         { "character", typeof(CharacterLocalizationFile) },
@@ -85,12 +81,12 @@ public static class FileToObjectCaster
         { "projectGSComboName", typeof(ProjectGSComboNameLocalizationFile) },
     };
     
-    public static Type? GetType(string pathToFile, RepositoryManager repositoryManager)
+    public static Type? GetType(string pathToFile, Dictionary<string, string> fileTypeMap)
     {
-        Console.WriteLine($"Recevied a cast request for file <{pathToFile}>");
+        Console.WriteLine(AppLang.FileToObjectCaster_GetType_Recevied_a_cast_request_for_file___0__, pathToFile);
         var fileName = Path.GetFileNameWithoutExtension(pathToFile);
-        var isKnownFile = repositoryManager.DeveloperFileTypeMap.TryGetValue(fileName, out var knownFileType);
-        Console.WriteLine($"Supposed file type is <{knownFileType}>");
+        var isKnownFile = fileTypeMap.TryGetValue(fileName, out var knownFileType);
+        Console.WriteLine(AppLang.FileToObjectCaster_GetType_Supposed_file_type_is___0__, knownFileType);
         if (!isKnownFile || knownFileType is null)
         {
             if(IsStoryFile(pathToFile))

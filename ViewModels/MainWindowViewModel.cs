@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.IO;
+﻿using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
-using MsBox.Avalonia;
-using MsBox.Avalonia.Enums;
 using Microsoft.Extensions.DependencyInjection;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Services;
@@ -20,6 +15,7 @@ namespace RainbusToolbox.ViewModels;
 public partial class MainWindowViewModel : ObservableObject
 {
     #region Fields
+    // ReSharper disable once NotAccessedField.Local
     private readonly PersistentDataManager _dataManager;
     private readonly GithubManager _githubManager;
     private readonly RepositoryManager _repositoryManager;
@@ -28,6 +24,7 @@ public partial class MainWindowViewModel : ObservableObject
     
     public ReleaseTabViewModel ReleaseTabViewModel { get; }
     
+    // ReSharper disable once NotAccessedField.Local
     private Timer? _reparseTimer;
     #endregion
 
