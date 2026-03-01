@@ -29,35 +29,30 @@ public partial class MainWindowViewModel : ObservableObject
     public ReleaseTabViewModel ReleaseTabViewModel { get; }
     
     private Timer? _reparseTimer;
-
-    private string _username = "Unknown";
-    private string _repoName = "Unknown";
-    private string _gitStatus = "Unknown";
     #endregion
 
     #region Properties
-    public string GitStatus
-    {
-        get => _gitStatus;
-        set => SetProperty(ref _gitStatus, value, nameof(UserRepoDisplay));
-    }
 
-    public string Username
-    {
-        get => _username;
-        set => SetProperty(ref _username, value, nameof(UserRepoDisplay));
-    }
+    #region Translation info
 
-    public string RepoName
-    {
-        get => _repoName;
-        set => SetProperty(ref _repoName, value, nameof(UserRepoDisplay));
-    }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(UserRepoDisplay))]
+    private string _username = "Unknown";
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(UserRepoDisplay))]
+    private string _repoName = "Unknown";
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(UserRepoDisplay))]
+    private string _gitStatus = "Unknown";
 
     public string UserRepoDisplay => $"{Username} : [{RepoName} {GitStatus}] ";
 
-    [ObservableProperty] private string _editorText = string.Empty;
+    #endregion
     
+    #region Checkboxes
+
     // General section checkboxes
     [ObservableProperty] private bool _appendLauncherLink = true; // Default checked
     [ObservableProperty] private bool _mergeWithReadme = true;    // Default checked
@@ -67,7 +62,10 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] private bool _option1;
     [ObservableProperty] private bool _option2;
     [ObservableProperty] private string _roleToPing = string.Empty;
+
+    #endregion
     
+    [ObservableProperty] private string _editorText = string.Empty;
     
     #endregion
 
@@ -89,7 +87,7 @@ public partial class MainWindowViewModel : ObservableObject
         ReleaseTabViewModel = releaseTabViewModel;
 
         // Initial parse
-        ReparseUserDataAsync();
+        _ = ReparseUserDataAsync();
 
         // Start periodic timer (every 1 minute)
         _reparseTimer = new Timer(
@@ -99,15 +97,16 @@ public partial class MainWindowViewModel : ObservableObject
             TimeSpan.FromMinutes(1));
 
         // Subscribe to window focus if running in desktop lifetime
-        if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            // Ensure MainWindow exists
-            if (desktop.MainWindow != null)
-            {
-                desktop.MainWindow.Activated += (_, __) =>
-                    Dispatcher.UIThread.InvokeAsync(ReparseUserDataAsync);
-            }
-        }
+        if (Avalonia.Application.Current!.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            return;
+        // Ensure MainWindow exists
+        if (desktop.MainWindow == null) 
+            return;
+        
+        desktop.MainWindow.Activated += (_, _) =>
+            Dispatcher.UIThread.InvokeAsync(ReparseUserDataAsync);
+        
+
     }
     #endregion
 
@@ -153,7 +152,7 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand] private void Synchronize()
     {
         _repositoryManager.SynchronizeWithOrigin();
-        ReparseUserDataAsync();
+        _ = ReparseUserDataAsync();
     }
 
     [RelayCommand]
