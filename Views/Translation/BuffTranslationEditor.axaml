@@ -112,23 +112,6 @@
                                         Text="{Binding ReferenceItem.Summary}"
                                         TextWrapping="Wrap" />
                                 </StackPanel>
-
-                                <!--  Undefined Field  -->
-                                <StackPanel Margin="0,0,0,10">
-                                    <TextBlock
-                                        FontFamily="{StaticResource MikodacsFont}"
-                                        FontSize="28"
-                                        FontWeight="SemiBold"
-                                        Foreground="White"
-                                        Margin="0,0,0,5"
-                                        Text="Undefined:" />
-                                    <TextBox
-                                        Background="Transparent"
-                                        IsReadOnly="True"
-                                        MinHeight="40"
-                                        Text="{Binding ReferenceItem.Undefined}"
-                                        TextWrapping="Wrap" />
-                                </StackPanel>
                             </StackPanel>
                         </ScrollViewer>
                     </Border>
@@ -226,23 +209,6 @@
                                         Background="Transparent"
                                         MinHeight="60"
                                         Text="{Binding CurrentItem.Summary, Mode=TwoWay}"
-                                        TextWrapping="Wrap" />
-                                </StackPanel>
-
-                                <!--  Undefined Field  -->
-                                <StackPanel Margin="0,0,0,10">
-                                    <TextBlock
-                                        FontFamily="{StaticResource MikodacsFont}"
-                                        FontSize="28"
-                                        FontWeight="SemiBold"
-                                        Foreground="White"
-                                        Margin="0,0,0,5"
-                                        Text="Undefined:" />
-                                    <TextBox
-                                        AcceptsReturn="True"
-                                        Background="Transparent"
-                                        MinHeight="40"
-                                        Text="{Binding CurrentItem.Undefined, Mode=TwoWay}"
                                         TextWrapping="Wrap" />
                                 </StackPanel>
                             </StackPanel>

@@ -121,9 +121,6 @@ public class BuffKeyword
 
     [JsonProperty("summary")]
     public string? Summary { get; set; }
-
-    [JsonProperty("undefined")]
-    public string? Undefined { get; set; }
     
     [JsonProperty("flavor")]
     public string? Flavor { get; set; }
