@@ -151,6 +151,9 @@ public partial class ReleaseTabViewModel : ObservableObject
         try
         {
             IsLoading = true;
+            //TODO: make this shit connect to loading bar (rewrite entire loading bar later)
+            await _keyWordConversionService.ReplaceEveryTagWithMesh(_repositoryManager.PathToLocalization);
+            
             var currentVersion = _repositoryManager.GetLatestReleaseSemantic();
             var parts = currentVersion.Split('.');
             int major = int.Parse(parts[0]);
