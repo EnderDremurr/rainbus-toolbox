@@ -4,7 +4,6 @@ using RainbusToolbox.Utilities.Data;
 
 namespace RainbusToolbox.Utilities.Data;
 
-[FilePattern("StoryData/*")]
 public class StoryDataFile : LocalizationFileBase, ILocalizationContainer<StoryDataItem>
 {
     [JsonProperty("dataList")]

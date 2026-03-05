@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 
 namespace RainbusToolbox.Utilities.Data;
 
-[FilePattern("/*")]
 public class UnidentifiedFile : LocalizationFileBase, ILocalizationContainer<string>
 {
     [JsonProperty("dataList")]

@@ -317,7 +317,15 @@ public class RepositoryManager
 
     public string GetRepoDisplayName(Repository repo)
     {
-        var remote = repo.Network.Remotes[repo.Head.RemoteName];
+        var remoteName = repo.Head?.RemoteName;
+        if (string.IsNullOrEmpty(remoteName)) 
+        {
+            remoteName = repo.Network.Remotes.FirstOrDefault()?.Name;
+        }
+
+        if (string.IsNullOrEmpty(remoteName)) return string.Empty;
+
+        var remote = repo.Network.Remotes[remoteName];
         if (remote == null) return string.Empty;
 
         var url = remote.Url;
@@ -328,8 +336,7 @@ public class RepositoryManager
         }
 
         var name = Path.GetFileNameWithoutExtension(url);
-
-        return name;
+        return name ?? string.Empty;
     }
 
 
