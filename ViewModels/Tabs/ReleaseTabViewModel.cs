@@ -28,15 +28,10 @@ public partial class ReleaseTabViewModel : ObservableObject
         KeyWordConversionService keyWordConversionService)
     {
         _dataManager = dataManager;
+        Option2 = !string.IsNullOrWhiteSpace(_dataManager.Settings.DiscordRoleToPing);
         _githubManager = githubManager;
         _repositoryManager = repositoryManager;
         _keyWordConversionService = keyWordConversionService;
-
-        MustAppendLauncherLink = true;
-        MergeWithReadme = true;
-        SendToDiscord = false;
-        Option1 = false;
-        Option2 = false;
         
         IsLoading = false;
         VersionDisplay = _repositoryManager.GetLatestReleaseSemantic();
@@ -84,20 +79,20 @@ public partial class ReleaseTabViewModel : ObservableObject
 
     // General section checkboxes
     [ObservableProperty]
-    private bool _mustAppendLauncherLink;
+    private bool _mustAppendLauncherLink = true;
 
     [ObservableProperty]
-    private bool _mergeWithReadme;
+    private bool _mergeWithReadme = true;
 
     // Discord section checkboxes
     [ObservableProperty]
     private bool _sendToDiscord = true;
 
     [ObservableProperty]
-    private bool _option1;
+    private bool _option1 = false;
 
     [ObservableProperty]
-    private bool _attachAnImage;
+    private bool _attachAnImage = true;
     
     [ObservableProperty]
     private bool _globalVersion;
@@ -112,10 +107,7 @@ public partial class ReleaseTabViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _option2;
-
-    [ObservableProperty]
-    private string _roleToPing = string.Empty;
-
+    
 
     [ObservableProperty]
     private bool _isLoading;
@@ -204,8 +196,8 @@ public partial class ReleaseTabViewModel : ObservableObject
                     discordMessage += $"\n\n[{AppLang.LocalizationManagerHyperlink}](<https://github.com/kimght/LimbusLocalizationManager/releases>)";
                 //if (Option1) TODO:implement later
                     //discordMessage += $"\n\n[Ссылка на релиз](<https://github.com/enqenqenqenqenq/RCR/releases/latest>)";
-                if (Option2 && !string.IsNullOrWhiteSpace(RoleToPing))
-                    discordMessage += $"\n<@&{RoleToPing}>";
+                if (Option2 && !string.IsNullOrWhiteSpace(_dataManager.Settings.DiscordRoleToPing))
+                    discordMessage += $"\n<@&{_dataManager.Settings.DiscordRoleToPing}>";
                 
                 await discordManager.SendMessageAsync(discordMessage, _selectedFilePath);
             }

@@ -119,18 +119,10 @@
                                 Margin="5,0" />
 
                             <CheckBox
-                                Content="Пингануть роль ниже (Впиши айди)"
+                                Content="Пингануть роль в дискорде (Указывается в настройках)"
                                 IsChecked="{Binding Option2}"
                                 Margin="5,0" />
 
-                            <TextBox
-                                AcceptsReturn="False"
-                                AcceptsTab="False"
-                                Classes="framed"
-                                Height="60"
-                                IsVisible="{Binding Option2}"
-                                Margin="5,0"
-                                Text="{Binding RoleToPing, Mode=TwoWay}" />
 
                             <CheckBox
                                 Content="Прикрепить картинку в дискорде"

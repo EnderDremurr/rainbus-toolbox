@@ -99,6 +99,11 @@ public partial class SettingsWindow : Window
             isDirty = true;
         }
         
+        if (DiscordRoleToPingBox.Text != settingsCache.DiscordRoleToPing)
+        {
+            _dataManager.Settings.DiscordRoleToPing = DiscordRoleToPingBox.Text;
+            isDirty = true;
+        }
         
         if(isDirty)
             _dataManager.Save();

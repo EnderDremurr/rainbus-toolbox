@@ -97,6 +97,21 @@
                             x:Name="ToggleWebhookButton" />
                     </StackPanel>
 
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="10"
+                        VerticalAlignment="Center">
+                        <TextBlock
+                            Text="Discord role to ping:"
+                            VerticalAlignment="Center"
+                            Width="150" />
+                        <TextBox
+                            Classes="framed"
+                            Height="60"
+                            Width="500"
+                            x:Name="DiscordRoleToPingBox" />
+                    </StackPanel>
+
                     <!--  Path to localization's repo  -->
                     <StackPanel
                         Orientation="Horizontal"
