@@ -6,5 +6,5 @@ namespace RainbusToolbox.Utilities.Data;
 public class UnidentifiedFile : LocalizationFileBase, ILocalizationContainer<string>
 {
     [JsonProperty("dataList")]
-    public List<string> DataList { get; set; } = new List<string>();
+    public List<string> DataList { get; set; } = [];
 }

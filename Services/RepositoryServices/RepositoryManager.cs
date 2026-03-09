@@ -38,7 +38,9 @@ public class RepositoryManager
     #endregion
 
     #region ConstantItems
-
+    
+    
+    public string PathToKeywordColorList => Path.Combine(_dataManager.Settings.RepositoryPath!, "keyword_colors.json");
     public string PathToEgoNames => Path.Combine(PathToLocalization, "Egos.json");
     public EgoLocalizationFile EgoNames;
     public EgoLocalizationFile EgoNamesReference;

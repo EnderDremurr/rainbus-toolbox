@@ -51,6 +51,14 @@
             Height="80"
             HorizontalAlignment="Center"
             Width="720" />
+
+        <Button
+            Classes="header"
+            Command="{Binding PullNewKeywordsFromTheGame}"
+            Content="Добавить новые кейворды из игры"
+            Height="80"
+            HorizontalAlignment="Center"
+            Width="720" />
     </StackPanel>
 
 </UserControl>

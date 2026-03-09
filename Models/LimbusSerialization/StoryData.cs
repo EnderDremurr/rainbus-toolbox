@@ -7,7 +7,7 @@ namespace RainbusToolbox.Utilities.Data;
 public class StoryDataFile : LocalizationFileBase, ILocalizationContainer<StoryDataItem>
 {
     [JsonProperty("dataList")]
-    public List<StoryDataItem> DataList { get; set; }
+    public List<StoryDataItem> DataList { get; set; } = [];
 }
 
 public class StoryDataItem

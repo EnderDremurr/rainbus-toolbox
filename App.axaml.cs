@@ -266,7 +266,7 @@ public partial class App : Application
             services.AddSingleton<PersistentDataManager>();
             services.AddSingleton<RepositoryManager>();
             services.AddSingleton<GithubManager>();
-            services.AddSingleton<KeyWordConversionService>();
+            services.AddSingleton<KeywordProcessingService>();
             services.AddSingleton<Angela>();
             services.AddSingleton<DiscordRPCService>();
 

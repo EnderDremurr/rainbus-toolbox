@@ -6,19 +6,19 @@ namespace RainbusToolbox.Utilities.Data;
 public class UiLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }
 
 public class CharacterLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdName>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdName> DataList { get; set; }
+    public List<GenericIdName> DataList { get; set; } = [];
 }
 
 public class PersonalityLocalizationFile : LocalizationFileBase, ILocalizationContainer<PersonalityDataEntry>
 {
     [JsonProperty("dataList")]
-    public List<PersonalityDataEntry> DataList { get; set; }
+    public List<PersonalityDataEntry> DataList { get; set; } = [];
 }
 public class PersonalityDataEntry
 {
@@ -42,19 +42,19 @@ public class PersonalityDataEntry
 public class EnemyLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdNameDesc>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdNameDesc> DataList { get; set; }
+    public List<GenericIdNameDesc> DataList { get; set; } = [];
 }
 
 public class EgoLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdNameDesc>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdNameDesc> DataList { get; set; }
+    public List<GenericIdNameDesc> DataList { get; set; } = [];
 }
 
 public class SkillLocalizationFile : LocalizationFileBase, ILocalizationContainer<Skill>
 {
     [JsonProperty("dataList")]
-    public List<Skill> DataList { get; set; }
+    public List<Skill> DataList { get; set; } = [];
 }
 
 public class Skill
@@ -63,7 +63,7 @@ public class Skill
     public string Id { get; set; } = string.Empty;
 
     [JsonProperty("levelList")]
-    public List<SkillLevel> LevelList { get; set; }
+    public List<SkillLevel> LevelList { get; set; } = [];
 }
 
 public class SkillLevel
@@ -81,13 +81,13 @@ public class SkillLevel
     public string? Desc { get; set; }
 
     [JsonProperty("coinlist")]
-    public List<CoinListItem> CoinList { get; set; } = new List<CoinListItem>();
+    public List<CoinListItem> CoinList { get; set; } = [];
 }
 
 public class CoinListItem
 {
     [JsonProperty("coindescs")]
-    public List<CoinDesc> CoinDescs { get; set; } = new List<CoinDesc>();
+    public List<CoinDesc> CoinDescs { get; set; } = [];
 }
 
 public class CoinDesc
@@ -99,13 +99,13 @@ public class CoinDesc
 public class PassiveLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdNameDesc>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdNameDesc> DataList { get; set; }
+    public List<GenericIdNameDesc> DataList { get; set; } = [];
 }
 
 public class BufLocalizationFile : LocalizationFileBase, ILocalizationContainer<BuffKeyword>
 {
     [JsonProperty("dataList")]
-    public List<BuffKeyword> DataList { get; set; }
+    public List<BuffKeyword> DataList { get; set; } = [];
 }
 
 public class BuffKeyword
@@ -129,13 +129,13 @@ public class BuffKeyword
 public class BuffAbilitiesLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdDesc>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdDesc> DataList { get; set; }
+    public List<GenericIdDesc> DataList { get; set; } = [];
 }
 
 public class ItemLocalizationFile : LocalizationFileBase, ILocalizationContainer<ItemDesc>
 {
     [JsonProperty("dataList")]
-    public List<ItemDesc> DataList { get; set; }
+    public List<ItemDesc> DataList { get; set; } = [];
 }
 
 public class ItemDesc
@@ -156,19 +156,19 @@ public class ItemDesc
 public class KeywordLocalizationFile : LocalizationFileBase, ILocalizationContainer<BuffKeyword>
 {
     [JsonProperty("dataList")]
-    public List<BuffKeyword> DataList { get; set; }
+    public List<BuffKeyword> DataList { get; set; } = [];
 }
 
 public class SkillTagLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdName>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdName> DataList { get; set; }
+    public List<GenericIdName> DataList { get; set; } = [];
 }
 
 public class AbnormalityEventsLocalizationFile : LocalizationFileBase, ILocalizationContainer<AbnormalityEventChoice>
 {
     [JsonProperty("dataList")]
-    public List<AbnormalityEventChoice> DataList { get; set; }
+    public List<AbnormalityEventChoice> DataList { get; set; } = [];
 }
 
 public class AbnormalityEventChoice
@@ -199,7 +199,7 @@ public class AbnormalityEventChoice
 public class AbnormalityCharDlgsLocalizationFile : LocalizationFileBase, ILocalizationContainer<AbnormalityCharDlg>
 {
     [JsonProperty("dataList")]
-    public List<AbnormalityCharDlg> DataList { get; set; }
+    public List<AbnormalityCharDlg> DataList { get; set; } = [];
 }
 public class AbnormalityCharDlg
 {
@@ -226,13 +226,13 @@ public class AbnormalityCharDlg
 public class AttributeTextLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdName>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdName> DataList { get; set; }
+    public List<GenericIdName> DataList { get; set; } = [];
 }
 
 public class AbnormalityGuideContentLocalizationFile : LocalizationFileBase, ILocalizationContainer<AbnormalityGuide>
 {
     [JsonProperty("dataList")]
-    public List<AbnormalityGuide> DataList { get; set; }
+    public List<AbnormalityGuide> DataList { get; set; } = [];
 }
 public class AbnormalityGuide
 {
@@ -249,7 +249,7 @@ public class AbnormalityGuide
     public string? Clue { get; set; }
 
     [JsonProperty("storyList")]
-    public List<AbnormalityStory?> StoryList { get; set; }
+    public List<AbnormalityStory?> StoryList { get; set; } = [];
 }
 
 public class AbnormalityStory
@@ -264,13 +264,13 @@ public class AbnormalityStory
 public class KeywordDictionaryLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdNameDesc>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdNameDesc> DataList { get; set; }
+    public List<GenericIdNameDesc> DataList { get; set; } = [];
 }
 
 public class ActionEventsLocalizationFile : LocalizationFileBase, ILocalizationContainer<ActionEvent>
 {
     [JsonProperty("dataList")]
-    public List<ActionEvent> DataList { get; set; }
+    public List<ActionEvent> DataList { get; set; } = [];
 }
 public class ActionEvent
 {
@@ -302,7 +302,7 @@ public class EventOption
 public class EgoGiftsLocalizationFile : LocalizationFileBase, ILocalizationContainer<EgoGift>
 {
     [JsonProperty("dataList")]
-    public List<EgoGift> DataList { get; set; }
+    public List<EgoGift> DataList { get; set; } = [];
 }
 public class EgoGift
 {
@@ -331,7 +331,7 @@ public class EgoGiftSimpleDesc
 public class StageChapterLocalizationFile : LocalizationFileBase, ILocalizationContainer<StageChapter>
 {
     [JsonProperty("dataList")]
-    public List<StageChapter> DataList { get; set; }
+    public List<StageChapter> DataList { get; set; } = [];
 }
 public class StageChapter
 {
@@ -361,7 +361,7 @@ public class StageChapter
 public class StagePartLocalizationFile : LocalizationFileBase, ILocalizationContainer<StagePart>
 {
     [JsonProperty("dataList")]
-    public List<StagePart> DataList { get; set; }
+    public List<StagePart> DataList { get; set; } = [];
 }
 
 public class StagePart
@@ -376,7 +376,7 @@ public class StagePart
 public class StageNodeInfoLocalizationFile : LocalizationFileBase, ILocalizationContainer<StageNode>
 {
     [JsonProperty("dataList")]
-    public List<StageNode> DataList { get; set; }
+    public List<StageNode> DataList { get; set; } = [];
 }
 
 public class StageNode
@@ -398,13 +398,13 @@ public class StageNode
 public class DungeonNodeInfoLocalizationFile : LocalizationFileBase, ILocalizationContainer<StageNode>
 {
     [JsonProperty("dataList")]
-    public List<StageNode> DataList { get; set; }
+    public List<StageNode> DataList { get; set; } = [];
 }
 
 public class StoryDungeonNodeInfoLocalizationFile : LocalizationFileBase, ILocalizationContainer<StoryDungeonNodeList>
 {
     [JsonProperty("dataList")]
-    public List<StoryDungeonNodeList> DataList { get; set; }
+    public List<StoryDungeonNodeList> DataList { get; set; } = [];
 }
 
 public class StoryDungeonNodeList
@@ -419,13 +419,13 @@ public class StoryDungeonNodeList
 public class RailwayDungeonNodeInfoLocalizationFile : LocalizationFileBase, ILocalizationContainer<StageNode>
 {
     [JsonProperty("dataList")]
-    public List<StageNode> DataList { get; set; }
+    public List<StageNode> DataList { get; set; } = [];
 }
 
 public class RailwayDungeonLocalizationFile : LocalizationFileBase, ILocalizationContainer<RailwayDungeon>
 {
     [JsonProperty("dataList")]
-    public List<RailwayDungeon> DataList { get; set; }
+    public List<RailwayDungeon> DataList { get; set; } = [];
 }
 public class RailwayDungeon
 {
@@ -443,62 +443,62 @@ public class RailwayDungeon
 public class DungeonAreaLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }
 
 public class QuestLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }
 
 public class StoryTheaterLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdTitleDesc>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdTitleDesc> DataList { get; set; }
+    public List<GenericIdTitleDesc> DataList { get; set; } = [];
 }
 
 public class AnnouncerLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdName>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdName> DataList { get; set; }
+    public List<GenericIdName> DataList { get; set; } = [];
 }
 
 public class NormalBattleHintLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }
 
 public class AbBattleHintLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }
 
 public class BattleResultHintLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }
 
 public class TutorialDescLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }
 
 public class PersonalityVoiceLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdDescDlg>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdDescDlg> DataList { get; set; }
+    public List<GenericIdDescDlg> DataList { get; set; } = [];
 }
 
 
 public class AnnouncerVoiceLocalizationFile : LocalizationFileBase, ILocalizationContainer<AnnouncerVoice>
 {
     [JsonProperty("dataList")]
-    public List<AnnouncerVoice> DataList { get; set; }
+    public List<AnnouncerVoice> DataList { get; set; } = [];
 }
 
 public class AnnouncerVoice
@@ -513,61 +513,61 @@ public class AnnouncerVoice
 public class EgoVoiceLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdDescDlg>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdDescDlg> DataList { get; set; }
+    public List<GenericIdDescDlg> DataList { get; set; } = [];
 }
 
 public class BattleSpeechBubbleLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdDescDlg>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdDescDlg> DataList { get; set; }
+    public List<GenericIdDescDlg> DataList { get; set; } = [];
 }
 
 public class IapProductLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdNameDesc>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdNameDesc> DataList { get; set; }
+    public List<GenericIdNameDesc> DataList { get; set; } = [];
 }
 
 public class IapStickerLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }
 
 public class GetConditionTextLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }
 
 public class ChoiceEventResultLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }
 
 public class BattlePassMissionLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }
 
 public class GachaTitleLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }
 
 public class GachaNoticeLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }
 
 public class IntroduceCharacterLocalizationFile : LocalizationFileBase, ILocalizationContainer<IntroductuceCharacter>
 {
     [JsonProperty("dataList")]
-    public List<IntroductuceCharacter> DataList { get; set; }
+    public List<IntroductuceCharacter> DataList { get; set; } = [];
 }
 public class IntroductuceCharacter
 {
@@ -586,43 +586,43 @@ public class IntroductuceCharacter
 public class UserBannerLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdNameDesc>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdNameDesc> DataList { get; set; }
+    public List<GenericIdNameDesc> DataList { get; set; } = [];
 }
 
 public class UserTicketLLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdNameDesc>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdNameDesc> DataList { get; set; }
+    public List<GenericIdNameDesc> DataList { get; set; } = [];
 }
 
 public class UserTicketRLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdNameDesc>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdNameDesc> DataList { get; set; }
+    public List<GenericIdNameDesc> DataList { get; set; } = [];
 }
 
 public class UserTicketEGOBgLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdNameDesc>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdNameDesc> DataList { get; set; }
+    public List<GenericIdNameDesc> DataList { get; set; } = [];
 }
 
 public class BgmLyricsLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }
 
 public class ThreadDungeonLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdName>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdName> DataList { get; set; }
+    public List<GenericIdName> DataList { get; set; } = [];
 }
 
 public class RailwayDungeonStationNameLocalizationFile : LocalizationFileBase, ILocalizationContainer<RailwayDungeonStationNameList>
 {
     [JsonProperty("dataList")]
-    public List<RailwayDungeonStationNameList> DataList { get; set; }
+    public List<RailwayDungeonStationNameList> DataList { get; set; } = [];
 }
 public class RailwayDungeonStationNameList
 {
@@ -647,18 +647,18 @@ public class RailwayDungeonStationName
 public class RailwayDungeonBuffLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }
 public class DungeonNameLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdName>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdName> DataList { get; set; }
+    public List<GenericIdName> DataList { get; set; } = [];
 }
 
 public class MentalConditionLocalizationFile : LocalizationFileBase, ILocalizationContainer<MentalCondition>
 {
     [JsonProperty("dataList")]
-    public List<MentalCondition> DataList { get; set; }
+    public List<MentalCondition> DataList { get; set; } = [];
 }
 
 public class MentalCondition
@@ -676,19 +676,19 @@ public class MentalCondition
 public class DanteNoteLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdTitleDesc>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdTitleDesc> DataList { get; set; }
+    public List<GenericIdTitleDesc> DataList { get; set; } = [];
 }
 
 public class DanteNoteCategoryKeywordLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }
 
 public class PanicInfoLocalizationFile : LocalizationFileBase, ILocalizationContainer<PanicInfo>
 {
     [JsonProperty("dataList")]
-    public List<PanicInfo> DataList { get; set; }
+    public List<PanicInfo> DataList { get; set; } = [];
 }
 
 public class PanicInfo
@@ -709,37 +709,37 @@ public class PanicInfo
 public class DungeonStartBuffsLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdDescription>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdDescription> DataList { get; set; }
+    public List<GenericIdDescription> DataList { get; set; } = [];
 }
 
 public class EgoGiftCategoryLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdName>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdName> DataList { get; set; }
+    public List<GenericIdName> DataList { get; set; } = [];
 }
 
 public class MirrorDungeonEgoGiftLockedDescLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }
 
 public class DanteAbilityLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdDescRawDesc>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdDescRawDesc> DataList { get; set; }
+    public List<GenericIdDescRawDesc> DataList { get; set; } = [];
 }
 
 public class MirrorDungeonThemeLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdName>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdName> DataList { get; set; }
+    public List<GenericIdName> DataList { get; set; } = [];
 }
 
 public class UnlockCodeLocalizationFile : LocalizationFileBase, ILocalizationContainer<UnlockCode>
 {
     [JsonProperty("dataList")]
-    public List<UnlockCode> DataList { get; set; }
+    public List<UnlockCode> DataList { get; set; } = [];
 }
 
 public class UnlockCode
@@ -754,7 +754,7 @@ public class UnlockCode
 public class ScenarioModelCodesLocalizationFile : LocalizationFileBase, ILocalizationContainer<ScenarioModelCode>
 {
     [JsonProperty("dataList")]
-    public List<ScenarioModelCode> DataList { get; set; }
+    public List<ScenarioModelCode> DataList { get; set; } = [];
 }
 
 public class ScenarioModelCode
@@ -771,25 +771,25 @@ public class ScenarioModelCode
 public class StoryLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }
 
 public class AnnouncerVoiceTypeLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }
 
 public class MirrorDungeonRentalNameLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }
 
 public class ProjectGSLessonNameLocalizationFile : LocalizationFileBase, ILocalizationContainer<ProjectGSLessonName>
 {
     [JsonProperty("dataList")]
-    public List<ProjectGSLessonName> DataList { get; set; }
+    public List<ProjectGSLessonName> DataList { get; set; } = [];
 }
 
 public class ProjectGSLessonName
@@ -806,5 +806,5 @@ public class ProjectGSLessonName
 public class ProjectGSComboNameLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
-    public List<GenericIdContent> DataList { get; set; }
+    public List<GenericIdContent> DataList { get; set; } = [];
 }

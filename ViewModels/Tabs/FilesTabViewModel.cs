@@ -1,7 +1,4 @@
-using System;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RainbusToolbox.Models.Managers;
@@ -11,27 +8,31 @@ namespace RainbusToolbox.ViewModels;
 
 public partial class FilesTabViewModel : ObservableObject
 {
-    private readonly RepositoryManager _repositoryManager = (App.Current.ServiceProvider.GetService(typeof(RepositoryManager)) as RepositoryManager)!;
-    private readonly KeyWordConversionService _keyWordConversionService = (App.Current.ServiceProvider.GetService(typeof(KeyWordConversionService)) as KeyWordConversionService)!;
+    private readonly KeywordProcessingService _keywordProcessingService =
+        (App.Current.ServiceProvider.GetService(typeof(KeywordProcessingService)) as KeywordProcessingService)!;
+
+    private readonly RepositoryManager _repositoryManager =
+        (App.Current.ServiceProvider.GetService(typeof(RepositoryManager)) as RepositoryManager)!;
+
     private CancellationTokenSource? _cancellationTokenSource;
 
     [ObservableProperty]
     private bool _isProcessing;
 
     [ObservableProperty]
-    private string _progressMessage = "Готов к работе";
-
-    [ObservableProperty]
     private bool _isProgressIndeterminate = true;
 
     [ObservableProperty]
-    private double _progressValue;
+    private string _processingStats = "";
 
     [ObservableProperty]
     private double _progressMaximum = 100;
 
     [ObservableProperty]
-    private string _processingStats = "";
+    private string _progressMessage = "Готов к работе";
+
+    [ObservableProperty]
+    private double _progressValue;
 
     [RelayCommand(CanExecute = nameof(CanExecuteParseFiles))]
     private async Task ParseFilesAsync()
@@ -106,7 +107,7 @@ public partial class FilesTabViewModel : ObservableObject
                 $"Добавлено файлов: {newFiles}, Объединено файлов: {mergedFiles}, Всего обработано: {totalFiles}";
             IsProgressIndeterminate = false;
             ProgressValue = ProgressMaximum;
-            
+
             await Task.Delay(TimeSpan.FromSeconds(10), _cancellationTokenSource.Token);
         }
         catch (OperationCanceledException)
@@ -205,7 +206,7 @@ public partial class FilesTabViewModel : ObservableObject
                     }
             });
 
-            await _keyWordConversionService.ReplaceEveryTagWithMesh(
+            await _keywordProcessingService.ReplaceEveryTagWithMesh(
                 _repositoryManager.PathToLocalization,
                 _cancellationTokenSource.Token,
                 progress
@@ -215,7 +216,7 @@ public partial class FilesTabViewModel : ObservableObject
             ProgressMessage = "Замена тегов завершена успешно!";
             IsProgressIndeterminate = false;
             ProgressValue = ProgressMaximum;
-            
+
             await Task.Delay(TimeSpan.FromSeconds(10), _cancellationTokenSource.Token);
         }
         catch (OperationCanceledException)
@@ -249,16 +250,51 @@ public partial class FilesTabViewModel : ObservableObject
     {
         return !IsProcessing;
     }
-    
+
+    [RelayCommand(CanExecute = nameof(CanExecuteReplaceFiles))]
+    public async Task PullNewKeywordsFromTheGame()
+    {
+        _cancellationTokenSource = new CancellationTokenSource();
+        try
+        {
+            ProgressMessage = "Есть контакт!";
+            IsProcessing = true;
+            var progress = new Progress<string>(message => { ProgressMessage = message; });
+            await _keywordProcessingService.PullNewKeywordsFromTheGame(
+                _cancellationTokenSource.Token,
+                progress
+            );
+            ProgressMessage = "Готово!";
+            await Task.Delay(TimeSpan.FromSeconds(3), _cancellationTokenSource.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            ProgressMessage = "Операция отменена пользователем";
+            ProcessingStats = "";
+        }
+        catch (Exception ex)
+        {
+            ProgressMessage = $"Ошибка: {ex.Message}";
+            ProcessingStats = "";
+
+            _ = App.Current.ShowErrorNotificationAsync($"Ошибка при замене тегов: {ex.Message}", "Ошибка");
+        }
+        finally
+        {
+            IsProcessing = false;
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
+        }
+    }
+
     #region Events
 
     public void OnTabOpened()
     {
         var rpc = App.Current.ServiceProvider.GetService(typeof(DiscordRPCService)) as DiscordRPCService;
-        
+
         rpc!.SetState("Люто обновляет файлы");
     }
 
     #endregion
-
 }

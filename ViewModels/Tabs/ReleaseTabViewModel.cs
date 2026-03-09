@@ -15,7 +15,7 @@ public partial class ReleaseTabViewModel : ObservableObject
     private readonly PersistentDataManager _dataManager;
     private readonly GithubManager _githubManager;
     private readonly RepositoryManager _repositoryManager;
-    private readonly KeyWordConversionService _keyWordConversionService;
+    private readonly KeywordProcessingService _keywordProcessingService;
     private string _username = AppLang.Unknown;
     private string _repoName = AppLang.Unknown;
     #endregion
@@ -25,13 +25,13 @@ public partial class ReleaseTabViewModel : ObservableObject
         PersistentDataManager dataManager, 
         GithubManager githubManager, 
         RepositoryManager repositoryManager,
-        KeyWordConversionService keyWordConversionService)
+        KeywordProcessingService keywordProcessingService)
     {
         _dataManager = dataManager;
         Option2 = !string.IsNullOrWhiteSpace(_dataManager.Settings.DiscordRoleToPing);
         _githubManager = githubManager;
         _repositoryManager = repositoryManager;
-        _keyWordConversionService = keyWordConversionService;
+        _keywordProcessingService = keywordProcessingService;
         
         IsLoading = false;
         VersionDisplay = _repositoryManager.GetLatestReleaseSemantic();
@@ -152,7 +152,7 @@ public partial class ReleaseTabViewModel : ObservableObject
         {
             IsLoading = true;
             //TODO: make this shit connect to loading bar (rewrite entire loading bar later)
-            await _keyWordConversionService.ReplaceEveryTagWithMesh(_repositoryManager.PathToLocalization);
+            await _keywordProcessingService.ReplaceEveryTagWithMesh(_repositoryManager.PathToLocalization);
             
             var currentVersion = _repositoryManager.GetLatestReleaseSemantic();
             var parts = currentVersion.Split('.');
