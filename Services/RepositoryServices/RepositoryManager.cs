@@ -4,7 +4,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using LibGit2Sharp;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using RainbusToolbox.Models.Data;
 using RainbusToolbox.Utilities;
 using RainbusToolbox.Utilities.Data;
@@ -14,6 +13,39 @@ namespace RainbusToolbox.Models.Managers;
 
 public class RepositoryManager
 {
+    private readonly PersistentDataManager _dataManager;
+    public readonly string LocalizationFolder = "localize";
+
+
+    // Constructor
+    public RepositoryManager(PersistentDataManager dataManager)
+    {
+        _dataManager = dataManager;
+        ParseFileMap();
+        TryInitialize();
+    }
+
+
+    public Repository Repository { get; private set; }
+    public bool IsValid { get; private set; }
+
+    private string FindRepositoryPath(string originalPath)
+    {
+        if (Repository.IsValid(originalPath))
+            return originalPath;
+
+        var parentDir = Directory.GetParent(originalPath)?.FullName;
+        if (!string.IsNullOrEmpty(parentDir) && Repository.IsValid(parentDir))
+            return parentDir;
+
+        if (Directory.Exists(originalPath))
+            foreach (var subDir in Directory.GetDirectories(originalPath))
+                if (Repository.IsValid(subDir))
+                    return subDir;
+
+        return null;
+    }
+
     #region Folders
 
     // Relative to repo root
@@ -35,59 +67,27 @@ public class RepositoryManager
     // Game paths
 
     public string PathToGameRoot => _dataManager.Settings.PathToLimbus!;
+
     #endregion
 
     #region ConstantItems
-    
-    
+
     public string PathToKeywordColorList => Path.Combine(_dataManager.Settings.RepositoryPath!, "keyword_colors.json");
     public string PathToEgoNames => Path.Combine(PathToLocalization, "Egos.json");
     public EgoLocalizationFile EgoNames;
     public EgoLocalizationFile EgoNamesReference;
-    
+
     public string PathToModelCodes => Path.Combine(PathToLocalization, "ScenarioModelCodes-AutoCreated.json");
     public ScenarioModelCodesLocalizationFile ScenarioModelCodes;
     public ScenarioModelCodesLocalizationFile ScenarioModelCodesReference;
 
-    public string PathToFileMap => Path.Combine(PathToGameRoot, "LimbusCompany_Data/Assets/Resources_moved/Localize/RemoteLocalizeFileList.json");
-    public readonly Dictionary<string, string> DeveloperFileTypeMap = new Dictionary<string, string>();
+    public string PathToFileMap => Path.Combine(PathToGameRoot,
+        "LimbusCompany_Data/Assets/Resources_moved/Localize/RemoteLocalizeFileList.json");
+
+    public readonly Dictionary<string, string> DeveloperFileTypeMap = new();
 
     #endregion
 
-    private string FindRepositoryPath(string originalPath)
-    {
-        if (Repository.IsValid(originalPath))
-            return originalPath;
-
-        var parentDir = Directory.GetParent(originalPath)?.FullName;
-        if (!string.IsNullOrEmpty(parentDir) && Repository.IsValid(parentDir))
-            return parentDir;
-
-        if (Directory.Exists(originalPath))
-            foreach (var subDir in Directory.GetDirectories(originalPath))
-                if (Repository.IsValid(subDir))
-                    return subDir;
-
-        return null;
-    }
-
-
-    public Repository Repository { get; private set; }
-    public readonly string LocalizationFolder = "localize";
-
-
-    private readonly PersistentDataManager _dataManager;
-    public bool IsValid { get; private set; }
-
-
-    // Constructor
-    public RepositoryManager(PersistentDataManager dataManager)
-    {
-        _dataManager = dataManager;
-        ParseFileMap();
-        TryInitialize();
-    }
-    
     #region Initialization
 
     public void TryInitialize()
@@ -131,10 +131,7 @@ public class RepositoryManager
         {
             var type = entry.Key;
             var fileNames = entry.Value;
-            foreach (var fileName in fileNames)
-            {
-                DeveloperFileTypeMap.TryAdd(fileName, type);
-            }
+            foreach (var fileName in fileNames) DeveloperFileTypeMap.TryAdd(fileName, type);
         }
     }
 
@@ -156,18 +153,15 @@ public class RepositoryManager
             return null;
         }
 
-        var targetType = file?.GetType() ?? FileToObjectCaster.GetType(path,DeveloperFileTypeMap);
+        var targetType = file?.GetType() ?? FileToObjectCaster.GetType(path, DeveloperFileTypeMap);
         if (targetType == null)
             Console.WriteLine(AppLang.FileIsUnknown);
-        
+
 
         LocalizationFileBase? deserialized;
         if (targetType == null || targetType == typeof(UnidentifiedFile))
-        {
             deserialized = new UnidentifiedFile();
-        }
         else
-        {
             try
             {
                 deserialized = (LocalizationFileBase?)JsonConvert.DeserializeObject(
@@ -175,14 +169,12 @@ public class RepositoryManager
                     targetType,
                     LocalizationJsonSettings.Default
                 );
-
             }
             catch (Exception ex)
             {
                 _ = App.Current.HandleGlobalExceptionAsync(ex);
                 return null;
             }
-        }
 
         if (deserialized == null)
             return null;
@@ -200,9 +192,9 @@ public class RepositoryManager
 
     public LocalizationFileBase? GetReference(LocalizationFileBase? refTo)
     {
-        if(refTo == null)
+        if (refTo == null)
             return null;
-        
+
         if (string.IsNullOrEmpty(refTo.FileName) || string.IsNullOrEmpty(refTo.FullPath))
             return null;
 
@@ -231,78 +223,80 @@ public class RepositoryManager
     }
 
     public bool SaveObjectToFile(LocalizationFileBase obj)
-{
-    
-    Console.WriteLine("=== SaveObjectToFile Debug Start ===");
-    Console.WriteLine($"Object type: {obj?.GetType().Name}");
-    Console.WriteLine($"FileName: '{obj?.FileName}'");
-    Console.WriteLine($"FullPath: '{obj?.FullPath}'");
-    
-    if (string.IsNullOrEmpty(obj.FileName) || string.IsNullOrEmpty(obj.FullPath))
     {
-        Console.WriteLine("ERROR: FileName or FullPath is null/empty - returning false");
-        return false;
-    }
+        Console.WriteLine("=== SaveObjectToFile Debug Start ===");
+        Console.WriteLine($"Object type: {obj?.GetType().Name}");
+        Console.WriteLine($"FileName: '{obj?.FileName}'");
+        Console.WriteLine($"FullPath: '{obj?.FullPath}'");
 
-    var directoryPath = Path.GetDirectoryName(obj.FullPath);
-    Console.WriteLine($"Directory path: '{directoryPath}'");
-    
-    Directory.CreateDirectory(directoryPath!);
-    Console.WriteLine("Directory created/verified");
-
-    try
-    {
-        string json;
-        
-        Console.WriteLine($"Checking if object is UnidentifiedFile...");
-        Console.WriteLine($"GetType().Name == 'UnidentifiedFile': {obj.GetType().Name == "UnidentifiedFile"}");
-        Console.WriteLine($"obj is UnidentifiedFile: {obj is UnidentifiedFile}");
-    
-        // Check if it's an UnidentifiedFile type
-        if (obj.GetType().Name == "UnidentifiedFile" || obj is UnidentifiedFile)
+        if (string.IsNullOrEmpty(obj.FileName) || string.IsNullOrEmpty(obj.FullPath))
         {
-            Console.WriteLine("Using UnidentifiedFile serialization (no type info)");
-            // For UnidentifiedFile, serialize as plain object without type information
-            json = JsonConvert.SerializeObject(
-                obj,
-                Formatting.Indented,
-                LocalizationJsonSettings.Unidentified
-            );
-
+            Console.WriteLine("ERROR: FileName or FullPath is null/empty - returning false");
+            return false;
         }
-        else
+
+        var directoryPath = Path.GetDirectoryName(obj.FullPath);
+        Console.WriteLine($"Directory path: '{directoryPath}'");
+
+        Directory.CreateDirectory(directoryPath!);
+        Console.WriteLine("Directory created/verified");
+
+        try
         {
-            Console.WriteLine("Using normal serialization");
-            // For other types, use normal serialization
-            json = JsonConvert.SerializeObject(
-                obj,
-                Formatting.Indented,
-                LocalizationJsonSettings.Default
-            );
+            string json;
 
+            Console.WriteLine("Checking if object is UnidentifiedFile...");
+            Console.WriteLine($"GetType().Name == 'UnidentifiedFile': {obj.GetType().Name == "UnidentifiedFile"}");
+            Console.WriteLine($"obj is UnidentifiedFile: {obj is UnidentifiedFile}");
+
+            // Check if it's an UnidentifiedFile type
+            if (obj.GetType().Name == "UnidentifiedFile" || obj is UnidentifiedFile)
+            {
+                Console.WriteLine("Using UnidentifiedFile serialization (no type info)");
+                // For UnidentifiedFile, serialize as plain object without type information
+                json = JsonConvert.SerializeObject(
+                    obj,
+                    Formatting.Indented,
+                    LocalizationJsonSettings.Unidentified
+                );
+            }
+            else
+            {
+                Console.WriteLine("Using normal serialization");
+                // For other types, use normal serialization
+                json = JsonConvert.SerializeObject(
+                    obj,
+                    Formatting.Indented,
+                    LocalizationJsonSettings.Default
+                );
+            }
+
+            Console.WriteLine($"JSON length: {json?.Length ?? 0} characters");
+
+            File.WriteAllText(obj.FullPath, json, new UTF8Encoding(false));
+            if (Path.GetFileName(obj.FullPath).StartsWith("BattleKeywords"))
+            {
+                var keywordsPath = obj.FullPath.Replace("BattleKeywords", "Bufs");
+                File.WriteAllText(keywordsPath, json, new UTF8Encoding(false));
+            }
+
+            Console.WriteLine("File written successfully");
+            Console.WriteLine("=== SaveObjectToFile Debug End - SUCCESS ===");
+            return true;
         }
-        
-        Console.WriteLine($"JSON length: {json?.Length ?? 0} characters");
-    
-        File.WriteAllText(obj.FullPath, json, new UTF8Encoding(false));
-        Console.WriteLine("File written successfully");
-        Console.WriteLine("=== SaveObjectToFile Debug End - SUCCESS ===");
-        return true;
+        catch (Exception e)
+        {
+            Console.WriteLine($"ERROR: Exception occurred: {e.Message}");
+            Console.WriteLine($"Exception type: {e.GetType().Name}");
+            Console.WriteLine($"Stack trace: {e.StackTrace}");
+            Console.WriteLine("=== SaveObjectToFile Debug End - EXCEPTION ===");
+            _ = App.Current.HandleNonFatalExceptionAsync(e);
+            return false;
+        }
     }
-    catch (Exception e)
-    {
-        Console.WriteLine($"ERROR: Exception occurred: {e.Message}");
-        Console.WriteLine($"Exception type: {e.GetType().Name}");
-        Console.WriteLine($"Stack trace: {e.StackTrace}");
-        Console.WriteLine("=== SaveObjectToFile Debug End - EXCEPTION ===");
-        _ = App.Current.HandleNonFatalExceptionAsync(e);
-        return false;
-    }
-}
 
     #endregion
 
-    
 
     #region Git shit
 
@@ -320,10 +314,7 @@ public class RepositoryManager
     public string GetRepoDisplayName(Repository repo)
     {
         var remoteName = repo.Head?.RemoteName;
-        if (string.IsNullOrEmpty(remoteName)) 
-        {
-            remoteName = repo.Network.Remotes.FirstOrDefault()?.Name;
-        }
+        if (string.IsNullOrEmpty(remoteName)) remoteName = repo.Network.Remotes.FirstOrDefault()?.Name;
 
         if (string.IsNullOrEmpty(remoteName)) return string.Empty;
 
@@ -332,10 +323,7 @@ public class RepositoryManager
 
         var url = remote.Url;
 
-        if (url.Contains(':') && !url.StartsWith("http"))
-        {
-            url = url.Split(':').Last();
-        }
+        if (url.Contains(':') && !url.StartsWith("http")) url = url.Split(':').Last();
 
         var name = Path.GetFileNameWithoutExtension(url);
         return name ?? string.Empty;
@@ -725,29 +713,29 @@ public class RepositoryManager
             );
         }
     }
-    
+
     public string GetLatestReleaseSemantic()
     {
         try
         {
             var semVerPattern = @"(\d+)\.(\d+)\.(\d+)";
-        
+
             // Get all tags with valid semantic versions
             var tags = Repository.Tags
-                .Select(t => new 
-                { 
+                .Select(t => new
+                {
                     Tag = t,
                     Match = Regex.Match(t.FriendlyName, semVerPattern)
                 })
                 .Where(x => x.Match.Success)
-                .Select(x => 
+                .Select(x =>
                 {
                     try
                     {
                         return new
                         {
                             x.Tag,
-                            Version = new System.Version(
+                            Version = new Version(
                                 int.Parse(x.Match.Groups[1].Value),
                                 int.Parse(x.Match.Groups[2].Value),
                                 int.Parse(x.Match.Groups[3].Value)
@@ -759,13 +747,13 @@ public class RepositoryManager
                     catch
                     {
                         Console.WriteLine($"Skipping tag {x.Tag.FriendlyName} - invalid version format");
-                        return new { x.Tag, Version = (System.Version)null, VersionString = "", IsValid = false };
+                        return new { x.Tag, Version = (Version)null, VersionString = "", IsValid = false };
                     }
                 })
                 .Where(x => x.IsValid)
                 .OrderByDescending(x => x.Version)
                 .ToList();
-    
+
             if (!tags.Any())
             {
                 Console.WriteLine("No tags found in repository. Defaulting to 1.0.0");

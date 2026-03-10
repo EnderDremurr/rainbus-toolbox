@@ -233,7 +233,7 @@
                         <views:OverviewTab x:Name="OverviewTabControl" />
                     </TabItem>
                     <TabItem IsSelected="{Binding #TabRelease.IsChecked}">
-                        <views:ReleaseTab x:Name="ReleaseTabControl" />
+                        <views:ReleaseTab DataContext="{Binding ReleaseTabViewModel}" x:Name="ReleaseTabControl" />
                     </TabItem>
                 </TabControl>
             </Grid>

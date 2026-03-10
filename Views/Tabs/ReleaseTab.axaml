@@ -58,7 +58,7 @@
         <md:MarkdownScrollViewer
             Grid.Column="1"
             Grid.Row="0"
-            Margin="10"
+            Margin="0,40,0,40"
             Markdown="{Binding EditorText}" />
 
         <!--  Checkboxes section with version and submit at bottom  -->
