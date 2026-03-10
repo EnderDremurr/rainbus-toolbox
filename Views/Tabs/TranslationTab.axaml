@@ -95,17 +95,21 @@
         <!--  Welcome / Empty State  -->
         <Border Grid.Row="1" IsVisible="{Binding IsFileLoaded, Converter={StaticResource InverseBoolConverter}}">
             <TabControl
-                Classes="generic"
+                ItemContainerTheme="{StaticResource GenericTabTheme}"
                 ItemsSource="{Binding GroupedShortcuts}"
                 Margin="0,30,0,0">
                 <TabControl.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Key}" />
+                        <TextBlock
+                            FontFamily="{StaticResource MikodacsFont}"
+                            FontSize="22"
+                            Foreground="White"
+                            Text="{Binding Key}" />
                     </DataTemplate>
                 </TabControl.ItemTemplate>
                 <TabControl.ContentTemplate>
                     <DataTemplate>
-                        <ItemsControl Classes="generic" ItemsSource="{Binding}">
+                        <ItemsControl ItemsSource="{Binding}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel />

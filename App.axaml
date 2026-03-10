@@ -11,19 +11,24 @@
     </Application.DataTemplates>
 
     <Application.Resources>
-        <!--  Converter instance for checkbox images  -->
-        <local:CheckedToImageConverter x:Key="CheckedToImageConverter" />
-        <!--  Custom font registration  -->
-        <FontFamily x:Key="PretendardFont">avares://RainbusToolbox/Assets/Fonts/Pretendard.ttf#Pretendard</FontFamily>
-        <FontFamily x:Key="MikodacsFont">avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs Regular</FontFamily>
-        <global1:TextBoxTextConverter x:Key="TextBoxTextConverter" />
-        <DropShadowEffect
-            BlurRadius="0"
-            Color="Black"
-            OffsetX="1"
-            OffsetY="1"
-            Opacity="1"
-            x:Key="HardShadow" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://RainbusToolbox/Styles/Themes/GenericTabItemTheme.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <!--  Converter instance for checkbox images  -->
+            <local:CheckedToImageConverter x:Key="CheckedToImageConverter" />
+            <!--  Custom font registration  -->
+            <FontFamily x:Key="PretendardFont">avares://RainbusToolbox/Assets/Fonts/Pretendard.ttf#Pretendard</FontFamily>
+            <FontFamily x:Key="MikodacsFont">avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs Regular</FontFamily>
+            <global1:TextBoxTextConverter x:Key="TextBoxTextConverter" />
+            <DropShadowEffect
+                BlurRadius="0"
+                Color="Black"
+                OffsetX="1"
+                OffsetY="1"
+                Opacity="1"
+                x:Key="HardShadow" />
+        </ResourceDictionary>
     </Application.Resources>
 
     <Application.Styles>
@@ -31,7 +36,7 @@
 
         <StyleInclude Source="avares://RainbusToolbox/Styles/Typography.axaml" />
         <StyleInclude Source="avares://RainbusToolbox/Styles/Themes/DefaultButtonTheme.axaml" />
-        <StyleInclude Source="avares://RainbusToolbox/Styles/Themes/GenericTabItemTheme.axaml" />
+
         <StyleInclude Source="avares://RainbusToolbox/Styles/Themes/TextBoxFramedTheme.axaml" />
         <StyleInclude Source="avares://RainbusToolbox/Styles/Themes/TextBoxInvisibleTheme.axaml" />
         <StyleInclude Source="avares://RainbusToolbox/Styles/Controls/Checkbox.axaml" />
