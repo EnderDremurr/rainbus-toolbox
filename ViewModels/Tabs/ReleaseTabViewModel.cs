@@ -1,5 +1,7 @@
+using System.Diagnostics;
 using System.IO;
 using Avalonia.Controls;
+using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MsBox.Avalonia;
@@ -11,19 +13,11 @@ namespace RainbusToolbox.ViewModels;
 
 public partial class ReleaseTabViewModel : ObservableObject
 {
-    #region Fields
-    private readonly PersistentDataManager _dataManager;
-    private readonly GithubManager _githubManager;
-    private readonly RepositoryManager _repositoryManager;
-    private readonly KeywordProcessingService _keywordProcessingService;
-    private string _username = AppLang.Unknown;
-    private string _repoName = AppLang.Unknown;
-    #endregion
-
     #region Constructor
+
     public ReleaseTabViewModel(
-        PersistentDataManager dataManager, 
-        GithubManager githubManager, 
+        PersistentDataManager dataManager,
+        GithubManager githubManager,
         RepositoryManager repositoryManager,
         KeywordProcessingService keywordProcessingService)
     {
@@ -32,14 +26,37 @@ public partial class ReleaseTabViewModel : ObservableObject
         _githubManager = githubManager;
         _repositoryManager = repositoryManager;
         _keywordProcessingService = keywordProcessingService;
-        
+
         IsLoading = false;
         VersionDisplay = _repositoryManager.GetLatestReleaseSemantic();
-
     }
+
+    #endregion
+
+    #region Events
+
+    public void OnTabOpened()
+    {
+        var rpc = App.Current.ServiceProvider.GetService(typeof(DiscordRPCService)) as DiscordRPCService;
+
+        rpc!.SetState("Делает жесткий релиз");
+    }
+
+    #endregion
+
+    #region Fields
+
+    private readonly PersistentDataManager _dataManager;
+    private readonly GithubManager _githubManager;
+    private readonly RepositoryManager _repositoryManager;
+    private readonly KeywordProcessingService _keywordProcessingService;
+    private string _username = AppLang.Unknown;
+    private string _repoName = AppLang.Unknown;
+
     #endregion
 
     #region Properties
+
     // User and repo information
     public string Username
     {
@@ -75,6 +92,7 @@ public partial class ReleaseTabViewModel : ObservableObject
 
     [ObservableProperty]
     private string _selectedFileName = "файл не выбран";
+
     private string _selectedFilePath = string.Empty;
 
     // General section checkboxes
@@ -89,25 +107,30 @@ public partial class ReleaseTabViewModel : ObservableObject
     private bool _sendToDiscord = true;
 
     [ObservableProperty]
-    private bool _option1 = false;
+    private bool _option1;
 
     [ObservableProperty]
     private bool _attachAnImage = true;
-    
+
+    [ObservableProperty]
+    private Bitmap? _selectedImagePreview;
+
     [ObservableProperty]
     private bool _globalVersion;
+
     [ObservableProperty]
     private bool _majorVersion;
+
     [ObservableProperty]
     private bool _minorVersion = true;
-    
+
     [ObservableProperty]
     private string _versionDisplay;
-    
+
 
     [ObservableProperty]
     private bool _option2;
-    
+
 
     [ObservableProperty]
     private bool _isLoading;
@@ -115,15 +138,11 @@ public partial class ReleaseTabViewModel : ObservableObject
     // Debug tracking for loading state
     partial void OnIsLoadingChanged(bool value)
     {
-        System.Diagnostics.Debug.WriteLine($"ReleaseTabViewModel: IsLoading changed to: {value} at {DateTime.Now}");
-        if (value)
-        {
-            System.Diagnostics.Debug.WriteLine($"Stack trace: {Environment.StackTrace}");
-        }
+        Debug.WriteLine($"ReleaseTabViewModel: IsLoading changed to: {value} at {DateTime.Now}");
+        if (value) Debug.WriteLine($"Stack trace: {Environment.StackTrace}");
     }
 
     #endregion
-    
 
 
     #region Commands
@@ -132,9 +151,11 @@ public partial class ReleaseTabViewModel : ObservableObject
     public async Task SelectFile()
     {
         var dialog = new OpenFileDialog();
-        var result = await dialog.ShowAsync((App.Current.ServiceProvider.GetService(typeof(MainWindow)) as MainWindow)!);
+        var result =
+            await dialog.ShowAsync((App.Current.ServiceProvider.GetService(typeof(MainWindow)) as MainWindow)!);
         if (result != null) _selectedFilePath = result[0];
         SelectedFileName = Path.GetFileName(_selectedFilePath);
+        SelectedImagePreview = new Bitmap(_selectedFilePath);
     }
 
     [RelayCommand]
@@ -153,12 +174,12 @@ public partial class ReleaseTabViewModel : ObservableObject
             IsLoading = true;
             //TODO: make this shit connect to loading bar (rewrite entire loading bar later)
             await _keywordProcessingService.ReplaceEveryTagWithMesh(_repositoryManager.PathToLocalization);
-            
+
             var currentVersion = _repositoryManager.GetLatestReleaseSemantic();
             var parts = currentVersion.Split('.');
-            int major = int.Parse(parts[0]);
-            int minor = int.Parse(parts[1]);
-            int patch = int.Parse(parts[2]);
+            var major = int.Parse(parts[0]);
+            var minor = int.Parse(parts[1]);
+            var patch = int.Parse(parts[2]);
 
             if (GlobalVersion)
             {
@@ -179,29 +200,31 @@ public partial class ReleaseTabViewModel : ObservableObject
             var nextVersion = $"{major}.{minor}.{patch}";
 
             // Package the localization
-            var package = await Task.Run(() => LocalizationPackager.PackageLocalization(nextVersion, _repositoryManager));
+            var package =
+                await Task.Run(() => LocalizationPackager.PackageLocalization(nextVersion, _repositoryManager));
 
-            
+
             // Create GitHub release
 
             var localizationName = _repositoryManager.GetRepoDisplayName(_repositoryManager.Repository);
-            
+
             await _githubManager.CreateReleaseAsync($"{localizationName} v{nextVersion}", EditorText, package);
 
             // Handle Discord section options - only send if SendToDiscord is checked
             if (SendToDiscord && DiscordManager.ValidateWebhook(_dataManager.Settings.DiscordWebHook))
             {
                 var discordManager = new DiscordManager(_dataManager.Settings.DiscordWebHook!);
-                
+
                 var discordMessage = $"# {localizationName} v{nextVersion}!!!\n" + EditorText;
-                
+
                 if (MustAppendLauncherLink)
-                    discordMessage += $"\n\n[{AppLang.LocalizationManagerHyperlink}](<https://github.com/kimght/LimbusLocalizationManager/releases>)";
+                    discordMessage +=
+                        $"\n\n[{AppLang.LocalizationManagerHyperlink}](<https://github.com/kimght/LimbusLocalizationManager/releases>)";
                 //if (Option1) TODO:implement later
-                    //discordMessage += $"\n\n[Ссылка на релиз](<https://github.com/enqenqenqenqenq/RCR/releases/latest>)";
+                //discordMessage += $"\n\n[Ссылка на релиз](<https://github.com/enqenqenqenqenq/RCR/releases/latest>)";
                 if (Option2 && !string.IsNullOrWhiteSpace(_dataManager.Settings.DiscordRoleToPing))
                     discordMessage += $"\n<@&{_dataManager.Settings.DiscordRoleToPing}>";
-                
+
                 await discordManager.SendMessageAsync(discordMessage, _selectedFilePath);
             }
 
@@ -219,17 +242,6 @@ public partial class ReleaseTabViewModel : ObservableObject
             VersionDisplay = _repositoryManager.GetLatestReleaseSemantic();
             IsLoading = false;
         }
-    }
-    
-    #endregion
-
-    #region Events
-
-    public void OnTabOpened()
-    {
-        var rpc = App.Current.ServiceProvider.GetService(typeof(DiscordRPCService)) as DiscordRPCService;
-        
-        rpc!.SetState("Делает жесткий релиз");
     }
 
     #endregion

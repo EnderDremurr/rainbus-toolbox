@@ -18,6 +18,13 @@
         <FontFamily x:Key="PretendardFont">avares://RainbusToolbox/Assets/Fonts/Pretendard.ttf#Pretendard</FontFamily>
         <FontFamily x:Key="MikodacsFont">avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs Regular</FontFamily>
         <global1:TextBoxTextConverter x:Key="TextBoxTextConverter" />
+        <DropShadowEffect
+            BlurRadius="0"
+            Color="Black"
+            OffsetX="1"
+            OffsetY="1"
+            Opacity="1"
+            x:Key="HardShadow" />
     </Application.Resources>
 
     <Application.Styles>
@@ -48,7 +55,6 @@
         </Style>
 
 
-
         <Style Selector="TextBlock">
             <Setter Property="FontFamily" Value="avares://RainbusToolbox/Assets/Fonts/Pretendard.ttf#Pretendard" />
         </Style>
@@ -71,51 +77,6 @@
             <Setter Property="FontSize" Value="24" />
         </Style>
         <Style Selector="Button TextBlock.header" />
-
-        <!--  region Tab styles  -->
-
-        <!--  Default TabItem style  -->
-        <Style Selector="TabItem">
-            <Setter Property="FontFamily" Value="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs" />
-            <Setter Property="FontSize" Value="20" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="Background">
-                <Setter.Value>
-                    <ImageBrush Source="avares://RainbusToolbox/Assets/Tab.png" Stretch="Fill" />
-                </Setter.Value>
-            </Setter>
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-        </Style>
-
-        <!--  Hovered TabItem  -->
-        <Style Selector="TabItem:pointerover">
-            <Setter Property="Background">
-                <Setter.Value>
-                    <ImageBrush Source="avares://RainbusToolbox/Assets/TabHover.png" Stretch="Fill" />
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Foreground" Value="White" />
-        </Style>
-
-        <!--  Selected TabItem  -->
-        <Style Selector="TabItem:selected">
-            <Setter Property="Background">
-                <Setter.Value>
-                    <ImageBrush Source="avares://RainbusToolbox/Assets/TabSelected.png" Stretch="Fill" />
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Foreground" Value="#FFA500" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-        </Style>
-
-        <Style Selector="TabItem:selected /template/ Border#PART_SelectedPipe">
-            <Setter Property="Background" Value="#00000000" />
-        </Style>
-
-        <!--  endregion  -->
-
 
         <!--  Global CheckBox style using custom images and font  -->
         <Style Selector="CheckBox">
@@ -149,11 +110,73 @@
             <Setter Property="Template">
                 <ControlTemplate TargetType="Button">
                     <Grid>
-                        <Image Source="avares://RainbusToolbox/Assets/Button.png" Stretch="Fill" />
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="16" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="16" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="16" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="16" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--  Corners  -->
+                        <Image
+                            Grid.Column="0"
+                            Grid.Row="0"
+                            Name="TopLeft" />
+                        <Image
+                            Grid.Column="2"
+                            Grid.Row="0"
+                            Name="TopRight" />
+                        <Image
+                            Grid.Column="0"
+                            Grid.Row="2"
+                            Name="BottomLeft" />
+                        <Image
+                            Grid.Column="2"
+                            Grid.Row="2"
+                            Name="BottomRight" />
+
+                        <!--  Edges  -->
+                        <Image
+                            Grid.Column="1"
+                            Grid.Row="0"
+                            Name="Top"
+                            Stretch="Fill" />
+                        <Image
+                            Grid.Column="1"
+                            Grid.Row="2"
+                            Name="Bottom"
+                            Stretch="Fill" />
+                        <Image
+                            Grid.Column="0"
+                            Grid.Row="1"
+                            Name="Left"
+                            Stretch="Fill" />
+                        <Image
+                            Grid.Column="2"
+                            Grid.Row="1"
+                            Name="Right"
+                            Stretch="Fill" />
+
+                        <!--  Center  -->
+                        <Image
+                            Grid.Column="1"
+                            Grid.Row="1"
+                            Name="Center"
+                            Stretch="Fill" />
+
+                        <!--  Content on top  -->
                         <TextBlock
                             FontFamily="{StaticResource MikodacsFont}"
                             FontSize="22"
                             Foreground="White"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
                             HorizontalAlignment="Center"
                             Text="{TemplateBinding Content}"
                             TextWrapping="Wrap"
@@ -161,6 +184,64 @@
                     </Grid>
                 </ControlTemplate>
             </Setter>
+        </Style>
+
+        <!--  Idle state  -->
+        <Style Selector="Button Image#TopLeft">
+            <Setter Property="Source" Value="/Assets/MainButtonIdleTopLeft.png" />
+        </Style>
+        <Style Selector="Button Image#TopRight">
+            <Setter Property="Source" Value="/Assets/MainButtonIdleTopRight.png" />
+        </Style>
+        <Style Selector="Button Image#BottomLeft">
+            <Setter Property="Source" Value="/Assets/MainButtonIdleBottomLeft.png" />
+        </Style>
+        <Style Selector="Button Image#BottomRight">
+            <Setter Property="Source" Value="/Assets/MainButtonIdleBottomRight.png" />
+        </Style>
+        <Style Selector="Button Image#Top">
+            <Setter Property="Source" Value="/Assets/MainButtonIdleTop.png" />
+        </Style>
+        <Style Selector="Button Image#Bottom">
+            <Setter Property="Source" Value="/Assets/MainButtonIdleBottom.png" />
+        </Style>
+        <Style Selector="Button Image#Left">
+            <Setter Property="Source" Value="/Assets/MainButtonIdleLeft.png" />
+        </Style>
+        <Style Selector="Button Image#Right">
+            <Setter Property="Source" Value="/Assets/MainButtonIdleRight.png" />
+        </Style>
+        <Style Selector="Button Image#Center">
+            <Setter Property="Source" Value="/Assets/MainButtonIdleCenter.png" />
+        </Style>
+
+        <!--  Hovered state  -->
+        <Style Selector="Button:pointerover Image#TopLeft">
+            <Setter Property="Source" Value="/Assets/MainButtonHoverTopLeft.png" />
+        </Style>
+        <Style Selector="Button:pointerover Image#TopRight">
+            <Setter Property="Source" Value="/Assets/MainButtonHoverTopRight.png" />
+        </Style>
+        <Style Selector="Button:pointerover Image#BottomLeft">
+            <Setter Property="Source" Value="/Assets/MainButtonHoverBottomLeft.png" />
+        </Style>
+        <Style Selector="Button:pointerover Image#BottomRight">
+            <Setter Property="Source" Value="/Assets/MainButtonHoverBottomRight.png" />
+        </Style>
+        <Style Selector="Button:pointerover Image#Top">
+            <Setter Property="Source" Value="/Assets/MainButtonHoverTop.png" />
+        </Style>
+        <Style Selector="Button:pointerover Image#Bottom">
+            <Setter Property="Source" Value="/Assets/MainButtonHoverBottom.png" />
+        </Style>
+        <Style Selector="Button:pointerover Image#Left">
+            <Setter Property="Source" Value="/Assets/MainButtonHoverLeft.png" />
+        </Style>
+        <Style Selector="Button:pointerover Image#Right">
+            <Setter Property="Source" Value="/Assets/MainButtonHoverRight.png" />
+        </Style>
+        <Style Selector="Button:pointerover Image#Center">
+            <Setter Property="Source" Value="/Assets/MainButtonHoverCenter.png" />
         </Style>
 
         <!--  Base navigation button class  -->
@@ -173,8 +254,16 @@
             <Setter Property="Template">
                 <ControlTemplate TargetType="Button">
                     <Grid>
-                        <!--  Image Source will be set per-button style  -->
-                        <Image Name="btnImage" Stretch="Uniform" />
+                        <Image Name="btnImage" Stretch="Uniform">
+                            <Image.Effect>
+                                <DropShadowEffect
+                                    BlurRadius="0.1"
+                                    Color="Black"
+                                    OffsetX="1"
+                                    OffsetY="1"
+                                    Opacity="1" />
+                            </Image.Effect>
+                        </Image>
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Grid>
                 </ControlTemplate>
@@ -266,47 +355,47 @@
                         <Image
                             Grid.Column="0"
                             Grid.Row="0"
-                            Source="/Assets/TextEditorTopLeft.png" />
+                            Source="/Assets/TextBoxTopLeft.png" />
                         <Image
                             Grid.Column="2"
                             Grid.Row="0"
-                            Source="/Assets/TextEditorTopRight.png" />
+                            Source="/Assets/TextBoxTopRight.png" />
                         <Image
                             Grid.Column="0"
                             Grid.Row="2"
-                            Source="/Assets/TextEditorBottomLeft.png" />
+                            Source="/Assets/TextBoxBottomLeft.png" />
                         <Image
                             Grid.Column="2"
                             Grid.Row="2"
-                            Source="/Assets/TextEditorBottomRight.png" />
+                            Source="/Assets/TextBoxBottomRight.png" />
 
                         <!--  Edges  -->
                         <Image
                             Grid.Column="1"
                             Grid.Row="0"
-                            Source="/Assets/TextEditorTop.png"
+                            Source="/Assets/TextBoxTop.png"
                             Stretch="Fill" />
                         <Image
                             Grid.Column="1"
                             Grid.Row="2"
-                            Source="/Assets/TextEditorBottom.png"
+                            Source="/Assets/TextBoxBottom.png"
                             Stretch="Fill" />
                         <Image
                             Grid.Column="0"
                             Grid.Row="1"
-                            Source="/Assets/TextEditorLeft.png"
+                            Source="/Assets/TextBoxLeft.png"
                             Stretch="Fill" />
                         <Image
                             Grid.Column="2"
                             Grid.Row="1"
-                            Source="/Assets/TextEditorRight.png"
+                            Source="/Assets/TextBoxRight.png"
                             Stretch="Fill" />
 
                         <!--  Center  -->
                         <Image
                             Grid.Column="1"
                             Grid.Row="1"
-                            Source="/Assets/TextEditorCenter.png"
+                            Source="/Assets/TextBoxCenter.png"
                             Stretch="Fill" />
 
                         <!--  then place the ScrollViewer last so text + selection are on top  -->
@@ -352,7 +441,60 @@
             </Setter>
         </Style>
 
-
+        <Style Selector="RadioButton.tabnav">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <ControlTemplate TargetType="RadioButton">
+                    <Image Name="btnImage" Stretch="Uniform" />
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="RadioButton#TabTranslation Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonTranslation.png" />
+        </Style>
+        <Style Selector="RadioButton#TabTranslation:pointerover Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonTranslationHov.png" />
+        </Style>
+        <Style Selector="RadioButton#TabTranslation:checked Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonTranslationSelected.png" />
+        </Style>
+        <Style Selector="RadioButton#TabFiles Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonFiles.png" />
+        </Style>
+        <Style Selector="RadioButton#TabFiles:pointerover Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonFilesHov.png" />
+        </Style>
+        <Style Selector="RadioButton#TabFiles:checked Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonFilesSelected.png" />
+        </Style>
+        <Style Selector="RadioButton#TabHistory Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonHistory.png" />
+        </Style>
+        <Style Selector="RadioButton#TabHistory:pointerover Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonHistoryHov.png" />
+        </Style>
+        <Style Selector="RadioButton#TabHistory:checked Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonHistorySelected.png" />
+        </Style>
+        <Style Selector="RadioButton#TabOverview Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonOverview.png" />
+        </Style>
+        <Style Selector="RadioButton#TabOverview:pointerover Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonOverviewHov.png" />
+        </Style>
+        <Style Selector="RadioButton#TabOverview:checked Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonOverviewSelected.png" />
+        </Style>
+        <Style Selector="RadioButton#TabRelease Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonRelease.png" />
+        </Style>
+        <Style Selector="RadioButton#TabRelease:pointerover Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonReleaseHov.png" />
+        </Style>
+        <Style Selector="RadioButton#TabRelease:checked Image#btnImage">
+            <Setter Property="Source" Value="/Assets/NavButtonReleaseSelected.png" />
+        </Style>
 
         <Style Selector="Border.framed">
             <Setter Property="CornerRadius" Value="0" />
@@ -360,9 +502,6 @@
             <Setter Property="BorderBrush" Value="White" />
             <Setter Property="Background" Value="Transparent" />
         </Style>
-
-
-
 
 
     </Application.Styles>

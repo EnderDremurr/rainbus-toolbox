@@ -1,10 +1,11 @@
 ﻿using System.IO;
 using System.Threading;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Services;
@@ -14,59 +15,8 @@ namespace RainbusToolbox.ViewModels;
 
 public partial class MainWindowViewModel : ObservableObject
 {
-    #region Fields
-    // ReSharper disable once NotAccessedField.Local
-    private readonly PersistentDataManager _dataManager;
-    private readonly GithubManager _githubManager;
-    private readonly RepositoryManager _repositoryManager;
-    private readonly IServiceProvider _serviceProvider;
-    private readonly DiscordRPCService _discordRPCService;
-    
-    public ReleaseTabViewModel ReleaseTabViewModel { get; }
-    
-    // ReSharper disable once NotAccessedField.Local
-    private Timer? _reparseTimer;
-    #endregion
-
-    #region Properties
-
-    #region Translation info
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(UserRepoDisplay))]
-    private string _username = "Unknown";
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(UserRepoDisplay))]
-    private string _repoName = "Unknown";
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(UserRepoDisplay))]
-    private string _gitStatus = "Unknown";
-
-    public string UserRepoDisplay => $"{Username} : [{RepoName} {GitStatus}] ";
-
-    #endregion
-    
-    #region Checkboxes
-
-    // General section checkboxes
-    [ObservableProperty] private bool _appendLauncherLink = true; // Default checked
-    [ObservableProperty] private bool _mergeWithReadme = true;    // Default checked
-    
-    // Discord section checkboxes
-    [ObservableProperty] private bool _sendToDiscord;
-    [ObservableProperty] private bool _option1;
-    [ObservableProperty] private bool _option2;
-    [ObservableProperty] private string _roleToPing = string.Empty;
-
-    #endregion
-    
-    [ObservableProperty] private string _editorText = string.Empty;
-    
-    #endregion
-
     #region Constructor
+
     public MainWindowViewModel(
         PersistentDataManager dataManager,
         GithubManager githubManager,
@@ -80,7 +30,7 @@ public partial class MainWindowViewModel : ObservableObject
         _repositoryManager = repositoryManager;
         _serviceProvider = serviceProvider;
         _discordRPCService = discordRPCService;
-        
+
         ReleaseTabViewModel = releaseTabViewModel;
 
         // Initial parse
@@ -94,20 +44,20 @@ public partial class MainWindowViewModel : ObservableObject
             TimeSpan.FromMinutes(1));
 
         // Subscribe to window focus if running in desktop lifetime
-        if (Avalonia.Application.Current!.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current!.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
             return;
         // Ensure MainWindow exists
-        if (desktop.MainWindow == null) 
+        if (desktop.MainWindow == null)
             return;
-        
+
         desktop.MainWindow.Activated += (_, _) =>
             Dispatcher.UIThread.InvokeAsync(ReparseUserDataAsync);
-        
-
     }
+
     #endregion
 
     #region Methods
+
     public async Task ReparseUserDataAsync()
     {
         Username = await _githubManager.GetGithubDisplayNameAsync();
@@ -121,14 +71,69 @@ public partial class MainWindowViewModel : ObservableObject
         });
 
         RepoName = repoName;
-        GitStatus = (repoChanges[0] == 0 && repoChanges[1] == 0) ? "✓" : $" {repoChanges[0]}↓ {repoChanges[1]}↑";
+        GitStatus = repoChanges[0] == 0 && repoChanges[1] == 0 ? "✓" : $" {repoChanges[0]}↓ - {repoChanges[1]}↑";
         _discordRPCService.ProjectName = repoName;
         _discordRPCService.ProjectUrl = _repositoryManager.Repository.Network.Remotes["origin"].Url;
         _discordRPCService.SetState(null);
     }
+
+    #endregion
+
+    #region Fields
+
+    // ReSharper disable once NotAccessedField.Local
+    private readonly PersistentDataManager _dataManager;
+    private readonly GithubManager _githubManager;
+    private readonly RepositoryManager _repositoryManager;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly DiscordRPCService _discordRPCService;
+
+    public ReleaseTabViewModel ReleaseTabViewModel { get; }
+
+    // ReSharper disable once NotAccessedField.Local
+    private Timer? _reparseTimer;
+
+    #endregion
+
+    #region Properties
+
+    #region Translation info
+
+    [ObservableProperty]
+    private string _username = "Unknown";
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(RepoDisplay))]
+    private string _repoName = "Unknown";
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(RepoDisplay))]
+    private string _gitStatus = "Unknown";
+
+    public string RepoDisplay => $"<{RepoName} - {GitStatus}> ";
+
+    #endregion
+
+    #region Checkboxes
+
+    // General section checkboxes
+    [ObservableProperty] private bool _appendLauncherLink = true; // Default checked
+    [ObservableProperty] private bool _mergeWithReadme = true; // Default checked
+
+    // Discord section checkboxes
+    [ObservableProperty] private bool _sendToDiscord;
+    [ObservableProperty] private bool _option1;
+    [ObservableProperty] private bool _option2;
+    [ObservableProperty] private string _roleToPing = string.Empty;
+
+    #endregion
+
+    [ObservableProperty] private string _editorText = string.Empty;
+
     #endregion
 
     #region Commands
+
     [RelayCommand]
     private async Task OpenSettings(Window ownerWindow)
     {
@@ -137,14 +142,24 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void Minimize(Window ownerWindow) => ownerWindow.WindowState = WindowState.Minimized;
+    private void Minimize(Window ownerWindow)
+    {
+        ownerWindow.WindowState = WindowState.Minimized;
+    }
 
     [RelayCommand]
-    private void Maximize(Window ownerWindow) =>
-        ownerWindow.WindowState = ownerWindow.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+    private void Maximize(Window ownerWindow)
+    {
+        ownerWindow.WindowState = ownerWindow.WindowState == WindowState.Maximized
+            ? WindowState.Normal
+            : WindowState.Maximized;
+    }
 
     [RelayCommand]
-    private void Close(Window ownerWindow) => ownerWindow.Close();
+    private void Close(Window ownerWindow)
+    {
+        ownerWindow.Close();
+    }
 
     [RelayCommand] private void Synchronize()
     {
@@ -165,6 +180,9 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
-    [RelayCommand] private void History() { }
+    [RelayCommand] private void History()
+    {
+    }
+
     #endregion
 }

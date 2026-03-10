@@ -23,146 +23,220 @@
             x:Name="Bg">
             <Image.Transitions>
                 <Transitions>
-                    <DoubleTransition Duration="0:0:0.3" Property="Opacity" />
+                    <DoubleTransition Duration="0:0:1" Property="Opacity" />
                 </Transitions>
             </Image.Transitions>
         </Image>
 
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="60" />
-                <!--  Title bar  -->
+                <RowDefinition Height="64" />
                 <RowDefinition Height="*" />
-                <!--  Tabs  -->
             </Grid.RowDefinitions>
-
-            <Grid
-                Background="Transparent"
+            <Border
+                Background="#80050505"
                 Grid.Row="0"
-                Height="60"
                 PointerPressed="TitleBar_OnPointerPressed">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="192" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="192" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Button
+                            Classes="navigation"
+                            Command="{Binding OpenSettingsCommand}"
+                            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                            Height="64"
+                            HorizontalAlignment="Left"
+                            Width="64"
+                            x:Name="SettingsButton" />
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Grid HorizontalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Classes="header"
+                                Effect="{StaticResource HardShadow}"
+                                FontSize="36"
+                                Foreground="White"
+                                Grid.Column="0"
+                                Margin="0,0,34,0"
+                                Text="{Binding Username}"
+                                VerticalAlignment="Center" />
+                            <Button
+                                Classes="navigation"
+                                Command="{Binding SynchronizeCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                                Grid.Column="1"
+                                Height="64"
+                                Margin="0,0,0,0"
+                                Width="64"
+                                x:Name="SynchronizeButton" />
+                            <Button
+                                Classes="navigation"
+                                Command="{Binding CommitCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                                Grid.Column="2"
+                                Height="64"
+                                Margin="0,0,0,0"
+                                Width="64"
+                                x:Name="CommitButton" />
+                            <TextBlock
+                                Classes="header"
+                                Effect="{StaticResource HardShadow}"
+                                FontSize="36"
+                                Foreground="White"
+                                Grid.Column="3"
+                                Margin="34,0,0,0"
+                                Text="{Binding RepoDisplay}"
+                                VerticalAlignment="Center" />
+                        </Grid>
+                    </Grid>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                        <Button
+                            Classes="navigation"
+                            Command="{Binding MinimizeCommand}"
+                            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                            Height="64"
+                            Width="64"
+                            x:Name="MinButton" />
+                        <Button
+                            Classes="navigation"
+                            Command="{Binding MaximizeCommand}"
+                            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                            Height="64"
+                            Width="64"
+                            x:Name="MaxButton" />
+                        <Button
+                            Classes="navigation"
+                            Command="{Binding CloseCommand}"
+                            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                            Height="64"
+                            Width="64"
+                            x:Name="CloseButton" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="96" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-
-                <!--  Settings Button  -->
-                <Button
-                    Classes="navigation"
-                    Command="{Binding OpenSettingsCommand}"
-                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                <Grid
                     Grid.Column="0"
-                    Margin="15,5,15,0"
-                    ToolTip.Tip="Открыть настройки"
-                    x:Name="SettingsButton" />
-
-                <!--  Text + Buttons in center  -->
-                <StackPanel
-                    Grid.Column="1"
-                    Margin="15,0,0,0"
-                    Orientation="Horizontal"
+                    HorizontalAlignment="Left"
                     VerticalAlignment="Center">
-
-                    <TextBlock
-                        Classes="header"
-                        Foreground="White"
-                        Text="{Binding UserRepoDisplay}"
-                        VerticalAlignment="Center" />
-
-                    <Button
-                        Classes="navigation"
-                        Command="{Binding SynchronizeCommand}"
-                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                        Margin="5,0,0,0"
-                        ToolTip.Tip="Синхронизировать изменения"
-                        x:Name="SynchronizeButton" />
-
-                    <Button
-                        Classes="navigation"
-                        Command="{Binding CommitCommand}"
-                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                        Margin="5,0,0,0"
-                        ToolTip.Tip="Сохранить изменения в гит (коммит)"
-                        x:Name="CommitButton" />
-
-                    <Button
-                        Classes="navigation"
-                        Command="{Binding HistoryCommand}"
-                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                        Margin="5,0,0,0"
-                        ToolTip.Tip="Просмотреть историю гит"
-                        x:Name="HistoryButton" />
-                </StackPanel>
-
-                <!--  Window control buttons  -->
-                <StackPanel
-                    Grid.Column="2"
-                    Margin="0,5,15,0"
-                    Orientation="Horizontal"
-                    VerticalAlignment="Center">
-                    <Button
-                        Classes="navigation"
-                        Command="{Binding MinimizeCommand}"
-                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                        ToolTip.Tip="Сворачивает прогу"
-                        x:Name="MinButton" />
-                    <Button
-                        Classes="navigation"
-                        Command="{Binding MaximizeCommand}"
-                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                        ToolTip.Tip="Изменяет размер окна"
-                        x:Name="MaxButton" />
-                    <Button
-                        Classes="navigation"
-                        Command="{Binding CloseCommand}"
-                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                        ToolTip.Tip="Закрывает прогу"
-                        x:Name="CloseButton" />
-                </StackPanel>
+                    <Border
+                        Background="#80050505"
+                        CornerRadius="0,20,20,0"
+                        Height="408"
+                        Margin="0,-32,0,-32"
+                        Width="64" />
+                    <Grid VerticalAlignment="Center" Width="64">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="64" />
+                            <RowDefinition Height="22" />
+                            <RowDefinition Height="64" />
+                            <RowDefinition Height="22" />
+                            <RowDefinition Height="64" />
+                            <RowDefinition Height="22" />
+                            <RowDefinition Height="64" />
+                            <RowDefinition Height="22" />
+                            <RowDefinition Height="64" />
+                        </Grid.RowDefinitions>
+                        <RadioButton
+                            Classes="tabnav"
+                            Content=""
+                            Grid.Row="0"
+                            GroupName="Tabs"
+                            Height="64"
+                            IsChecked="True"
+                            Width="64"
+                            x:Name="TabTranslation" />
+                        <RadioButton
+                            Classes="tabnav"
+                            Content=""
+                            Grid.Row="2"
+                            GroupName="Tabs"
+                            Height="64"
+                            Margin="0,0,0,0"
+                            Width="64"
+                            x:Name="TabFiles" />
+                        <RadioButton
+                            Classes="tabnav"
+                            Content=""
+                            Grid.Row="4"
+                            GroupName="Tabs"
+                            Height="64"
+                            Margin="0,0,0,0"
+                            Width="64"
+                            x:Name="TabHistory" />
+                        <RadioButton
+                            Classes="tabnav"
+                            Content=""
+                            Grid.Row="6"
+                            GroupName="Tabs"
+                            Height="64"
+                            Width="64"
+                            x:Name="TabOverview" />
+                        <RadioButton
+                            Classes="tabnav"
+                            Content=""
+                            Grid.Row="8"
+                            GroupName="Tabs"
+                            Height="64"
+                            Width="64"
+                            x:Name="TabRelease" />
+                    </Grid>
+                </Grid>
+                <TabControl Grid.Column="1">
+                    <TabControl.Styles>
+                        <Style Selector="TabControl">
+                            <Setter Property="Template">
+                                <ControlTemplate>
+                                    <Grid>
+                                        <ItemsPresenter
+                                            Height="0"
+                                            IsHitTestVisible="False"
+                                            Name="PART_ItemsPresenter"
+                                            Width="0" />
+                                        <ContentPresenter
+                                            Content="{TemplateBinding SelectedContent}"
+                                            ContentTemplate="{TemplateBinding SelectedContentTemplate}"
+                                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            Margin="{TemplateBinding Padding}"
+                                            Name="PART_SelectedContentHost"
+                                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter>
+                        </Style>
+                    </TabControl.Styles>
+                    <TabItem IsSelected="{Binding #TabTranslation.IsChecked}">
+                        <views:TranslationTab x:Name="TranslationTabControl" />
+                    </TabItem>
+                    <TabItem IsSelected="{Binding #TabFiles.IsChecked}">
+                        <views:FilesTab x:Name="FilesTabControl" />
+                    </TabItem>
+                    <TabItem IsSelected="{Binding #TabHistory.IsChecked}">
+                        <!-- <views:HistoryTab x:Name="HistoryTabControl" /> -->
+                        <Grid />
+                    </TabItem>
+                    <TabItem IsSelected="{Binding #TabOverview.IsChecked}">
+                        <views:OverviewTab x:Name="OverviewTabControl" />
+                    </TabItem>
+                    <TabItem IsSelected="{Binding #TabRelease.IsChecked}">
+                        <views:ReleaseTab x:Name="ReleaseTabControl" />
+                    </TabItem>
+                </TabControl>
             </Grid>
-
-            <!--  Tabs  -->
-
-            <TabControl
-                Grid.Row="1"
-                Margin="0,10,0,10"
-                x:Name="MainTabs">
-                <TabControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <DockPanel LastChildFill="False" />
-                    </ItemsPanelTemplate>
-                </TabControl.ItemsPanel>
-
-                <TabItem
-                    DockPanel.Dock="Left"
-                    FontFamily="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs"
-                    FontSize="20"
-                    Foreground="White"
-                    Header="Перевоз">
-                    <views:TranslationTab x:Name="TranslationTabControl" />
-                </TabItem>
-
-                <TabItem
-                    DockPanel.Dock="Right"
-                    FontFamily="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs"
-                    FontSize="20"
-                    Foreground="White"
-                    Header="Выложить релиз">
-                    <views:ReleaseTab DataContext="{Binding ReleaseTabViewModel}" x:Name="ReleaseTabControl" />
-                </TabItem>
-
-                <TabItem
-                    DockPanel.Dock="Right"
-                    FontFamily="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs"
-                    FontSize="20"
-                    Foreground="White"
-                    Header="Файлы">
-                    <views:FilesTab x:Name="FilesTabControl" />
-                </TabItem>
-
-
-            </TabControl>
         </Grid>
     </Grid>
 </Window>

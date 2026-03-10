@@ -78,14 +78,14 @@
                 <StackPanel Spacing="15">
 
                     <!--  General section  -->
-                    <Border Classes="section-border" Padding="10">
+                    <Border Padding="10">
                         <StackPanel Spacing="10">
                             <TextBlock
                                 FontFamily="{StaticResource MikodacsFont}"
-                                FontSize="18"
+                                FontSize="26"
                                 FontWeight="Bold"
                                 Foreground="White"
-                                Text="General" />
+                                Text="Основное" />
 
                             <CheckBox
                                 Content="Добавить README.md с описанием обновления"
@@ -95,14 +95,14 @@
                     </Border>
 
                     <!--  Discord section  -->
-                    <Border Classes="section-border" Padding="10">
+                    <Border Padding="10">
                         <StackPanel Spacing="10">
                             <TextBlock
                                 FontFamily="{StaticResource MikodacsFont}"
-                                FontSize="18"
+                                FontSize="26"
                                 FontWeight="Bold"
                                 Foreground="White"
-                                Text="Discord" />
+                                Text="Дискорд" />
 
                             <CheckBox
                                 Content="Отправить описание релиза в дискорд"
@@ -128,15 +128,22 @@
                                 Content="Прикрепить картинку в дискорде"
                                 IsChecked="{Binding AttachAnImage}"
                                 Margin="5,0" />
-                            <TextBlock
-                                Classes="header"
-                                IsVisible="{Binding AttachAnImage}"
-                                Text="{Binding SelectedFileName}" />
                             <Button
                                 Command="{Binding SelectFile}"
                                 Content="Выбрать файл"
-                                Height="40"
+                                Height="80"
                                 IsVisible="{Binding AttachAnImage}" />
+                            <TextBlock
+                                Classes="header"
+                                IsVisible="{Binding AttachAnImage}"
+                                Text="{Binding SelectedFileName}"
+                                TextAlignment="Center" />
+                            <Image
+                                IsVisible="{Binding AttachAnImage}"
+                                Margin="5"
+                                MaxHeight="200"
+                                Source="{Binding SelectedImagePreview}"
+                                Stretch="Uniform" />
                         </StackPanel>
                     </Border>
                 </StackPanel>
