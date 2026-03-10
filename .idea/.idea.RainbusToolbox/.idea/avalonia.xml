@@ -5,6 +5,14 @@
       <map>
         <entry key="App.axaml" value="RainbusToolbox.csproj" />
         <entry key="Resources/Language.ru.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Styles/Controls/Checkbox.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Styles/Controls/NavigationButtons.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Styles/Controls/NavigationTabs.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Styles/Themes/DefaultButtonTheme.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Styles/Themes/GenericTabItemTheme.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Styles/Themes/TextBoxFramedTheme.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Styles/Themes/TextBoxInvisibleTheme.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Styles/Themes/Typography.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/BattleHintsTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/ExceptionDialog.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/MainWindow.axaml" value="RainbusToolbox.csproj" />

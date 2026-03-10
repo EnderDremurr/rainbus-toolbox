@@ -1,0 +1,180 @@
+<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Background="#222" Padding="20">
+            <TabControl>
+                <TabItem Classes="generic" Header="Tab One" />
+                <TabItem Classes="generic" Header="Tab Two" />
+                <TabItem Classes="generic" Header="Tab Three" />
+            </TabControl>
+        </Border>
+    </Design.PreviewWith>
+
+    <!--  Generic TabItem template  -->
+    <Style Selector="TabItem.generic">
+        <Setter Property="Width" Value="250" />
+        <Setter Property="Height" Value="60" />
+        <Setter Property="Template">
+            <ControlTemplate TargetType="TabItem">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="16" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="16" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="16" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--  Corners  -->
+                    <Image
+                        Grid.Column="0"
+                        Grid.Row="0"
+                        Name="TopLeft" />
+                    <Image
+                        Grid.Column="2"
+                        Grid.Row="0"
+                        Name="TopRight" />
+                    <Image
+                        Grid.Column="0"
+                        Grid.Row="2"
+                        Name="BottomLeft" />
+                    <Image
+                        Grid.Column="2"
+                        Grid.Row="2"
+                        Name="BottomRight" />
+
+                    <!--  Edges  -->
+                    <Image
+                        Grid.Column="1"
+                        Grid.Row="0"
+                        Name="Top"
+                        Stretch="Fill" />
+                    <Image
+                        Grid.Column="1"
+                        Grid.Row="2"
+                        Name="Bottom"
+                        Stretch="Fill" />
+                    <Image
+                        Grid.Column="0"
+                        Grid.Row="1"
+                        Name="Left"
+                        Stretch="Fill" />
+                    <Image
+                        Grid.Column="2"
+                        Grid.Row="1"
+                        Name="Right"
+                        Stretch="Fill" />
+
+                    <!--  Center  -->
+                    <Image
+                        Grid.Column="1"
+                        Grid.Row="1"
+                        Name="Center"
+                        Stretch="Fill" />
+
+                    <!--  Content on top  -->
+                    <ContentPresenter
+                        Content="{TemplateBinding Header}"
+                        FontFamily="{StaticResource MikodacsFont}"
+                        FontSize="22"
+                        Foreground="White"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="3"
+                        Grid.Row="0"
+                        Grid.RowSpan="3"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <!--  Idle state  -->
+    <Style Selector="TabItem.generic /template/ Image#TopLeft">
+        <Setter Property="Source" Value="/Assets/MainButtonIdleTopLeft.png" />
+    </Style>
+    <Style Selector="TabItem.generic /template/ Image#TopRight">
+        <Setter Property="Source" Value="/Assets/MainButtonIdleTopRight.png" />
+    </Style>
+    <Style Selector="TabItem.generic /template/ Image#BottomLeft">
+        <Setter Property="Source" Value="/Assets/MainButtonIdleBottomLeft.png" />
+    </Style>
+    <Style Selector="TabItem.generic /template/ Image#BottomRight">
+        <Setter Property="Source" Value="/Assets/MainButtonIdleBottomRight.png" />
+    </Style>
+    <Style Selector="TabItem.generic /template/ Image#Top">
+        <Setter Property="Source" Value="/Assets/MainButtonIdleTop.png" />
+    </Style>
+    <Style Selector="TabItem.generic /template/ Image#Bottom">
+        <Setter Property="Source" Value="/Assets/MainButtonIdleBottom.png" />
+    </Style>
+    <Style Selector="TabItem.generic /template/ Image#Left">
+        <Setter Property="Source" Value="/Assets/MainButtonIdleLeft.png" />
+    </Style>
+    <Style Selector="TabItem.generic /template/ Image#Right">
+        <Setter Property="Source" Value="/Assets/MainButtonIdleRight.png" />
+    </Style>
+    <Style Selector="TabItem.generic /template/ Image#Center">
+        <Setter Property="Source" Value="/Assets/MainButtonIdleCenter.png" />
+    </Style>
+
+    <!--  Hovered state  -->
+    <Style Selector="TabItem.generic:pointerover /template/ Image#TopLeft">
+        <Setter Property="Source" Value="/Assets/MainButtonHoverTopLeft.png" />
+    </Style>
+    <Style Selector="TabItem.generic:pointerover /template/ Image#TopRight">
+        <Setter Property="Source" Value="/Assets/MainButtonHoverTopRight.png" />
+    </Style>
+    <Style Selector="TabItem.generic:pointerover /template/ Image#BottomLeft">
+        <Setter Property="Source" Value="/Assets/MainButtonHoverBottomLeft.png" />
+    </Style>
+    <Style Selector="TabItem.generic:pointerover /template/ Image#BottomRight">
+        <Setter Property="Source" Value="/Assets/MainButtonHoverBottomRight.png" />
+    </Style>
+    <Style Selector="TabItem.generic:pointerover /template/ Image#Top">
+        <Setter Property="Source" Value="/Assets/MainButtonHoverTop.png" />
+    </Style>
+    <Style Selector="TabItem.generic:pointerover /template/ Image#Bottom">
+        <Setter Property="Source" Value="/Assets/MainButtonHoverBottom.png" />
+    </Style>
+    <Style Selector="TabItem.generic:pointerover /template/ Image#Left">
+        <Setter Property="Source" Value="/Assets/MainButtonHoverLeft.png" />
+    </Style>
+    <Style Selector="TabItem.generic:pointerover /template/ Image#Right">
+        <Setter Property="Source" Value="/Assets/MainButtonHoverRight.png" />
+    </Style>
+    <Style Selector="TabItem.generic:pointerover /template/ Image#Center">
+        <Setter Property="Source" Value="/Assets/MainButtonHoverCenter.png" />
+    </Style>
+
+    <!--  Selected state  -->
+    <Style Selector="TabItem.generic:selected /template/ Image#TopLeft">
+        <Setter Property="Source" Value="/Assets/MainButtonHoverTopLeft.png" />
+    </Style>
+    <Style Selector="TabItem.generic:selected /template/ Image#TopRight">
+        <Setter Property="Source" Value="/Assets/MainButtonHoverTopRight.png" />
+    </Style>
+    <Style Selector="TabItem.generic:selected /template/ Image#BottomLeft">
+        <Setter Property="Source" Value="/Assets/MainButtonHoverBottomLeft.png" />
+    </Style>
+    <Style Selector="TabItem.generic:selected /template/ Image#BottomRight">
+        <Setter Property="Source" Value="/Assets/MainButtonHoverBottomRight.png" />
+    </Style>
+    <Style Selector="TabItem.generic:selected /template/ Image#Top">
+        <Setter Property="Source" Value="/Assets/MainButtonHoverTop.png" />
+    </Style>
+    <Style Selector="TabItem.generic:selected /template/ Image#Bottom">
+        <Setter Property="Source" Value="/Assets/MainButtonHoverBottom.png" />
+    </Style>
+    <Style Selector="TabItem.generic:selected /template/ Image#Left">
+        <Setter Property="Source" Value="/Assets/MainButtonHoverLeft.png" />
+    </Style>
+    <Style Selector="TabItem.generic:selected /template/ Image#Right">
+        <Setter Property="Source" Value="/Assets/MainButtonHoverRight.png" />
+    </Style>
+    <Style Selector="TabItem.generic:selected /template/ Image#Center">
+        <Setter Property="Source" Value="/Assets/MainButtonHoverCenter.png" />
+    </Style>
+</Styles>

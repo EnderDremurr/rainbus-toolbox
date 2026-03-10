@@ -1,0 +1,112 @@
+<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <TextBox
+            Classes="framed"
+            Height="300"
+            MaxWidth="600"
+            Text="Skibid toilet             zzzzzzzzzzzzzzzzz                 zzzzzzzzzzzzzz             asdasdasdasdasdasda             asdasdadasdas                 d             ssssssasdasdasdddddddddddddddddddddddd                 dddasdasdasdasdadsdsdasdasds"
+            TextWrapping="Wrap" />
+
+    </Design.PreviewWith>
+
+    <Style Selector="TextBox.framed">
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="CaretBrush" Value="White" />
+        <Setter Property="MinHeight" Value="60" />
+        <Setter Property="SelectionBrush" Value="#66007ACC" />
+        <Setter Property="SelectionForegroundBrush" Value="Black" />
+        <Setter Property="Padding" Value="4" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="20" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="20" />
+                    </Grid.ColumnDefinitions>
+
+                    <Image
+                        Grid.Column="0"
+                        Grid.Row="0"
+                        Source="/Assets/TextBoxTopLeft.png" />
+                    <Image
+                        Grid.Column="2"
+                        Grid.Row="0"
+                        Source="/Assets/TextBoxTopRight.png" />
+                    <Image
+                        Grid.Column="0"
+                        Grid.Row="2"
+                        Source="/Assets/TextBoxBottomLeft.png" />
+                    <Image
+                        Grid.Column="2"
+                        Grid.Row="2"
+                        Source="/Assets/TextBoxBottomRight.png" />
+
+                    <Image
+                        Grid.Column="1"
+                        Grid.Row="0"
+                        Source="/Assets/TextBoxTop.png"
+                        Stretch="Fill" />
+                    <Image
+                        Grid.Column="1"
+                        Grid.Row="2"
+                        Source="/Assets/TextBoxBottom.png"
+                        Stretch="Fill" />
+                    <Image
+                        Grid.Column="0"
+                        Grid.Row="1"
+                        Source="/Assets/TextBoxLeft.png"
+                        Stretch="Fill" />
+                    <Image
+                        Grid.Column="2"
+                        Grid.Row="1"
+                        Source="/Assets/TextBoxRight.png"
+                        Stretch="Fill" />
+
+                    <Image
+                        Grid.Column="1"
+                        Grid.Row="1"
+                        Source="/Assets/TextBoxCenter.png"
+                        Stretch="Fill" />
+
+                    <ScrollViewer
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Grid.Column="1"
+                        Grid.Row="1"
+                        HorizontalScrollBarVisibility="Hidden"
+                        Name="PART_ScrollViewer"
+                        Padding="{TemplateBinding Padding}"
+                        VerticalScrollBarVisibility="Hidden">
+                        <Grid Name="PART_ContentPresenterHost">
+                            <TextPresenter
+                                CaretBrush="{TemplateBinding CaretBrush}"
+                                CaretIndex="{TemplateBinding CaretIndex}"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                LetterSpacing="{TemplateBinding LetterSpacing}"
+                                LineHeight="{TemplateBinding LineHeight}"
+                                Margin="0"
+                                Name="PART_TextPresenter"
+                                PasswordChar="{TemplateBinding PasswordChar}"
+                                RevealPassword="{TemplateBinding RevealPassword}"
+                                SelectionBrush="{TemplateBinding SelectionBrush}"
+                                SelectionEnd="{TemplateBinding SelectionEnd}"
+                                SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                                SelectionStart="{TemplateBinding SelectionStart}"
+                                Text="{TemplateBinding Text,
+                                                       Mode=TwoWay}"
+                                TextAlignment="{TemplateBinding TextAlignment}"
+                                TextWrapping="{TemplateBinding TextWrapping}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

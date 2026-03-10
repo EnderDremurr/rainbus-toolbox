@@ -15,8 +15,6 @@
         <AvaloniaResource Include="Assets\**"/>
         <AvaloniaResource Include="Assets\Fonts\Pretendard.ttf"/>
         <AvaloniaResource Include="Assets\Fonts\Mikodacs.ttf"/>
-        <Folder Include="Styles\Controls\"/>
-        <Folder Include="Styles\Themes\"/>
     </ItemGroup>
 
     <ItemGroup>

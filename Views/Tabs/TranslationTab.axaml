@@ -31,9 +31,10 @@
                 <Button
                     Command="{Binding SelectFileCommand}"
                     Content="Выбрать файл"
+                    Height="60"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
-                    Width="320" />
+                    Width="280" />
 
                 <!--  Center: File type info  -->
                 <StackPanel
@@ -74,11 +75,13 @@
                     <Button
                         Command="{Binding SaveObjectFromCurrentEditorCommand}"
                         Content="Сохранить"
-                        Width="320" />
+                        Height="60"
+                        Width="280" />
                     <Button
                         Command="{Binding SaveObjectFromCurrentEditorAndClose}"
                         Content="Сохранить и закрыть"
-                        Width="320" />
+                        Height="60"
+                        Width="280" />
                 </StackPanel>
             </Grid>
         </Border>
@@ -91,7 +94,10 @@
 
         <!--  Welcome / Empty State  -->
         <Border Grid.Row="1" IsVisible="{Binding IsFileLoaded, Converter={StaticResource InverseBoolConverter}}">
-            <TabControl ItemsSource="{Binding GroupedShortcuts}" Margin="0,30,0,0">
+            <TabControl
+                Classes="generic"
+                ItemsSource="{Binding GroupedShortcuts}"
+                Margin="0,30,0,0">
                 <TabControl.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Key}" />
@@ -99,7 +105,7 @@
                 </TabControl.ItemTemplate>
                 <TabControl.ContentTemplate>
                     <DataTemplate>
-                        <ItemsControl ItemsSource="{Binding}">
+                        <ItemsControl Classes="generic" ItemsSource="{Binding}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel />

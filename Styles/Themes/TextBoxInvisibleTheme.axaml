@@ -1,0 +1,39 @@
+<Styles
+    xmlns="https://github.com/avaloniaui"
+    xmlns:utilities="clr-namespace:RainbusToolbox.Utilities"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <TextBox
+                Classes="invisible"
+                MaxWidth="600"
+                Text="Skibid toilet             zzzzzzzzzzzzzzzzz                 zzzzzzzzzzzzzz             asdasdasdasdasdasda             asdasdadasdas                 d             ssssssasdasdasdddddddddddddddddddddddd                 dddasdasdasdasdadsdsdasdasds"
+                TextWrapping="Wrap" />
+        </Border>
+    </Design.PreviewWith>
+
+    <Style Selector="TextBox.invisible">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Watermark" Value="No text found" />
+        <Setter Property="SelectionBrush" Value="Brown" />
+        <Setter Property="utilities:ContextMenuHelper.EnableTextPreview" Value="True" />
+    </Style>
+    <Style Selector="TextBox.invisible:focus /template/ Border#PART_BorderElement">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+    <Style Selector="TextBox.invisible:pointerover /template/ Border#PART_BorderElement">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+    <Style Selector="TextBox.invisible /template/ ScrollViewer#PART_ContentHost">
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+    </Style>
+</Styles>

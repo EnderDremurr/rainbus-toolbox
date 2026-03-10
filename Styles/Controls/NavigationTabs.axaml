@@ -1,0 +1,88 @@
+<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Background="#222" Padding="20">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <RadioButton
+                    Classes="tabnav"
+                    Height="60"
+                    Name="TabTranslation"
+                    Width="60" />
+                <RadioButton
+                    Classes="tabnav"
+                    Height="60"
+                    Name="TabFiles"
+                    Width="60" />
+                <RadioButton
+                    Classes="tabnav"
+                    Height="60"
+                    Name="TabHistory"
+                    Width="60" />
+                <RadioButton
+                    Classes="tabnav"
+                    Height="60"
+                    Name="TabOverview"
+                    Width="60" />
+                <RadioButton
+                    Classes="tabnav"
+                    Height="60"
+                    Name="TabRelease"
+                    Width="60" />
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <Style Selector="RadioButton.tabnav">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Template">
+            <ControlTemplate TargetType="RadioButton">
+                <Image Name="btnImage" Stretch="Uniform" />
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="RadioButton#TabTranslation Image#btnImage">
+        <Setter Property="Source" Value="/Assets/NavButtonTranslation.png" />
+    </Style>
+    <Style Selector="RadioButton#TabTranslation:pointerover Image#btnImage">
+        <Setter Property="Source" Value="/Assets/NavButtonTranslationHov.png" />
+    </Style>
+    <Style Selector="RadioButton#TabTranslation:checked Image#btnImage">
+        <Setter Property="Source" Value="/Assets/NavButtonTranslationSelected.png" />
+    </Style>
+    <Style Selector="RadioButton#TabFiles Image#btnImage">
+        <Setter Property="Source" Value="/Assets/NavButtonFiles.png" />
+    </Style>
+    <Style Selector="RadioButton#TabFiles:pointerover Image#btnImage">
+        <Setter Property="Source" Value="/Assets/NavButtonFilesHov.png" />
+    </Style>
+    <Style Selector="RadioButton#TabFiles:checked Image#btnImage">
+        <Setter Property="Source" Value="/Assets/NavButtonFilesSelected.png" />
+    </Style>
+    <Style Selector="RadioButton#TabHistory Image#btnImage">
+        <Setter Property="Source" Value="/Assets/NavButtonHistory.png" />
+    </Style>
+    <Style Selector="RadioButton#TabHistory:pointerover Image#btnImage">
+        <Setter Property="Source" Value="/Assets/NavButtonHistoryHov.png" />
+    </Style>
+    <Style Selector="RadioButton#TabHistory:checked Image#btnImage">
+        <Setter Property="Source" Value="/Assets/NavButtonHistorySelected.png" />
+    </Style>
+    <Style Selector="RadioButton#TabOverview Image#btnImage">
+        <Setter Property="Source" Value="/Assets/NavButtonOverview.png" />
+    </Style>
+    <Style Selector="RadioButton#TabOverview:pointerover Image#btnImage">
+        <Setter Property="Source" Value="/Assets/NavButtonOverviewHov.png" />
+    </Style>
+    <Style Selector="RadioButton#TabOverview:checked Image#btnImage">
+        <Setter Property="Source" Value="/Assets/NavButtonOverviewSelected.png" />
+    </Style>
+    <Style Selector="RadioButton#TabRelease Image#btnImage">
+        <Setter Property="Source" Value="/Assets/NavButtonRelease.png" />
+    </Style>
+    <Style Selector="RadioButton#TabRelease:pointerover Image#btnImage">
+        <Setter Property="Source" Value="/Assets/NavButtonReleaseHov.png" />
+    </Style>
+    <Style Selector="RadioButton#TabRelease:checked Image#btnImage">
+        <Setter Property="Source" Value="/Assets/NavButtonReleaseSelected.png" />
+    </Style>
+</Styles>

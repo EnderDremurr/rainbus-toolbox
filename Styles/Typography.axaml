@@ -1,0 +1,49 @@
+<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <StackPanel Background="#222" Spacing="8">
+            <TextBlock Width="1000">TextBlock normal</TextBlock>
+            <TextBlock Classes="header" Width="1000">TextBlock header</TextBlock>
+            <TextBox Text="TextBox normal" Width="1000" />
+            <TextBox
+                Classes="header"
+                Text="TextBox header"
+                Width="1000" />
+            <Button
+                Content="Button normal"
+                Height="60"
+                Width="1000" />
+            <Button
+                Classes="header"
+                Content="Button header"
+                Height="60"
+                Width="1000" />
+        </StackPanel>
+    </Design.PreviewWith>
+
+    <Style Selector="TextBlock">
+        <Setter Property="FontFamily" Value="avares://RainbusToolbox/Assets/Fonts/Pretendard.ttf#Pretendard" />
+    </Style>
+    <Style Selector="TextBox">
+        <Setter Property="FontFamily" Value="avares://RainbusToolbox/Assets/Fonts/Pretendard.ttf#Pretendard" />
+    </Style>
+    <Style Selector="Button">
+        <Setter Property="FontFamily" Value="avares://RainbusToolbox/Assets/Fonts/Pretendard.ttf#Pretendard" />
+    </Style>
+    <Style Selector="TextBlock.header">
+        <Setter Property="FontFamily" Value="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs" />
+        <Setter Property="FontSize" Value="30" />
+    </Style>
+    <Style Selector="TextBox.header">
+        <Setter Property="FontFamily" Value="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs" />
+        <Setter Property="FontSize" Value="30" />
+    </Style>
+    <Style Selector="Button.header">
+        <Setter Property="FontFamily" Value="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs" />
+        <Setter Property="FontSize" Value="24" />
+    </Style>
+    <Style Selector="Button TextBlock.header">
+        <Setter Property="FontFamily" Value="avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs" />
+        <Setter Property="FontSize" Value="24" />
+    </Style>
+
+</Styles>

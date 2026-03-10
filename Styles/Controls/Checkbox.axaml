@@ -1,0 +1,32 @@
+<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <StackPanel Background="#222" Spacing="8">
+            <CheckBox Content="Unchecked" IsChecked="False" />
+            <CheckBox Content="Checked" IsChecked="True" />
+            <CheckBox Content="Indeterminate" IsChecked="{x:Null}" />
+        </StackPanel>
+    </Design.PreviewWith>
+
+    <Style Selector="CheckBox">
+        <Setter Property="Template">
+            <ControlTemplate TargetType="CheckBox">
+                <StackPanel
+                    Orientation="Horizontal"
+                    Spacing="8"
+                    VerticalAlignment="Center">
+                    <Image
+                        Height="30"
+                        Source="{Binding IsChecked, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource CheckedToImageConverter}}"
+                        Width="30" />
+                    <TextBlock
+                        FontFamily="{StaticResource MikodacsFont}"
+                        FontSize="18"
+                        Foreground="White"
+                        Text="{TemplateBinding Content}"
+                        TextWrapping="Wrap"
+                        VerticalAlignment="Center" />
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

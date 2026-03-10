@@ -196,9 +196,9 @@
                             x:Name="TabRelease" />
                     </Grid>
                 </Grid>
-                <TabControl Grid.Column="1">
+                <TabControl Classes="mainTabs" Grid.Column="1">
                     <TabControl.Styles>
-                        <Style Selector="TabControl">
+                        <Style Selector="TabControl.mainTabs">
                             <Setter Property="Template">
                                 <ControlTemplate>
                                     <Grid>
