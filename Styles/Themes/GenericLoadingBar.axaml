@@ -1,0 +1,144 @@
+<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Background="#222" Padding="40">
+            <StackPanel Spacing="20">
+                <ProgressBar
+                    Maximum="1"
+                    Value="0"
+                    Width="1180" />
+                <ProgressBar
+                    Maximum="1"
+                    Value="0.25"
+                    Width="1184" />
+                <ProgressBar
+                    Maximum="1"
+                    Value="0.5"
+                    Width="1184" />
+                <ProgressBar
+                    Maximum="1"
+                    Value="0.75"
+                    Width="1184" />
+                <ProgressBar
+                    Maximum="1"
+                    Value="1"
+                    Width="1184" />
+                <ProgressBar IsIndeterminate="True" Width="1184" />
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <Style Selector="ProgressBar">
+        <Setter Property="Template">
+            <ControlTemplate TargetType="ProgressBar">
+                <Grid Height="60">
+                    <!--  9slice track background  -->
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="6" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="6" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="8" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="8" />
+                        </Grid.ColumnDefinitions>
+                        <Image
+                            Grid.Column="1"
+                            Grid.Row="1"
+                            Source="/Assets/LoadingBarTrackCenter.png"
+                            Stretch="Fill" />
+                        <!--  Corners  -->
+                        <Image
+                            Grid.Column="0"
+                            Grid.Row="0"
+                            Name="TopLeft"
+                            Source="/Assets/LoadingBarTrackTopLeft.png" />
+                        <Image
+                            Grid.Column="2"
+                            Grid.Row="0"
+                            Name="TopRight"
+                            Source="/Assets/LoadingBarTrackTopRight.png" />
+                        <Image
+                            Grid.Column="0"
+                            Grid.Row="2"
+                            Name="BottomLeft"
+                            Source="/Assets/LoadingBarTrackBottomLeft.png" />
+                        <Image
+                            Grid.Column="2"
+                            Grid.Row="2"
+                            Name="BottomRight"
+                            Source="/Assets/LoadingBarTrackBottomRight.png" />
+
+                        <!--  Edges  -->
+                        <Image
+                            Grid.Column="1"
+                            Grid.Row="0"
+                            Name="Top"
+                            Source="/Assets/LoadingBarTrackTop.png"
+                            Stretch="Fill" />
+                        <Image
+                            Grid.Column="1"
+                            Grid.Row="2"
+                            Name="Bottom"
+                            Source="/Assets/LoadingBarTrackBottom.png"
+                            Stretch="Fill" />
+                        <Image
+                            Grid.Column="0"
+                            Grid.Row="1"
+                            Name="Left"
+                            Source="/Assets/LoadingBarTrackLeft.png"
+                            Stretch="Fill" />
+                        <Image
+                            Grid.Column="2"
+                            Grid.Row="1"
+                            Name="Right"
+                            Source="/Assets/LoadingBarTrackRight.png"
+                            Stretch="Fill" />
+
+                    </Grid>
+                    <!--  tiling fill, clipped to left side based on progress  -->
+                    <Border
+                        Height="60"
+                        HorizontalAlignment="Left"
+                        Margin="3,1,4,2"
+                        Name="PART_Indicator">
+                        <Border.Background>
+                            <ImageBrush
+                                AlignmentX="Left"
+                                AlignmentY="Center"
+                                DestinationRect="0,0,38,59"
+                                Source="/Assets/LoadingBarIndicator.png"
+                                Stretch="Fill"
+                                TileMode="Tile" />
+                        </Border.Background>
+                    </Border>
+                    <Border
+                        Height="60"
+                        HorizontalAlignment="Left"
+                        Name="PART_IndeterminateIndicator"
+                        Width="115">
+                        <Border.Background>
+                            <ImageBrush
+                                AlignmentX="Left"
+                                AlignmentY="Center"
+                                DestinationRect="0,0,38,59"
+                                Source="/Assets/LoadingBarIndicator.png"
+                                Stretch="Fill"
+                                TileMode="Tile" />
+                        </Border.Background>
+                    </Border>
+                </Grid>
+
+            </ControlTemplate>
+
+        </Setter>
+    </Style>
+    <Style Selector="ProgressBar:not(:indeterminate) /template/ Border#PART_IndeterminateIndicator">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style Selector="ProgressBar:indeterminate /template/ Border#PART_Indicator">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+</Styles>

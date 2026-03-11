@@ -77,6 +77,10 @@ public class RepositoryManager
     public EgoLocalizationFile EgoNames;
     public EgoLocalizationFile EgoNamesReference;
 
+    public string PathToAnnouncerNames => Path.Combine(PathToLocalization!, "Announcer.json");
+    public AnnouncerLocalizationFile AnnouncerNames;
+    public AnnouncerLocalizationFile AnnouncerNamesReference;
+
     public string PathToModelCodes => Path.Combine(PathToLocalization, "ScenarioModelCodes-AutoCreated.json");
     public ScenarioModelCodesLocalizationFile ScenarioModelCodes;
     public ScenarioModelCodesLocalizationFile ScenarioModelCodesReference;
@@ -120,6 +124,9 @@ public class RepositoryManager
 
         ScenarioModelCodes = (ScenarioModelCodesLocalizationFile)GetObjectFromPath(PathToModelCodes)!;
         ScenarioModelCodesReference = (ScenarioModelCodesLocalizationFile)GetReference(ScenarioModelCodes)!;
+
+        AnnouncerNames = (AnnouncerLocalizationFile)GetObjectFromPath(PathToAnnouncerNames)!;
+        AnnouncerNamesReference = (AnnouncerLocalizationFile)GetReference(AnnouncerNames)!;
     }
 
     public void ParseFileMap()

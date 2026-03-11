@@ -7,6 +7,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:misc="clr-namespace:RainbusToolbox.Views.Misc"
     xmlns:viewModels="clr-namespace:RainbusToolbox.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
@@ -83,7 +84,7 @@
             </Border>
         </Grid>
 
-        <!--  Navigation Container  -->
+        <!--  Navigation  -->
         <StackPanel
             Grid.Row="2"
             HorizontalAlignment="Center"
@@ -91,55 +92,8 @@
             Margin="20,5,20,20"
             Orientation="Horizontal">
 
-            <StackPanel Orientation="Horizontal">
-                <Button
-                    Command="{Binding GoPrevious}"
-                    CommandParameter="1"
-                    Content="◀1"
-                    Margin="0,0,10,0"
-                    Width="200" />
-                <Button
-                    Command="{Binding GoPrevious}"
-                    CommandParameter="5"
-                    Content="◀5"
-                    Margin="0,0,10,0"
-                    Width="200" />
-                <Button
-                    Command="{Binding GoPrevious}"
-                    CommandParameter="10"
-                    Content="◀10"
-                    Margin="0,0,10,0"
-                    Width="200" />
-                <Border
-                    Background="Transparent"
-                    CornerRadius="4"
-                    Padding="12,6">
-                    <TextBlock
-                        FontFamily="{StaticResource MikodacsFont}"
-                        FontSize="16"
-                        FontWeight="SemiBold"
-                        Foreground="White"
-                        Text="{Binding NavigationText}"
-                        Width="150" />
-                </Border>
-                <Button
-                    Command="{Binding GoNext}"
-                    CommandParameter="1"
-                    Content="1▶"
-                    Margin="10,0,0,0"
-                    Width="200" />
-                <Button
-                    Command="{Binding GoNext}"
-                    CommandParameter="5"
-                    Content="5▶"
-                    Margin="10,0,0,0"
-                    Width="200" />
-                <Button
-                    Command="{Binding GoNext}"
-                    CommandParameter="10"
-                    Content="10▶"
-                    Margin="10,0,0,0"
-                    Width="200" />
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <misc:NavigationBar />
             </StackPanel>
         </StackPanel>
     </Grid>

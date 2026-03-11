@@ -117,7 +117,7 @@
             Margin="20,5,20,20"
             Orientation="Horizontal">
 
-            <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                 <misc:NavigationBar />
             </StackPanel>
         </StackPanel>

@@ -215,26 +215,5 @@
 
             </StackPanel>
         </Grid>
-
-        <!--  Loading overlay  -->
-        <Border
-            Background="#80000000"
-            Grid.ColumnSpan="3"
-            Grid.RowSpan="1"
-            HorizontalAlignment="Stretch"
-            IsVisible="{Binding IsLoading}"
-            VerticalAlignment="Stretch">
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock
-                    FontSize="20"
-                    Foreground="White"
-                    Margin="0,0,0,10"
-                    Text="ЕБАШИМ РЕЛИЗ!!!!!!!!!!!!!!!!!!!!!!!!!!" />
-                <ProgressBar
-                    IsIndeterminate="True"
-                    Margin="0,10,0,0"
-                    Width="200" />
-            </StackPanel>
-        </Border>
     </Grid>
 </UserControl>

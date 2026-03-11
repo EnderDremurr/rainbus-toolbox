@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.IO;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
@@ -27,7 +26,6 @@ public partial class ReleaseTabViewModel : ObservableObject
         _repositoryManager = repositoryManager;
         _keywordProcessingService = keywordProcessingService;
 
-        IsLoading = false;
         VersionDisplay = _repositoryManager.GetLatestReleaseSemantic();
     }
 
@@ -131,17 +129,6 @@ public partial class ReleaseTabViewModel : ObservableObject
     [ObservableProperty]
     private bool _option2;
 
-
-    [ObservableProperty]
-    private bool _isLoading;
-
-    // Debug tracking for loading state
-    partial void OnIsLoadingChanged(bool value)
-    {
-        Debug.WriteLine($"ReleaseTabViewModel: IsLoading changed to: {value} at {DateTime.Now}");
-        if (value) Debug.WriteLine($"Stack trace: {Environment.StackTrace}");
-    }
-
     #endregion
 
 
@@ -171,8 +158,7 @@ public partial class ReleaseTabViewModel : ObservableObject
 
         try
         {
-            IsLoading = true;
-            //TODO: make this shit connect to loading bar (rewrite entire loading bar later)
+            LoadingScreenViewModel.StartLoading("Создаётся релиз...");
             await _keywordProcessingService.ReplaceEveryTagWithMesh(_repositoryManager.PathToLocalization);
 
             var currentVersion = _repositoryManager.GetLatestReleaseSemantic();
@@ -199,13 +185,13 @@ public partial class ReleaseTabViewModel : ObservableObject
 
             var nextVersion = $"{major}.{minor}.{patch}";
 
+            LoadingScreenViewModel.SetText("Упаковывается перевод...");
             // Package the localization
             var package =
                 await Task.Run(() => LocalizationPackager.PackageLocalization(nextVersion, _repositoryManager));
 
-
+            LoadingScreenViewModel.SetText("Выкладывается на гитхаб...");
             // Create GitHub release
-
             var localizationName = _repositoryManager.GetRepoDisplayName(_repositoryManager.Repository);
 
             await _githubManager.CreateReleaseAsync($"{localizationName} v{nextVersion}", EditorText, package);
@@ -213,6 +199,7 @@ public partial class ReleaseTabViewModel : ObservableObject
             // Handle Discord section options - only send if SendToDiscord is checked
             if (SendToDiscord && DiscordManager.ValidateWebhook(_dataManager.Settings.DiscordWebHook))
             {
+                LoadingScreenViewModel.SetText("Отправляется сообщение в дискорд...");
                 var discordManager = new DiscordManager(_dataManager.Settings.DiscordWebHook!);
 
                 var discordMessage = $"# {localizationName} v{nextVersion}!!!\n" + EditorText;
@@ -228,6 +215,7 @@ public partial class ReleaseTabViewModel : ObservableObject
                 await discordManager.SendMessageAsync(discordMessage, _selectedFilePath);
             }
 
+            LoadingScreenViewModel.SetText("Готово!");
             // Success message
             var successBox = MessageBoxManager.GetMessageBoxStandard(AppLang.SuccessTitle,
                 string.Format(AppLang.ReleaseCreationSuccess, nextVersion));
@@ -240,7 +228,7 @@ public partial class ReleaseTabViewModel : ObservableObject
         finally
         {
             VersionDisplay = _repositoryManager.GetLatestReleaseSemantic();
-            IsLoading = false;
+            LoadingScreenViewModel.FinishLoading();
         }
     }
 

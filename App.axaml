@@ -42,6 +42,7 @@
         <StyleInclude Source="avares://RainbusToolbox/Styles/Controls/Checkbox.axaml" />
         <StyleInclude Source="avares://RainbusToolbox/Styles/Controls/NavigationButtons.axaml" />
         <StyleInclude Source="avares://RainbusToolbox/Styles/Controls/NavigationTabs.axaml" />
+        <StyleInclude Source="avares://RainbusToolbox/Styles/Themes/GenericLoadingBar.axaml" />
 
         <Style Selector="Border.framed">
             <Setter Property="CornerRadius" Value="0" />

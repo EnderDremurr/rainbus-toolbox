@@ -217,20 +217,9 @@ public partial class TranslationTabViewModel : ObservableObject
                 Alias = "Кейворды скиллов", FullPath = Path.Combine(root, "SkillTag.json"), Desc = "-",
                 Group = "Интерфейс"
             },
-            new() { Alias = "Кейворды", FullPath = Path.Combine(root, "Bufs.json"), Desc = "-", Group = "Интерфейс" },
             new()
             {
                 Alias = "Battle кейворды", FullPath = Path.Combine(root, "BattleKeywords.json"), Desc = "-",
-                Group = "Интерфейс"
-            },
-            new()
-            {
-                Alias = "Баффы мобов в миррорке", FullPath = Path.Combine(root, "MirrorDungeonEnemyBuffDesc.json"),
-                Desc = "-", Group = "Интерфейс"
-            },
-            new()
-            {
-                Alias = "Описания баффов", FullPath = Path.Combine(root, "BuffAbilities.json"), Desc = "-",
                 Group = "Интерфейс"
             },
             new()

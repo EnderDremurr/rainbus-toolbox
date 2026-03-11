@@ -16,42 +16,22 @@ public partial class FilesTabViewModel : ObservableObject
 
     private CancellationTokenSource? _cancellationTokenSource;
 
-    [ObservableProperty]
-    private bool _isProcessing;
 
-    [ObservableProperty]
-    private bool _isProgressIndeterminate = true;
-
-    [ObservableProperty]
-    private string _processingStats = "";
-
-    [ObservableProperty]
-    private double _progressMaximum = 100;
-
-    [ObservableProperty]
-    private string _progressMessage = "Готов к работе";
-
-    [ObservableProperty]
-    private double _progressValue;
-
-    [RelayCommand(CanExecute = nameof(CanExecuteParseFiles))]
+    [RelayCommand]
     private async Task ParseFilesAsync()
     {
         _cancellationTokenSource = new CancellationTokenSource();
 
         try
         {
-            IsProcessing = true;
-            ProgressMessage = "Начинаем обработку файлов...";
-            IsProgressIndeterminate = true;
-            ProcessingStats = "";
+            LoadingScreenViewModel.StartLoading("Начинается обработку файлов...");
 
             var mergingService = new FileMergingService();
 
             // Create progress reporter
             var progress = new Progress<string>(message =>
             {
-                ProgressMessage = message;
+                LoadingScreenViewModel.SetText(message);
 
                 // Try to extract stats from progress message
                 if (message.Contains("Processed") && message.Contains("/"))
@@ -63,9 +43,7 @@ public partial class FilesTabViewModel : ObservableObject
                             var processed = int.Parse(parts[0].Split(' ').Last());
                             var total = int.Parse(parts[1].Split(' ')[0]);
 
-                            IsProgressIndeterminate = false;
-                            ProgressValue = processed;
-                            ProgressMaximum = total;
+                            LoadingScreenViewModel.SetProgress(processed, total);
 
                             // Extract stats if available
                             if (message.Contains("Added:") && message.Contains("Merged:"))
@@ -79,7 +57,7 @@ public partial class FilesTabViewModel : ObservableObject
                                 {
                                     var added = message.Substring(addedStart, addedEnd - addedStart);
                                     var merged = message.Substring(mergedStart, mergedEnd - mergedStart);
-                                    ProcessingStats = $"Добавлено: {added}, Объединено: {merged}";
+                                    // display these in popup when i'll implement it later
                                 }
                             }
                         }
@@ -102,80 +80,53 @@ public partial class FilesTabViewModel : ObservableObject
             var mergedFiles = result[1];
             var totalFiles = result[2];
 
-            ProgressMessage = "Завершено успешно!";
-            ProcessingStats =
-                $"Добавлено файлов: {newFiles}, Объединено файлов: {mergedFiles}, Всего обработано: {totalFiles}";
-            IsProgressIndeterminate = false;
-            ProgressValue = ProgressMaximum;
+            LoadingScreenViewModel.SetText("Завершено успешно!");
+            // ProcessingStats =
+            // $"Добавлено файлов: {newFiles}, Объединено файлов: {mergedFiles}, Всего обработано: {totalFiles}";
+            // display these in popup when i'll implement it later
 
             await Task.Delay(TimeSpan.FromSeconds(10), _cancellationTokenSource.Token);
         }
         catch (OperationCanceledException)
         {
-            ProgressMessage = "Операция отменена пользователем";
-            ProcessingStats = "";
+            LoadingScreenViewModel.SetText("Операция отменена пользователем");
         }
         catch (Exception ex)
         {
-            ProgressMessage = $"Ошибка: {ex.Message}";
-            ProcessingStats = "";
+            LoadingScreenViewModel.SetText("Ошибка");
 
-            // Show error notification if available
-            try
-            {
-                _ = App.Current.ShowErrorNotificationAsync($"Ошибка при обработке файлов: {ex.Message}", "Ошибка");
-            }
-            catch
-            {
-                // Fallback if notification system isn't available
-            }
+            _ = App.Current.ShowErrorNotificationAsync($"Ошибка при замене тегов: {ex.Message}", "Ошибка");
         }
         finally
         {
-            IsProcessing = false;
+            LoadingScreenViewModel.FinishLoading();
             _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = null;
         }
     }
 
-    [RelayCommand(CanExecute = nameof(CanExecuteCancel))]
     private void Cancel()
     {
         _cancellationTokenSource?.Cancel();
     }
 
-    private bool CanExecuteParseFiles()
-    {
-        return !IsProcessing;
-    }
 
-    private bool CanExecuteCancel()
-    {
-        return IsProcessing;
-    }
-
-    [RelayCommand(CanExecute = nameof(CanExecuteReplaceFiles))]
+    [RelayCommand]
     public async Task ReplaceAllTagsWithMeshesAsync()
     {
         _cancellationTokenSource = new CancellationTokenSource();
 
         try
         {
-            IsProcessing = true;
-            ProgressMessage = "Начинаем замену тегов...";
-            IsProgressIndeterminate = true;
-            ProcessingStats = "";
+            LoadingScreenViewModel.StartLoading("Начинается замена тегов...");
 
-            // Create progress reporter (same pattern as ParseFilesAsync)
             var progress = new Progress<string>(message =>
             {
-                ProgressMessage = message;
+                LoadingScreenViewModel.SetText(message);
 
-                // Parse progress from your service messages
                 if (message.Contains("Processed") && message.Contains("/"))
                     try
                     {
-                        // Extract "Processed 5/100 files (Replaced: 3)" format
                         var parts = message.Split('/');
                         if (parts.Length >= 2)
                         {
@@ -183,26 +134,12 @@ public partial class FilesTabViewModel : ObservableObject
                             var totalPart = parts[1].Split(' ')[0];
                             var total = int.Parse(totalPart);
 
-                            IsProgressIndeterminate = false;
-                            ProgressValue = processed;
-                            ProgressMaximum = total;
-
-                            // Extract replacement stats if available
-                            if (message.Contains("Replaced:"))
-                            {
-                                var replacedStart = message.IndexOf("Replaced: ") + 10;
-                                var replacedEnd = message.IndexOf(")", replacedStart);
-                                if (replacedEnd > replacedStart)
-                                {
-                                    var replaced = message.Substring(replacedStart, replacedEnd - replacedStart);
-                                    ProcessingStats = $"Заменено файлов: {replaced}";
-                                }
-                            }
+                            LoadingScreenViewModel.SetProgress(processed, total);
                         }
                     }
                     catch
                     {
-                        // Parsing failed, just show message as-is
+                        // ignored
                     }
             });
 
@@ -213,75 +150,56 @@ public partial class FilesTabViewModel : ObservableObject
             );
 
             // Final success message
-            ProgressMessage = "Замена тегов завершена успешно!";
-            IsProgressIndeterminate = false;
-            ProgressValue = ProgressMaximum;
+            LoadingScreenViewModel.SetText("Замена тегов завершена успешно!");
 
             await Task.Delay(TimeSpan.FromSeconds(10), _cancellationTokenSource.Token);
         }
         catch (OperationCanceledException)
         {
-            ProgressMessage = "Операция отменена пользователем";
-            ProcessingStats = "";
+            LoadingScreenViewModel.SetText("Операция отменена пользователем");
         }
         catch (Exception ex)
         {
-            ProgressMessage = $"Ошибка: {ex.Message}";
-            ProcessingStats = "";
-
-            try
-            {
-                _ = App.Current.ShowErrorNotificationAsync($"Ошибка при замене тегов: {ex.Message}", "Ошибка");
-            }
-            catch
-            {
-                // Fallback if notification system isn't available
-            }
-        }
-        finally
-        {
-            IsProcessing = false;
-            _cancellationTokenSource?.Dispose();
-            _cancellationTokenSource = null;
-        }
-    }
-
-    private bool CanExecuteReplaceFiles()
-    {
-        return !IsProcessing;
-    }
-
-    [RelayCommand(CanExecute = nameof(CanExecuteReplaceFiles))]
-    public async Task PullNewKeywordsFromTheGame()
-    {
-        _cancellationTokenSource = new CancellationTokenSource();
-        try
-        {
-            ProgressMessage = "Есть контакт!";
-            IsProcessing = true;
-            var progress = new Progress<string>(message => { ProgressMessage = message; });
-            await _keywordProcessingService.PullNewKeywordsFromTheGame(
-                _cancellationTokenSource.Token,
-                progress
-            );
-            ProgressMessage = "Готово!";
-            await Task.Delay(TimeSpan.FromSeconds(3), _cancellationTokenSource.Token);
-        }
-        catch (OperationCanceledException)
-        {
-            ProgressMessage = "Операция отменена пользователем";
-            ProcessingStats = "";
-        }
-        catch (Exception ex)
-        {
-            ProgressMessage = $"Ошибка: {ex.Message}";
-            ProcessingStats = "";
+            LoadingScreenViewModel.SetText("Ошибка");
 
             _ = App.Current.ShowErrorNotificationAsync($"Ошибка при замене тегов: {ex.Message}", "Ошибка");
         }
         finally
         {
-            IsProcessing = false;
+            LoadingScreenViewModel.FinishLoading();
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
+        }
+    }
+
+    [RelayCommand]
+    public async Task PullNewKeywordsFromTheGame()
+    {
+        _cancellationTokenSource = new CancellationTokenSource();
+        try
+        {
+            LoadingScreenViewModel.StartLoading("Начинается поиск новых кейвордов...");
+            var progress = new Progress<string>(LoadingScreenViewModel.SetText);
+            await _keywordProcessingService.PullNewKeywordsFromTheGame(
+                _cancellationTokenSource.Token,
+                progress
+            );
+            LoadingScreenViewModel.SetText("Готово!");
+            await Task.Delay(TimeSpan.FromSeconds(1), _cancellationTokenSource.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            LoadingScreenViewModel.SetText("Операция отменена пользователем");
+        }
+        catch (Exception ex)
+        {
+            LoadingScreenViewModel.SetText($"Ошибка: {ex.Message}");
+
+            _ = App.Current.ShowErrorNotificationAsync($"Ошибка при замене тегов: {ex.Message}", "Ошибка");
+        }
+        finally
+        {
+            LoadingScreenViewModel.FinishLoading();
             _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = null;
         }
