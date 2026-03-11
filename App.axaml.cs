@@ -10,6 +10,7 @@ using RainbusToolbox.Services;
 using RainbusToolbox.ViewModels;
 using RainbusToolbox.Views;
 using RainbusToolbox.Views.Misc;
+using Serilog;
 
 namespace RainbusToolbox;
 
@@ -56,7 +57,7 @@ public class App : Application
     // Global exception handler for fatal exceptions
     public async Task HandleGlobalExceptionAsync(Exception exception)
     {
-        Console.WriteLine(FormatExceptionText(exception)); // TODO: replace with serilog
+        Log.Fatal(exception, "We are cooked. FATAL");
         await Dispatcher.UIThread.InvokeAsync(async () =>
         {
             var desktop = ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
@@ -84,7 +85,7 @@ public class App : Application
     // Non-fatal exception handler - just informs the user, doesn't shut down
     public async Task HandleNonFatalExceptionAsync(Exception exception, string? userFriendlyMessage = null)
     {
-        Console.WriteLine($"Non-fatal exception: {FormatExceptionText(exception)}"); // TODO: replace with serilog
+        Log.Error(exception, userFriendlyMessage ?? "Error");
         await Dispatcher.UIThread.InvokeAsync(async () =>
         {
             var parent = (ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
