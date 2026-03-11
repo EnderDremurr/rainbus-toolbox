@@ -4,9 +4,12 @@ using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Avalonia.Controls.ApplicationLifetimes;
 using Newtonsoft.Json;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Utilities.Data;
+using RainbusToolbox.ViewModels;
+using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.Services;
 
@@ -113,6 +116,46 @@ public class KeywordProcessingService(RepositoryManager repositoryManager)
             await App.Current.HandleNonFatalExceptionAsync(e);
             return null;
         }
+    }
+
+    public async Task AskToDefineKeywords()
+    {
+        var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+
+        if (_keywordColorList.All(c => c.Value != "Unknown"))
+        {
+            await PopUpWindow.ShowAsync(parent!, "Определение цвета кейвордов",
+                "Все кейворды имеют цвет, ничего делать не нужно!");
+            return;
+        }
+
+        var colorlessKeywords = _keywordColorList.Where(c => c.Value == "Unknown");
+        foreach (var colorlessKeyword in colorlessKeywords)
+        {
+            var response = await PopUpWindow.ShowAsync(parent!, "Определение цвета кейвордов",
+                $"Обнаружен новый кейворд {colorlessKeyword.Key}, укажи его цвет",
+                false,
+                "",
+                new PopupButton
+                {
+                    Label = "Дебафф (Красный)",
+                    ResultValue = "Debuff"
+                }, new PopupButton
+                {
+                    Label = "Баф (Жёлтый)",
+                    ResultValue = "Buff"
+                }, new PopupButton
+                {
+                    Label = "Статус (Коричневый)",
+                    ResultValue = "Status"
+                }
+            );
+
+            _keywordColorList[colorlessKeyword.Key] = response.Result!;
+        }
+
+        await PopUpWindow.ShowAsync(parent!, "Определение цвета кейвордов",
+            "Все кейворды были определены!");
     }
 
     // TODO: Slopreview

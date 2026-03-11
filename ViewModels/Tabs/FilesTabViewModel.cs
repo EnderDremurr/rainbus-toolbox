@@ -178,6 +178,12 @@ public partial class FilesTabViewModel : ObservableObject
         }
     }
 
+    [RelayCommand]
+    public async Task DefineNewKeywordsFromTheGame()
+    {
+        await _keywordProcessingService.AskToDefineKeywords();
+    }
+
     #region Events
 
     public void OnTabOpened()

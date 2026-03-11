@@ -34,6 +34,14 @@
             Height="80"
             HorizontalAlignment="Center"
             Width="720" />
+
+        <Button
+            Classes="header"
+            Command="{Binding DefineNewKeywordsFromTheGame}"
+            Content="Определить цвета новых кейвордов"
+            Height="80"
+            HorizontalAlignment="Center"
+            Width="720" />
     </StackPanel>
 
 </UserControl>

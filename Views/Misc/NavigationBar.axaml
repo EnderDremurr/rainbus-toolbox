@@ -11,8 +11,9 @@
 
     <!--  Navigation Bar  -->
     <Border
-        Background="#202020"
-        CornerRadius="6"
+        Background="#80050505"
+        CornerRadius="20"
+        Height="100"
         Padding="12">
         <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
 
@@ -25,20 +26,20 @@
                     Command="{Binding GoPrevious}"
                     CommandParameter="10"
                     Content="◀ 10"
-                    Height="32"
-                    Width="70" />
+                    Height="60"
+                    Width="90" />
                 <Button
                     Command="{Binding GoPrevious}"
                     CommandParameter="5"
                     Content="◀ 5"
-                    Height="32"
-                    Width="60" />
+                    Height="60"
+                    Width="90" />
                 <Button
                     Command="{Binding GoPrevious}"
                     CommandParameter="1"
                     Content="◀ 1"
-                    Height="32"
-                    Width="60" />
+                    Height="60"
+                    Width="90" />
             </StackPanel>
 
             <!--  Center Section  -->
@@ -46,11 +47,12 @@
                 Background="Transparent"
                 CornerRadius="4"
                 Grid.Column="1"
-                HorizontalAlignment="Center"
                 Padding="8"
                 VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal">
                     <TextBox
+                        Background="Transparent"
+                        BorderThickness="0"
                         FontFamily="{StaticResource MikodacsFont}"
                         FontSize="20"
                         FontWeight="Bold"
@@ -59,6 +61,15 @@
                         TextAlignment="Right"
                         VerticalAlignment="Center"
                         Width="80" />
+                    <TextBlock
+                        FontFamily="{StaticResource MikodacsFont}"
+                        FontSize="20"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Text=" / "
+                        TextAlignment="Center"
+                        VerticalAlignment="Center"
+                        Width="20" />
                     <TextBlock
                         FontFamily="{StaticResource MikodacsFont}"
                         FontSize="20"
@@ -83,20 +94,20 @@
                     Command="{Binding GoNext}"
                     CommandParameter="1"
                     Content="1 ▶"
-                    Height="32"
-                    Width="60" />
+                    Height="60"
+                    Width="90" />
                 <Button
                     Command="{Binding GoNext}"
                     CommandParameter="5"
                     Content="5 ▶"
-                    Height="32"
-                    Width="60" />
+                    Height="60"
+                    Width="90" />
                 <Button
                     Command="{Binding GoNext}"
                     CommandParameter="10"
                     Content="10 ▶"
-                    Height="32"
-                    Width="70" />
+                    Height="60"
+                    Width="90" />
             </StackPanel>
 
         </Grid>
