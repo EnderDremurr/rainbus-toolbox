@@ -77,13 +77,16 @@ public class RepositoryManager
     public EgoLocalizationFile EgoNames;
     public EgoLocalizationFile EgoNamesReference;
 
-    public string PathToAnnouncerNames => Path.Combine(PathToLocalization!, "Announcer.json");
+    public string PathToAnnouncerNames => Path.Combine(PathToLocalization, "Announcer.json");
     public AnnouncerLocalizationFile AnnouncerNames;
     public AnnouncerLocalizationFile AnnouncerNamesReference;
 
     public string PathToModelCodes => Path.Combine(PathToLocalization, "ScenarioModelCodes-AutoCreated.json");
     public ScenarioModelCodesLocalizationFile ScenarioModelCodes;
     public ScenarioModelCodesLocalizationFile ScenarioModelCodesReference;
+
+    public string PathToAnnouncerVoiceTypes => Path.Combine(PathToLocalization, "AnnouncerVoiceType.json");
+    public AnnouncerVoiceTypeLocalizationFile AnnouncerVoiceTypes;
 
     public string PathToFileMap => Path.Combine(PathToGameRoot,
         "LimbusCompany_Data/Assets/Resources_moved/Localize/RemoteLocalizeFileList.json");
@@ -127,6 +130,8 @@ public class RepositoryManager
 
         AnnouncerNames = (AnnouncerLocalizationFile)GetObjectFromPath(PathToAnnouncerNames)!;
         AnnouncerNamesReference = (AnnouncerLocalizationFile)GetReference(AnnouncerNames)!;
+
+        AnnouncerVoiceTypes = (AnnouncerVoiceTypeLocalizationFile)GetObjectFromPath(PathToAnnouncerVoiceTypes)!;
     }
 
     public void ParseFileMap()

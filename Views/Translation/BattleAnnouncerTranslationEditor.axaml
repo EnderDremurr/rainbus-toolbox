@@ -17,7 +17,7 @@
             Grid.Row="1"
             IsVisible="{Binding IsFileLoaded}"
             Margin="20,0,20,15"
-            RowDefinitions="*,*">
+            RowDefinitions="*,30,*">
 
             <!--  Reference Section (Top)  -->
             <Border
@@ -28,13 +28,24 @@
                 <Grid>
                     <!--  Background Image  -->
                     <Image
+                        Height="390"
                         HorizontalAlignment="Stretch"
                         Name="ReferenceBgImage"
-                        SizeChanged="OnBackgroundSizeChanged"
                         Source="/Assets/Backgrounds/AnnouncerBG.png"
                         Stretch="Uniform"
                         StretchDirection="Both"
-                        VerticalAlignment="Stretch" />
+                        VerticalAlignment="Stretch"
+                        Width="1042" />
+                    <TextBlock
+                        Classes="header"
+                        FontSize="36"
+                        HorizontalAlignment="Left"
+                        Margin="430,200,0,40"
+                        MaxWidth="270"
+                        Text="{Binding ReferenceAnnouncerName}"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap"
+                        VerticalAlignment="Top" />
 
                     <!--  Content Area (overlay)  -->
                     <ScrollViewer>
@@ -44,29 +55,45 @@
                             Classes="invisible"
                             FontSize="32"
                             IsReadOnly="True"
-                            Margin="{Binding ReferenceMargins}"
+                            Margin="550,30,0,45"
                             MaxWidth="900"
                             Text="{Binding ReferenceItem.Dialogue}"
                             TextWrapping="Wrap" />
                     </ScrollViewer>
                 </Grid>
             </Border>
-
+            <Border Grid.Row="1">
+                <TextBlock
+                    Classes="header"
+                    Text="{Binding PhraseType}"
+                    TextAlignment="Center" />
+            </Border>
             <!--  Editor Section (Bottom)  -->
             <Border
                 ClipToBounds="True"
-                Grid.Row="1"
+                Grid.Row="2"
                 Margin="0,10,0,0">
                 <Grid>
                     <!--  Background Image  -->
                     <Image
+                        Height="390"
                         HorizontalAlignment="Stretch"
                         Name="EditorBgImage"
-                        SizeChanged="OnBackgroundSizeChanged"
                         Source="/Assets/Backgrounds/AnnouncerBG.png"
                         Stretch="Uniform"
                         StretchDirection="Both"
-                        VerticalAlignment="Stretch" />
+                        VerticalAlignment="Stretch"
+                        Width="1042" />
+                    <TextBlock
+                        Classes="header"
+                        FontSize="36"
+                        HorizontalAlignment="Left"
+                        Margin="430,200,0,40"
+                        MaxWidth="270"
+                        Text="{Binding LocalizedAnnouncerName}"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap"
+                        VerticalAlignment="Top" />
 
                     <!--  Content Area (overlay)  -->
                     <ScrollViewer>
@@ -75,7 +102,7 @@
                             Background="Transparent"
                             Classes="invisible"
                             FontSize="32"
-                            Margin="{Binding EditorMargins}"
+                            Margin="550,30,0,45"
                             MaxWidth="900"
                             Text="{Binding CurrentItem.Dialogue, Mode=TwoWay}"
                             TextWrapping="Wrap" />

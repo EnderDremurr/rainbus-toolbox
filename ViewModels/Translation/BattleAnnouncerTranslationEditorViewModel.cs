@@ -1,7 +1,7 @@
-using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Utilities.Data;
+using Serilog;
 using Path = System.IO.Path;
 
 namespace RainbusToolbox.ViewModels;
@@ -9,20 +9,11 @@ namespace RainbusToolbox.ViewModels;
 public partial class BattleAnnouncerTranslationEditorViewModel
     : TranslationEditorViewModel<AnnouncerVoiceLocalizationFile, AnnouncerVoice>
 {
-    // Original image size (AnnouncerBG.png)
-    private const double BaseWidth = 673.0;
-    private const double BaseHeight = 246.0;
-
-    // Original margins at base resolution: left=255, top=30, right=0, bottom=45
-    private static readonly Thickness BaseDialogueMargin = new(400, 30, 0, 45);
-
-    private double _currentImageHeight = BaseHeight;
-
-    // image size reported by view (defaults to base so layout starts sane)
-    private double _currentImageWidth = BaseWidth;
-
     [ObservableProperty]
     private string _localizedAnnouncerName = "";
+
+    [ObservableProperty]
+    private string _phraseType = "";
 
     [ObservableProperty]
     private string _referenceAnnouncerName = "";
@@ -33,43 +24,9 @@ public partial class BattleAnnouncerTranslationEditorViewModel
     private AnnouncerLocalizationFile _announcerLocalizationFile => _repositoryManager.AnnouncerNames;
     private AnnouncerLocalizationFile _referenceAnnouncerLocalizationFile => _repositoryManager.AnnouncerNamesReference;
 
-    /// <summary>
-    ///     Margin for the reference text box (scaled).
-    /// </summary>
-    public Thickness ReferenceMargins => CalculateRelativeMargins();
+    private AnnouncerVoiceTypeLocalizationFile _announcerVoiceTypeLocalizationFile =>
+        _repositoryManager.AnnouncerVoiceTypes;
 
-    /// <summary>
-    ///     Margin for the editor text box (scaled).
-    /// </summary>
-    public Thickness EditorMargins => CalculateRelativeMargins();
-
-    public double CurrentImageWidth
-    {
-        get => _currentImageWidth;
-        set
-        {
-            if (Math.Abs(_currentImageWidth - value) > double.Epsilon)
-            {
-                _currentImageWidth = value;
-                OnPropertyChanged(nameof(ReferenceMargins));
-                OnPropertyChanged(nameof(EditorMargins));
-            }
-        }
-    }
-
-    public double CurrentImageHeight
-    {
-        get => _currentImageHeight;
-        set
-        {
-            if (Math.Abs(_currentImageHeight - value) > double.Epsilon)
-            {
-                _currentImageHeight = value;
-                OnPropertyChanged(nameof(ReferenceMargins));
-                OnPropertyChanged(nameof(EditorMargins));
-            }
-        }
-    }
 
     public override void LoadEditableFile(AnnouncerVoiceLocalizationFile file)
     {
@@ -90,17 +47,42 @@ public partial class BattleAnnouncerTranslationEditorViewModel
         OnPropertyChanged(nameof(IsFileLoaded));
     }
 
-    private Thickness CalculateRelativeMargins()
+    protected override void UpdateCurrentItem()
     {
-        var scaleX = CurrentImageWidth / BaseWidth;
-        var scaleY = CurrentImageHeight / BaseHeight;
+        if (EditableFile != null && EditableFile.DataList.Count > 0)
+            CurrentItem = EditableFile.DataList[CurrentIndex];
 
-        // Keep the margins scaled but don't allow negative or absurd values.
-        var left = Math.Max(0, BaseDialogueMargin.Left * scaleX);
-        var top = Math.Max(0, BaseDialogueMargin.Top * scaleY);
-        var right = Math.Max(0, BaseDialogueMargin.Right * scaleX);
-        var bottom = Math.Max(0, BaseDialogueMargin.Bottom * scaleY);
+        var currentAnnouncerVoiceTypeId = CurrentItem!.Id;
 
-        return new Thickness(left, top, right, bottom);
+        var parts = currentAnnouncerVoiceTypeId.Split('_');
+        var middle = string.Join("", parts[1..^2]).ToLower()
+            .Replace("advatk", "adv")
+            .Replace("disadvatk", "disadv")
+            .Replace("specialbuff", "buff")
+            .Replace("specialdebuff", "debuff")
+            .Replace("takebigdmg", "bigdamage")
+            .Replace("givebigdmg", "bigdamage")
+            .Replace("round", "")
+            .Replace("advphysical", "physicaladv")
+            .Replace("disadvphysical", "physicaldisadv")
+            .Replace("advattr", "attradv")
+            .Replace("disadvattr", "attrdisadv");
+
+        if (middle.Contains("special"))
+        {
+            PhraseType = "Особая реплика";
+            return;
+        }
+
+        PhraseType = _announcerVoiceTypeLocalizationFile.DataList
+            .FirstOrDefault(a =>
+            {
+                var normalized = a.Id.ToLower().Replace("_", "");
+                return normalized.Contains(middle) || middle.Contains(normalized);
+            })
+            ?.Content ?? "Неизвестно";
+
+        if (PhraseType == "Неизвестно")
+            Log.Debug($"No match for: {currentAnnouncerVoiceTypeId} (middle: {middle})");
     }
 }
