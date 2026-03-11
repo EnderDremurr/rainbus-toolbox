@@ -191,6 +191,21 @@
                             x:Name="AngelaPromptBox" />
                     </StackPanel>
 
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="10"
+                        VerticalAlignment="Center">
+                        <TextBlock
+                            Text="Логи:"
+                            VerticalAlignment="Center"
+                            Width="150" />
+                        <Button
+                            Click="OpenFolderWithLogs_Click"
+                            Content="Открыть папку с логами"
+                            Height="60"
+                            Width="500" />
+                    </StackPanel>
+
                 </StackPanel>
             </ScrollViewer>
         </Grid>

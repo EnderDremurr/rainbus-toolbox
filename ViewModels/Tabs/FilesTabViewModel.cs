@@ -1,8 +1,10 @@
 using System.Threading;
+using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Services;
+using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.ViewModels;
 
@@ -24,15 +26,12 @@ public partial class FilesTabViewModel : ObservableObject
 
         try
         {
-            LoadingScreenViewModel.StartLoading("Начинается обработку файлов...");
+            LoadingScreenViewModel.StartLoading("Обработка файлов...");
 
             var mergingService = new FileMergingService();
-
             // Create progress reporter
             var progress = new Progress<string>(message =>
             {
-                LoadingScreenViewModel.SetText(message);
-
                 // Try to extract stats from progress message
                 if (message.Contains("Processed") && message.Contains("/"))
                     try
@@ -44,22 +43,6 @@ public partial class FilesTabViewModel : ObservableObject
                             var total = int.Parse(parts[1].Split(' ')[0]);
 
                             LoadingScreenViewModel.SetProgress(processed, total);
-
-                            // Extract stats if available
-                            if (message.Contains("Added:") && message.Contains("Merged:"))
-                            {
-                                var addedStart = message.IndexOf("Added: ", StringComparison.Ordinal) + 7;
-                                var mergedStart = message.IndexOf("Merged: ", StringComparison.Ordinal) + 8;
-                                var addedEnd = message.IndexOf(",", addedStart, StringComparison.Ordinal);
-                                var mergedEnd = message.IndexOf(")", mergedStart, StringComparison.Ordinal);
-
-                                if (addedEnd > addedStart && mergedEnd > mergedStart)
-                                {
-                                    var added = message.Substring(addedStart, addedEnd - addedStart);
-                                    var merged = message.Substring(mergedStart, mergedEnd - mergedStart);
-                                    // display these in popup when i'll implement it later
-                                }
-                            }
                         }
                     }
                     catch
@@ -75,17 +58,13 @@ public partial class FilesTabViewModel : ObservableObject
                 progress
             );
 
-            // Show final results
             var newFiles = result[0];
             var mergedFiles = result[1];
             var totalFiles = result[2];
 
-            // ProcessingStats =
-            // $"Добавлено файлов: {newFiles}, Объединено файлов: {mergedFiles}, Всего обработано: {totalFiles}";
-            // display these in popup when i'll implement it later
-
-            await Task.Delay(TimeSpan.FromSeconds(2),
-                _cancellationTokenSource.Token); // replace with popup report later
+            var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            await PopUpWindow.ShowAsync(parent!, "Готово!",
+                $"Добавлено файлов: {newFiles}, Объединено файлов: {mergedFiles}, Всего обработано: {totalFiles}");
         }
         catch (OperationCanceledException)
         {
@@ -115,15 +94,11 @@ public partial class FilesTabViewModel : ObservableObject
     public async Task ReplaceAllTagsWithMeshesAsync()
     {
         _cancellationTokenSource = new CancellationTokenSource();
-
         try
         {
-            LoadingScreenViewModel.StartLoading("Начинается замена тегов...");
-
+            LoadingScreenViewModel.StartLoading("Замена тегов...");
             var progress = new Progress<string>(message =>
             {
-                LoadingScreenViewModel.SetText(message);
-
                 if (message.Contains("Processed") && message.Contains("/"))
                     try
                     {
@@ -143,13 +118,16 @@ public partial class FilesTabViewModel : ObservableObject
                     }
             });
 
-            await _keywordProcessingService.ReplaceEveryTagWithMesh(
+            var finalProcessed = await _keywordProcessingService.ReplaceEveryTagWithMesh(
                 _repositoryManager.PathToLocalization,
                 _cancellationTokenSource.Token,
                 progress
             );
 
-            await Task.Delay(TimeSpan.FromSeconds(5), _cancellationTokenSource.Token); //replace with popup report later
+
+            var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            await PopUpWindow.ShowAsync(parent!, "Готово!",
+                $"Теги были заменены в {finalProcessed} файлов.");
         }
         catch (OperationCanceledException)
         {

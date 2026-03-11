@@ -1,24 +1,28 @@
+using System.Diagnostics;
+using System.IO;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Platform.Storage;
 using RainbusToolbox.Models.Managers;
 
 namespace RainbusToolbox;
 
 public partial class SettingsWindow : Window
 {
-    private PersistentDataManager _dataManager;
-    private GithubManager _githubManager;
-    private RepositoryManager _repositoryManager;
+    private readonly PersistentDataManager _dataManager;
+    private readonly GithubManager _githubManager;
+    private readonly RepositoryManager _repositoryManager;
 
-    public SettingsWindow(PersistentDataManager manager, GithubManager githubManager, RepositoryManager repositoryManager)
+    public SettingsWindow(PersistentDataManager manager, GithubManager githubManager,
+        RepositoryManager repositoryManager)
     {
         InitializeComponent();
 
         _dataManager = manager;
         _githubManager = githubManager;
         _repositoryManager = repositoryManager;
-        
+
         LoadSettings();
 
         // Save settings when window is closing
@@ -41,18 +45,43 @@ public partial class SettingsWindow : Window
     // Folder picker
     private async void BrowseFolder_Click(object sender, RoutedEventArgs e)
     {
-        var dialog = new OpenFolderDialog { Title = "Выбери папку с репозиторием" };
-        var result = await dialog.ShowAsync(this);
-        if (!string.IsNullOrEmpty(result))
-            RepoPathTextBox.Text = result;
+        var topLevel = GetTopLevel(this);
+        var folders = await topLevel!.StorageProvider.OpenFolderPickerAsync(
+            new FolderPickerOpenOptions
+            {
+                Title = "Выбери папку с репозиторием!!!"
+            });
+
+        if (folders.Count > 0)
+            RepoPathTextBox.Text = folders[0].Path.LocalPath;
     }
-    
+
     private async void BrowseLimbusFolder_Click(object sender, RoutedEventArgs e)
     {
-        var dialog = new OpenFolderDialog { Title = "Выбери папку с бимбус кемпани МЕНЕДЖЕР ЭСКВАЕР!!!" };
-        var result = await dialog.ShowAsync(this);
-        if (!string.IsNullOrEmpty(result))
-            LimbusPathTextBox.Text = result;
+        var topLevel = GetTopLevel(this);
+        var folders = await topLevel!.StorageProvider.OpenFolderPickerAsync(
+            new FolderPickerOpenOptions
+            {
+                Title = "Выбери папку с бимбус кемпани МЕНЕДЖЕР ЭСКВАЕР!!!"
+            });
+
+        if (folders.Count > 0)
+            LimbusPathTextBox.Text = folders[0].Path.LocalPath;
+    }
+
+    private void OpenFolderWithLogs_Click(object sender, RoutedEventArgs e)
+    {
+        var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "RainbusToolbox", "logs");
+
+        Directory.CreateDirectory(path);
+
+        if (OperatingSystem.IsWindows())
+            Process.Start("explorer.exe", path);
+        else if (OperatingSystem.IsMacOS())
+            Process.Start("open", path);
+        else if (OperatingSystem.IsLinux())
+            Process.Start("xdg-open", path);
     }
 
     // GitHub token button
@@ -68,19 +97,22 @@ public partial class SettingsWindow : Window
     {
         var isDirty = false;
         var didRepoChange = false;
-        
+
         var settingsCache = _dataManager.Settings;
-        if (settingsCache.DiscordWebHook != DiscordWebHookBox.Text && DiscordManager.ValidateWebhook(DiscordWebHookBox.Text))
+        if (settingsCache.DiscordWebHook != DiscordWebHookBox.Text &&
+            DiscordManager.ValidateWebhook(DiscordWebHookBox.Text))
         {
             _dataManager.Settings.DiscordWebHook = DiscordWebHookBox.Text;
             isDirty = true;
         }
+
         if (settingsCache.RepositoryPath != RepoPathTextBox.Text)
         {
             _dataManager.Settings.RepositoryPath = RepoPathTextBox.Text;
             isDirty = true;
             didRepoChange = true;
         }
+
         if (settingsCache.PathToLimbus != LimbusPathTextBox.Text)
         {
             _dataManager.Settings.PathToLimbus = LimbusPathTextBox.Text;
@@ -89,7 +121,7 @@ public partial class SettingsWindow : Window
 
         if (AngelaTokenBox.Text != settingsCache.DeepSeekToken)
         {
-            _dataManager.Settings.DeepSeekToken= AngelaTokenBox.Text;
+            _dataManager.Settings.DeepSeekToken = AngelaTokenBox.Text;
             isDirty = true;
         }
 
@@ -98,19 +130,20 @@ public partial class SettingsWindow : Window
             _dataManager.Settings.AngelaPrompt = AngelaPromptBox.Text;
             isDirty = true;
         }
-        
+
         if (DiscordRoleToPingBox.Text != settingsCache.DiscordRoleToPing)
         {
             _dataManager.Settings.DiscordRoleToPing = DiscordRoleToPingBox.Text;
             isDirty = true;
         }
-        
-        if(isDirty)
+
+        if (isDirty)
             _dataManager.Save();
-        
-        if(didRepoChange)
+
+        if (didRepoChange)
             _repositoryManager.TryInitialize();
     }
+
     private void ToggleWebhookVisibility_Click(object sender, RoutedEventArgs e)
     {
         if (DiscordWebHookBox.PasswordChar == '*')

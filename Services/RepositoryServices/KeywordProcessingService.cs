@@ -159,7 +159,7 @@ public class KeywordProcessingService(RepositoryManager repositoryManager)
     }
 
     // TODO: Slopreview
-    public async Task ReplaceEveryTagWithMesh(string path, CancellationToken cancellationToken = default,
+    public async Task<int> ReplaceEveryTagWithMesh(string path, CancellationToken cancellationToken = default,
         IProgress<string>? progress = null)
     {
         if (!Directory.Exists(path))
@@ -242,6 +242,7 @@ public class KeywordProcessingService(RepositoryManager repositoryManager)
         }
 
         progress?.Report($"Completed! Processed {totalFiles} files, {replacedCount} files were modified");
+        return replacedCount;
     }
 
     public async Task PullNewKeywordsFromTheGame(CancellationToken cancellationToken = default,

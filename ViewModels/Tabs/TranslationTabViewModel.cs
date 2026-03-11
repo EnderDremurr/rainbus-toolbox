@@ -68,7 +68,7 @@ public partial class TranslationTabViewModel : ObservableObject
     }
 
     public IEnumerable<IGrouping<string, FileShortcut>> GroupedShortcuts =>
-        _fileShortcuts?.GroupBy(s => s.Group) ?? Enumerable.Empty<IGrouping<string, FileShortcut>>();
+        _fileShortcuts?.GroupBy(s => s.Group) ?? [];
 
     [RelayCommand]
     public async Task SelectFile()
@@ -84,7 +84,7 @@ public partial class TranslationTabViewModel : ObservableObject
 
         var fileTypes = new[]
         {
-            new FilePickerFileType("Translation Files")
+            new FilePickerFileType("Файлы перевода")
             {
                 Patterns = ["*.json"]
             },
@@ -93,7 +93,7 @@ public partial class TranslationTabViewModel : ObservableObject
 
         var files = await storage.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "Select Translation File",
+            Title = "Выбери файлик пупсик",
             AllowMultiple = false,
             FileTypeFilter = fileTypes
         });
