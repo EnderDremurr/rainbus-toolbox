@@ -1,0 +1,83 @@
+<Window
+    Background="Transparent"
+    Height="557"
+    SystemDecorations="None"
+    Title="PopUpWindow"
+    TransparencyLevelHint="Transparent"
+    Width="1035"
+    mc:Ignorable="d"
+    x:Class="RainbusToolbox.Views.Misc.PopUpWindow"
+    x:DataType="viewModels:PopUpWindowViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:RainbusToolbox.ViewModels"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <!--  Background  -->
+        <Image
+            HorizontalAlignment="Center"
+            Source="/Assets/PopUpBackground.png"
+            Stretch="Fill"
+            VerticalAlignment="Center" />
+
+        <Grid RowDefinitions="64,*,96">
+            <!--  Toolbar  -->
+            <Grid
+                Background="Transparent"
+                Grid.Row="0"
+                PointerPressed="TitleBar_OnPointerPressed">
+                <TextBlock
+                    Classes="header"
+                    Effect="{StaticResource HardShadow}"
+                    Foreground="White"
+                    HorizontalAlignment="Center"
+                    Margin="0,10,0,0"
+                    Text="{Binding Title}"
+                    VerticalAlignment="Center" />
+            </Grid>
+            <ScrollViewer
+                Grid.Row="1"
+                IsVisible="{Binding !HasInput}"
+                Margin="25,0,25,0">
+                <TextBox
+                    Classes="invisible"
+                    FontSize="24"
+                    HorizontalContentAlignment="Center"
+                    IsReadOnly="True"
+                    Text="{Binding Message}"
+                    VerticalContentAlignment="Center" />
+            </ScrollViewer>
+            <TextBox
+                AcceptsReturn="True"
+                Classes="invisible"
+                FontSize="24"
+                Grid.Row="1"
+                HorizontalContentAlignment="Center"
+                IsVisible="{Binding HasInput}"
+                Margin="25,0,25,0"
+                Text="{Binding InputValue}"
+                VerticalContentAlignment="Center"
+                Watermark="{Binding InputPlaceholder}" />
+            <ItemsControl
+                Grid.Row="2"
+                ItemsSource="{Binding Buttons}"
+                Margin="15,0,15,15"
+                VerticalAlignment="Center">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Rows="1" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button
+                            Command="{Binding ClickCommand}"
+                            Content="{Binding Label}"
+                            Margin="5,0" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </Grid>
+</Window>

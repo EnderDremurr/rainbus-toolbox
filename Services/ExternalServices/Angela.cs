@@ -1,8 +1,9 @@
 using System.Threading;
+using Avalonia.Controls.ApplicationLifetimes;
 using DeepSeek.Core;
 using DeepSeek.Core.Models;
 using RainbusToolbox.Models.Managers;
-
+using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.Services;
 
@@ -10,23 +11,25 @@ public class Angela(PersistentDataManager dataManager)
 {
     public async Task<string?> ProcessText(string text)
     {
+        var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
         var token = dataManager.Settings.DeepSeekToken;
-        if(string.IsNullOrEmpty(token))
+        if (string.IsNullOrEmpty(token))
         {
-            await App.Current.ShowErrorNotificationAsync(AppLang.ErrorTitle, "Invalid token, aborting");
+            _ = PopUpWindow.ShowAsync(parent!, "Ошибка", "Нерабочий токен");
             return text;
         }
+
         var client = new DeepSeekClient(token);
         var cachedPrompt = dataManager.Settings.AngelaPrompt;
-        
+
 
         if (string.IsNullOrEmpty(cachedPrompt))
         {
-            await App.Current.ShowErrorNotificationAsync(AppLang.ErrorTitle, "You haven't specified the prompt, aborting");
+            _ = PopUpWindow.ShowAsync(parent!, "Ошибка", "Не найден промпт в настройках");
             return text;
         }
 
-        var request = new ChatRequest()
+        var request = new ChatRequest
         {
             Model = DeepSeekModels.ChatModel,
             Messages =
@@ -35,9 +38,9 @@ public class Angela(PersistentDataManager dataManager)
                 Message.NewUserMessage(text)
             }
         };
-        
+
         Console.WriteLine("Requesting chat...");
-        
+
         try
         {
             var response = await client.ChatAsync(request, CancellationToken.None);
@@ -45,15 +48,16 @@ public class Angela(PersistentDataManager dataManager)
 
             if (string.IsNullOrEmpty(responseText))
             {
-                await App.Current.ShowErrorNotificationAsync(AppLang.ErrorTitle, "API has returned no response, returning original text");
+                _ = PopUpWindow.ShowAsync(parent!, "Ошибка", "Не удалось подключится к API");
                 return text;
             }
+
             Console.WriteLine(responseText);
             return responseText;
         }
         catch (Exception ex)
         {
-            await App.Current.ShowErrorNotificationAsync(AppLang.ErrorTitle, $"API call failed: {ex.Message}, returning original text");
+            _ = App.Current.HandleNonFatalExceptionAsync(ex, "С дипсиком какая-то хуйня");
             return text;
         }
     }

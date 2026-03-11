@@ -1,101 +1,94 @@
 using Avalonia;
 using Avalonia.Controls;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using RainbusToolbox.Services;
+using RainbusToolbox.ViewModels;
 using RainbusToolbox.Views.Misc;
 
-namespace RainbusToolbox.Utilities
+namespace RainbusToolbox.Utilities;
+
+public static class ContextMenuHelper
 {
-    public static class ContextMenuHelper
+    public static readonly AttachedProperty<bool> EnableTextPreviewProperty =
+        AvaloniaProperty.RegisterAttached<Control, bool>("EnableTextPreview", typeof(ContextMenuHelper));
+
+    static ContextMenuHelper()
     {
-        public static readonly AttachedProperty<bool> EnableTextPreviewProperty =
-            AvaloniaProperty.RegisterAttached<Control, bool>("EnableTextPreview", typeof(ContextMenuHelper));
-            
-        public static void SetEnableTextPreview(Control element, bool value) =>
-            element.SetValue(EnableTextPreviewProperty, value);
-            
-        public static bool GetEnableTextPreview(Control element) =>
-            element.GetValue(EnableTextPreviewProperty);
-            
-        static ContextMenuHelper()
+        EnableTextPreviewProperty.Changed.Subscribe(args =>
         {
-            EnableTextPreviewProperty.Changed.Subscribe(args =>
-            {
-                if (args.Sender is TextBox textBox && args.NewValue.Equals(true))
-                {
-                    SetupContextMenu(textBox);
-                }
-            });
-        }
-        
-        private static void SetupContextMenu(TextBox textBox)
+            if (args.Sender is TextBox textBox && args.NewValue.Equals(true)) SetupContextMenu(textBox);
+        });
+    }
+
+    public static void SetEnableTextPreview(Control element, bool value)
+    {
+        element.SetValue(EnableTextPreviewProperty, value);
+    }
+
+    public static bool GetEnableTextPreview(Control element)
+    {
+        return element.GetValue(EnableTextPreviewProperty);
+    }
+
+    private static void SetupContextMenu(TextBox textBox)
+    {
+        var contextMenu = new ContextMenu();
+
+        var previewItem = new MenuItem { Header = "Превью" };
+        previewItem.Click += (s, e) =>
         {
-            var contextMenu = new ContextMenu();
+            var text = textBox.Text ?? string.Empty;
+            var previewWindow = new RichTextPreviewWindow();
+            previewWindow.SetTextToDisplay(text);
+            previewWindow.Show();
+        };
+        contextMenu.Items.Add(previewItem);
 
-            var previewItem = new MenuItem { Header = "Превью" };
-            previewItem.Click += (s, e) =>
-            {
-                var text = textBox.Text ?? string.Empty;
-                var previewWindow = new RichTextPreviewWindow();
-                previewWindow.SetTextToDisplay(text);
-                previewWindow.Show();
-            };
-            contextMenu.Items.Add(previewItem);
-
-            var angelaItem = new MenuItem { Header = "Process with Angela" };
-            angelaItem.Click += async (s, e) =>
-            {
-                // Show loading window
-                var loading = new LoadingWindow();
-                loading.Show();
-
-                try
-                {
-                    await ProcessTextWithAngela(textBox);
-                }
-                finally
-                {
-                    loading.Close();
-                }
-            };
-            contextMenu.Items.Add(angelaItem);
-
-            textBox.ContextMenu = contextMenu;
-        }
-
-        private async static Task<string> ProcessTextWithAngela(object parameter)
+        var angelaItem = new MenuItem { Header = "Process with Angela" };
+        angelaItem.Click += async (s, e) =>
         {
-            string text = string.Empty;
-            TextBox textBox = null;
+            LoadingScreenViewModel.StartLoading("Запрос данных у сервера...");
 
-            Console.WriteLine("Received Angela command.");
-
-            if (parameter is TextBox tb)
+            try
             {
-                textBox = tb;
-                text = textBox.Text ?? string.Empty;
+                await ProcessTextWithAngela(textBox);
             }
-            else if (parameter != null)
+            finally
             {
-                var textProperty = parameter.GetType().GetProperty("Text");
-                if (textProperty != null)
-                {
-                    text = textProperty.GetValue(parameter)?.ToString() ?? string.Empty;
-                }
+                LoadingScreenViewModel.FinishLoading();
             }
+        };
+        contextMenu.Items.Add(angelaItem);
 
-            var angela = App.Current.ServiceProvider.GetService(typeof(Angela)) as Angela;
-            var response = await angela?.ProcessText(string.IsNullOrEmpty(text) ? "" : text);
+        textBox.ContextMenu = contextMenu;
+    }
 
-            if (textBox != null)
-            {
-                Console.WriteLine("Setting new text");
-                textBox.Text = string.IsNullOrEmpty(response) ? text : response;
-            }
+    private static async Task<string> ProcessTextWithAngela(object parameter)
+    {
+        var text = string.Empty;
+        TextBox textBox = null;
 
-            return response ?? text;
+        Console.WriteLine("Received Angela command.");
+
+        if (parameter is TextBox tb)
+        {
+            textBox = tb;
+            text = textBox.Text ?? string.Empty;
         }
+        else if (parameter != null)
+        {
+            var textProperty = parameter.GetType().GetProperty("Text");
+            if (textProperty != null) text = textProperty.GetValue(parameter)?.ToString() ?? string.Empty;
+        }
+
+        var angela = App.Current.ServiceProvider.GetService(typeof(Angela)) as Angela;
+        var response = await angela?.ProcessText(string.IsNullOrEmpty(text) ? "" : text);
+
+        if (textBox != null)
+        {
+            Console.WriteLine("Setting new text");
+            textBox.Text = string.IsNullOrEmpty(response) ? text : response;
+        }
+
+        return response ?? text;
     }
 }

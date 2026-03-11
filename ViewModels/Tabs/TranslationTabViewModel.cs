@@ -123,7 +123,7 @@ public partial class TranslationTabViewModel : ObservableObject
 
         if (!File.Exists(filePath))
         {
-            _ = App.Current.ShowErrorNotificationAsync($"File {filePath} does not exist.");
+            _ = App.Current.HandleNonFatalExceptionAsync(new FileNotFoundException(filePath, fileName));
             return;
         }
 

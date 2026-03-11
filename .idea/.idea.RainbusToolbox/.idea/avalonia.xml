@@ -9,6 +9,7 @@
         <entry key="Styles/Controls/NavigationButtons.axaml" value="RainbusToolbox.csproj" />
         <entry key="Styles/Controls/NavigationTabs.axaml" value="RainbusToolbox.csproj" />
         <entry key="Styles/Themes/DefaultButtonTheme.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Styles/Themes/GenericLoadingBar.axaml" value="RainbusToolbox.csproj" />
         <entry key="Styles/Themes/GenericTabItemTheme.axaml" value="RainbusToolbox.csproj" />
         <entry key="Styles/Themes/TextBoxFramedTheme.axaml" value="RainbusToolbox.csproj" />
         <entry key="Styles/Themes/TextBoxInvisibleTheme.axaml" value="RainbusToolbox.csproj" />
@@ -19,8 +20,10 @@
         <entry key="Views/Misc/ExceptionDialog.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Misc/InitializationWindow.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Misc/InputDialog.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Misc/LoadingScreen.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Misc/LoadingWindow.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Misc/NavigationBar.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Misc/PopUpWindow.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Misc/RichTextPreviewWindow.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Misc/SettingsWindow.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/OverviewTab.axaml" value="RainbusToolbox.csproj" />

@@ -10,7 +10,7 @@
     xmlns:viewModels="clr-namespace:RainbusToolbox.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Border
-        Background="#80000000"
+        Background="#80050505"
         HorizontalAlignment="Stretch"
         IsHitTestVisible="{Binding IsLoading}"
         IsVisible="{Binding IsLoading}"

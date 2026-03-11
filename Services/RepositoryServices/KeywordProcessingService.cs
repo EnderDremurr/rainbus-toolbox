@@ -51,7 +51,7 @@ public class KeywordProcessingService(RepositoryManager repositoryManager)
             }
             catch (Exception e)
             {
-                await App.Current.ShowErrorNotificationAsync(e.ToString());
+                await App.Current.HandleGlobalExceptionAsync(e);
             }
         else
             // cache found, deserializing it
@@ -63,7 +63,7 @@ public class KeywordProcessingService(RepositoryManager repositoryManager)
             }
             catch (Exception e)
             {
-                await App.Current.ShowErrorNotificationAsync(e.ToString());
+                await App.Current.HandleGlobalExceptionAsync(e);
             }
         // not sure how to handle exceptions tho, ig for now it'll just crash XD
     }
@@ -78,7 +78,7 @@ public class KeywordProcessingService(RepositoryManager repositoryManager)
         }
         catch (Exception e)
         {
-            await App.Current.ShowErrorNotificationAsync(e.ToString());
+            await App.Current.HandleNonFatalExceptionAsync(e);
             return null;
         }
     }
@@ -110,7 +110,7 @@ public class KeywordProcessingService(RepositoryManager repositoryManager)
         }
         catch (Exception e)
         {
-            await App.Current.ShowErrorNotificationAsync(e.ToString());
+            await App.Current.HandleNonFatalExceptionAsync(e);
             return null;
         }
     }

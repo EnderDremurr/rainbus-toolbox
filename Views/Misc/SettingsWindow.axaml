@@ -52,7 +52,6 @@
                 HorizontalScrollBarVisibility="Disabled"
                 VerticalScrollBarVisibility="Auto">
                 <StackPanel
-                    Grid.Row="1"
                     Margin="20"
                     Spacing="15"
                     VerticalAlignment="Top">
@@ -64,11 +63,12 @@
                         VerticalAlignment="Center">
                         <Button
                             Click="SetGitHubToken_Click"
-                            Content="Залогинится"
-                            Width="150" />
+                            Content="Залогиниться"
+                            Height="60"
+                            Width="200" />
                         <TextBlock
                             Foreground="White"
-                            Text="Ты не залогинен"
+                            Text="Ты не залогинился"
                             VerticalAlignment="Center"
                             x:Name="GitHubTokenStatusTextBlock" />
                     </StackPanel>
@@ -93,7 +93,7 @@
                             Content="Показать"
                             Height="60"
                             VerticalAlignment="Center"
-                            Width="120"
+                            Width="150"
                             x:Name="ToggleWebhookButton" />
                     </StackPanel>
 
@@ -102,7 +102,7 @@
                         Spacing="10"
                         VerticalAlignment="Center">
                         <TextBlock
-                            Text="Discord role to ping:"
+                            Text="Айди дискорд роли:"
                             VerticalAlignment="Center"
                             Width="150" />
                         <TextBox
@@ -132,7 +132,7 @@
                             Click="BrowseFolder_Click"
                             Content="Выбрать"
                             Height="60"
-                            Width="120" />
+                            Width="150" />
                     </StackPanel>
 
                     <!--  Path to limbus company files  -->
@@ -155,7 +155,7 @@
                             Click="BrowseLimbusFolder_Click"
                             Content="Выбрать"
                             Height="60"
-                            Width="120" />
+                            Width="150" />
                     </StackPanel>
 
                     <StackPanel

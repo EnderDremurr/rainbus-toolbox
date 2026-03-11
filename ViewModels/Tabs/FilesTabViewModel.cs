@@ -80,12 +80,12 @@ public partial class FilesTabViewModel : ObservableObject
             var mergedFiles = result[1];
             var totalFiles = result[2];
 
-            LoadingScreenViewModel.SetText("Завершено успешно!");
             // ProcessingStats =
             // $"Добавлено файлов: {newFiles}, Объединено файлов: {mergedFiles}, Всего обработано: {totalFiles}";
             // display these in popup when i'll implement it later
 
-            await Task.Delay(TimeSpan.FromSeconds(10), _cancellationTokenSource.Token);
+            await Task.Delay(TimeSpan.FromSeconds(2),
+                _cancellationTokenSource.Token); // replace with popup report later
         }
         catch (OperationCanceledException)
         {
@@ -95,7 +95,7 @@ public partial class FilesTabViewModel : ObservableObject
         {
             LoadingScreenViewModel.SetText("Ошибка");
 
-            _ = App.Current.ShowErrorNotificationAsync($"Ошибка при замене тегов: {ex.Message}", "Ошибка");
+            _ = App.Current.HandleNonFatalExceptionAsync(ex, "Ошибка при замене тегов");
         }
         finally
         {
@@ -149,10 +149,7 @@ public partial class FilesTabViewModel : ObservableObject
                 progress
             );
 
-            // Final success message
-            LoadingScreenViewModel.SetText("Замена тегов завершена успешно!");
-
-            await Task.Delay(TimeSpan.FromSeconds(10), _cancellationTokenSource.Token);
+            await Task.Delay(TimeSpan.FromSeconds(5), _cancellationTokenSource.Token); //replace with popup report later
         }
         catch (OperationCanceledException)
         {
@@ -160,9 +157,7 @@ public partial class FilesTabViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            LoadingScreenViewModel.SetText("Ошибка");
-
-            _ = App.Current.ShowErrorNotificationAsync($"Ошибка при замене тегов: {ex.Message}", "Ошибка");
+            _ = App.Current.HandleNonFatalExceptionAsync(ex, "Ошибка при замене тегов");
         }
         finally
         {
@@ -185,7 +180,7 @@ public partial class FilesTabViewModel : ObservableObject
                 progress
             );
             LoadingScreenViewModel.SetText("Готово!");
-            await Task.Delay(TimeSpan.FromSeconds(1), _cancellationTokenSource.Token);
+            await Task.Delay(TimeSpan.FromSeconds(1), _cancellationTokenSource.Token); //replace with popup report later
         }
         catch (OperationCanceledException)
         {
@@ -195,7 +190,7 @@ public partial class FilesTabViewModel : ObservableObject
         {
             LoadingScreenViewModel.SetText($"Ошибка: {ex.Message}");
 
-            _ = App.Current.ShowErrorNotificationAsync($"Ошибка при замене тегов: {ex.Message}", "Ошибка");
+            _ = App.Current.HandleNonFatalExceptionAsync(ex, "Ошибка при замене тегов");
         }
         finally
         {

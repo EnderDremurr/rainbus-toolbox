@@ -9,13 +9,14 @@ using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Services;
 using RainbusToolbox.ViewModels;
 using RainbusToolbox.Views;
+using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox;
 
-public partial class App : Application
+public class App : Application
 {
-    private IServiceProvider _serviceProvider;
-    public IServiceProvider ServiceProvider => _serviceProvider;
+    public IServiceProvider ServiceProvider { get; private set; }
+
     public static ViewModelLocator Locator { get; private set; }
     public new static App Current => (App)Application.Current!;
 
@@ -55,185 +56,48 @@ public partial class App : Application
     // Global exception handler for fatal exceptions
     public async Task HandleGlobalExceptionAsync(Exception exception)
     {
-        Console.WriteLine(FormatExceptionText(exception)); // log to console
+        Console.WriteLine(FormatExceptionText(exception)); // TODO: replace with serilog
         await Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            try
-            {
-                await ShowExceptionDialogAsync(exception);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception while showing dialog: {ex}");
-                (ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Shutdown();
-            }
+            var desktop = ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+            var parent = desktop?.MainWindow;
+            if (parent == null) return;
+
+            var clipboard = TopLevel.GetTopLevel(parent)?.Clipboard;
+            var errorText = FormatExceptionText(exception);
+
+            await PopUpWindow.ShowAsync(parent, "Фатальная ошибка", errorText, false, "",
+                new PopupButton
+                {
+                    Label = "Copy Error",
+                    ResultValue = "copy",
+                    KeepOpen = true,
+                    OnClick = () => clipboard?.SetTextAsync(errorText)
+                },
+                new PopupButton { Label = "Close Application", ResultValue = "ok" }
+            );
+
+            desktop?.Shutdown();
         });
     }
 
     // Non-fatal exception handler - just informs the user, doesn't shut down
     public async Task HandleNonFatalExceptionAsync(Exception exception, string? userFriendlyMessage = null)
     {
-        Console.WriteLine($"Non-fatal exception: {FormatExceptionText(exception)}"); // log to console
-
+        Console.WriteLine($"Non-fatal exception: {FormatExceptionText(exception)}"); // TODO: replace with serilog
         await Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            try
-            {
-                await ShowNonFatalExceptionDialogAsync(exception, userFriendlyMessage);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception while showing non-fatal error dialog: {ex}");
-                // Don't shut down for non-fatal exceptions, just log the error
-            }
+            var parent = (ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            if (parent == null) return;
+            await PopUpWindow.ShowAsync(parent, "Error",
+                userFriendlyMessage ?? "An error occurred, but the application can continue.");
         });
     }
 
-    // Convenience method for quick non-fatal error notifications
-    public async Task ShowErrorNotificationAsync(string message, string? title = null)
-    {
-        await Dispatcher.UIThread.InvokeAsync(async () =>
-        {
-            try
-            {
-                var dialog = new Window
-                {
-                    Title = title ?? "Error",
-                    Width = 400,
-                    Height = 200,
-                    CanResize = false,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
-
-                var textBlock = new TextBlock
-                {
-                    Text = message,
-                    Margin = new Thickness(20),
-                    TextWrapping = Avalonia.Media.TextWrapping.Wrap
-                };
-
-                var button = new Button
-                {
-                    Content = "OK",
-                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                    Margin = new Thickness(20)
-                };
-
-                button.Click += (_, _) => dialog.Close();
-
-                var stackPanel = new StackPanel();
-                stackPanel.Children.Add(textBlock);
-                stackPanel.Children.Add(button);
-
-                dialog.Content = stackPanel;
-
-                var desktopLifetime = ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-                var parentWindow = desktopLifetime?.MainWindow;
-
-                if (parentWindow != null)
-                    await dialog.ShowDialog(parentWindow);
-                else
-                    dialog.Show();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception while showing error notification: {ex}");
-            }
-        });
-    }
-
-    private async Task ShowExceptionDialogAsync(Exception exception)
-    {
-        var errorText = FormatExceptionText(exception);
-        var dialog = new ExceptionDialog(errorText);
-
-        var desktopLifetime = ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-        var parentWindow = desktopLifetime?.MainWindow;
-
-        if (parentWindow != null)
-            await dialog.ShowDialog(parentWindow);
-        else
-            dialog.Show();
-
-        desktopLifetime?.Shutdown();
-    }
-
-    private async Task ShowNonFatalExceptionDialogAsync(Exception exception, string? userFriendlyMessage = null)
-    {
-        var dialog = new Window
-        {
-            Title = "Error",
-            Width = 500,
-            Height = 400,
-            CanResize = true,
-            WindowStartupLocation = WindowStartupLocation.CenterOwner
-        };
-
-        var mainPanel = new StackPanel { Margin = new Thickness(20) };
-
-        // User-friendly message
-        var messageText = userFriendlyMessage ?? "An error occurred, but the application can continue running.";
-        var messageBlock = new TextBlock
-        {
-            Text = messageText,
-            FontSize = 14,
-            FontWeight = Avalonia.Media.FontWeight.Medium,
-            Margin = new Thickness(0, 0, 0, 20),
-            TextWrapping = Avalonia.Media.TextWrapping.Wrap
-        };
-        mainPanel.Children.Add(messageBlock);
-
-        // Details section
-        var detailsExpander = new Expander
-        {
-            Header = "Technical Details",
-            Margin = new Thickness(0, 0, 0, 20)
-        };
-
-        var detailsText = new TextBox
-        {
-            Text = FormatExceptionText(exception),
-            IsReadOnly = true,
-            AcceptsReturn = true,
-            TextWrapping = Avalonia.Media.TextWrapping.Wrap,
-            Height = 200
-        };
-
-        detailsExpander.Content = detailsText;
-        mainPanel.Children.Add(detailsExpander);
-
-        // Buttons
-        var buttonPanel = new StackPanel
-        {
-            Orientation = Avalonia.Layout.Orientation.Horizontal,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right
-        };
-
-        var okButton = new Button
-        {
-            Content = "OK",
-            Margin = new Thickness(10, 0, 0, 0),
-            MinWidth = 80
-        };
-
-        okButton.Click += (_, _) => dialog.Close();
-        buttonPanel.Children.Add(okButton);
-
-        mainPanel.Children.Add(buttonPanel);
-        dialog.Content = mainPanel;
-
-        var desktopLifetime = ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-        var parentWindow = desktopLifetime?.MainWindow;
-
-        if (parentWindow != null)
-            await dialog.ShowDialog(parentWindow);
-        else
-            dialog.Show();
-    }
 
     private string FormatExceptionText(Exception exception)
     {
-        var text = $"An unexpected error occurred:\n\n";
+        var text = "An unexpected error occurred:\n\n";
         text += $"Error Type: {exception.GetType().Name}\n";
         text += $"Message: {exception.Message}\n\n";
         text += $"Stack Trace:\n{exception.StackTrace}";
@@ -256,6 +120,12 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        if (Design.IsDesignMode)
+        {
+            base.OnFrameworkInitializationCompleted();
+            return;
+        }
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             DisableAvaloniaDataAnnotationValidation();
@@ -279,23 +149,23 @@ public partial class App : Application
             services.AddSingleton<ReleaseTabViewModel>();
             services.AddSingleton<ViewModelLocator>();
 
-            _serviceProvider = services.BuildServiceProvider();
+            ServiceProvider = services.BuildServiceProvider();
 
             try
             {
-                var repoManager = _serviceProvider.GetRequiredService<RepositoryManager>();
-                Locator = _serviceProvider.GetRequiredService<ViewModelLocator>();
+                var repoManager = ServiceProvider.GetRequiredService<RepositoryManager>();
+                Locator = ServiceProvider.GetRequiredService<ViewModelLocator>();
 
                 if (repoManager.IsValid)
                 {
-                    var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-                    mainWindow.DataContext = _serviceProvider.GetRequiredService<MainWindowViewModel>();
+                    var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
+                    mainWindow.DataContext = ServiceProvider.GetRequiredService<MainWindowViewModel>();
                     desktop.MainWindow = mainWindow;
                 }
                 else
                 {
-                    var initWindow = _serviceProvider.GetRequiredService<InitializationWindow>();
-                    initWindow.DataContext = _serviceProvider.GetRequiredService<InitializationWindowViewModel>();
+                    var initWindow = ServiceProvider.GetRequiredService<InitializationWindow>();
+                    initWindow.DataContext = ServiceProvider.GetRequiredService<InitializationWindowViewModel>();
                     desktop.MainWindow = initWindow;
                 }
             }
@@ -320,8 +190,8 @@ public partial class App : Application
         where TWindow : Window
         where TViewModel : class
     {
-        var window = _serviceProvider.GetRequiredService<TWindow>();
-        window.DataContext = _serviceProvider.GetRequiredService<TViewModel>();
+        var window = ServiceProvider.GetRequiredService<TWindow>();
+        window.DataContext = ServiceProvider.GetRequiredService<TViewModel>();
         window.Show();
         return window;
     }

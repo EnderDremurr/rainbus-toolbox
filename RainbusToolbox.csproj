@@ -48,16 +48,8 @@
             <DependentUpon>BattleHintsTab.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Views\Misc\ExceptionDialog.axaml.cs">
-            <DependentUpon>ExceptionDialog.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
         <Compile Update="Views\Misc\InitializationWindow.axaml.cs">
             <DependentUpon>InitializationWindow.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Views\Misc\InputDialog.axaml.cs">
-            <DependentUpon>InputDialogue.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
         <Compile Update="Views\Translation\StoryTranslationEditor.axaml.cs">

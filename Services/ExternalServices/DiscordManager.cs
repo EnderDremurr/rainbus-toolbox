@@ -1,51 +1,47 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
-using Avalonia.Controls;
-using Avalonia.Threading;
+using Avalonia.Controls.ApplicationLifetimes;
 using Discord.Webhook;
-using Discord.WebSocket;
-using MsBox;
-using MsBox.Avalonia;
-using MsBox.Avalonia.Dto;
-using MsBox.Avalonia.Enums;
+using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.Models.Managers;
 
 public class DiscordManager
 {
-    public DiscordWebhookClient? Client { get; private set; }
     public DiscordManager(string webhookUrl)
     {
-        if(!ValidateWebhook(webhookUrl))
+        if (!ValidateWebhook(webhookUrl))
             return;
-        
+
         Client = new DiscordWebhookClient(webhookUrl);
     }
 
-    
+    public DiscordWebhookClient? Client { get; }
+
+
     public async Task SendMessageAsync(string message, string? imagePath = null)
     {
+        var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
         if (Client == null)
         {
-            _ = App.Current.ShowErrorNotificationAsync("Ошибка при отправке сообщения, чето поломалась. Проверь вебхук в настройках");
+            _ = PopUpWindow.ShowAsync(parent!, "Ошибка",
+                "Ошибка при отправке сообщения, чето поломалась. Проверь вебхук в настройках");
             return;
         }
-        if(!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
+
+        if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
             await Client.SendFileAsync(imagePath, message);
         else
             await Client.SendMessageAsync(message);
     }
 
 
-
     public static bool ValidateWebhook(string? webhookUrl)
     {
+        var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
 
         if (string.IsNullOrWhiteSpace(webhookUrl))
         {
-            _ = App.Current.ShowErrorNotificationAsync("Не указан вебхук");
+            _ = PopUpWindow.ShowAsync(parent!, "Ошибка", "Не указан вебхук");
             return false;
         }
 
@@ -55,10 +51,10 @@ public class DiscordManager
         }
         catch
         {
-            _ = App.Current.ShowErrorNotificationAsync("Вебхук что ты вписал хуйня ебаная, поставь другой");
+            _ = PopUpWindow.ShowAsync(parent!, "Ошибка", "Вебхук что ты вписал хуйня ебаная, поставь другой");
             return false;
         }
-        
+
         return true;
     }
 }
