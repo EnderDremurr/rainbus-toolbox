@@ -109,7 +109,7 @@ public partial class ReleaseTabViewModel : ObservableObject
     private bool _option1;
 
     [ObservableProperty]
-    private bool _attachAnImage = true;
+    private bool _attachAnImage;
 
     [ObservableProperty]
     private Bitmap? _selectedImagePreview;
