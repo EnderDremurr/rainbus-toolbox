@@ -169,6 +169,7 @@ public partial class SettingsWindow : Window
             LimbusPathTextBox.Text = data.PathToLimbus ?? "";
             AngelaPromptBox.Text = data.AngelaPrompt ?? "";
             AngelaTokenBox.Text = data.DeepSeekToken ?? "";
+            DiscordRoleToPingBox.Text = data.DiscordRoleToPing ?? "";
 
             GitHubTokenStatusTextBlock.Text = string.IsNullOrEmpty(data.GitHubToken)
                 ? "Ты не залогинен"
