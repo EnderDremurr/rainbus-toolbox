@@ -1,12 +1,13 @@
 using System.IO;
-using Avalonia.Controls;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MsBox.Avalonia;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Services;
-using RainbusToolbox.Views;
 
 namespace RainbusToolbox.ViewModels;
 
@@ -137,10 +138,28 @@ public partial class ReleaseTabViewModel : ObservableObject
     [RelayCommand]
     public async Task SelectFile()
     {
-        var dialog = new OpenFileDialog();
-        var result =
-            await dialog.ShowAsync((App.Current.ServiceProvider.GetService(typeof(MainWindow)) as MainWindow)!);
-        if (result != null) _selectedFilePath = result[0];
+        var top =
+            Application.Current!.ApplicationLifetime is
+                IClassicDesktopStyleApplicationLifetime desktop
+                ? desktop.MainWindow
+                : null;
+        if (top == null) return;
+
+        var storage = top.StorageProvider;
+
+
+        var files = await storage.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Выбери картиночку пупсик",
+            AllowMultiple = false,
+            FileTypeFilter = [FilePickerFileTypes.ImageAll]
+        });
+
+        if (files.Count == 0) return;
+
+        var file = files[0].Path.LocalPath;
+
+        _selectedFilePath = file;
         SelectedFileName = Path.GetFileName(_selectedFilePath);
         SelectedImagePreview = new Bitmap(_selectedFilePath);
     }
