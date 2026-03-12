@@ -365,10 +365,32 @@ public partial class TranslationTabViewModel : ObservableObject
             }
         };
 
+        var categories = new[]
+        {
+            new { Group = "Гифты", Pattern = "EGOgift_*.json", Subfolder = "" },
+            new { Group = "Анонсеры", Pattern = "*.json", Subfolder = "BattleAnnouncerDlg" },
+            new { Group = "Кейворды", Pattern = "BattleKeywords*.json", Subfolder = "" }
+        };
+
+        foreach (var category in categories)
+        {
+            var searchPath = Path.Combine(root, category.Subfolder);
+            if (!Directory.Exists(searchPath)) continue;
+
+            var files = Directory.GetFiles(searchPath, category.Pattern);
+            foreach (var file in files)
+                fileShortcuts.Add(new FileShortcut
+                {
+                    Alias = Path.GetFileNameWithoutExtension(file),
+                    FullPath = file,
+                    Desc = "-",
+                    Group = category.Group
+                });
+        }
 
         foreach (var shortcut in fileShortcuts)
         {
-            shortcut.DoesExist = true /*File.Exists(shortcut.Path)*/;
+            shortcut.DoesExist = File.Exists(shortcut.FullPath);
             shortcut.OpenCommand = OpenShortcutFileCommand;
         }
 

@@ -109,24 +109,26 @@
                 </TabControl.ItemTemplate>
                 <TabControl.ContentTemplate>
                     <DataTemplate>
-                        <ItemsControl ItemsSource="{Binding}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="models:FileShortcut">
-                                    <Button
-                                        Command="{Binding OpenCommand}"
-                                        CommandParameter="{Binding FullPath}"
-                                        Content="{Binding Alias}"
-                                        Height="75"
-                                        Margin="10"
-                                        Width="300" />
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+                            <ItemsControl ItemsSource="{Binding}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="models:FileShortcut">
+                                        <Button
+                                            Command="{Binding OpenCommand}"
+                                            CommandParameter="{Binding FullPath}"
+                                            Content="{Binding Alias}"
+                                            Height="75"
+                                            Margin="10"
+                                            Width="300" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
                     </DataTemplate>
                 </TabControl.ContentTemplate>
             </TabControl>
