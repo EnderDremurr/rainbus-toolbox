@@ -1,4 +1,7 @@
-<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Styles
+    xmlns="https://github.com/avaloniaui"
+    xmlns:utilities="clr-namespace:RainbusToolbox.Utilities"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Design.PreviewWith>
         <TextBox
             Classes="framed"
@@ -16,6 +19,7 @@
         <Setter Property="SelectionBrush" Value="#66007ACC" />
         <Setter Property="SelectionForegroundBrush" Value="Black" />
         <Setter Property="Padding" Value="4" />
+        <Setter Property="utilities:ContextMenuHelper.EnableCustomContextMenu" Value="True" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid>

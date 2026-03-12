@@ -6,6 +6,7 @@
         <Border Padding="20">
             <TextBox
                 Classes="invisible"
+                Height="1200"
                 MaxWidth="600"
                 Text="Skibid toilet             zzzzzzzzzzzzzzzzz                 zzzzzzzzzzzzzz             asdasdasdasdasdasda             asdasdadasdas                 d             ssssssasdasdasdddddddddddddddddddddddd                 dddasdasdasdasdadsdsdasdasds"
                 TextWrapping="Wrap" />
@@ -21,7 +22,7 @@
         <Setter Property="Margin" Value="0" />
         <Setter Property="Watermark" Value="No text found" />
         <Setter Property="SelectionBrush" Value="Brown" />
-        <Setter Property="utilities:ContextMenuHelper.EnableTextPreview" Value="True" />
+        <Setter Property="utilities:ContextMenuHelper.EnableCustomContextMenu" Value="True" />
     </Style>
     <Style Selector="TextBox.invisible:focus /template/ Border#PART_BorderElement">
         <Setter Property="Background" Value="Transparent" />
