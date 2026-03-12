@@ -42,6 +42,7 @@
         <entry key="Views/Translation/EGOGiftTranslationEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Translation/EGOVoiceTranslationEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Translation/GenericTranslationEditor.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Translation/KeywordTranslationEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Translation/PanicTranslationEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Translation/PassiveTranslationEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Translation/PersonalityVoiceTranslationEditor.axaml" value="RainbusToolbox.csproj" />

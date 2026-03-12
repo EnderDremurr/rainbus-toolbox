@@ -7,6 +7,7 @@ using Avalonia.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Services;
+using RainbusToolbox.Services.ExternalServices;
 using RainbusToolbox.ViewModels;
 using RainbusToolbox.Views;
 using RainbusToolbox.Views.Misc;
@@ -140,6 +141,7 @@ public class App : Application
             services.AddSingleton<KeywordProcessingService>();
             services.AddSingleton<Angela>();
             services.AddSingleton<DiscordRPCService>();
+            services.AddSingleton<CachingService>();
 
             // Windows and VMs
             services.AddSingleton<MainWindow>();
@@ -151,6 +153,7 @@ public class App : Application
             services.AddSingleton<ViewModelLocator>();
 
             ServiceProvider = services.BuildServiceProvider();
+            ServiceProvider.GetRequiredService<CachingService>();
 
             try
             {

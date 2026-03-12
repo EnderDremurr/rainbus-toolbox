@@ -288,7 +288,7 @@
             Orientation="Horizontal">
 
             <!--  Skill Navigation  -->
-            <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal">
                 <misc:NavigationBar />
             </StackPanel>
 
@@ -296,7 +296,8 @@
             <StackPanel Orientation="Horizontal">
                 <Button
                     Click="OnPreviousLevelClick"
-                    Content="◀ Prev Level"
+                    Content="+ Уровень"
+                    Height="60"
                     IsEnabled="{Binding CanGoPreviousLevel}"
                     Margin="0,0,10,0"
                     Width="200" />
@@ -306,15 +307,19 @@
                     Padding="8,4">
                     <TextBlock
                         FontFamily="{StaticResource MikodacsFont}"
-                        FontSize="16"
+                        FontSize="20"
                         FontWeight="SemiBold"
                         Foreground="White"
+                        HorizontalAlignment="Center"
                         Text="{Binding LevelNavigationText}"
+                        TextAlignment="Center"
+                        VerticalAlignment="Center"
                         Width="100" />
                 </Border>
                 <Button
                     Click="OnNextLevelClick"
-                    Content="Next Level ▶"
+                    Content="- Уровень"
+                    Height="60"
                     IsEnabled="{Binding CanGoNextLevel}"
                     Margin="10,0,0,0"
                     Width="200" />

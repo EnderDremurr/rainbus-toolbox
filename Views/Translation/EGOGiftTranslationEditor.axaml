@@ -36,7 +36,15 @@
                         Source="avares://RainbusToolbox/Assets/GiftBg.png"
                         Stretch="Fill"
                         VerticalAlignment="Stretch" />
-
+                    <!--  Gift Image  -->
+                    <Image
+                        Height="128"
+                        HorizontalAlignment="Left"
+                        Margin="105,100,0,0"
+                        Source="{Binding CurrentGiftImage}"
+                        Stretch="Uniform"
+                        VerticalAlignment="Top"
+                        Width="128" />
                     <!--  Gift Name Area  -->
                     <Border Margin="350,50,60,560">
                         <TextBox
@@ -79,7 +87,15 @@
                         Source="avares://RainbusToolbox/Assets/GiftBg.png"
                         Stretch="Fill"
                         VerticalAlignment="Stretch" />
-
+                    <!--  Gift Image  -->
+                    <Image
+                        Height="128"
+                        HorizontalAlignment="Left"
+                        Margin="105,100,0,0"
+                        Source="{Binding CurrentGiftImage}"
+                        Stretch="Uniform"
+                        VerticalAlignment="Top"
+                        Width="128" />
                     <!--  Gift Name Area  -->
                     <Border Margin="350,50,60,560">
                         <TextBox
