@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
+using RainbusToolbox.Models.Managers;
 using Serilog;
 
 namespace RainbusToolbox.Services.ExternalServices;
@@ -28,8 +29,12 @@ public class CachingService
         DefaultRequestHeaders = { { "User-Agent", "RainbusToolbox/1.0" } }
     };
 
-    public CachingService()
+    public CachingService(PersistentDataManager persistentDataManager)
     {
+        //check if user hasn't initialized the game yet
+        if (string.IsNullOrEmpty(persistentDataManager.Settings.PathToLimbus))
+            return;
+
         _appCancellationToken = _cts.Token;
         _ = Task.Run(() => SyncCacheAsync("Category:E.G.O_Gifts", _appCancellationToken));
         _ = Task.Run(() => SyncCacheAsync("Category:Battle_Announcer_Icons", _appCancellationToken));
