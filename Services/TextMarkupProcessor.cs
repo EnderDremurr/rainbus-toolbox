@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Avalonia;
 using Avalonia.Controls;
@@ -15,7 +15,7 @@ public class TextMarkupProcessor
 {
     public static List<Inline> ConvertRawToRich(string raw)
     {
-        if (string.IsNullOrEmpty(raw))
+        if (string.IsNullOrWhiteSpace(raw))
             return new List<Inline>();
 
         try
@@ -28,8 +28,8 @@ public class TextMarkupProcessor
             // Return error message as plain text on parsing failure
             return new List<Inline>
             {
-                new Run($"Parse Error: {ex.Message}") 
-                { 
+                new Run($"Parse Error: {ex.Message}")
+                {
                     Foreground = Brushes.Red,
                     FontFamily = new FontFamily("avares://RainbusToolbox/Assets/Fonts/Pretendard.ttf#Pretendard")
                 }
@@ -48,11 +48,10 @@ public class TextMarkupProcessor
         var currentText = "";
 
         while (position < text.Length)
-        {
             if (text[position] == '[' && HasBracketTag(text, position))
             {
                 // Add any accumulated text before processing bracket tag
-                if (!string.IsNullOrEmpty(currentText))
+                if (!string.IsNullOrWhiteSpace(currentText))
                 {
                     inlines.Add(CreateRun(currentText, currentFormat));
                     currentText = "";
@@ -68,7 +67,7 @@ public class TextMarkupProcessor
             else if (text[position] == '<' && HasAngleBracketTag(text, position))
             {
                 // Add any accumulated text before processing angle bracket tag
-                if (!string.IsNullOrEmpty(currentText))
+                if (!string.IsNullOrWhiteSpace(currentText))
                 {
                     inlines.Add(CreateRun(currentText, currentFormat));
                     currentText = "";
@@ -80,10 +79,11 @@ public class TextMarkupProcessor
 
                 ProcessAngleBracketTag(tagInfo.Tag, formatStack, ref currentFormat, inlines);
             }
-            else if (text[position] == '\n' || (text[position] == '\r' && position + 1 < text.Length && text[position + 1] == '\n'))
+            else if (text[position] == '\n' ||
+                     (text[position] == '\r' && position + 1 < text.Length && text[position + 1] == '\n'))
             {
                 // Handle newlines
-                if (!string.IsNullOrEmpty(currentText))
+                if (!string.IsNullOrWhiteSpace(currentText))
                 {
                     inlines.Add(CreateRun(currentText, currentFormat));
                     currentText = "";
@@ -102,10 +102,9 @@ public class TextMarkupProcessor
                 currentText += text[position];
                 position++;
             }
-        }
 
         // Add any remaining text
-        if (!string.IsNullOrEmpty(currentText)) 
+        if (!string.IsNullOrWhiteSpace(currentText))
             inlines.Add(CreateRun(currentText, currentFormat));
 
         return inlines;
@@ -160,8 +159,8 @@ public class TextMarkupProcessor
             "endskill" => Color.Parse("#45B7D1"),
             "onsucceedattack" => Color.Parse("#96CEB4"),
             "tabexplain" => Color.Parse("#FFEAA7"),
-            
-            
+
+
             // Default color for unknown tags
             _ => Color.Parse("#CCCCCC")
         };
@@ -170,26 +169,22 @@ public class TextMarkupProcessor
     private static string FormatBracketTag(string key, string displayText, bool isKeyValue)
     {
         if (isKeyValue)
-        {
             // For [Key:`Value`] format, show the value in a styled way
             return key switch
             {
                 _ => displayText
             };
-        }
-        else
+
+        // For simple [Tag] format, show formatted tag name
+        return key switch
         {
-            // For simple [Tag] format, show formatted tag name
-            return key switch
-            {
-                "cantidentify" => "[НЕОПОЗНАН]",
-                "beforeattack" => "[ПЕРЕД АТАКОЙ]",
-                "endskill" => "[КОНЕЦ НАВЫКА]",
-                "onsucceedattack" => "[ПРИ ПОПАДАНИИ]",
-                "tabexplain" => "", // Remove completely
-                _ => $"[{displayText.ToUpper()}]"
-            };
-        }
+            "cantidentify" => "[НЕОПОЗНАН]",
+            "beforeattack" => "[ПЕРЕД АТАКОЙ]",
+            "endskill" => "[КОНЕЦ НАВЫКА]",
+            "onsucceedattack" => "[ПРИ ПОПАДАНИИ]",
+            "tabexplain" => "", // Remove completely
+            _ => $"[{displayText.ToUpper()}]"
+        };
     }
 
     private static bool HasBracketTag(string text, int position)
@@ -227,12 +222,12 @@ public class TextMarkupProcessor
     private static void ProcessAngleBracketTag(string tag, Stack<TextFormat> formatStack,
         ref TextFormat currentFormat, List<Inline> inlines)
     {
-        if (string.IsNullOrEmpty(tag)) return;
+        if (string.IsNullOrWhiteSpace(tag)) return;
 
         if (tag.StartsWith("/"))
         {
             // Closing tag - restore previous format
-            if (formatStack.Count > 0) 
+            if (formatStack.Count > 0)
                 currentFormat = formatStack.Pop();
         }
         else if (tag.StartsWith("color="))
@@ -240,7 +235,7 @@ public class TextMarkupProcessor
             // Color tag - push current format and apply color
             formatStack.Push(currentFormat.Clone());
             var colorValue = tag.Substring(6);
-            if (TryParseColor(colorValue, out var color)) 
+            if (TryParseColor(colorValue, out var color))
                 currentFormat.Color = color;
         }
         else if (tag.StartsWith("sprite name="))
@@ -251,7 +246,7 @@ public class TextMarkupProcessor
             {
                 var spriteName = match.Groups[1].Value;
                 var spriteInline = CreateSpriteInline(spriteName);
-                if (spriteInline != null) 
+                if (spriteInline != null)
                     inlines.Add(spriteInline);
             }
         }
@@ -294,8 +289,8 @@ public class TextMarkupProcessor
         var run = new Run(text)
         {
             FontFamily = new FontFamily("avares://RainbusToolbox/Assets/Fonts/Pretendard.ttf#Pretendard"),
-            Foreground = format.Color.HasValue 
-                ? new SolidColorBrush(format.Color.Value) 
+            Foreground = format.Color.HasValue
+                ? new SolidColorBrush(format.Color.Value)
                 : Brushes.White
         };
 
@@ -332,7 +327,7 @@ public class TextMarkupProcessor
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Failed to load sprite '{spriteName}': {ex.Message}");
+            Debug.WriteLine($"Failed to load sprite '{spriteName}': {ex.Message}");
         }
 
         try
@@ -355,7 +350,7 @@ public class TextMarkupProcessor
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Failed to load placeholder sprite: {ex.Message}");
+            Debug.WriteLine($"Failed to load placeholder sprite: {ex.Message}");
         }
 
         return new InlineUIContainer(new TextBlock
@@ -373,30 +368,27 @@ public class TextMarkupProcessor
         var possiblePaths = new[]
         {
             $"avares://RainbusToolbox/Assets/Icons/{spriteName}.png",
-            $"avares://RainbusToolbox/Assets/Sprites/{spriteName}.png", 
+            $"avares://RainbusToolbox/Assets/Sprites/{spriteName}.png",
             $"avares://RainbusToolbox/Assets/{spriteName}.png",
             $"avares://RainbusToolbox/Icons/{spriteName}.png"
         };
 
         foreach (var path in possiblePaths)
-        {
             try
             {
-                System.Diagnostics.Debug.WriteLine($"Trying to load sprite from: {path}");
+                Debug.WriteLine($"Trying to load sprite from: {path}");
                 var uri = new Uri(path);
                 var stream = AssetLoader.Open(uri);
                 var bitmap = new Bitmap(stream);
-                System.Diagnostics.Debug.WriteLine($"Successfully loaded sprite from: {path}");
+                Debug.WriteLine($"Successfully loaded sprite from: {path}");
                 return bitmap;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Failed to load from {path}: {ex.Message}");
-                continue;
+                Debug.WriteLine($"Failed to load from {path}: {ex.Message}");
             }
-        }
 
-        System.Diagnostics.Debug.WriteLine($"Failed to load sprite '{spriteName}' from any path");
+        Debug.WriteLine($"Failed to load sprite '{spriteName}' from any path");
         return null;
     }
 
@@ -404,11 +396,10 @@ public class TextMarkupProcessor
     {
         color = default;
 
-        if (string.IsNullOrEmpty(colorStr))
+        if (string.IsNullOrWhiteSpace(colorStr))
             return false;
 
         if (colorStr.StartsWith("#"))
-        {
             try
             {
                 color = Color.Parse(colorStr);
@@ -418,7 +409,6 @@ public class TextMarkupProcessor
             {
                 return false;
             }
-        }
 
         try
         {

@@ -69,7 +69,8 @@ public partial class SkillsEgoTranslationEditorViewModel(
         }
     }
 
-    public bool HasAnAbnormalityName => !string.IsNullOrEmpty(CurrentItem?.LevelList.FirstOrDefault()?.AbnormalityName);
+    public bool HasAnAbnormalityName =>
+        !string.IsNullOrWhiteSpace(CurrentItem?.LevelList.FirstOrDefault()?.AbnormalityName);
 
     private void GetCurrentSkillsEgoName()
     {

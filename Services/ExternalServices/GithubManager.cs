@@ -29,7 +29,7 @@ public class GithubManager
 
     public void TryInitialize()
     {
-        if (string.IsNullOrEmpty(_dataManager.Settings.GitHubToken))
+        if (string.IsNullOrWhiteSpace(_dataManager.Settings.GitHubToken))
             return;
     }
 

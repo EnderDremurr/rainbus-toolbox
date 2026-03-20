@@ -28,7 +28,7 @@ public class DiscordManager
             return;
         }
 
-        if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
+        if (!string.IsNullOrWhiteSpace(imagePath) && File.Exists(imagePath))
             await Client.SendFileAsync(imagePath, message);
         else
             await Client.SendMessageAsync(message);

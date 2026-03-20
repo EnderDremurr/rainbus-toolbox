@@ -34,21 +34,21 @@ public class App : Application
             desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
 
         // CLR-level unhandled exceptions (non-UI threads)
-        AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+        AppDomain.CurrentDomain.UnhandledException += (__, e) =>
         {
             if (e.ExceptionObject is Exception ex)
                 _ = HandleGlobalExceptionAsync(ex);
         };
 
         // Unobserved Task exceptions
-        TaskScheduler.UnobservedTaskException += (_, e) =>
+        TaskScheduler.UnobservedTaskException += (__, e) =>
         {
             _ = HandleGlobalExceptionAsync(e.Exception);
             e.SetObserved();
         };
 
         // Avalonia UI thread exceptions
-        Dispatcher.UIThread.UnhandledException += (_, e) =>
+        Dispatcher.UIThread.UnhandledException += (__, e) =>
         {
             _ = HandleGlobalExceptionAsync(e.Exception);
             e.Handled = true; // prevent Avalonia from shutting down immediately
@@ -158,9 +158,11 @@ public class App : Application
             try
             {
                 var repoManager = ServiceProvider.GetRequiredService<RepositoryManager>();
+                var dataManager = ServiceProvider.GetRequiredService<PersistentDataManager>();
                 Locator = ServiceProvider.GetRequiredService<ViewModelLocator>();
 
-                if (repoManager.IsValid)
+                if (repoManager.IsValid || !string.IsNullOrWhiteSpace(dataManager.Settings.GitHubToken) ||
+                    !string.IsNullOrWhiteSpace(dataManager.Settings.PathToLimbus))
                 {
                     var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
                     mainWindow.DataContext = ServiceProvider.GetRequiredService<MainWindowViewModel>();

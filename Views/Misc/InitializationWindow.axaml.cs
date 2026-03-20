@@ -1,14 +1,10 @@
-using System;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using System.Diagnostics;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using Avalonia.Platform;
-using Avalonia.Media.Imaging;
-using System;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.ViewModels;
 
@@ -16,12 +12,12 @@ namespace RainbusToolbox.Views;
 
 public partial class InitializationWindow : Window
 {
-    private PersistentDataManager _dataManager;
-    private GithubManager _githubManager;
+    private readonly PersistentDataManager _dataManager;
+    private readonly GithubManager _githubManager;
+    private readonly TextBlock _gitHubTokenStatusTextBlock;
+    private readonly TextBox _limbusPathTextBox;
 
-    private TextBox _repoPathTextBox;
-    private TextBox _limbusPathTextBox;
-    private TextBlock _gitHubTokenStatusTextBlock;
+    private readonly TextBox _repoPathTextBox;
 
     public InitializationWindow(PersistentDataManager dataManager, GithubManager githubManager)
     {
@@ -36,30 +32,29 @@ public partial class InitializationWindow : Window
 
         LoadPathsAndTokenStatus();
 
-        this.Closing += (_, __) => SavePaths();
+        Closing += (_, __) => SavePaths();
     }
 
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
-        
+
         // Load the image to get its size
         var bitmap = new Bitmap(AssetLoader.Open(new Uri("avares://RainbusToolbox/Assets/Init.png")));
 
-        this.Width = bitmap.PixelSize.Width/1.5f;
-        this.Height = bitmap.PixelSize.Height/1.5f;
-        
+        Width = bitmap.PixelSize.Width / 1.5f;
+        Height = bitmap.PixelSize.Height / 1.5f;
     }
-    
+
     private void CloseButton_Click(object sender, RoutedEventArgs e)
     {
-        this.Close();
+        Close();
     }
-    
-    private void TitleBar_OnPointerPressed(object sender, Avalonia.Input.PointerPressedEventArgs e)
+
+    private void TitleBar_OnPointerPressed(object sender, PointerPressedEventArgs e)
     {
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
-            this.BeginMoveDrag(e);
+            BeginMoveDrag(e);
     }
 
 
@@ -67,7 +62,7 @@ public partial class InitializationWindow : Window
     {
         await _githubManager.RequestGithubAuthAsync(this);
 
-        var isAuthorized = !string.IsNullOrEmpty(_dataManager.Settings.GitHubToken);
+        var isAuthorized = !string.IsNullOrWhiteSpace(_dataManager.Settings.GitHubToken);
         _gitHubTokenStatusTextBlock.Text = isAuthorized ? "Ты залогинен" : "Ты не залогинен";
     }
 
@@ -75,7 +70,7 @@ public partial class InitializationWindow : Window
     {
         var dialog = new OpenFolderDialog { Title = "Выбери папку с репозиторием" };
         var result = await dialog.ShowAsync(this);
-        if (!string.IsNullOrEmpty(result))
+        if (!string.IsNullOrWhiteSpace(result))
             _repoPathTextBox.Text = result;
     }
 
@@ -83,35 +78,29 @@ public partial class InitializationWindow : Window
     {
         var dialog = new OpenFolderDialog { Title = "Выбери папку с файлами игры" };
         var result = await dialog.ShowAsync(this);
-        if (!string.IsNullOrEmpty(result))
+        if (!string.IsNullOrWhiteSpace(result))
             _limbusPathTextBox.Text = result;
     }
-    private void Window_OnPointerPressed(object sender, Avalonia.Input.PointerPressedEventArgs e)
+
+    private void Window_OnPointerPressed(object sender, PointerPressedEventArgs e)
     {
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
-            this.BeginMoveDrag(e);
+            BeginMoveDrag(e);
     }
 
     private void RestartApp_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            // Use the App's service provider to open MainWindow
-            if (Application.Current is App app)
-            {
-                // Open MainWindow with its ViewModel via DI
-                app.OpenWindow<MainWindow, MainWindowViewModel>();
-            }
+            if (Application.Current is App app) app.OpenWindow<MainWindow, MainWindowViewModel>();
 
-            // Close the current initialization window
-            this.Close();
+            Close();
         }
         catch (Exception ex)
         {
             Console.WriteLine("Failed to open MainWindow: " + ex.Message);
         }
     }
-
 
 
     private void LoadPathsAndTokenStatus()
@@ -122,11 +111,13 @@ public partial class InitializationWindow : Window
             _repoPathTextBox.Text = data.RepositoryPath ?? @"C:\Path\To\Repo";
             _limbusPathTextBox.Text = data.PathToLimbus ?? @"C:\Path\To\Limbus";
 
-            _gitHubTokenStatusTextBlock.Text = string.IsNullOrEmpty(data.GitHubToken)
+            _gitHubTokenStatusTextBlock.Text = string.IsNullOrWhiteSpace(data.GitHubToken)
                 ? "Ты не залогинен"
                 : "Ты залогинен";
         }
-        catch { }
+        catch
+        {
+        }
     }
 
     private void SavePaths()

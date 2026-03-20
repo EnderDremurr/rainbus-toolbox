@@ -162,7 +162,7 @@ public class KeywordProcessingService(RepositoryManager repositoryManager)
     public string GetMeshFromTag(string tag)
     {
         // Validate the tag format
-        if (string.IsNullOrEmpty(tag) || tag.Length < 2 || tag[0] != '[' || tag[tag.Length - 1] != ']')
+        if (string.IsNullOrWhiteSpace(tag) || tag.Length < 2 || tag[0] != '[' || tag[tag.Length - 1] != ']')
             throw new ArgumentException("Invalid tag format");
 
         var inner = tag.Substring(1, tag.Length - 2); // strip [ and ]

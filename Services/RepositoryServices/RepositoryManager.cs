@@ -35,7 +35,7 @@ public class RepositoryManager
             return originalPath;
 
         var parentDir = Directory.GetParent(originalPath)?.FullName;
-        if (!string.IsNullOrEmpty(parentDir) && Repository.IsValid(parentDir))
+        if (!string.IsNullOrWhiteSpace(parentDir) && Repository.IsValid(parentDir))
             return parentDir;
 
         if (Directory.Exists(originalPath))
@@ -66,7 +66,7 @@ public class RepositoryManager
 
     // Game paths
 
-    public string PathToGameRoot => _dataManager.Settings.PathToLimbus!;
+    public string PathToGameRoot => _dataManager.Settings.PathToLimbus;
 
     #endregion
 
@@ -104,7 +104,8 @@ public class RepositoryManager
         try
         {
             var foundRepoPath = FindRepositoryPath(originalPath) ?? null;
-            if (foundRepoPath == null)
+            if (foundRepoPath == null || string.IsNullOrWhiteSpace(_dataManager.Settings.GitHubToken) ||
+                string.IsNullOrWhiteSpace(_dataManager.Settings.PathToLimbus))
             {
                 IsValid = false;
                 return;
@@ -136,6 +137,9 @@ public class RepositoryManager
 
     public void ParseFileMap()
     {
+        if (!IsValid)
+            return;
+
         var json = File.ReadAllText(PathToFileMap);
         var parsed = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(json);
 
@@ -207,7 +211,7 @@ public class RepositoryManager
         if (refTo == null)
             return null;
 
-        if (string.IsNullOrEmpty(refTo.FileName) || string.IsNullOrEmpty(refTo.FullPath))
+        if (string.IsNullOrWhiteSpace(refTo.FileName) || string.IsNullOrWhiteSpace(refTo.FullPath))
             return null;
 
         if (!Directory.Exists(PathToReferenceLocalization))
@@ -241,7 +245,7 @@ public class RepositoryManager
         Console.WriteLine($"FileName: '{obj?.FileName}'");
         Console.WriteLine($"FullPath: '{obj?.FullPath}'");
 
-        if (string.IsNullOrEmpty(obj.FileName) || string.IsNullOrEmpty(obj.FullPath))
+        if (string.IsNullOrWhiteSpace(obj.FileName) || string.IsNullOrWhiteSpace(obj.FullPath))
         {
             Console.WriteLine("ERROR: FileName or FullPath is null/empty - returning false");
             return false;
@@ -317,7 +321,7 @@ public class RepositoryManager
         var name = repo.Config.Get<string>("user.name")?.Value;
         var email = repo.Config.Get<string>("user.email")?.Value;
 
-        if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(email))
+        if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email))
             throw new InvalidOperationException("Git user.name or user.email not set. Please configure Git.");
 
         return new Signature(name, email, DateTimeOffset.Now);
@@ -326,9 +330,9 @@ public class RepositoryManager
     public string GetRepoDisplayName(Repository repo)
     {
         var remoteName = repo.Head?.RemoteName;
-        if (string.IsNullOrEmpty(remoteName)) remoteName = repo.Network.Remotes.FirstOrDefault()?.Name;
+        if (string.IsNullOrWhiteSpace(remoteName)) remoteName = repo.Network.Remotes.FirstOrDefault()?.Name;
 
-        if (string.IsNullOrEmpty(remoteName)) return string.Empty;
+        if (string.IsNullOrWhiteSpace(remoteName)) return string.Empty;
 
         var remote = repo.Network.Remotes[remoteName];
         if (remote == null) return string.Empty;
@@ -373,7 +377,7 @@ public class RepositoryManager
         var branch = Repository.Head;
         Console.WriteLine($"Current branch: {branch.FriendlyName}");
 
-        if (string.IsNullOrEmpty(branch.RemoteName))
+        if (string.IsNullOrWhiteSpace(branch.RemoteName))
         {
             Console.WriteLine("No remote set for the current branch.");
             return new[] { 0, 0 };

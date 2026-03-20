@@ -32,7 +32,7 @@ public class CachingService
     public CachingService(PersistentDataManager persistentDataManager)
     {
         //check if user hasn't initialized the game yet
-        if (string.IsNullOrEmpty(persistentDataManager.Settings.PathToLimbus))
+        if (string.IsNullOrWhiteSpace(persistentDataManager.Settings.PathToLimbus))
             return;
 
         _appCancellationToken = _cts.Token;

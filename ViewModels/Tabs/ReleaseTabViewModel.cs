@@ -167,7 +167,7 @@ public partial class ReleaseTabViewModel : ObservableObject
     [RelayCommand]
     public async Task Submit()
     {
-        if (string.IsNullOrEmpty(_dataManager.Settings.GitHubToken))
+        if (string.IsNullOrWhiteSpace(_dataManager.Settings.GitHubToken))
         {
             var messageBox = MessageBoxManager.GetMessageBoxStandard(AppLang.ErrorTitle,
                 AppLang.NoGithubLogin);

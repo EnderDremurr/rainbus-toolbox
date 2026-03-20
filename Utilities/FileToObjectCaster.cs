@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using RainbusToolbox.Utilities.Data;
 using System.IO;
+using RainbusToolbox.Utilities.Data;
 
 namespace RainbusToolbox.Models.Data;
 
@@ -78,9 +78,9 @@ public static class FileToObjectCaster
         { "announcerVoiceType", typeof(AnnouncerVoiceTypeLocalizationFile) },
         { "mirrorDungeonRentalName", typeof(MirrorDungeonRentalNameLocalizationFile) },
         { "projectGSLessonName", typeof(ProjectGSLessonNameLocalizationFile) },
-        { "projectGSComboName", typeof(ProjectGSComboNameLocalizationFile) },
+        { "projectGSComboName", typeof(ProjectGSComboNameLocalizationFile) }
     };
-    
+
     public static Type? GetType(string pathToFile, Dictionary<string, string> fileTypeMap)
     {
         Console.WriteLine(AppLang.FileToObjectCaster_GetType_Recevied_a_cast_request_for_file___0__, pathToFile);
@@ -89,13 +89,15 @@ public static class FileToObjectCaster
         Console.WriteLine(AppLang.FileToObjectCaster_GetType_Supposed_file_type_is___0__, knownFileType);
         if (!isKnownFile || knownFileType is null)
         {
-            if(IsStoryFile(pathToFile))
+            if (IsStoryFile(pathToFile))
                 return typeof(StoryDataFile);
             if (fileName == "BattleHint")
                 return typeof(NormalBattleHintLocalizationFile);
-            
+
             return null;
-        };
+        }
+
+        ;
         var isKnown = Map.TryGetValue(knownFileType, out var type);
         return isKnown ? type : null;
     }
@@ -103,9 +105,9 @@ public static class FileToObjectCaster
     private static bool IsStoryFile(string pathToFile)
     {
         var directoryPath = Path.GetDirectoryName(pathToFile);
-        if (string.IsNullOrEmpty(directoryPath))
+        if (string.IsNullOrWhiteSpace(directoryPath))
             return false;
-    
+
         var pathParts = directoryPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         return pathParts.Any(part => part.Equals("StoryData", StringComparison.OrdinalIgnoreCase));
     }

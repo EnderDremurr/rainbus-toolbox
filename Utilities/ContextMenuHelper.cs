@@ -332,7 +332,7 @@ public static class ContextMenuHelper
         var response = await angela?.ProcessText(text)! ?? text;
 
         Log.Debug("Setting new text from angela.");
-        textBox.Text = string.IsNullOrEmpty(response) ? text : response;
+        textBox.Text = string.IsNullOrWhiteSpace(response) ? text : response;
 
         return response ?? text;
     }

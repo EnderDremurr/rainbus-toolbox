@@ -174,7 +174,7 @@ public partial class TranslationTabViewModel : ObservableObject
         var timeout = TimeSpan.FromSeconds(10); // 10 second timeout
         var start = DateTime.Now;
 
-        while (string.IsNullOrEmpty(_repositoryManager.PathToLocalization))
+        while (string.IsNullOrWhiteSpace(_repositoryManager.PathToLocalization))
         {
             if (DateTime.Now - start > timeout)
             {
@@ -406,7 +406,7 @@ public partial class TranslationTabViewModel : ObservableObject
     {
         Console.WriteLine(AppLang.TranslationTabViewModel_OpenShortcutFile_OpenShortcutFile_called_with___0_, filePath);
 
-        if (!string.IsNullOrEmpty(filePath))
+        if (!string.IsNullOrWhiteSpace(filePath))
         {
             Console.WriteLine(AppLang.TranslationTabViewModel_OpenShortcutFile_Calling_LoadFile);
             LoadFile(filePath);

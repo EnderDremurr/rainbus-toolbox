@@ -6,20 +6,11 @@ namespace RainbusToolbox.Utilities.Data;
 
 public abstract class LocalizationFileBase
 {
-    [JsonIgnore]
-    public string PathTo { get; set; }
-
-    [JsonIgnore]
-    public string FileName { get; set; }
-
-    [JsonIgnore]
-    public string FullPath { get; set; }
-    
     // Protected constructor for inheritance
     protected LocalizationFileBase(string filePath)
     {
-        if (string.IsNullOrEmpty(filePath))
-            throw new System.ArgumentException("File path cannot be null or empty", nameof(filePath));
+        if (string.IsNullOrWhiteSpace(filePath))
+            throw new ArgumentException("File path cannot be null or empty", nameof(filePath));
 
         FullPath = filePath;
         PathTo = Path.GetDirectoryName(filePath) ?? string.Empty;
@@ -32,22 +23,29 @@ public abstract class LocalizationFileBase
         // Will be populated later by deserializer
     }
 
+    [JsonIgnore]
+    public string PathTo { get; set; }
+
+    [JsonIgnore]
+    public string FileName { get; set; }
+
+    [JsonIgnore]
+    public string FullPath { get; set; }
+
     // Method to set path info after JSON deserialization
     internal void SetPathInfo(string filePath)
     {
-        if (string.IsNullOrEmpty(filePath))
-            throw new System.ArgumentException("File path cannot be null or empty", nameof(filePath));
+        if (string.IsNullOrWhiteSpace(filePath))
+            throw new ArgumentException("File path cannot be null or empty", nameof(filePath));
 
         FullPath = filePath;
         PathTo = Path.GetDirectoryName(filePath) ?? string.Empty;
         FileName = Path.GetFileNameWithoutExtension(filePath) ?? string.Empty;
     }
-
 }
 
 public interface ILocalizationContainer<TItem>
 {
     [JsonProperty("dataList")]
     public List<TItem> DataList { get; set; }
-
 }

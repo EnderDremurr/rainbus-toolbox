@@ -66,7 +66,7 @@ public class FileMergingService
                 Console.WriteLine("No actual duplicates found. Checking for other issues...");
 
                 // Check for null/empty filenames
-                var emptyNames = localizationFiles.Where(f => string.IsNullOrEmpty(Path.GetFileName(f))).ToList();
+                var emptyNames = localizationFiles.Where(f => string.IsNullOrWhiteSpace(Path.GetFileName(f))).ToList();
                 if (emptyNames.Any())
                 {
                     Console.WriteLine("Found files with empty/null names:");
@@ -95,7 +95,7 @@ public class FileMergingService
             {
                 var fileName = Path.GetFileName(file);
 
-                if (string.IsNullOrEmpty(fileName))
+                if (string.IsNullOrWhiteSpace(fileName))
                 {
                     Console.WriteLine($"Skipping file with null/empty name: {file}");
                     continue;
@@ -318,7 +318,7 @@ public class FileMergingService
                 var sourceItem = (JObject)jToken;
                 var sourceId = sourceItem["id"]?.ToString();
 
-                if (string.IsNullOrEmpty(sourceId))
+                if (string.IsNullOrWhiteSpace(sourceId))
                     continue;
 
                 if (existingIds.Contains(sourceId))
@@ -425,7 +425,7 @@ public class FileMergingService
             var destinationPath = Path.Combine(absoluteDestinationRoot, relativePath);
 
             var destinationDirectory = Path.GetDirectoryName(destinationPath);
-            if (!string.IsNullOrEmpty(destinationDirectory) && !Directory.Exists(destinationDirectory))
+            if (!string.IsNullOrWhiteSpace(destinationDirectory) && !Directory.Exists(destinationDirectory))
                 Directory.CreateDirectory(destinationDirectory);
 
             File.Copy(absoluteFileToCopy, destinationPath, true);

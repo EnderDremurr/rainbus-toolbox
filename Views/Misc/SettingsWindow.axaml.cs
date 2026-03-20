@@ -89,7 +89,7 @@ public partial class SettingsWindow : Window
     {
         await _githubManager.RequestGithubAuthAsync(this);
 
-        var isAuthorized = !string.IsNullOrEmpty(_dataManager.Settings.GitHubToken);
+        var isAuthorized = !string.IsNullOrWhiteSpace(_dataManager.Settings.GitHubToken);
         GitHubTokenStatusTextBlock.Text = isAuthorized ? "Ты залогинен" : "Ты не залогинен";
     }
 
@@ -171,7 +171,7 @@ public partial class SettingsWindow : Window
             AngelaTokenBox.Text = data.DeepSeekToken ?? "";
             DiscordRoleToPingBox.Text = data.DiscordRoleToPing ?? "";
 
-            GitHubTokenStatusTextBlock.Text = string.IsNullOrEmpty(data.GitHubToken)
+            GitHubTokenStatusTextBlock.Text = string.IsNullOrWhiteSpace(data.GitHubToken)
                 ? "Ты не залогинен"
                 : "Ты залогинен";
         }

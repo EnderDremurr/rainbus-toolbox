@@ -13,7 +13,7 @@ public class Angela(PersistentDataManager dataManager)
     {
         var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
         var token = dataManager.Settings.DeepSeekToken;
-        if (string.IsNullOrEmpty(token))
+        if (string.IsNullOrWhiteSpace(token))
         {
             _ = PopUpWindow.ShowAsync(parent!, "Ошибка", "Нерабочий токен");
             return text;
@@ -23,7 +23,7 @@ public class Angela(PersistentDataManager dataManager)
         var cachedPrompt = dataManager.Settings.AngelaPrompt;
 
 
-        if (string.IsNullOrEmpty(cachedPrompt))
+        if (string.IsNullOrWhiteSpace(cachedPrompt))
         {
             _ = PopUpWindow.ShowAsync(parent!, "Ошибка", "Не найден промпт в настройках");
             return text;
@@ -46,7 +46,7 @@ public class Angela(PersistentDataManager dataManager)
             var response = await client.ChatAsync(request, CancellationToken.None);
             var responseText = response?.Choices?.FirstOrDefault()?.Message?.Content;
 
-            if (string.IsNullOrEmpty(responseText))
+            if (string.IsNullOrWhiteSpace(responseText))
             {
                 _ = PopUpWindow.ShowAsync(parent!, "Ошибка", "Не удалось подключится к API");
                 return text;
