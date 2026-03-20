@@ -120,6 +120,8 @@ public class KeywordProcessingService(RepositoryManager repositoryManager)
 
     public async Task AskToDefineKeywords()
     {
+        await EnsureInitializedAsync();
+
         var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
 
         if (_keywordColorList.All(c => c.Value != "Unknown"))
@@ -154,6 +156,8 @@ public class KeywordProcessingService(RepositoryManager repositoryManager)
             _keywordColorList[colorlessKeyword.Key] = response.Result!;
         }
 
+        await File.WriteAllTextAsync(repositoryManager.PathToKeywordColorList,
+            JsonConvert.SerializeObject(_keywordColorList, Formatting.Indented));
         await PopUpWindow.ShowAsync(parent!, "Определение цвета кейвордов",
             "Все кейворды были определены!");
     }
@@ -314,7 +318,7 @@ public class KeywordProcessingService(RepositoryManager repositoryManager)
         }
 
         await File.WriteAllTextAsync(repositoryManager.PathToKeywordColorList,
-            JsonConvert.SerializeObject(_keywordColorList, Formatting.Indented));
+            JsonConvert.SerializeObject(_keywordColorList, Formatting.Indented), cancellationToken);
         progress?.Report($"Added {_keywordColorList.Count - oldKeywordCount} keywords");
     }
 
