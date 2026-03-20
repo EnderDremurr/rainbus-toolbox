@@ -42,14 +42,14 @@
 
                 <!--  GitHub token button + status  -->
                 <StackPanel
-                    Height="120"
                     Orientation="Horizontal"
                     Spacing="10"
                     VerticalAlignment="Center">
                     <Button
                         Click="SetGitHubToken_Click"
                         Content="Залогиниться на GitHub"
-                        Width="200" />
+                        Height="80"
+                        Width="320" />
                     <TextBlock
                         Classes="header"
                         Foreground="White"
@@ -112,7 +112,7 @@
                     Content="Продолжить"
                     Height="60"
                     HorizontalAlignment="Center"
-                    Margin="0,50,0,0"
+                    Margin="0,50,0,50"
                     VerticalAlignment="Bottom"
                     Width="200" />
             </StackPanel>

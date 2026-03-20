@@ -140,6 +140,15 @@ public class GithubManager
             return;
         }
 
+        // check for invalid token (idk why but for new users it just farts out 401 no matter what)
+        if (!await IsTokenValidAsync(token))
+        {
+            await PopUpWindow.ShowAsync(window, "Ошибка",
+                "Токен недействителен. Попробуй ещё раз."
+            );
+            return;
+        }
+
         // save
         _dataManager.Settings.GitHubToken = token;
         _dataManager.Save();
@@ -275,6 +284,22 @@ public class GithubManager
             Console.WriteLine("README.md not found in repository root, skipping upload.");
     }
 
+    public async Task<bool> IsTokenValidAsync(string? token = null)
+    {
+        token ??= _dataManager.Settings.GitHubToken;
+
+        if (string.IsNullOrWhiteSpace(token))
+            return false;
+
+        using var http = new HttpClient();
+        http.DefaultRequestHeaders.UserAgent.ParseAdd("RainbusToolbox/1.0");
+        http.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", token);
+
+        var response = await http.GetAsync("https://api.github.com/rate_limit");
+        return response.IsSuccessStatusCode;
+    }
+
     public async Task<string> GetGithubDisplayNameAsync()
     {
         using var http = new HttpClient();
@@ -283,6 +308,7 @@ public class GithubManager
             new MediaTypeWithQualityHeaderValue("application/json"));
 
         var token = _dataManager.Settings.GitHubToken;
+        Log.Debug("Token: [{Token}]", token);
         http.DefaultRequestHeaders.UserAgent.ParseAdd("RainbusToolbox/1.0");
         http.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", token);

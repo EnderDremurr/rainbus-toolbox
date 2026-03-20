@@ -104,7 +104,7 @@ public class RepositoryManager
         try
         {
             var foundRepoPath = FindRepositoryPath(originalPath) ?? null;
-            if (foundRepoPath == null || string.IsNullOrWhiteSpace(_dataManager.Settings.GitHubToken) ||
+            if (foundRepoPath == null ||
                 string.IsNullOrWhiteSpace(_dataManager.Settings.PathToLimbus))
             {
                 IsValid = false;

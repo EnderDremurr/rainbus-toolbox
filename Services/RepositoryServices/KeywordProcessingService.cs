@@ -291,6 +291,8 @@ public class KeywordProcessingService(RepositoryManager repositoryManager)
     public async Task PullNewKeywordsFromTheGame(CancellationToken cancellationToken = default,
         IProgress<string>? progress = null)
     {
+        await EnsureInitializedAsync();
+
         var pathToGameLocalization = repositoryManager.PathToReferenceLocalization;
 
         // find all files of BattleKeywords*.json
@@ -312,7 +314,7 @@ public class KeywordProcessingService(RepositoryManager repositoryManager)
         }
 
         await File.WriteAllTextAsync(repositoryManager.PathToKeywordColorList,
-            JsonConvert.SerializeObject(_keywordColorList), cancellationToken);
+            JsonConvert.SerializeObject(_keywordColorList, Formatting.Indented));
         progress?.Report($"Added {_keywordColorList.Count - oldKeywordCount} keywords");
     }
 

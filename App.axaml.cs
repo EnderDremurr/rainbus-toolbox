@@ -155,10 +155,13 @@ public class App : Application
             ServiceProvider = services.BuildServiceProvider();
             ServiceProvider.GetRequiredService<CachingService>();
 
+
             try
             {
                 var repoManager = ServiceProvider.GetRequiredService<RepositoryManager>();
                 var dataManager = ServiceProvider.GetRequiredService<PersistentDataManager>();
+                var githubManager = ServiceProvider.GetRequiredService<GithubManager>();
+
                 Locator = ServiceProvider.GetRequiredService<ViewModelLocator>();
 
                 if (repoManager.IsValid && !string.IsNullOrWhiteSpace(dataManager.Settings.GitHubToken) &&

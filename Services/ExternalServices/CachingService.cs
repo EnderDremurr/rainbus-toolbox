@@ -46,14 +46,14 @@ public class CachingService
 
     public async Task SyncCacheAsync(string categoryTitle, CancellationToken ct)
     {
-        Log.Debug($"Starting cache sync for {categoryTitle}");
+        Log.Debug("Starting cache sync for {CategoryTitle}", categoryTitle);
         Directory.CreateDirectory(Path.Combine(_baseCachePath, _cachePathMap[categoryTitle]));
 
         var allFiles = await FetchAllCategoryMembersFromWikiAsync(categoryTitle, ct);
         var missing = allFiles.Where(name => !File.Exists(
             Path.Combine(_baseCachePath, _cachePathMap[categoryTitle], name.Replace("File:", "")))).ToList();
 
-        Log.Debug($"{missing}/{allFiles} files need downloading for {categoryTitle}");
+        Log.Debug("{Missing}/{AllFiles} files need downloading for {CategoryTitle}", missing, allFiles, categoryTitle);
         if (!missing.Any()) return;
 
         var urls = await BatchResolveUrlsAsync(missing, ct);
@@ -74,9 +74,9 @@ public class CachingService
 
             if (continueToken != null)
                 url += $"&cmcontinue={continueToken}";
-            Log.Debug($"Fetching category members from wiki for {categoryTitle}");
+            Log.Debug("Fetching category members from wiki for {CategoryTitle}", categoryTitle);
             var json = await _httpClient.GetStringAsync(url, ct);
-            Log.Debug($"Got response for {categoryTitle}");
+            Log.Debug("Got response for {CategoryTitle}", categoryTitle);
             var doc = JsonDocument.Parse(json);
 
             var members = doc.RootElement
@@ -145,7 +145,7 @@ public class CachingService
             {
                 var bytes = await _httpClient.GetByteArrayAsync(kvp.Value, ct);
                 await File.WriteAllBytesAsync(savePath, bytes, ct);
-                Log.Debug($"Downloaded {fileName}");
+                Log.Debug("Downloaded {FileName}", fileName);
             }
             finally
             {

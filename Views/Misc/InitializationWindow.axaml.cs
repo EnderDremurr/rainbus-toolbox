@@ -1,4 +1,5 @@
-using Avalonia;
+using System.Diagnostics;
+using System.IO;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -6,7 +7,6 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using RainbusToolbox.Models.Managers;
-using RainbusToolbox.ViewModels;
 
 namespace RainbusToolbox.Views;
 
@@ -90,16 +90,16 @@ public partial class InitializationWindow : Window
 
     private void RestartApp_Click(object sender, RoutedEventArgs e)
     {
-        try
-        {
-            if (Application.Current is App app) app.OpenWindow<MainWindow, MainWindowViewModel>();
+        var exePath = Environment.ProcessPath!;
+        var workDir = Path.GetDirectoryName(exePath)!;
 
-            Close();
-        }
-        catch (Exception ex)
+        Process.Start(new ProcessStartInfo
         {
-            Console.WriteLine("Failed to open MainWindow: " + ex.Message);
-        }
+            FileName = exePath,
+            UseShellExecute = false,
+            WorkingDirectory = workDir
+        });
+        Environment.Exit(0);
     }
 
 

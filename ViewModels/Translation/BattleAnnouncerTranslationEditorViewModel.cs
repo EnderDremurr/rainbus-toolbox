@@ -83,6 +83,7 @@ public partial class BattleAnnouncerTranslationEditorViewModel
             ?.Content ?? "Неизвестно";
 
         if (PhraseType == "Неизвестно")
-            Log.Debug($"No match for: {currentAnnouncerVoiceTypeId} (middle: {middle})");
+            Log.Debug(
+                "No match for: {CurrentAnnouncerVoiceTypeId} (middle: {Middle})", currentAnnouncerVoiceTypeId, middle);
     }
 }
