@@ -21,8 +21,8 @@ public class RepositoryManager
     public RepositoryManager(PersistentDataManager dataManager)
     {
         _dataManager = dataManager;
-        ParseFileMap();
         TryInitialize();
+        ParseFileMap();
     }
 
 
@@ -116,23 +116,14 @@ public class RepositoryManager
             Repository = new Repository(foundRepoPath);
             Directory.CreateDirectory(Path.Combine(foundRepoPath, DistPath));
             PathToReferenceLocalization = Path.Combine(_dataManager.Settings.PathToLimbus!, ReferenceLangAppendage);
+
             IsValid = true;
         }
-        catch
+        catch (Exception ex)
         {
             IsValid = false;
+            _ = App.Current.HandleNonFatalExceptionAsync(ex);
         }
-
-        EgoNames = (EgoLocalizationFile)GetObjectFromPath(PathToEgoNames)!;
-        EgoNamesReference = (EgoLocalizationFile)GetReference(EgoNames)!;
-
-        ScenarioModelCodes = (ScenarioModelCodesLocalizationFile)GetObjectFromPath(PathToModelCodes)!;
-        ScenarioModelCodesReference = (ScenarioModelCodesLocalizationFile)GetReference(ScenarioModelCodes)!;
-
-        AnnouncerNames = (AnnouncerLocalizationFile)GetObjectFromPath(PathToAnnouncerNames)!;
-        AnnouncerNamesReference = (AnnouncerLocalizationFile)GetReference(AnnouncerNames)!;
-
-        AnnouncerVoiceTypes = (AnnouncerVoiceTypeLocalizationFile)GetObjectFromPath(PathToAnnouncerVoiceTypes)!;
     }
 
     public void ParseFileMap()
@@ -149,6 +140,17 @@ public class RepositoryManager
             var fileNames = entry.Value;
             foreach (var fileName in fileNames) DeveloperFileTypeMap.TryAdd(fileName, type);
         }
+
+        EgoNames = (EgoLocalizationFile)GetObjectFromPath(PathToEgoNames)!;
+        EgoNamesReference = (EgoLocalizationFile)GetReference(EgoNames)!;
+
+        ScenarioModelCodes = (ScenarioModelCodesLocalizationFile)GetObjectFromPath(PathToModelCodes)!;
+        ScenarioModelCodesReference = (ScenarioModelCodesLocalizationFile)GetReference(ScenarioModelCodes)!;
+
+        AnnouncerNames = (AnnouncerLocalizationFile)GetObjectFromPath(PathToAnnouncerNames)!;
+        AnnouncerNamesReference = (AnnouncerLocalizationFile)GetReference(AnnouncerNames)!;
+
+        AnnouncerVoiceTypes = (AnnouncerVoiceTypeLocalizationFile)GetObjectFromPath(PathToAnnouncerVoiceTypes)!;
     }
 
     #endregion

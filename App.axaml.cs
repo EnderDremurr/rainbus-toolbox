@@ -161,7 +161,7 @@ public class App : Application
                 var dataManager = ServiceProvider.GetRequiredService<PersistentDataManager>();
                 Locator = ServiceProvider.GetRequiredService<ViewModelLocator>();
 
-                if (repoManager.IsValid || !string.IsNullOrWhiteSpace(dataManager.Settings.GitHubToken) ||
+                if (repoManager.IsValid && !string.IsNullOrWhiteSpace(dataManager.Settings.GitHubToken) &&
                     !string.IsNullOrWhiteSpace(dataManager.Settings.PathToLimbus))
                 {
                     var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();

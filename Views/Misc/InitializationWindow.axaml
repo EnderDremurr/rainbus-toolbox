@@ -42,6 +42,7 @@
 
                 <!--  GitHub token button + status  -->
                 <StackPanel
+                    Height="120"
                     Orientation="Horizontal"
                     Spacing="10"
                     VerticalAlignment="Center">
@@ -50,6 +51,7 @@
                         Content="Залогиниться на GitHub"
                         Width="200" />
                     <TextBlock
+                        Classes="header"
                         Foreground="White"
                         Text="Ты не залогинен"
                         VerticalAlignment="Center"
