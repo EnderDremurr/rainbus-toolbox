@@ -11,7 +11,6 @@ using RainbusToolbox.Services.ExternalServices;
 using RainbusToolbox.ViewModels;
 using RainbusToolbox.Views;
 using RainbusToolbox.Views.Misc;
-using Serilog;
 
 namespace RainbusToolbox;
 
@@ -91,8 +90,8 @@ public class App : Application
         {
             var parent = (ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
             if (parent == null) return;
-            await PopUpWindow.ShowAsync(parent, "Error",
-                userFriendlyMessage ?? "An error occurred, but the application can continue.");
+            await PopUpWindow.ShowAsync(parent, "Ашыбка",
+                userFriendlyMessage ?? exception.Message);
         });
     }
 

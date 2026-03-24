@@ -170,7 +170,7 @@ public partial class TranslationTabViewModel : ObservableObject
 
     private async Task InitShortcuts()
     {
-        Console.WriteLine(AppLang.TranslationTabViewModel_InitShortcuts_Getting_root);
+        Log.Debug(AppLang.TranslationTabViewModel_InitShortcuts_Getting_root);
         var timeout = TimeSpan.FromSeconds(10); // 10 second timeout
         var start = DateTime.Now;
 
@@ -178,17 +178,17 @@ public partial class TranslationTabViewModel : ObservableObject
         {
             if (DateTime.Now - start > timeout)
             {
-                Console.WriteLine(AppLang.TranslationTabViewModel_InitShortcuts_Timeout_waiting_for_repository_root);
+                Log.Debug(AppLang.TranslationTabViewModel_InitShortcuts_Timeout_waiting_for_repository_root);
                 _fileShortcuts = new ObservableCollection<FileShortcut>();
                 return;
             }
 
-            Console.WriteLine(AppLang.TranslationTabViewModel_InitShortcuts_Didn_t_receive_root_for_0_1_ms);
+            Log.Debug(AppLang.TranslationTabViewModel_InitShortcuts_Didn_t_receive_root_for_0_1_ms);
             await Task.Delay(100);
         }
 
         var root = _repositoryManager.PathToLocalization;
-        Console.WriteLine(AppLang.TranslationTabViewModel_InitShortcuts_Repository_root___0_, root);
+        Log.Debug(AppLang.TranslationTabViewModel_InitShortcuts_Repository_root___0_, root);
 
         var fileShortcuts = new ObservableCollection<FileShortcut>
         {
@@ -394,7 +394,7 @@ public partial class TranslationTabViewModel : ObservableObject
             shortcut.OpenCommand = OpenShortcutFileCommand;
         }
 
-        Console.WriteLine(AppLang.TranslationTabViewModel_InitShortcuts_Created__0__shortcuts, fileShortcuts.Count);
+        Log.Debug(AppLang.TranslationTabViewModel_InitShortcuts_Created__0__shortcuts, fileShortcuts.Count);
 
         _fileShortcuts = fileShortcuts;
         OnPropertyChanged(nameof(FileShortcuts));
@@ -404,16 +404,16 @@ public partial class TranslationTabViewModel : ObservableObject
     [RelayCommand]
     public void OpenShortcutFile(string filePath)
     {
-        Console.WriteLine(AppLang.TranslationTabViewModel_OpenShortcutFile_OpenShortcutFile_called_with___0_, filePath);
+        Log.Debug(AppLang.TranslationTabViewModel_OpenShortcutFile_OpenShortcutFile_called_with___0_, filePath);
 
         if (!string.IsNullOrWhiteSpace(filePath))
         {
-            Console.WriteLine(AppLang.TranslationTabViewModel_OpenShortcutFile_Calling_LoadFile);
+            Log.Debug(AppLang.TranslationTabViewModel_OpenShortcutFile_Calling_LoadFile);
             LoadFile(filePath);
         }
         else
         {
-            Console.WriteLine(AppLang.TranslationTabViewModel_OpenShortcutFile_FilePath_is_null_or_empty);
+            Log.Debug(AppLang.TranslationTabViewModel_OpenShortcutFile_FilePath_is_null_or_empty);
         }
     }
 

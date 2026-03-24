@@ -57,11 +57,11 @@ public partial class SkillsEgoTranslationEditorViewModel(
         {
             if (CurrentItem?.LevelList != null)
             {
-                Console.WriteLine(AppLang.AbnormalityRenameStart, CurrentItem.LevelList.Count, value);
+                Log.Debug(AppLang.AbnormalityRenameStart, CurrentItem.LevelList.Count, value);
                 foreach (var level in CurrentItem.LevelList)
                 {
                     level.AbnormalityName = value;
-                    Console.WriteLine(AppLang.AbnormalityRenameProcess, level.AbnormalityName);
+                    Log.Debug(AppLang.AbnormalityRenameProcess, level.AbnormalityName);
                 }
 
                 OnPropertyChanged();

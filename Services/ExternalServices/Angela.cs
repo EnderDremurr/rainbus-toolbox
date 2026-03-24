@@ -39,7 +39,7 @@ public class Angela(PersistentDataManager dataManager)
             }
         };
 
-        Console.WriteLine("Requesting chat...");
+        Log.Debug("Requesting chat...");
 
         try
         {
@@ -52,7 +52,7 @@ public class Angela(PersistentDataManager dataManager)
                 return text;
             }
 
-            Console.WriteLine(responseText);
+            Log.Debug(responseText);
             return responseText;
         }
         catch (Exception ex)

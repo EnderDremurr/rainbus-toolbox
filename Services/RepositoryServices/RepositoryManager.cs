@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using RainbusToolbox.Models.Data;
 using RainbusToolbox.Utilities;
 using RainbusToolbox.Utilities.Data;
+using Serilog;
 using Version = System.Version;
 
 namespace RainbusToolbox.Models.Managers;
@@ -167,13 +168,13 @@ public class RepositoryManager
         }
         catch
         {
-            Console.WriteLine(AppLang.CorruptedFileNotice);
+            Log.Debug(AppLang.CorruptedFileNotice);
             return null;
         }
 
         var targetType = file?.GetType() ?? FileToObjectCaster.GetType(path, DeveloperFileTypeMap);
         if (targetType == null)
-            Console.WriteLine(AppLang.FileIsUnknown);
+            Log.Debug(AppLang.FileIsUnknown);
 
 
         LocalizationFileBase? deserialized;
@@ -224,12 +225,12 @@ public class RepositoryManager
 
         if (!files.Any())
         {
-            Console.WriteLine("No reference files found.");
+            Log.Debug("No reference files found.");
             return null;
         }
 
         if (files.Length > 1)
-            Console.WriteLine("Multiple files found. This should not happen, taking the first found file.");
+            Log.Debug("Multiple files found. This should not happen, taking the first found file.");
 
         var referencePath =
             files.FirstOrDefault(); // Parse one file, as in 100% of cases there must be only one matching file.
@@ -242,35 +243,35 @@ public class RepositoryManager
 
     public bool SaveObjectToFile(LocalizationFileBase obj)
     {
-        Console.WriteLine("=== SaveObjectToFile Debug Start ===");
-        Console.WriteLine($"Object type: {obj?.GetType().Name}");
-        Console.WriteLine($"FileName: '{obj?.FileName}'");
-        Console.WriteLine($"FullPath: '{obj?.FullPath}'");
+        Log.Debug("=== SaveObjectToFile Debug Start ===");
+        Log.Debug($"Object type: {obj?.GetType().Name}");
+        Log.Debug($"FileName: '{obj?.FileName}'");
+        Log.Debug($"FullPath: '{obj?.FullPath}'");
 
         if (string.IsNullOrWhiteSpace(obj.FileName) || string.IsNullOrWhiteSpace(obj.FullPath))
         {
-            Console.WriteLine("ERROR: FileName or FullPath is null/empty - returning false");
+            Log.Debug("ERROR: FileName or FullPath is null/empty - returning false");
             return false;
         }
 
         var directoryPath = Path.GetDirectoryName(obj.FullPath);
-        Console.WriteLine($"Directory path: '{directoryPath}'");
+        Log.Debug($"Directory path: '{directoryPath}'");
 
         Directory.CreateDirectory(directoryPath!);
-        Console.WriteLine("Directory created/verified");
+        Log.Debug("Directory created/verified");
 
         try
         {
             string json;
 
-            Console.WriteLine("Checking if object is UnidentifiedFile...");
-            Console.WriteLine($"GetType().Name == 'UnidentifiedFile': {obj.GetType().Name == "UnidentifiedFile"}");
-            Console.WriteLine($"obj is UnidentifiedFile: {obj is UnidentifiedFile}");
+            Log.Debug("Checking if object is UnidentifiedFile...");
+            Log.Debug($"GetType().Name == 'UnidentifiedFile': {obj.GetType().Name == "UnidentifiedFile"}");
+            Log.Debug($"obj is UnidentifiedFile: {obj is UnidentifiedFile}");
 
             // Check if it's an UnidentifiedFile type
             if (obj.GetType().Name == "UnidentifiedFile" || obj is UnidentifiedFile)
             {
-                Console.WriteLine("Using UnidentifiedFile serialization (no type info)");
+                Log.Debug("Using UnidentifiedFile serialization (no type info)");
                 // For UnidentifiedFile, serialize as plain object without type information
                 json = JsonConvert.SerializeObject(
                     obj,
@@ -280,7 +281,7 @@ public class RepositoryManager
             }
             else
             {
-                Console.WriteLine("Using normal serialization");
+                Log.Debug("Using normal serialization");
                 // For other types, use normal serialization
                 json = JsonConvert.SerializeObject(
                     obj,
@@ -289,7 +290,7 @@ public class RepositoryManager
                 );
             }
 
-            Console.WriteLine($"JSON length: {json?.Length ?? 0} characters");
+            Log.Debug($"JSON length: {json?.Length ?? 0} characters");
 
             File.WriteAllText(obj.FullPath, json, new UTF8Encoding(false));
             if (Path.GetFileName(obj.FullPath).StartsWith("BattleKeywords"))
@@ -298,16 +299,16 @@ public class RepositoryManager
                 File.WriteAllText(keywordsPath, json, new UTF8Encoding(false));
             }
 
-            Console.WriteLine("File written successfully");
-            Console.WriteLine("=== SaveObjectToFile Debug End - SUCCESS ===");
+            Log.Debug("File written successfully");
+            Log.Debug("=== SaveObjectToFile Debug End - SUCCESS ===");
             return true;
         }
         catch (Exception e)
         {
-            Console.WriteLine($"ERROR: Exception occurred: {e.Message}");
-            Console.WriteLine($"Exception type: {e.GetType().Name}");
-            Console.WriteLine($"Stack trace: {e.StackTrace}");
-            Console.WriteLine("=== SaveObjectToFile Debug End - EXCEPTION ===");
+            Log.Debug($"ERROR: Exception occurred: {e.Message}");
+            Log.Debug($"Exception type: {e.GetType().Name}");
+            Log.Debug($"Stack trace: {e.StackTrace}");
+            Log.Debug("=== SaveObjectToFile Debug End - EXCEPTION ===");
             _ = App.Current.HandleNonFatalExceptionAsync(e);
             return false;
         }
@@ -367,7 +368,7 @@ public class RepositoryManager
         var tracked = branch.TrackedBranch;
         if (tracked == null)
         {
-            Console.WriteLine("Tracked branch is null. Trying to get remote branch manually.");
+            Log.Debug("Tracked branch is null. Trying to get remote branch manually.");
             tracked = Repository.Branches[$"{remote.Name}/{branch.FriendlyName}"];
         }
 
@@ -377,28 +378,28 @@ public class RepositoryManager
     public int[] CheckRepositoryChanges()
     {
         var branch = Repository.Head;
-        Console.WriteLine($"Current branch: {branch.FriendlyName}");
+        Log.Debug($"Current branch: {branch.FriendlyName}");
 
         if (string.IsNullOrWhiteSpace(branch.RemoteName))
         {
-            Console.WriteLine("No remote set for the current branch.");
+            Log.Debug("No remote set for the current branch.");
             return new[] { 0, 0 };
         }
 
         var remote = Repository.Network.Remotes[branch.RemoteName];
-        Console.WriteLine($"Remote: {remote.Name}");
+        Log.Debug($"Remote: {remote.Name}");
 
         var fetchOptions = CreateFetchOptions();
 
         try
         {
-            Console.WriteLine("Fetching...");
+            Log.Debug("Fetching...");
             Repository.Network.Fetch(remote.Name, remote.FetchRefSpecs.Select(x => x.Specification), fetchOptions);
-            Console.WriteLine("Fetch completed.");
+            Log.Debug("Fetch completed.");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Fetch failed: {ex.Message}");
+            Log.Debug($"Fetch failed: {ex.Message}");
             return new[] { 0, 0 };
         }
 
@@ -407,15 +408,15 @@ public class RepositoryManager
 
         if (tracked == null)
         {
-            Console.WriteLine($"Could not find remote branch: {remote.Name}/{branch.FriendlyName}");
+            Log.Debug($"Could not find remote branch: {remote.Name}/{branch.FriendlyName}");
             return new[] { 0, 0 };
         }
 
-        Console.WriteLine($"Local branch tip: {branch.Tip.Sha}");
-        Console.WriteLine($"Tracked branch tip: {tracked.Tip.Sha}");
+        Log.Debug($"Local branch tip: {branch.Tip.Sha}");
+        Log.Debug($"Tracked branch tip: {tracked.Tip.Sha}");
 
         var divergence = Repository.ObjectDatabase.CalculateHistoryDivergence(branch.Tip, tracked.Tip);
-        Console.WriteLine($"Divergence: AheadBy {divergence?.AheadBy}, BehindBy {divergence?.BehindBy}");
+        Log.Debug($"Divergence: AheadBy {divergence?.AheadBy}, BehindBy {divergence?.BehindBy}");
 
         return new[] { divergence?.BehindBy ?? 0, divergence?.AheadBy ?? 0 };
     }
@@ -424,72 +425,94 @@ public class RepositoryManager
     {
         try
         {
-            Console.WriteLine("Starting synchronization with origin...");
+            if (Repository.RetrieveStatus().IsDirty)
+            {
+                _ = App.Current.HandleNonFatalExceptionAsync(
+                    new Exception("В проекте найдены несохранённые изменения, сначала сделай коммит."));
+                return;
+            }
 
-            // Step 1: Fetch latest remote info
+            Log.Debug("Starting synchronization with origin...");
+
             FetchFromOrigin();
-            Console.WriteLine("Fetch completed.");
+            Log.Debug("Fetch completed.");
 
-            // Step 2: Check divergence between local and remote
             var divergence = CheckRepositoryChanges();
             var behind = divergence[0];
             var ahead = divergence[1];
 
+            var didRebase = false;
+
             if (behind > 0)
             {
-                Console.WriteLine($"Local branch is behind by {behind} commit(s). Pulling...");
-                PullFromOrigin();
-                Console.WriteLine("Pull completed.");
-            }
-            else
-            {
-                Console.WriteLine("No remote commits to pull.");
-            }
+                didRebase = true;
+                Log.Debug($"Local branch is behind by {behind} commit(s). Rebasing...");
 
-            // Step 3: Commit local changes if any
-            var status = Repository.RetrieveStatus();
-            if (status.IsDirty)
-            {
-                var changes = status
-                    .Where(s => s.State != FileStatus.Ignored && s.State != FileStatus.NewInWorkdir)
-                    .ToList();
-
-                if (changes.Any())
+                var identity = new Identity(
+                    Repository.Config.Get<string>("user.name")?.Value,
+                    Repository.Config.Get<string>("user.email")?.Value
+                );
+                if (string.IsNullOrWhiteSpace(identity.Name) ||
+                    string.IsNullOrWhiteSpace(identity.Email))
                 {
-                    Console.WriteLine(AppLang.GitFoundNLocalChangesToCommit, changes.Count);
-                    CommitLocalChanges("Synchronization of local and remote changes [RainbusToolbox]");
-                    Console.WriteLine(AppLang.GitLocalChangesCommited);
-                    ahead++; // we just added a commit
+                    _ = App.Current.HandleNonFatalExceptionAsync(
+                        new Exception("Git user.name / user.email не настроены."));
+                    return;
                 }
-                else
+
+                var upstream = Repository.Branches[$"origin/{Repository.Head.FriendlyName}"];
+
+                var result = Repository.Rebase.Start(
+                    Repository.Head,
+                    upstream,
+                    null,
+                    identity,
+                    new RebaseOptions()
+                );
+
+                if (result.Status == RebaseStatus.Conflicts)
                 {
-                    var untracked = status.Where(s => s.State == FileStatus.NewInWorkdir).ToList();
-                    if (untracked.Any())
-                        Console.WriteLine(AppLang.GitFoundNotTrackedFiles, untracked.Count);
+                    _ = App.Current.HandleNonFatalExceptionAsync(
+                        new Exception("Обнаружены конфликты. Синхронизация остановлена.")
+                    );
+
+                    Repository.Rebase.Abort();
+                    return;
                 }
+
+                if (result.Status != RebaseStatus.Complete)
+                {
+                    _ = App.Current.HandleNonFatalExceptionAsync(
+                        new Exception($"Rebase failed: {result.Status}")
+                    );
+
+                    Repository.Rebase.Abort();
+                    return;
+                }
+
+                Log.Debug("Rebase completed.");
             }
             else
             {
-                Console.WriteLine(AppLang.GitNoLocalChanges);
+                Log.Debug("No remote commits to rebase.");
             }
 
-            // Step 4: Push if ahead
-            if (ahead > 0)
+            if (ahead > 0 || didRebase)
             {
-                Console.WriteLine(AppLang.GitLocalIsAheadNotice, ahead);
-                PushToOrigin();
-                Console.WriteLine(AppLang.GitPushCompleted);
+                Log.Debug(AppLang.GitLocalIsAheadNotice, ahead);
+                PushToOrigin(true);
+                Log.Debug(AppLang.GitPushCompleted);
             }
             else
             {
-                Console.WriteLine(AppLang.GitNoLocalCommits);
+                Log.Debug(AppLang.GitNoLocalCommits);
             }
 
-            Console.WriteLine(AppLang.GitSyncSuccess);
+            Log.Debug(AppLang.GitSyncSuccess);
         }
         catch (Exception ex)
         {
-            App.Current.HandleGlobalExceptionAsync(
+            _ = App.Current.HandleGlobalExceptionAsync(
                 new Exception($"Synchronization failed: {ex.Message}", ex)
             );
         }
@@ -502,115 +525,6 @@ public class RepositoryManager
         var fetchOptions = CreateFetchOptions();
         Commands.Fetch(Repository, remote.Name, remote.FetchRefSpecs.Select(x => x.Specification), fetchOptions,
             "Fetching from origin");
-    }
-
-    public void PullFromOrigin()
-    {
-        try
-        {
-            var currentBranch = Repository.Head ?? throw new Exception("No HEAD is set.");
-            var remote = Repository.Network.Remotes["origin"]
-                         ?? throw new Exception("Remote 'origin' not found.");
-
-            // Step 1: Fetch again to ensure latest remote refs
-            var fetchOptions = CreateFetchOptions();
-            var refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);
-            Commands.Fetch(Repository, remote.Name, refSpecs, fetchOptions, "Fetching before pull");
-
-            // Step 2: Get tracking branch
-            var trackingBranch = currentBranch.TrackedBranch ??
-                                 Repository.Branches[$"{remote.Name}/{currentBranch.FriendlyName}"];
-
-            if (trackingBranch == null)
-                throw new Exception($"No tracking branch found for {currentBranch.FriendlyName}.");
-
-            var localCommit = currentBranch.Tip;
-            var remoteCommit = trackingBranch.Tip;
-
-            // Step 3: Check divergence
-            var divergence = Repository.ObjectDatabase.CalculateHistoryDivergence(localCommit, remoteCommit);
-            var behind = divergence?.BehindBy ?? 0;
-            var ahead = divergence?.AheadBy ?? 0;
-
-            if (behind == 0)
-            {
-                Console.WriteLine(AppLang.GitLocalUpToDate);
-                return;
-            }
-
-            Console.WriteLine(AppLang.GitLocalBehind, behind);
-
-            // Step 4: Check if fast-forward possible
-            var mergeBase = Repository.ObjectDatabase.FindMergeBase(localCommit, remoteCommit);
-            var canFastForward = mergeBase?.Sha == localCommit.Sha;
-
-            if (canFastForward)
-            {
-                Repository.Reset(ResetMode.Hard, remoteCommit);
-                Console.WriteLine(AppLang.GitFastForward, remoteCommit.Sha.Substring(0, 8));
-            }
-            else
-            {
-                var signature = GetLocalSignature(Repository);
-                var mergeOptions = new MergeOptions
-                {
-                    FastForwardStrategy = FastForwardStrategy.Default,
-                    FileConflictStrategy = CheckoutFileConflictStrategy.Normal
-                };
-
-                var mergeResult = Repository.Merge(remoteCommit, signature, mergeOptions);
-
-                switch (mergeResult.Status)
-                {
-                    case MergeStatus.UpToDate:
-                        Console.WriteLine(AppLang.GitUpToDateAfterMerge);
-                        break;
-
-                    case MergeStatus.FastForward:
-                        Console.WriteLine(AppLang.GitFastForward, remoteCommit.Sha.Substring(0, 8));
-                        break;
-
-                    case MergeStatus.NonFastForward:
-                        Console.WriteLine(AppLang.GitMergeSuccess, Repository.Head.Tip.Sha.Substring(0, 8));
-                        break;
-
-                    case MergeStatus.Conflicts:
-                        var conflictedFiles = Repository.RetrieveStatus()
-                            .Where(s => s.State == FileStatus.Conflicted)
-                            .Select(s => s.FilePath)
-                            .ToList();
-                        var conflictList = string.Join("\n", conflictedFiles.Select(f => $"  {f}"));
-                        throw new Exception($"Pull resulted in conflicts:\n{conflictList}\nPlease resolve manually.");
-                }
-            }
-        }
-        catch (CheckoutConflictException ex)
-        {
-            var conflictedFiles = Repository.RetrieveStatus()
-                .Where(s => s.State == FileStatus.Conflicted)
-                .Select(s => s.FilePath)
-                .ToList();
-
-            if (conflictedFiles.Any())
-            {
-                var conflictList = string.Join("\n", conflictedFiles.Select(f => $"  {f}"));
-                _ = App.Current.HandleGlobalExceptionAsync(
-                    new Exception($"Pull failed due to checkout conflicts:\n{conflictList}", ex)
-                );
-            }
-            else
-            {
-                _ = App.Current.HandleGlobalExceptionAsync(
-                    new Exception($"Pull failed due to checkout conflicts. {ex.Message}", ex)
-                );
-            }
-        }
-        catch (Exception ex)
-        {
-            _ = App.Current.HandleGlobalExceptionAsync(
-                new Exception($"Pull failed: {ex.Message}", ex)
-            );
-        }
     }
 
 
@@ -629,11 +543,10 @@ public class RepositoryManager
         }
     }
 
-    public void PushToOrigin()
+    public void PushToOrigin(bool force = false)
     {
         try
         {
-            // Validate repository state
             var currentBranch = Repository.Head;
             if (currentBranch == null)
                 throw new Exception("No HEAD is set.");
@@ -641,87 +554,89 @@ public class RepositoryManager
             if (currentBranch.Tip == null)
                 throw new Exception("Current branch has no commits.");
 
-            // Get the remote
             var remote = Repository.Network.Remotes["origin"];
             if (remote == null)
                 throw new Exception("Remote 'origin' not found.");
 
-            // Check if there are any commits to push
             var trackingBranch = currentBranch.TrackedBranch;
-            if (trackingBranch != null)
-            {
-                var localCommit = currentBranch.Tip;
-                var remoteCommit = trackingBranch.Tip;
 
-                if (localCommit.Sha == remoteCommit.Sha)
+            if (trackingBranch?.Tip != null)
+                if (currentBranch.Tip.Sha == trackingBranch.Tip.Sha)
                 {
-                    Console.WriteLine(AppLang.GitUpToDate);
+                    Log.Debug(AppLang.GitUpToDate);
                     return;
                 }
-            }
 
-            // Create push options with GitHub token
             var pushOptions = new PushOptions
             {
                 CredentialsProvider = (_, _, _) =>
                     new UsernamePasswordCredentials
                     {
-                        Username = "token", // GitHub uses "token" as username for personal access tokens
+                        Username = "token",
                         Password = _dataManager.Settings.GitHubToken
                     }
             };
 
-            var refSpec = $"refs/heads/{currentBranch.FriendlyName}:refs/heads/{currentBranch.FriendlyName}";
+            var prefix = force ? "+" : "";
+            var refSpec = $"{prefix}refs/heads/{currentBranch.FriendlyName}:refs/heads/{currentBranch.FriendlyName}";
 
-            Console.WriteLine(AppLang.PushingBranchProcess, currentBranch.FriendlyName);
+            Log.Debug(AppLang.PushingBranchProcess, currentBranch.FriendlyName);
 
-            // Perform the push
             Repository.Network.Push(remote, refSpec, pushOptions);
 
-            Console.WriteLine(AppLang.PushingBranchSuccess, currentBranch.FriendlyName);
+            Log.Debug(AppLang.PushingBranchSuccess, currentBranch.FriendlyName);
         }
         catch (NonFastForwardException ex)
         {
             _ = App.Current.HandleGlobalExceptionAsync(
-                new Exception($"Push rejected because the remote contains work that you do not have locally. " +
-                              $"Try pulling from origin first to integrate remote changes.\n" +
-                              $"Details: {ex.Message}", ex)
+                new Exception(
+                    "Push rejected (non-fast-forward). Remote contains changes you don’t have.\n" +
+                    "If this happened after rebase, retry with force push enabled.",
+                    ex
+                )
             );
         }
-        catch (LibGit2SharpException ex) when (ex.Message.Contains("authentication") || ex.Message.Contains("401") ||
-                                               ex.Message.Contains("403"))
+        catch (LibGit2SharpException ex) when (
+            ex.Message.Contains("authentication") ||
+            ex.Message.Contains("401") ||
+            ex.Message.Contains("403"))
         {
             _ = App.Current.HandleGlobalExceptionAsync(
-                new Exception($"Authentication failed during push. Please check your GitHub token.\n" +
-                              $"Make sure the token has 'repo' permissions and is not expired.\n" +
-                              $"Details: {ex.Message}", ex)
+                new Exception(
+                    "Authentication failed during push. Check your GitHub token and permissions.",
+                    ex
+                )
             );
         }
-        catch (LibGit2SharpException ex) when (ex.Message.Contains("network") || ex.Message.Contains("timeout"))
+        catch (LibGit2SharpException ex) when (
+            ex.Message.Contains("network") ||
+            ex.Message.Contains("timeout"))
         {
             _ = App.Current.HandleGlobalExceptionAsync(
-                new Exception($"Network error during push. Please check your internet connection.\n" +
-                              $"Details: {ex.Message}", ex)
+                new Exception(
+                    "Network error during push. Check your connection.",
+                    ex
+                )
             );
         }
-        catch (LibGit2SharpException ex) when (ex.Message.Contains("permission") || ex.Message.Contains("access"))
+        catch (LibGit2SharpException ex) when (
+            ex.Message.Contains("permission") ||
+            ex.Message.Contains("access"))
         {
             _ = App.Current.HandleGlobalExceptionAsync(
-                new Exception($"Permission denied during push. Please check repository access rights.\n" +
-                              $"Make sure your GitHub token has write access to this repository.\n" +
-                              $"Details: {ex.Message}", ex)
+                new Exception(
+                    "Permission denied during push. Check repository access rights.",
+                    ex
+                )
             );
         }
         catch (LibGit2SharpException ex)
         {
             _ = App.Current.HandleGlobalExceptionAsync(
-                new Exception($"Git push failed: {ex.Message}\n" +
-                              $"This could be due to:\n" +
-                              $"- Invalid or expired GitHub token\n" +
-                              $"- Insufficient token permissions (needs 'repo' scope)\n" +
-                              $"- Network connectivity problems\n" +
-                              $"- Repository permission restrictions\n" +
-                              $"- Branch protection rules", ex)
+                new Exception(
+                    $"Git push failed: {ex.Message}",
+                    ex
+                )
             );
         }
         catch (Exception ex)
@@ -764,7 +679,7 @@ public class RepositoryManager
                     }
                     catch
                     {
-                        Console.WriteLine($"Skipping tag {x.Tag.FriendlyName} - invalid version format");
+                        Log.Debug($"Skipping tag {x.Tag.FriendlyName} - invalid version format");
                         return new { x.Tag, Version = (Version)null, VersionString = "", IsValid = false };
                     }
                 })
@@ -774,17 +689,17 @@ public class RepositoryManager
 
             if (!tags.Any())
             {
-                Console.WriteLine("No tags found in repository. Defaulting to 1.0.0");
+                Log.Debug("No tags found in repository. Defaulting to 1.0.0");
                 return "1.0.0";
             }
 
             var latest = tags.First();
-            Console.WriteLine($"Found latest release: {latest.Tag.FriendlyName} as {latest.VersionString}");
+            Log.Debug($"Found latest release: {latest.Tag.FriendlyName} as {latest.VersionString}");
             return latest.VersionString;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Failed to get latest release: {ex.Message}. Defaulting to 1.0.0");
+            Log.Debug($"Failed to get latest release: {ex.Message}. Defaulting to 1.0.0");
             return "1.0.0";
         }
     }

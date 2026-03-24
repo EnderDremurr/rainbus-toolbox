@@ -273,15 +273,15 @@ public class GithubManager
                 var readmeResponseBody = await readmeResponse.Content.ReadAsStringAsync();
                 if (!readmeResponse.IsSuccessStatusCode)
                     // Log warning but don't fail the entire operation
-                    Console.WriteLine($"Warning: Failed to upload README.md: {readmeResponseBody}");
+                    Log.Debug($"Warning: Failed to upload README.md: {readmeResponseBody}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Warning: Error processing README.md: {ex.Message}");
+                Log.Debug($"Warning: Error processing README.md: {ex.Message}");
             }
         else
             // Log info that README.md was not found
-            Console.WriteLine("README.md not found in repository root, skipping upload.");
+            Log.Debug("README.md not found in repository root, skipping upload.");
     }
 
     public async Task<bool> IsTokenValidAsync(string? token = null)

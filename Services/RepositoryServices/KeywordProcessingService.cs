@@ -236,50 +236,50 @@ public class KeywordProcessingService(RepositoryManager repositoryManager)
                 var content = File.ReadAllText(file, encoding);
                 var matches = _tagRegex.Matches(content);
                 if (matches.Count > 0)
-                    Console.WriteLine($"Found {matches.Count} matches in {Path.GetFileName(file)}");
+                    Log.Debug($"Found {matches.Count} matches in {Path.GetFileName(file)}");
                 var replacedContent = _tagRegex.Replace(content, match =>
                 {
-                    Console.WriteLine($"Processing match: '{match.Value}'");
+                    Log.Debug($"Processing match: '{match.Value}'");
                     var result = GetMeshFromTag(match.Value);
-                    Console.WriteLine($"Original: '{match.Value}'");
-                    Console.WriteLine($"Result:   '{result}'");
-                    Console.WriteLine($"Are they equal? {match.Value == result}");
+                    Log.Debug($"Original: '{match.Value}'");
+                    Log.Debug($"Result:   '{result}'");
+                    Log.Debug($"Are they equal? {match.Value == result}");
                     return result;
                 });
 
-                Console.WriteLine($"Content changed: {content != replacedContent}");
-                Console.WriteLine($"Original content length: {content.Length}");
-                Console.WriteLine($"Replaced content length: {replacedContent.Length}");
+                Log.Debug($"Content changed: {content != replacedContent}");
+                Log.Debug($"Original content length: {content.Length}");
+                Log.Debug($"Replaced content length: {replacedContent.Length}");
 
 
                 if (Math.Abs(content.Length - replacedContent.Length) < 100)
                     for (var i = 0; i < Math.Min(content.Length, replacedContent.Length); i++)
                         if (content[i] != replacedContent[i])
                         {
-                            Console.WriteLine($"First difference at position {i}:");
-                            Console.WriteLine(
+                            Log.Debug($"First difference at position {i}:");
+                            Log.Debug(
                                 $"Original: '{content.Substring(Math.Max(0, i - 10), Math.Min(20, content.Length - i + 10))}'");
-                            Console.WriteLine(
+                            Log.Debug(
                                 $"Replaced: '{replacedContent.Substring(Math.Max(0, i - 10), Math.Min(20, replacedContent.Length - i + 10))}'");
                             break;
                         }
 
                 if (content != replacedContent)
                 {
-                    Console.WriteLine($"Writing changes to {Path.GetFileName(file)}");
+                    Log.Debug($"Writing changes to {Path.GetFileName(file)}");
                     File.WriteAllText(file, replacedContent, new UTF8Encoding(false));
                     replacedCount++;
                 }
                 else
                 {
-                    Console.WriteLine($"No changes detected in {Path.GetFileName(file)} - content comparison failed");
+                    Log.Debug($"No changes detected in {Path.GetFileName(file)} - content comparison failed");
                 }
 
                 processedCount++;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error processing {file}: {ex.Message}");
+                Log.Debug($"Error processing {file}: {ex.Message}");
             }
 
             progress?.Report($"Processed {processedCount}/{totalFiles} files (Replaced: {replacedCount})");

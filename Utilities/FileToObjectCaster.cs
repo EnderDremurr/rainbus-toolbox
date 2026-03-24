@@ -83,10 +83,10 @@ public static class FileToObjectCaster
 
     public static Type? GetType(string pathToFile, Dictionary<string, string> fileTypeMap)
     {
-        Console.WriteLine(AppLang.FileToObjectCaster_GetType_Recevied_a_cast_request_for_file___0__, pathToFile);
+        Log.Debug(AppLang.FileToObjectCaster_GetType_Recevied_a_cast_request_for_file___0__, pathToFile);
         var fileName = Path.GetFileNameWithoutExtension(pathToFile);
         var isKnownFile = fileTypeMap.TryGetValue(fileName, out var knownFileType);
-        Console.WriteLine(AppLang.FileToObjectCaster_GetType_Supposed_file_type_is___0__, knownFileType);
+        Log.Debug(AppLang.FileToObjectCaster_GetType_Supposed_file_type_is___0__, knownFileType);
         if (!isKnownFile || knownFileType is null)
         {
             if (IsStoryFile(pathToFile))

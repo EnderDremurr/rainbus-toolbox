@@ -20,7 +20,7 @@ public class FileMergingService
             var checkedFiles = 0;
 
             progress.Report("Starting file processing...");
-            Console.WriteLine("Starting file processing...");
+            Log.Debug("Starting file processing...");
 
             var localizationFiles =
                 Directory.GetFiles(pathToLocalization, "*.json", SearchOption.AllDirectories).ToList();
@@ -30,10 +30,10 @@ public class FileMergingService
             var message =
                 $"Found {localizationFiles.Count} localization files and {referenceFiles.Count} reference files";
             progress?.Report(message);
-            Console.WriteLine(message);
+            Log.Debug(message);
 
             // Debug: Log all filenames to see what's happening
-            Console.WriteLine("\n=== DEBUGGING DUPLICATE FILES ===");
+            Log.Debug("\n=== DEBUGGING DUPLICATE FILES ===");
             var fileNames = new List<string>();
             var duplicateCheck = new Dictionary<string, List<string>>();
 
@@ -47,30 +47,30 @@ public class FileMergingService
                 if (!duplicateCheck.ContainsKey(fileName)) duplicateCheck[fileName] = new List<string>();
                 duplicateCheck[fileName].Add(fullPath);
 
-                Console.WriteLine($"File: '{fileName}' -> Path: '{fullPath}'");
+                Log.Debug($"File: '{fileName}' -> Path: '{fullPath}'");
             }
 
             // Check for actual duplicates
             var actualDuplicates = duplicateCheck.Where(kvp => kvp.Value.Count > 1).ToList();
             if (actualDuplicates.Any())
             {
-                Console.WriteLine("\n=== FOUND ACTUAL DUPLICATES ===");
+                Log.Debug("\n=== FOUND ACTUAL DUPLICATES ===");
                 foreach (var duplicate in actualDuplicates)
                 {
-                    Console.WriteLine($"Duplicate filename: '{duplicate.Key}'");
-                    foreach (var path in duplicate.Value) Console.WriteLine($"  -> {path}");
+                    Log.Debug($"Duplicate filename: '{duplicate.Key}'");
+                    foreach (var path in duplicate.Value) Log.Debug($"  -> {path}");
                 }
             }
             else
             {
-                Console.WriteLine("No actual duplicates found. Checking for other issues...");
+                Log.Debug("No actual duplicates found. Checking for other issues...");
 
                 // Check for null/empty filenames
                 var emptyNames = localizationFiles.Where(f => string.IsNullOrWhiteSpace(Path.GetFileName(f))).ToList();
                 if (emptyNames.Any())
                 {
-                    Console.WriteLine("Found files with empty/null names:");
-                    emptyNames.ForEach(f => Console.WriteLine($"  -> {f}"));
+                    Log.Debug("Found files with empty/null names:");
+                    emptyNames.ForEach(f => Log.Debug($"  -> {f}"));
                 }
 
                 // Check for special characters or encoding issues
@@ -82,12 +82,12 @@ public class FileMergingService
 
                 if (suspiciousFiles.Any())
                 {
-                    Console.WriteLine("Found files with suspicious characters:");
-                    suspiciousFiles.ForEach(f => Console.WriteLine($"  -> '{Path.GetFileName(f)}' in {f}"));
+                    Log.Debug("Found files with suspicious characters:");
+                    suspiciousFiles.ForEach(f => Log.Debug($"  -> '{Path.GetFileName(f)}' in {f}"));
                 }
             }
 
-            Console.WriteLine("=== END DEBUGGING ===\n");
+            Log.Debug("=== END DEBUGGING ===\n");
 
             // Create a dictionary for faster lookup, with detailed error handling
             var localizationFileMap = new Dictionary<string, string>();
@@ -97,16 +97,16 @@ public class FileMergingService
 
                 if (string.IsNullOrWhiteSpace(fileName))
                 {
-                    Console.WriteLine($"Skipping file with null/empty name: {file}");
+                    Log.Debug($"Skipping file with null/empty name: {file}");
                     continue;
                 }
 
                 if (localizationFileMap.ContainsKey(fileName))
                 {
-                    Console.WriteLine($"ERROR: Duplicate key '{fileName}' detected!");
-                    Console.WriteLine($"  Existing: {localizationFileMap[fileName]}");
-                    Console.WriteLine($"  New: {file}");
-                    Console.WriteLine("  Using existing file and skipping new one.");
+                    Log.Debug($"ERROR: Duplicate key '{fileName}' detected!");
+                    Log.Debug($"  Existing: {localizationFileMap[fileName]}");
+                    Log.Debug($"  New: {file}");
+                    Log.Debug("  Using existing file and skipping new one.");
                 }
                 else
                 {
@@ -127,7 +127,7 @@ public class FileMergingService
                     var progressMessage =
                         $"Processed {checkedFiles}/{referenceFiles.Count} files... (Added: {newFiles}, Merged: {expandedFiles})";
                     progress?.Report(progressMessage);
-                    Console.WriteLine(progressMessage);
+                    Log.Debug(progressMessage);
 
                     // Yield control to prevent UI freezing
                     Thread.Sleep(1);
@@ -147,7 +147,7 @@ public class FileMergingService
                     {
                         var errorMessage = $"Error copying file {referenceFile}: {ex.Message}";
                         progress?.Report(errorMessage);
-                        Console.WriteLine(errorMessage);
+                        Log.Debug(errorMessage);
                     }
 
                     continue;
@@ -162,7 +162,7 @@ public class FileMergingService
                 {
                     var errorMessage = $"Error merging file {referenceFile}: {ex.Message}";
                     progress?.Report(errorMessage);
-                    Console.WriteLine(errorMessage);
+                    Log.Debug(errorMessage);
                 }
             }
 
@@ -170,7 +170,7 @@ public class FileMergingService
             var finalMessage =
                 $"Completed! Added {newFiles} files, merged {expandedFiles} files. Total files processed: {checkedFiles}.";
             progress?.Report(finalMessage);
-            Console.WriteLine(finalMessage);
+            Log.Debug(finalMessage);
 
             return new[] { newFiles, expandedFiles, checkedFiles };
         }, cancellationToken);
@@ -195,7 +195,7 @@ public class FileMergingService
             // Quick validation - skip empty files
             if (string.IsNullOrWhiteSpace(sourceContent))
             {
-                Console.WriteLine($"Skipping empty source file: {sourcePath}");
+                Log.Debug($"Skipping empty source file: {sourcePath}");
                 return false;
             }
 
@@ -206,27 +206,27 @@ public class FileMergingService
 
             if (hasSourceConflicts)
             {
-                Console.WriteLine($"Source file has Git merge conflict markers: {sourcePath}");
-                Console.WriteLine("Attempting to auto-clean conflict markers...");
+                Log.Debug($"Source file has Git merge conflict markers: {sourcePath}");
+                Log.Debug("Attempting to auto-clean conflict markers...");
                 sourceContent = CleanGitConflictMarkers(sourceContent);
-                Console.WriteLine("Source file cleaned. Please verify the result manually.");
+                Log.Debug("Source file cleaned. Please verify the result manually.");
             }
 
             if (hasDestinationConflicts)
             {
-                Console.WriteLine($"Destination file has Git merge conflict markers: {destinationPath}");
-                Console.WriteLine("Attempting to auto-clean conflict markers...");
+                Log.Debug($"Destination file has Git merge conflict markers: {destinationPath}");
+                Log.Debug("Attempting to auto-clean conflict markers...");
                 destinationContent = CleanGitConflictMarkers(destinationContent);
 
                 // Write the cleaned content back to the file
                 try
                 {
                     File.WriteAllText(destinationPath, destinationContent, new UTF8Encoding(false));
-                    Console.WriteLine($"Cleaned and saved destination file: {destinationPath}");
+                    Log.Debug($"Cleaned and saved destination file: {destinationPath}");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Failed to save cleaned destination file: {ex.Message}");
+                    Log.Debug($"Failed to save cleaned destination file: {ex.Message}");
                     return false;
                 }
             }
@@ -234,8 +234,8 @@ public class FileMergingService
             // Check for HTML/XML content that might be corrupting the JSON
             if (sourceContent.TrimStart().StartsWith("<") && !sourceContent.Contains("<<<<<<<"))
             {
-                Console.WriteLine($"Skipping file that appears to contain HTML/XML instead of JSON: {sourcePath}");
-                Console.WriteLine(
+                Log.Debug($"Skipping file that appears to contain HTML/XML instead of JSON: {sourcePath}");
+                Log.Debug(
                     $"First 200 characters: {sourceContent.Substring(0, Math.Min(200, sourceContent.Length))}");
                 return false;
             }
@@ -244,7 +244,7 @@ public class FileMergingService
             if (sourceContent.Contains("<!DOCTYPE") || sourceContent.Contains("<html") ||
                 sourceContent.Contains("<?xml"))
             {
-                Console.WriteLine($"Skipping file that contains HTML/XML markers: {sourcePath}");
+                Log.Debug($"Skipping file that contains HTML/XML markers: {sourcePath}");
                 return false;
             }
 
@@ -257,8 +257,8 @@ public class FileMergingService
             }
             catch (JsonException ex)
             {
-                Console.WriteLine($"Failed to parse destination JSON file {destinationPath}: {ex.Message}");
-                Console.WriteLine(
+                Log.Debug($"Failed to parse destination JSON file {destinationPath}: {ex.Message}");
+                Log.Debug(
                     $"First 200 characters of destination: {destinationContent.Substring(0, Math.Min(200, destinationContent.Length))}");
                 throw;
             }
@@ -269,17 +269,17 @@ public class FileMergingService
             }
             catch (JsonException ex)
             {
-                Console.WriteLine($"Failed to parse source JSON file {sourcePath}: {ex.Message}");
-                Console.WriteLine(
+                Log.Debug($"Failed to parse source JSON file {sourcePath}: {ex.Message}");
+                Log.Debug(
                     $"First 500 characters of source: {sourceContent.Substring(0, Math.Min(500, sourceContent.Length))}");
-                Console.WriteLine(
+                Log.Debug(
                     $"Last 200 characters of source: {sourceContent.Substring(Math.Max(0, sourceContent.Length - 200))}");
 
                 // Try to find the problematic character
                 var lines = sourceContent.Split('\n');
                 for (var i = 0; i < Math.Min(10, lines.Length); i++)
                     if (lines[i].Contains('<'))
-                        Console.WriteLine($"Found '<' character on line {i + 1}: {lines[i]}");
+                        Log.Debug($"Found '<' character on line {i + 1}: {lines[i]}");
 
                 throw;
             }
@@ -291,7 +291,7 @@ public class FileMergingService
 
             if (sourceDataList == null)
             {
-                Console.WriteLine($"Warning: No DataList or dataList found in source file: {sourcePath}");
+                Log.Debug($"Warning: No DataList or dataList found in source file: {sourcePath}");
                 return false;
             }
 
@@ -350,12 +350,12 @@ public class FileMergingService
         }
         catch (JsonException ex)
         {
-            Console.WriteLine($"JSON parsing error in files {destinationPath} or {sourcePath}: {ex.Message}");
+            Log.Debug($"JSON parsing error in files {destinationPath} or {sourcePath}: {ex.Message}");
             throw;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Unexpected error processing {destinationPath}: {ex.Message}");
+            Log.Debug($"Unexpected error processing {destinationPath}: {ex.Message}");
             throw;
         }
 
@@ -432,7 +432,7 @@ public class FileMergingService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error copying file from {pathToFileToCopy}: {ex.Message}");
+            Log.Debug($"Error copying file from {pathToFileToCopy}: {ex.Message}");
             throw;
         }
     }
