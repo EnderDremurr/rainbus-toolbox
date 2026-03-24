@@ -3,7 +3,6 @@
     d:DesignWidth="1200"
     mc:Ignorable="d"
     x:Class="RainbusToolbox.Views.PassiveTranslationEditor"
-    x:CompileBindings="False"
     x:DataType="viewModels:PassiveTranslationEditorViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -38,57 +37,21 @@
                     <Border Margin="72,54,114,195">
                         <ScrollViewer>
                             <StackPanel Margin="15">
-                                <!--  Section Title  -->
-                                <TextBlock
-                                    FontFamily="{StaticResource MikodacsFont}"
-                                    FontSize="18"
-                                    FontWeight="Bold"
-                                    Foreground="White"
-                                    HorizontalAlignment="Center"
-                                    Margin="0,0,0,10"
-                                    Text="Reference" />
-
-                                <!--  Passive ID  -->
-                                <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
-                                    <TextBlock
-                                        FontFamily="{StaticResource MikodacsFont}"
-                                        FontSize="28"
-                                        FontWeight="SemiBold"
-                                        Foreground="White"
-                                        Text="Passive ID: "
-                                        Width="120" />
-                                    <TextBlock
-                                        FontSize="24"
-                                        Foreground="White"
-                                        Text="{Binding ReferenceItem.Id}"
-                                        TextWrapping="Wrap" />
-                                </StackPanel>
-
                                 <!--  Passive Title  -->
-                                <StackPanel Margin="0,0,0,10">
-                                    <TextBlock
-                                        FontFamily="{StaticResource MikodacsFont}"
-                                        FontSize="28"
-                                        FontWeight="SemiBold"
-                                        Foreground="White"
-                                        Margin="0,0,0,5"
-                                        Text="Title:" />
+                                <StackPanel Margin="0,10,0,0">
                                     <TextBox
                                         Background="Transparent"
-                                        IsReadOnly="True"
-                                        Text="{Binding ReferenceItem.Name}"
+                                        Classes="invisible"
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Text="{Binding ReferenceItem.Name, Mode=TwoWay}"
                                         TextWrapping="Wrap" />
                                 </StackPanel>
 
                                 <!--  Passive Description  -->
-                                <StackPanel Margin="0,0,0,10">
-                                    <TextBlock
-                                        FontFamily="{StaticResource MikodacsFont}"
-                                        FontSize="28"
-                                        FontWeight="SemiBold"
-                                        Foreground="White"
-                                        Margin="0,0,0,5"
-                                        Text="Description:" />
+                                <StackPanel Margin="0,10,0,10">
                                     <TextBox
                                         Background="Transparent"
                                         Classes="invisible"
@@ -121,56 +84,23 @@
                     <Border Margin="72,54,114,195">
                         <ScrollViewer>
                             <StackPanel Margin="15">
-                                <!--  Section Title  -->
-                                <TextBlock
-                                    FontFamily="{StaticResource MikodacsFont}"
-                                    FontSize="18"
-                                    FontWeight="Bold"
-                                    Foreground="White"
-                                    HorizontalAlignment="Center"
-                                    Margin="0,0,0,10"
-                                    Text="Editor" />
 
-                                <!--  Passive ID  -->
-                                <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
-                                    <TextBlock
-                                        FontFamily="{StaticResource MikodacsFont}"
-                                        FontSize="28"
-                                        FontWeight="SemiBold"
-                                        Foreground="White"
-                                        Text="Passive ID: "
-                                        Width="120" />
-                                    <TextBlock
-                                        FontSize="24"
-                                        Foreground="White"
-                                        Text="{Binding CurrentItem.Id}"
-                                        TextWrapping="Wrap" />
-                                </StackPanel>
 
                                 <!--  Passive Title  -->
-                                <StackPanel Margin="0,0,0,10">
-                                    <TextBlock
+                                <StackPanel Margin="0,10,0,0">
+                                    <TextBox
+                                        Background="Transparent"
+                                        Classes="invisible"
                                         FontFamily="{StaticResource MikodacsFont}"
                                         FontSize="28"
                                         FontWeight="SemiBold"
                                         Foreground="White"
-                                        Margin="0,0,0,5"
-                                        Text="Title:" />
-                                    <TextBox
-                                        Background="Transparent"
                                         Text="{Binding CurrentItem.Name, Mode=TwoWay}"
                                         TextWrapping="Wrap" />
                                 </StackPanel>
 
                                 <!--  Passive Description  -->
-                                <StackPanel Margin="0,0,0,10">
-                                    <TextBlock
-                                        FontFamily="{StaticResource MikodacsFont}"
-                                        FontSize="28"
-                                        FontWeight="SemiBold"
-                                        Foreground="White"
-                                        Margin="0,0,0,5"
-                                        Text="Description:" />
+                                <StackPanel Margin="0,10,0,10">
                                     <TextBox
                                         AcceptsReturn="True"
                                         Background="Transparent"
