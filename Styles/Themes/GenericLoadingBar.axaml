@@ -114,10 +114,13 @@
                         </Border.Background>
                     </Border>
                     <Border
+                        ClipToBounds="True"
                         Height="60"
                         HorizontalAlignment="Left"
+                        Margin="-200,1,4,2"
                         Name="PART_IndeterminateIndicator"
                         Width="115">
+
                         <Border.Background>
                             <ImageBrush
                                 AlignmentX="Left"
@@ -140,5 +143,28 @@
 
     <Style Selector="ProgressBar:indeterminate /template/ Border#PART_Indicator">
         <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style Selector="ProgressBar:indeterminate /template/ Border#PART_IndeterminateIndicator">
+        <Setter Property="IsVisible" Value="True" />
+
+        <Style.Animations>
+            <Animation Duration="0:0:1.4" IterationCount="Infinite">
+                <Animation.Easing>
+                    <SplineEasing
+                        X1="0.4"
+                        X2="0.2"
+                        Y1="0.0"
+                        Y2="1.0" />
+                </Animation.Easing>
+
+                <KeyFrame Cue="0%">
+                    <Setter Property="Margin" Value="-200,0,0,0" />
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Margin" Value="1200,0,0,0" />
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
     </Style>
 </Styles>
