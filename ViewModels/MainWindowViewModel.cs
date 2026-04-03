@@ -150,9 +150,9 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void Maximize(Window ownerWindow)
     {
-        ownerWindow.WindowState = ownerWindow.WindowState == WindowState.Maximized
+        ownerWindow.WindowState = ownerWindow.WindowState == WindowState.FullScreen
             ? WindowState.Normal
-            : WindowState.Maximized;
+            : WindowState.FullScreen;
     }
 
     [RelayCommand]
