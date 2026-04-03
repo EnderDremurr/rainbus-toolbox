@@ -369,7 +369,16 @@ public partial class TranslationTabViewModel : ObservableObject
         {
             new { Group = "Гифты", Pattern = "EGOgift_*.json", Subfolder = "" },
             new { Group = "Анонсеры", Pattern = "*.json", Subfolder = "BattleAnnouncerDlg" },
-            new { Group = "Кейворды", Pattern = "BattleKeywords*.json", Subfolder = "" }
+            new { Group = "Кейворды", Pattern = "BattleKeywords*.json", Subfolder = "" },
+            new { Group = "Сюжет канто 1", Pattern = "S1*.json", Subfolder = "StoryData" },
+            new { Group = "Сюжет канто 2", Pattern = "S2*.json", Subfolder = "StoryData" },
+            new { Group = "Сюжет канто 3", Pattern = "S3*.json", Subfolder = "StoryData" },
+            new { Group = "Сюжет канто 4", Pattern = "S4*.json", Subfolder = "StoryData" },
+            new { Group = "Сюжет канто 5", Pattern = "S5*.json", Subfolder = "StoryData" },
+            new { Group = "Сюжет канто 6", Pattern = "S6*.json", Subfolder = "StoryData" },
+            new { Group = "Сюжет канто 7", Pattern = "S7*.json", Subfolder = "StoryData" },
+            new { Group = "Сюжет канто 8", Pattern = "S8*.json", Subfolder = "StoryData" },
+            new { Group = "Сюжет канто 9", Pattern = "S9*.json", Subfolder = "StoryData" }
         };
 
         foreach (var category in categories)
@@ -386,6 +395,7 @@ public partial class TranslationTabViewModel : ObservableObject
                     Desc = "-",
                     Group = category.Group
                 });
+            fileShortcuts = new ObservableCollection<FileShortcut>(fileShortcuts.OrderBy(f => f.Alias));
         }
 
         foreach (var shortcut in fileShortcuts)
