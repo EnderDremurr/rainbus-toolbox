@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using RainbusToolbox.Utilities.Data;
 
 namespace RainbusToolbox.Utilities.Data;
 
@@ -10,11 +9,8 @@ public class StoryDataFile : LocalizationFileBase, ILocalizationContainer<StoryD
     public List<StoryDataItem> DataList { get; set; } = [];
 }
 
-public class StoryDataItem
+public class StoryDataItem : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public int Id { get; set; }
-
     [JsonProperty("model")]
     public string? Model { get; set; }
 

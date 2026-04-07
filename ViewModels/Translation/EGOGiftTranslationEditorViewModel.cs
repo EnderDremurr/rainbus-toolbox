@@ -12,9 +12,15 @@ public partial class EGOGiftTranslationEditorViewModel : TranslationEditorViewMo
 
     protected override void UpdateReferenceItem()
     {
-        if (ReferenceFile != null && ReferenceFile.DataList.Count > CurrentIndex)
+        if (ReferenceFile != null && CurrentItem != null)
         {
-            ReferenceItem = ReferenceFile.DataList[CurrentIndex];
+            ReferenceItem = ReferenceFile.DataList.FirstOrDefault(x => x.Id == CurrentItem.Id);
+
+            if (ReferenceItem == null)
+            {
+                CurrentGiftImage = null;
+                return;
+            }
 
             var imageName = ReferenceItem.Name!.Replace("+", "") + " Gift.png";
             var pathToCachedGifts = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -36,7 +42,7 @@ public partial class EGOGiftTranslationEditorViewModel : TranslationEditorViewMo
 
         else
         {
-            ReferenceItem = default;
+            ReferenceItem = null;
         }
     }
 }

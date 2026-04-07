@@ -6,6 +6,7 @@ namespace RainbusToolbox.ViewModels;
 
 public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
     where TFile : LocalizationFileBase, ILocalizationContainer<TItem>
+    where TItem : LocalizationItemBase
 {
     [ObservableProperty] protected TItem? _currentItem;
     [ObservableProperty] protected string _navigationCountText = "";
@@ -109,8 +110,8 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
 
     protected virtual void UpdateReferenceItem()
     {
-        if (ReferenceFile != null && ReferenceFile.DataList.Count > CurrentIndex)
-            ReferenceItem = ReferenceFile.DataList[CurrentIndex];
+        if (ReferenceFile != null && CurrentItem != null)
+            ReferenceItem = ReferenceFile.DataList.FirstOrDefault(x => x.Id == CurrentItem.Id);
         else
             ReferenceItem = default;
     }

@@ -2,19 +2,14 @@ using Newtonsoft.Json;
 
 namespace RainbusToolbox.Utilities.Data;
 
-public class GenericIdContent
+public class GenericIdContent : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
     [JsonProperty("content")]
     public string? Content { get; set; }
 }
 
-public class GenericIdNameDesc
+public class GenericIdNameDesc : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("name")]
     public string? Name { get; set; }
 
@@ -22,49 +17,35 @@ public class GenericIdNameDesc
     public string? Desc { get; set; }
 }
 
-public class GenericIdDesc
+public class GenericIdDesc : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("desc")]
     public string? Desc { get; set; }
 }
 
-public class GenericIdDescRawDesc
+public class GenericIdDescRawDesc : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("desc")]
     public string? Desc { get; set; }
+
     [JsonProperty("rawDesc")]
     public string? RawDesc { get; set; }
 }
 
-public class GenericIdDescription
+public class GenericIdDescription : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("description")]
     public string? Description { get; set; }
 }
 
-public class GenericIdName
+public class GenericIdName : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("name")]
     public string? Name { get; set; }
 }
 
-public class GenericIdTitleDesc
+public class GenericIdTitleDesc : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("title")]
     public string? Title { get; set; }
 
@@ -72,20 +53,14 @@ public class GenericIdTitleDesc
     public string? Desc { get; set; }
 }
 
-public class GenericIdTitle
+public class GenericIdTitle : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("title")]
     public string? Title { get; set; }
 }
 
-public class GenericIdDescDlg
+public class GenericIdDescDlg : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("desc")]
     public string? Description { get; set; }
 

@@ -20,11 +20,9 @@ public class PersonalityLocalizationFile : LocalizationFileBase, ILocalizationCo
     [JsonProperty("dataList")]
     public List<PersonalityDataEntry> DataList { get; set; } = [];
 }
-public class PersonalityDataEntry
-{
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
 
+public class PersonalityDataEntry : LocalizationItemBase
+{
     [JsonProperty("title")]
     public string? Title { get; set; }
 
@@ -36,7 +34,6 @@ public class PersonalityDataEntry
 
     [JsonProperty("desc")]
     public string? Description { get; set; }
-
 }
 
 public class EnemyLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdNameDesc>
@@ -57,11 +54,8 @@ public class SkillLocalizationFile : LocalizationFileBase, ILocalizationContaine
     public List<Skill> DataList { get; set; } = [];
 }
 
-public class Skill
+public class Skill : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("levelList")]
     public List<SkillLevel> LevelList { get; set; } = [];
 }
@@ -70,7 +64,7 @@ public class SkillLevel
 {
     [JsonProperty("abName")]
     public string? AbnormalityName { get; set; }
-    
+
     [JsonProperty("level")]
     public string? Level { get; set; }
 
@@ -108,11 +102,8 @@ public class BufLocalizationFile : LocalizationFileBase, ILocalizationContainer<
     public List<BuffKeyword> DataList { get; set; } = [];
 }
 
-public class BuffKeyword
+public class BuffKeyword : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("name")]
     public string? Name { get; set; }
 
@@ -121,7 +112,7 @@ public class BuffKeyword
 
     [JsonProperty("summary")]
     public string? Summary { get; set; }
-    
+
     [JsonProperty("flavor")]
     public string? Flavor { get; set; }
 }
@@ -138,17 +129,14 @@ public class ItemLocalizationFile : LocalizationFileBase, ILocalizationContainer
     public List<ItemDesc> DataList { get; set; } = [];
 }
 
-public class ItemDesc
+public class ItemDesc : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("name")]
     public string? Name { get; set; }
 
     [JsonProperty("desc")]
     public string? Desc { get; set; }
-    
+
     [JsonProperty("flavor")]
     public string? Flavor { get; set; }
 }
@@ -171,11 +159,8 @@ public class AbnormalityEventsLocalizationFile : LocalizationFileBase, ILocaliza
     public List<AbnormalityEventChoice> DataList { get; set; } = [];
 }
 
-public class AbnormalityEventChoice
+public class AbnormalityEventChoice : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("title")]
     public string? Title { get; set; }
 
@@ -195,17 +180,14 @@ public class AbnormalityEventChoice
     public List<string>? FailureDesc { get; set; }
 }
 
-
 public class AbnormalityCharDlgsLocalizationFile : LocalizationFileBase, ILocalizationContainer<AbnormalityCharDlg>
 {
     [JsonProperty("dataList")]
     public List<AbnormalityCharDlg> DataList { get; set; } = [];
 }
-public class AbnormalityCharDlg
-{
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
 
+public class AbnormalityCharDlg : LocalizationItemBase
+{
     [JsonProperty("personalityid")]
     public string? PersonalityId { get; set; }
 
@@ -222,7 +204,6 @@ public class AbnormalityCharDlg
     public string? Usage { get; set; }
 }
 
-
 public class AttributeTextLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdName>
 {
     [JsonProperty("dataList")]
@@ -234,11 +215,9 @@ public class AbnormalityGuideContentLocalizationFile : LocalizationFileBase, ILo
     [JsonProperty("dataList")]
     public List<AbnormalityGuide> DataList { get; set; } = [];
 }
-public class AbnormalityGuide
-{
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
 
+public class AbnormalityGuide : LocalizationItemBase
+{
     [JsonProperty("codeName")]
     public string? CodeName { get; set; }
 
@@ -272,11 +251,9 @@ public class ActionEventsLocalizationFile : LocalizationFileBase, ILocalizationC
     [JsonProperty("dataList")]
     public List<ActionEvent> DataList { get; set; } = [];
 }
-public class ActionEvent
-{
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
 
+public class ActionEvent : LocalizationItemBase
+{
     [JsonProperty("name")]
     public string? Name { get; set; }
 
@@ -286,6 +263,7 @@ public class ActionEvent
     [JsonProperty("options")]
     public List<EventOption>? Options { get; set; }
 }
+
 public class EventOption
 {
     [JsonProperty("message")]
@@ -298,17 +276,14 @@ public class EventOption
     public List<string>? Result { get; set; }
 }
 
-
 public class EgoGiftsLocalizationFile : LocalizationFileBase, ILocalizationContainer<EgoGift>
 {
     [JsonProperty("dataList")]
     public List<EgoGift> DataList { get; set; } = [];
 }
-public class EgoGift
-{
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
 
+public class EgoGift : LocalizationItemBase
+{
     [JsonProperty("name")]
     public string? Name { get; set; }
 
@@ -318,26 +293,21 @@ public class EgoGift
     [JsonProperty("simpleDesc")]
     public List<EgoGiftSimpleDesc>? SimpleDesc { get; set; }
 }
-public class EgoGiftSimpleDesc
-{
-    [JsonProperty("abilityID")]
-    public string? AbilityId { get; set; }
 
+public class EgoGiftSimpleDesc : LocalizationItemBase
+{
     [JsonProperty("simpleDesc")]
     public string? SimpleDesc { get; set; }
 }
-
 
 public class StageChapterLocalizationFile : LocalizationFileBase, ILocalizationContainer<StageChapter>
 {
     [JsonProperty("dataList")]
     public List<StageChapter> DataList { get; set; } = [];
 }
-public class StageChapter
-{
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
 
+public class StageChapter : LocalizationItemBase
+{
     [JsonProperty("company")]
     public string? Company { get; set; }
 
@@ -357,18 +327,14 @@ public class StageChapter
     public string? Timeline { get; set; }
 }
 
-
 public class StagePartLocalizationFile : LocalizationFileBase, ILocalizationContainer<StagePart>
 {
     [JsonProperty("dataList")]
     public List<StagePart> DataList { get; set; } = [];
 }
 
-public class StagePart
+public class StagePart : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("parttitle")]
     public string? PartTitle { get; set; }
 }
@@ -379,11 +345,8 @@ public class StageNodeInfoLocalizationFile : LocalizationFileBase, ILocalization
     public List<StageNode> DataList { get; set; } = [];
 }
 
-public class StageNode
+public class StageNode : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("title")]
     public string? Title { get; set; }
 
@@ -393,7 +356,6 @@ public class StageNode
     [JsonProperty("desc")]
     public string? Desc { get; set; }
 }
-
 
 public class DungeonNodeInfoLocalizationFile : LocalizationFileBase, ILocalizationContainer<StageNode>
 {
@@ -407,11 +369,8 @@ public class StoryDungeonNodeInfoLocalizationFile : LocalizationFileBase, ILocal
     public List<StoryDungeonNodeList> DataList { get; set; } = [];
 }
 
-public class StoryDungeonNodeList
+public class StoryDungeonNodeList : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("stageList")]
     public List<StageNode>? StageList { get; set; }
 }
@@ -427,17 +386,14 @@ public class RailwayDungeonLocalizationFile : LocalizationFileBase, ILocalizatio
     [JsonProperty("dataList")]
     public List<RailwayDungeon> DataList { get; set; } = [];
 }
-public class RailwayDungeon
-{
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
 
+public class RailwayDungeon : LocalizationItemBase
+{
     [JsonProperty("name")]
     public string? Name { get; set; }
 
     [JsonProperty("longName")]
     public string? LongName { get; set; }
-
 }
 
 public class DungeonAreaLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
@@ -494,18 +450,14 @@ public class PersonalityVoiceLocalizationFile : LocalizationFileBase, ILocalizat
     public List<GenericIdDescDlg> DataList { get; set; } = [];
 }
 
-
 public class AnnouncerVoiceLocalizationFile : LocalizationFileBase, ILocalizationContainer<AnnouncerVoice>
 {
     [JsonProperty("dataList")]
     public List<AnnouncerVoice> DataList { get; set; } = [];
 }
 
-public class AnnouncerVoice
+public class AnnouncerVoice : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("dlg")]
     public string? Dialogue { get; set; }
 }
@@ -569,20 +521,19 @@ public class IntroduceCharacterLocalizationFile : LocalizationFileBase, ILocaliz
     [JsonProperty("dataList")]
     public List<IntroductuceCharacter> DataList { get; set; } = [];
 }
-public class IntroductuceCharacter
-{
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
 
+public class IntroductuceCharacter : LocalizationItemBase
+{
     [JsonProperty("name")]
     public string? Name { get; set; } = string.Empty;
 
     [JsonProperty("desc")]
     public string? Desc { get; set; } = string.Empty;
-    
+
     [JsonProperty("sentence")]
     public string? Sentence { get; set; } = string.Empty;
 }
+
 public class UserBannerLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdNameDesc>
 {
     [JsonProperty("dataList")]
@@ -619,24 +570,21 @@ public class ThreadDungeonLocalizationFile : LocalizationFileBase, ILocalization
     public List<GenericIdName> DataList { get; set; } = [];
 }
 
-public class RailwayDungeonStationNameLocalizationFile : LocalizationFileBase, ILocalizationContainer<RailwayDungeonStationNameList>
+public class RailwayDungeonStationNameLocalizationFile : LocalizationFileBase,
+    ILocalizationContainer<RailwayDungeonStationNameList>
 {
     [JsonProperty("dataList")]
     public List<RailwayDungeonStationNameList> DataList { get; set; } = [];
 }
-public class RailwayDungeonStationNameList
+
+public class RailwayDungeonStationNameList : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
     [JsonProperty("nameList")]
-    public  List<RailwayDungeonStationNameList>? NameList { get; set; }
+    public List<RailwayDungeonStationNameList>? NameList { get; set; }
 }
 
-public class RailwayDungeonStationName
+public class RailwayDungeonStationName : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("content")]
     public string? Content { get; set; } = string.Empty;
 
@@ -649,6 +597,7 @@ public class RailwayDungeonBuffLocalizationFile : LocalizationFileBase, ILocaliz
     [JsonProperty("dataList")]
     public List<GenericIdContent> DataList { get; set; } = [];
 }
+
 public class DungeonNameLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdName>
 {
     [JsonProperty("dataList")]
@@ -661,11 +610,8 @@ public class MentalConditionLocalizationFile : LocalizationFileBase, ILocalizati
     public List<MentalCondition> DataList { get; set; } = [];
 }
 
-public class MentalCondition
+public class MentalCondition : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("add")]
     public string? Add { get; set; } = string.Empty;
 
@@ -691,11 +637,8 @@ public class PanicInfoLocalizationFile : LocalizationFileBase, ILocalizationCont
     public List<PanicInfo> DataList { get; set; } = [];
 }
 
-public class PanicInfo
+public class PanicInfo : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("panicName")]
     public string PanicName { get; set; } = string.Empty;
 
@@ -718,7 +661,8 @@ public class EgoGiftCategoryLocalizationFile : LocalizationFileBase, ILocalizati
     public List<GenericIdName> DataList { get; set; } = [];
 }
 
-public class MirrorDungeonEgoGiftLockedDescLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
+public class MirrorDungeonEgoGiftLockedDescLocalizationFile : LocalizationFileBase,
+    ILocalizationContainer<GenericIdContent>
 {
     [JsonProperty("dataList")]
     public List<GenericIdContent> DataList { get; set; } = [];
@@ -742,11 +686,8 @@ public class UnlockCodeLocalizationFile : LocalizationFileBase, ILocalizationCon
     public List<UnlockCode> DataList { get; set; } = [];
 }
 
-public class UnlockCode
+public class UnlockCode : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("openCondition")]
     public string? OpenCondition { get; set; } = string.Empty;
 }
@@ -757,13 +698,11 @@ public class ScenarioModelCodesLocalizationFile : LocalizationFileBase, ILocaliz
     public List<ScenarioModelCode> DataList { get; set; } = [];
 }
 
-public class ScenarioModelCode
+public class ScenarioModelCode : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
     [JsonProperty("name")]
     public string? Name { get; set; } = string.Empty;
+
     [JsonProperty("nickName")]
     public string? NickName { get; set; } = string.Empty;
 }
@@ -792,16 +731,14 @@ public class ProjectGSLessonNameLocalizationFile : LocalizationFileBase, ILocali
     public List<ProjectGSLessonName> DataList { get; set; } = [];
 }
 
-public class ProjectGSLessonName
+public class ProjectGSLessonName : LocalizationItemBase
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
     [JsonProperty("content")]
     public string? Content { get; set; }
+
     [JsonProperty("teacher")]
     public string? Teacher { get; set; }
 }
-
 
 public class ProjectGSComboNameLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {
