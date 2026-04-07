@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using Avalonia.Controls;
 using RainbusToolbox.ViewModels;
 using RainbusToolbox.Views.Misc;
-using Serilog;
 
 namespace RainbusToolbox.Models.Managers;
 
@@ -308,15 +307,9 @@ public class GithubManager
             new MediaTypeWithQualityHeaderValue("application/json"));
 
         var token = _dataManager.Settings.GitHubToken;
-        Log.Debug("Token: [{Token}]", token);
         http.DefaultRequestHeaders.UserAgent.ParseAdd("RainbusToolbox/1.0");
         http.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", token);
-
-        var responseT = await http.GetAsync("https://api.github.com/user");
-        Log.Debug(responseT.Headers.TryGetValues("X-OAuth-Scopes", out var scopes)
-            ? $"Token scopes: {string.Join(", ", scopes)}"
-            : "No X-OAuth-Scopes header — token may be a fine-grained PAT");
 
         var response = await http.GetAsync("https://api.github.com/user");
         if (!response.IsSuccessStatusCode)

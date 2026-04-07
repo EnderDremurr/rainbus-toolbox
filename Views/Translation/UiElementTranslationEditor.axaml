@@ -38,24 +38,17 @@
                     <Border Margin="72,54,114,195">
                         <ScrollViewer>
                             <StackPanel Margin="15">
-                                <!--  Section Title  -->
-                                <TextBlock
-                                    FontFamily="{StaticResource MikodacsFont}"
-                                    FontSize="18"
-                                    FontWeight="Bold"
-                                    Foreground="White"
-                                    HorizontalAlignment="Center"
-                                    Margin="0,0,0,10"
-                                    Text="Reference" />
-
-                                <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                                <StackPanel Margin="0,30,0,10" Orientation="Horizontal">
                                     <TextBox
+                                        Background="Transparent"
                                         Classes="invisible"
-                                        FontSize="18"
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
                                         Foreground="White"
-                                        IsReadOnly="True"
                                         Text="{Binding ReferenceItem.Content}"
-                                        TextWrapping="Wrap" />
+                                        TextWrapping="Wrap"
+                                        Width="650" />
                                 </StackPanel>
 
                             </StackPanel>
@@ -82,23 +75,17 @@
                     <Border Margin="72,54,114,195">
                         <ScrollViewer>
                             <StackPanel Margin="15">
-                                <!--  Section Title  -->
-                                <TextBlock
-                                    FontFamily="{StaticResource MikodacsFont}"
-                                    FontSize="18"
-                                    FontWeight="Bold"
-                                    Foreground="White"
-                                    HorizontalAlignment="Center"
-                                    Margin="0,0,0,10"
-                                    Text="Editor" />
-
-                                <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                                <StackPanel Margin="0,30,0,10" Orientation="Horizontal">
                                     <TextBox
+                                        Background="Transparent"
                                         Classes="invisible"
-                                        FontSize="18"
+                                        FontFamily="{StaticResource MikodacsFont}"
+                                        FontSize="28"
+                                        FontWeight="SemiBold"
                                         Foreground="White"
                                         Text="{Binding CurrentItem.Content}"
-                                        TextWrapping="Wrap" />
+                                        TextWrapping="Wrap"
+                                        Width="650" />
                                 </StackPanel>
 
                             </StackPanel>

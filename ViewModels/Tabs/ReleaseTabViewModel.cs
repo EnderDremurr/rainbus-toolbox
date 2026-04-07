@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 using MsBox.Avalonia;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Services;
+using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.ViewModels;
 
@@ -236,9 +237,9 @@ public partial class ReleaseTabViewModel : ObservableObject
 
             LoadingScreenViewModel.SetText("Готово!");
             // Success message
-            var successBox = MessageBoxManager.GetMessageBoxStandard(AppLang.SuccessTitle,
+            var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            await PopUpWindow.ShowAsync(parent!, "Успешно!",
                 string.Format(AppLang.ReleaseCreationSuccess, nextVersion));
-            await successBox.ShowAsync();
         }
         catch (Exception ex)
         {

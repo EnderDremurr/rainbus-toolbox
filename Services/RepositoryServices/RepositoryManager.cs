@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using RainbusToolbox.Models.Data;
 using RainbusToolbox.Utilities;
 using RainbusToolbox.Utilities.Data;
-using Serilog;
+using RainbusToolbox.ViewModels;
 using Version = System.Version;
 
 namespace RainbusToolbox.Models.Managers;
@@ -433,7 +433,7 @@ public class RepositoryManager
             }
 
             Log.Debug("Starting synchronization with origin...");
-
+            LoadingScreenViewModel.StartLoading("Синхронизация...");
             FetchFromOrigin();
             Log.Debug("Fetch completed.");
 
@@ -515,6 +515,10 @@ public class RepositoryManager
             _ = App.Current.HandleGlobalExceptionAsync(
                 new Exception($"Synchronization failed: {ex.Message}", ex)
             );
+        }
+        finally
+        {
+            LoadingScreenViewModel.FinishLoading();
         }
     }
 

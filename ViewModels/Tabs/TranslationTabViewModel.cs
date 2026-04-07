@@ -378,7 +378,8 @@ public partial class TranslationTabViewModel : ObservableObject
             new { Group = "Сюжет канто 6", Pattern = "S6*.json", Subfolder = "StoryData" },
             new { Group = "Сюжет канто 7", Pattern = "S7*.json", Subfolder = "StoryData" },
             new { Group = "Сюжет канто 8", Pattern = "S8*.json", Subfolder = "StoryData" },
-            new { Group = "Сюжет канто 9", Pattern = "S9*.json", Subfolder = "StoryData" }
+            new { Group = "Сюжет канто 9", Pattern = "S9*.json", Subfolder = "StoryData" },
+            new { Group = "Ачивки МД", Pattern = "UI_Mission*.json", Subfolder = "" }
         };
 
         foreach (var category in categories)
