@@ -11,26 +11,30 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <Grid ColumnDefinitions="*" RowDefinitions="8*,2*">
+    <Grid ColumnDefinitions="*" RowDefinitions="*,60">
 
         <!--  Battle hints list  -->
         <ScrollViewer
+            AllowAutoHide="False"
             Grid.Row="0"
             Margin="10"
+            VerticalScrollBarVisibility="Visible"
             x:Name="BattleHintsScrollViewer">
+
             <ItemsControl ItemsSource="{Binding ObservableDataList}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="data:GenericIdContent">
                         <Border
-                            Background="#1E1E1E"
-                            BorderBrush="#666666"
-                            BorderThickness="1"
+                            Background="#801E1E1E"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
                             CornerRadius="0"
                             Margin="0,0,0,10"
                             Padding="8">
                             <Grid VerticalAlignment="Center">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
@@ -42,32 +46,42 @@
                                     VerticalAlignment="Center">
                                     <TextBlock
                                         Classes="header"
-                                        FontSize="18"
-                                        Foreground="LightGray"
+                                        FontSize="24"
+                                        Foreground="Gold"
+                                        Margin="0,0,10,0"
                                         Text="{Binding Id}"
-                                        VerticalAlignment="Center" />
+                                        VerticalAlignment="Top" />
 
-                                    <!--  Display mode  -->
                                     <TextBlock
                                         FontSize="18"
                                         Foreground="White"
+                                        MaxWidth="1550"
                                         Text="{Binding Content}"
                                         TextWrapping="Wrap"
-                                        VerticalAlignment="Center"
-                                        Width="1700" />
+                                        VerticalAlignment="Center" />
 
                                 </StackPanel>
 
-
+                                <!--  Edit Button  -->
+                                <Button
+                                    Command="{Binding DataContext.UpdateHint, ElementName=Root}"
+                                    CommandParameter="{Binding Id}"
+                                    Content="✎"
+                                    Grid.Column="2"
+                                    Height="50"
+                                    Margin="0,0,10,0"
+                                    VerticalAlignment="Center"
+                                    Width="50" />
                                 <!--  Delete Button  -->
                                 <Button
                                     Command="{Binding DataContext.DeleteHint, ElementName=Root}"
                                     CommandParameter="{Binding Id}"
                                     Content="✖"
-                                    Grid.Column="2"
-                                    Height="40"
+                                    Grid.Column="3"
+                                    Height="50"
+                                    Margin="0,0,10,0"
                                     VerticalAlignment="Center"
-                                    Width="40" />
+                                    Width="50" />
                             </Grid>
                         </Border>
                     </DataTemplate>
@@ -75,27 +89,20 @@
             </ItemsControl>
         </ScrollViewer>
 
-        <!--  Input + button + radio row  -->
+        <!--  Create new hint button  -->
         <StackPanel
             Grid.Row="1"
-            Margin="10"
+            HorizontalAlignment="Center"
+            Margin="0,0,0,10"
             Orientation="Horizontal"
             Spacing="10">
-            <TextBox
-                AcceptsReturn="True"
-                Classes="framed"
-                Height="180"
-                Text="{Binding NewHintText, Mode=TwoWay}"
-                TextWrapping="Wrap"
-                VerticalAlignment="Center"
-                Width="900" />
 
             <Button
                 Command="{Binding AddHintCommand}"
                 Content="Добавить"
                 Height="60"
-                Width="150" />
-
+                HorizontalAlignment="Center"
+                Width="300" />
         </StackPanel>
     </Grid>
 </UserControl>

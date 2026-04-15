@@ -67,7 +67,7 @@ public class App : Application
             var clipboard = TopLevel.GetTopLevel(parent)?.Clipboard;
             var errorText = FormatExceptionText(exception);
 
-            await PopUpWindow.ShowAsync(parent, "Фатальная ошибка", errorText, false, "",
+            await PopUpWindow.ShowAsync(parent, "Фатальная ошибка", errorText, false, "", null,
                 new PopupButton
                 {
                     Label = "Copy Error",

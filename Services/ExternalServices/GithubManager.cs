@@ -78,6 +78,7 @@ public class GithubManager
             $"Проге нужен токен с GitHub.\nВведи этот код на открытой странице:\n\n{userCode}\n\nЗатем нажми ОК",
             false,
             "",
+            null,
             new PopupButton
             {
                 Label = "Скопировать код",

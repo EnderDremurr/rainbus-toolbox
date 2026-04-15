@@ -138,6 +138,7 @@ public class KeywordProcessingService(RepositoryManager repositoryManager)
                 $"Обнаружен новый кейворд {colorlessKeyword.Key}, укажи его цвет",
                 false,
                 "",
+                null,
                 new PopupButton
                 {
                     Label = "Дебафф (Красный)",

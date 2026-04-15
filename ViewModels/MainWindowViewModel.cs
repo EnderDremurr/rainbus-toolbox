@@ -175,7 +175,7 @@ public partial class MainWindowViewModel : ObservableObject
             "Создание коммита",
             "Гит обязательно требует хотя бы 1 символ как описание коммита",
             true,
-            "Описание",
+            "Описание", null,
             new PopupButton { Label = "Отмена", ResultValue = "cancel" },
             new PopupButton { Label = "Создать коммит", ResultValue = "ok" }
         );

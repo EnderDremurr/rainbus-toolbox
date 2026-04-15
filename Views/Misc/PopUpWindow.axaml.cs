@@ -25,6 +25,7 @@ public partial class PopUpWindow : Window
         string message,
         bool hasInput = false,
         string inputPlaceholder = "",
+        string? initialValue = null,
         params PopupButton[] buttons)
     {
         var popup = new PopUpWindow();
@@ -33,7 +34,8 @@ public partial class PopUpWindow : Window
             Title = title,
             Message = message,
             HasInput = hasInput,
-            InputPlaceholder = inputPlaceholder
+            InputPlaceholder = inputPlaceholder,
+            InputValue = initialValue ?? string.Empty
         };
 
         foreach (var btn in buttons)
@@ -58,7 +60,7 @@ public partial class PopUpWindow : Window
         string title,
         string message)
     {
-        return ShowAsync(parent, title, message, false, "",
+        return ShowAsync(parent, title, message, false, "", null,
             new PopupButton { Label = "OK", ResultValue = "ok" }
         );
     }

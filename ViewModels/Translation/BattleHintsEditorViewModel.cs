@@ -1,53 +1,58 @@
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using CommunityToolkit.Mvvm.ComponentModel;
+using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.Input;
-using Avalonia.Threading;
+using RainbusToolbox;
 using RainbusToolbox.Utilities.Data;
 using RainbusToolbox.ViewModels;
+using RainbusToolbox.Views.Misc;
 
-public partial class BattleHintsEditorViewModel : TranslationEditorViewModel<NormalBattleHintLocalizationFile, GenericIdContent>
+public partial class
+    BattleHintsEditorViewModel : TranslationEditorViewModel<NormalBattleHintLocalizationFile, GenericIdContent>
 {
-    [ObservableProperty] private string _newHintText = "";
-
-    // Observable collection bound to the UI
     public ObservableCollection<GenericIdContent> ObservableDataList { get; } = [];
 
     public override void LoadEditableFile(NormalBattleHintLocalizationFile file)
     {
         base.LoadEditableFile(file);
 
-        // Clear and populate the observable collection from the file's list
+
         ObservableDataList.Clear();
         foreach (var item in EditableFile?.DataList!)
             ObservableDataList.Add(item);
 
-        // Subscribe to changes in the observable collection if needed
-        ObservableDataList.CollectionChanged += (_, _) =>
-        {
-            // Keep the underlying list in sync for serialization
-            EditableFile.DataList = ObservableDataList.ToList();
-        };
+        ObservableDataList.CollectionChanged += (_, _) => { EditableFile.DataList = ObservableDataList.ToList(); };
     }
 
     [RelayCommand]
-    public void AddHint()
+    public async Task AddHint()
     {
-        if (string.IsNullOrWhiteSpace(NewHintText)) return;
+        var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
 
-        var nextId = ObservableDataList.Any() 
-            ? ObservableDataList.Max(h => int.Parse(h.Id)) + 1 
+        var vm = await PopUpWindow.ShowAsync(
+            parent!,
+            "Добавление нового хинта",
+            "Нужно ввести текст нового хинта",
+            true,
+            "Текст хинта", null,
+            new PopupButton { Label = "Отмена", ResultValue = "cancel" },
+            new PopupButton { Label = "Добавить", ResultValue = "ok" }
+        );
+
+        if (vm.Result != "ok" || string.IsNullOrWhiteSpace(vm.InputValue))
+            return;
+
+
+        var nextId = ObservableDataList.Any()
+            ? ObservableDataList.Max(h => int.Parse(h.Id)) + 1
             : 1;
 
         var newHint = new GenericIdContent
         {
             Id = nextId.ToString(),
-            Content = NewHintText
+            Content = vm.InputValue
         };
 
         ObservableDataList.Add(newHint);
-        NewHintText = string.Empty;
     }
 
     [RelayCommand]
@@ -58,10 +63,33 @@ public partial class BattleHintsEditorViewModel : TranslationEditorViewModel<Nor
             ObservableDataList.Remove(hint);
     }
 
-    public void UpdateHint(int id, string newContent)
+    [RelayCommand]
+    public async Task UpdateHint(int id)
     {
         var hint = ObservableDataList.FirstOrDefault(h => int.Parse(h.Id) == id);
-        if (hint != null)
-            hint.Content = newContent;
+        if (hint == null)
+            return;
+
+        var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+        var vm = await PopUpWindow.ShowAsync(
+            parent!,
+            "Изменение хинта",
+            "Здесь можно изменить текст",
+            true,
+            "Текст хинта",
+            hint.Content!,
+            new PopupButton { Label = "Отмена", ResultValue = "cancel" },
+            new PopupButton { Label = "Применить", ResultValue = "ok" }
+        );
+
+        if (vm.Result != "ok" || string.IsNullOrWhiteSpace(vm.InputValue))
+            return;
+
+        var index = ObservableDataList.IndexOf(hint);
+        if (index < 0)
+            return;
+
+        hint.Content = vm.InputValue;
+        ObservableDataList[index] = hint;
     }
 }
