@@ -379,6 +379,16 @@ public partial class TranslationTabViewModel : ObservableObject
             new { Group = "Сюжет канто 7", Pattern = "S7*.json", Subfolder = "StoryData" },
             new { Group = "Сюжет канто 8", Pattern = "S8*.json", Subfolder = "StoryData" },
             new { Group = "Сюжет канто 9", Pattern = "S9*.json", Subfolder = "StoryData" },
+            new { Group = "Интервало канто 3", Pattern = "E3*.json", Subfolder = "StoryData" },
+            new { Group = "Интервало канто 4", Pattern = "E4*.json", Subfolder = "StoryData" },
+            new { Group = "Интервало канто 5", Pattern = "E5*.json", Subfolder = "StoryData" },
+            new { Group = "Интервало канто 6", Pattern = "E6*.json", Subfolder = "StoryData" },
+            new { Group = "Интервало канто 7", Pattern = "E7*.json", Subfolder = "StoryData" },
+            new { Group = "Интервало канто 8", Pattern = "E8*.json", Subfolder = "StoryData" },
+            new { Group = "Интервало канто 8 (доп файлы)", Pattern = "ES*.json", Subfolder = "StoryData" },
+            new { Group = "Интервало канто 9", Pattern = "E9*.json", Subfolder = "StoryData" },
+
+
             new { Group = "Ачивки МД", Pattern = "UI_Mission*.json", Subfolder = "" }
         };
 

@@ -16,11 +16,11 @@
         <global:TextToFontSizeConverter x:Key="TextToFontSizeConverter" />
     </UserControl.Resources>
 
-    <Grid RowDefinitions="Auto,*,Auto,*,Auto">
+    <Grid RowDefinitions="*,Auto,*">
 
         <!--  Reference Section  -->
         <Border
-            Grid.Row="1"
+            Grid.Row="0"
             IsVisible="{Binding IsFileLoaded}"
             Margin="20,0,20,10">
             <Grid>
@@ -29,10 +29,12 @@
                     HorizontalAlignment="Stretch"
                     Margin="240,0,0,0"
                     Source="avares://RainbusToolbox/Assets/StoryBG.png" />
-                <Grid Margin="25,20,25,20">
+                <Grid Margin="20,40,20,10">
                     <TextBox
+                        Background="Transparent"
+                        BorderThickness="0"
                         Classes="invisible"
-                        FontSize="22"
+                        FontSize="24"
                         HorizontalAlignment="Stretch"
                         IsReadOnly="True"
                         Margin="430,60,300,40"
@@ -40,6 +42,8 @@
                         TextWrapping="Wrap"
                         VerticalAlignment="Stretch" />
                     <TextBox
+                        Background="Transparent"
+                        BorderThickness="0"
                         Classes="invisible"
                         HorizontalAlignment="Center"
                         IsReadOnly="True"
@@ -54,9 +58,11 @@
                             Width="450" />
                         <Grid
                             HorizontalAlignment="Center"
-                            Margin="0,15,0,15"
+                            Margin="0,25,0,15"
                             VerticalAlignment="Top">
                             <TextBox
+                                Background="Transparent"
+                                BorderThickness="0"
                                 Classes="invisible"
                                 FontFamily="{StaticResource MikodacsFont}"
                                 FontSize="{Binding DisplayTitleReference, Converter={StaticResource TextToFontSizeConverter}}"
@@ -66,6 +72,7 @@
                                 Margin="35,-13,0,0"
                                 MaxHeight="60"
                                 MaxWidth="250"
+                                RenderTransformOrigin="0.5,0.5"
                                 Text="{Binding DisplayTitleReference}"
                                 TextWrapping="NoWrap"
                                 VerticalAlignment="Top">
@@ -78,10 +85,13 @@
                                         Opacity="0.8" />
                                 </TextBox.Effect>
                                 <TextBox.RenderTransform>
-                                    <RotateTransform Angle="-6.9" />
+                                    <RotateTransform Angle="-6.7" />
                                 </TextBox.RenderTransform>
                             </TextBox>
+
                             <TextBox
+                                Background="Transparent"
+                                BorderThickness="0"
                                 Classes="invisible"
                                 FontFamily="{StaticResource MikodacsFont}"
                                 FontSize="{Binding DisplayTellerReference, Converter={StaticResource TextToFontSizeConverter}}"
@@ -90,6 +100,7 @@
                                 Margin="130,55,0,0"
                                 MaxHeight="80"
                                 MaxWidth="300"
+                                RenderTransformOrigin="0.5,0.5"
                                 Text="{Binding DisplayTellerReference}"
                                 TextWrapping="NoWrap"
                                 VerticalAlignment="Top">
@@ -102,7 +113,7 @@
                                         Opacity="0.8" />
                                 </TextBox.Effect>
                                 <TextBox.RenderTransform>
-                                    <RotateTransform Angle="-6.5" />
+                                    <RotateTransform Angle="-6.4" />
                                 </TextBox.RenderTransform>
                             </TextBox>
                         </Grid>
@@ -111,16 +122,25 @@
             </Grid>
         </Border>
 
-        <!--  Separator  -->
-        <Border
-            Background="Transparent"
-            Grid.Row="2"
-            Height="3"
-            Margin="30,5,30,5" />
+        <!--  Navigation  -->
+        <Grid Grid.Row="1" Margin="20,0,20,0">
+            <Border
+                Background="Transparent"
+                Height="3"
+                HorizontalAlignment="Stretch"
+                Margin="30,5,30,5"
+                VerticalAlignment="Center" />
+            <StackPanel
+                HorizontalAlignment="Center"
+                Orientation="Horizontal"
+                VerticalAlignment="Center">
+                <misc:NavigationBar />
+            </StackPanel>
+        </Grid>
 
         <!--  Editor Section  -->
         <Border
-            Grid.Row="3"
+            Grid.Row="2"
             IsVisible="{Binding IsFileLoaded}"
             Margin="20,10,20,15">
             <Grid>
@@ -129,13 +149,13 @@
                     HorizontalAlignment="Stretch"
                     Margin="240,0,0,0"
                     Source="avares://RainbusToolbox/Assets/StoryBG.png" />
-                <Grid Margin="20,10,20,10">
+                <Grid Margin="20,40,20,10">
                     <TextBox
                         AcceptsReturn="True"
                         Background="Transparent"
                         BorderThickness="0"
                         Classes="invisible"
-                        FontSize="22"
+                        FontSize="24"
                         HorizontalAlignment="Stretch"
                         Margin="430,60,300,40"
                         Text="{Binding CurrentItem.Content, Mode=TwoWay}"
@@ -157,7 +177,7 @@
                             Width="450" />
                         <Grid
                             HorizontalAlignment="Center"
-                            Margin="0,15,0,15"
+                            Margin="0,25,0,15"
                             VerticalAlignment="Top">
                             <TextBox
                                 Background="Transparent"
@@ -171,6 +191,7 @@
                                 Margin="35,-13,0,0"
                                 MaxHeight="60"
                                 MaxWidth="250"
+                                RenderTransformOrigin="0.5,0.5"
                                 Text="{Binding DisplayTitle, Mode=TwoWay}"
                                 TextWrapping="NoWrap"
                                 VerticalAlignment="Top">
@@ -183,9 +204,10 @@
                                         Opacity="0.8" />
                                 </TextBox.Effect>
                                 <TextBox.RenderTransform>
-                                    <RotateTransform Angle="-6.9" />
+                                    <RotateTransform Angle="-6.7" />
                                 </TextBox.RenderTransform>
                             </TextBox>
+
                             <TextBox
                                 Background="Transparent"
                                 BorderThickness="0"
@@ -197,6 +219,7 @@
                                 Margin="130,55,0,0"
                                 MaxHeight="80"
                                 MaxWidth="300"
+                                RenderTransformOrigin="0.5,0.5"
                                 Text="{Binding DisplayTeller, Mode=TwoWay}"
                                 TextWrapping="NoWrap"
                                 VerticalAlignment="Top">
@@ -209,7 +232,7 @@
                                         Opacity="0.8" />
                                 </TextBox.Effect>
                                 <TextBox.RenderTransform>
-                                    <RotateTransform Angle="-6.5" />
+                                    <RotateTransform Angle="-6.4" />
                                 </TextBox.RenderTransform>
                             </TextBox>
                         </Grid>
@@ -217,10 +240,5 @@
                 </Grid>
             </Grid>
         </Border>
-
-        <!--  Navigation  -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <misc:NavigationBar />
-        </StackPanel>
     </Grid>
 </UserControl>
