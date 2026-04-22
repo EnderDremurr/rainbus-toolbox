@@ -7,6 +7,7 @@
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
         <PackageId>RainbusToolbox</PackageId>
+        <ApplicationIcon>Assets\LogoICO.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>

@@ -1,5 +1,6 @@
 <Window
     CanResize="True"
+    Icon="avares://RainbusToolbox/Assets/LogoICO.ico"
     MinHeight="540"
     MinWidth="960"
     SystemDecorations="None"
