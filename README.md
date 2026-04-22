@@ -20,7 +20,7 @@ Rainbus Toolbox - кроссплатформенная альтернатива 
 - [Limbus Localization UI](https://github.com/x1bViolet/Limbus-Localization-UI)
 - [LC Localization Controls](https://github.com/x1bViolet/LC-Localization-Controls)
 
-# ВАЖНО!!! Это приложение все ещё в ранней стадии разработки, если вам нужен стабильный редактор используйте софт по ссылкам выше
+# ВАЖНО!!! Это приложение пока что может работать достаточно нестабильно, если вам нужен редактор, что не сломается - используйте софт по ссылкам выше
 
 ---
 
@@ -92,7 +92,7 @@ Rainbus Toolbox - кроссплатформенная альтернатива 
 
 ## Обратная связь и вклад
 
-Если вы наткнулись на баг, есть идеи или хотите что-то добавить/изменить — [открывайте Issue](https://github.com/enderdremurr/rainbus-toolbox/issues) или создавайте Pull Request. (Можно по мелочи)
+Если вы наткнулись на баг, есть идеи или хотите что-то добавить/изменить - [открывайте Issue](https://github.com/enderdremurr/rainbus-toolbox/issues) или создавайте Pull Request. (Можно по мелочи)
 
 ---
 
