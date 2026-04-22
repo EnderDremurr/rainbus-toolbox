@@ -1,5 +1,6 @@
-<img width="1920" height="1080" alt="toolboxLogoBig" src="https://github.com/user-attachments/assets/d4543b40-d780-4ad2-815f-016e4b1141d3" />
-
+<a href="https://github.com/Let-It-Rain/RCR-LCB/">
+<img width="1920" height="1080" src="https://github.com/EnderDremurr/rainbus-toolbox/blob/main/Assets/ReadmeLogo.png" />
+</a>
 
 [![Latest Release](https://img.shields.io/github/v/release/enderdremurr/rainbus-toolbox?color=blue)](https://github.com/enderdremurr/rainbus-toolbox/releases)
 [![Downloads](https://img.shields.io/github/downloads/enderdremurr/rainbus-toolbox/total?color=green)](https://github.com/enderdremurr/rainbus-toolbox/releases)
