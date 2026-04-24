@@ -8,7 +8,8 @@ public class FileShortcut
     public string FullPath { get; set; }
     public string Desc { get; set; }
     public bool DoesExist { get; set; }
-    public ICommand OpenCommand { get; set; } 
-    
+    public ICommand OpenCommand { get; set; }
+
+    public string Type { get; set; } = "Разное";
     public string Group { get; set; } = "Прочее";
 }

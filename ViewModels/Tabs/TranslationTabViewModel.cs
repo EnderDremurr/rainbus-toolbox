@@ -67,8 +67,23 @@ public partial class TranslationTabViewModel : ObservableObject
         private set => SetProperty(ref _fileShortcuts, value);
     }
 
-    public IEnumerable<IGrouping<string, FileShortcut>> GroupedShortcuts =>
-        _fileShortcuts?.GroupBy(s => s.Group) ?? [];
+    public IEnumerable<ShortcutTypeGroup> GroupedShortcuts =>
+        _fileShortcuts?
+            .GroupBy(s => string.IsNullOrWhiteSpace(s.Type) ? "Разное" : s.Type)
+            .Select(typeGroup => new ShortcutTypeGroup
+            {
+                Name = typeGroup.Key,
+                Groups = typeGroup
+                    .GroupBy(s => string.IsNullOrWhiteSpace(s.Group) ? "Общее" : s.Group)
+                    .Select(group => new ShortcutFolderGroup
+                    {
+                        Name = group.Key,
+                        Shortcuts = group.OrderBy(s => s.Alias)
+                    })
+                    .OrderBy(g => g.Name)
+            })
+            .OrderBy(t => t.Name)
+        ?? Enumerable.Empty<ShortcutTypeGroup>();
 
     [RelayCommand]
     public async Task SelectFile()
@@ -167,7 +182,6 @@ public partial class TranslationTabViewModel : ObservableObject
         CurrentEditor?.AskEditorToSave(_repositoryManager);
     }
 
-
     private async Task InitShortcuts()
     {
         Log.Debug(AppLang.TranslationTabViewModel_InitShortcuts_Getting_root);
@@ -231,165 +245,193 @@ public partial class TranslationTabViewModel : ObservableObject
             new()
             {
                 Alias = "Старые ЭГО", FullPath = Path.Combine(root, "Skills_Ego.json"),
-                Desc = "эго, что были добавлены в игру давно, все грешники в одном файле", Group = "ЭГО"
+                Type = "Скиллы", Desc = "эго, что были добавлены в игру давно, все грешники в одном файле",
+                Group = "ЭГО"
             },
             new()
             {
                 Alias = "Эго И Сана", FullPath = Path.Combine(root, "Skills_Ego_Personality-01.json"), Desc = "-",
-                Group = "ЭГО"
+                Type = "Скиллы", Group = "ЭГО"
             },
             new()
             {
                 Alias = "Эго Фауст", FullPath = Path.Combine(root, "Skills_Ego_Personality-02.json"), Desc = "-",
-                Group = "ЭГО"
+                Type = "Скиллы", Group = "ЭГО"
             },
             new()
             {
                 Alias = "Эго Дон", FullPath = Path.Combine(root, "Skills_Ego_Personality-03.json"), Desc = "-",
-                Group = "ЭГО"
+                Type = "Скиллы", Group = "ЭГО"
             },
             new()
             {
                 Alias = "Эго Решу", FullPath = Path.Combine(root, "Skills_Ego_Personality-04.json"), Desc = "-",
-                Group = "ЭГО"
+                Type = "Скиллы", Group = "ЭГО"
             },
             new()
             {
                 Alias = "Эго Мерсо", FullPath = Path.Combine(root, "Skills_Ego_Personality-05.json"), Desc = "-",
-                Group = "ЭГО"
+                Type = "Скиллы", Group = "ЭГО"
             },
             new()
             {
                 Alias = "Эго Хонлу", FullPath = Path.Combine(root, "Skills_Ego_Personality-06.json"), Desc = "-",
-                Group = "ЭГО"
+                Type = "Скиллы", Group = "ЭГО"
             },
             new()
             {
                 Alias = "Эго Хитклифа", FullPath = Path.Combine(root, "Skills_Ego_Personality-07.json"), Desc = "-",
-                Group = "ЭГО"
+                Type = "Скиллы", Group = "ЭГО"
             },
             new()
             {
                 Alias = "Эго Ишмы", FullPath = Path.Combine(root, "Skills_Ego_Personality-08.json"), Desc = "-",
-                Group = "ЭГО"
+                Type = "Скиллы", Group = "ЭГО"
             },
             new()
             {
                 Alias = "Эго Роди", FullPath = Path.Combine(root, "Skills_Ego_Personality-09.json"), Desc = "-",
-                Group = "ЭГО"
+                Type = "Скиллы", Group = "ЭГО"
             },
             new()
             {
                 Alias = "Эго Синклера", FullPath = Path.Combine(root, "Skills_Ego_Personality-10.json"), Desc = "-",
-                Group = "ЭГО"
+                Type = "Скиллы", Group = "ЭГО"
             },
             new()
             {
                 Alias = "Эго Отис", FullPath = Path.Combine(root, "Skills_Ego_Personality-11.json"), Desc = "-",
-                Group = "ЭГО"
+                Type = "Скиллы", Group = "ЭГО"
             },
             new()
             {
                 Alias = "Эго Грегора", FullPath = Path.Combine(root, "Skills_Ego_Personality-12.json"), Desc = "-",
-                Group = "ЭГО"
+                Type = "Скиллы", Group = "ЭГО"
             },
             new()
             {
-                Alias = "Пассивки ЭГО", FullPath = Path.Combine(root, "Passive_Ego.json"), Desc = "-", Group = "ЭГО"
+                Alias = "Пассивки ЭГО", Type = "Скиллы", FullPath = Path.Combine(root, "Passive_Ego.json"), Desc = "-",
+                Group = "ЭГО"
             },
 
             new()
             {
                 Alias = "Скиллы айдишек И Сана", FullPath = Path.Combine(root, "Skills_personality-01.json"),
-                Desc = "-", Group = "Скиллы айдишек"
+                Type = "Скиллы", Desc = "-", Group = "Скиллы айдишек"
             },
             new()
             {
                 Alias = "Скиллы айдишек Фауст", FullPath = Path.Combine(root, "Skills_personality-02.json"), Desc = "-",
-                Group = "Скиллы айдишек"
+                Type = "Скиллы", Group = "Скиллы айдишек"
             },
             new()
             {
                 Alias = "Скиллы айдишек Дон", FullPath = Path.Combine(root, "Skills_personality-03.json"), Desc = "-",
-                Group = "Скиллы айдишек"
+                Type = "Скиллы", Group = "Скиллы айдишек"
             },
             new()
             {
                 Alias = "Скиллы айдишек Решу", FullPath = Path.Combine(root, "Skills_personality-04.json"), Desc = "-",
-                Group = "Скиллы айдишек"
+                Type = "Скиллы", Group = "Скиллы айдишек"
             },
             new()
             {
                 Alias = "Скиллы айдишек Мерсо", FullPath = Path.Combine(root, "Skills_personality-05.json"), Desc = "-",
-                Group = "Скиллы айдишек"
+                Type = "Скиллы", Group = "Скиллы айдишек"
             },
             new()
             {
                 Alias = "Скиллы айдишек Хонлу", FullPath = Path.Combine(root, "Skills_personality-06.json"), Desc = "-",
-                Group = "Скиллы айдишек"
+                Type = "Скиллы", Group = "Скиллы айдишек"
             },
             new()
             {
                 Alias = "Скиллы айдишек Хитклифа", FullPath = Path.Combine(root, "Skills_personality-07.json"),
-                Desc = "-", Group = "Скиллы айдишек"
+                Type = "Скиллы", Desc = "-", Group = "Скиллы айдишек"
             },
             new()
             {
                 Alias = "Скиллы айдишек Ишмы", FullPath = Path.Combine(root, "Skills_personality-08.json"), Desc = "-",
-                Group = "Скиллы айдишек"
+                Type = "Скиллы", Group = "Скиллы айдишек"
             },
             new()
             {
                 Alias = "Скиллы айдишек Роди", FullPath = Path.Combine(root, "Skills_personality-09.json"), Desc = "-",
-                Group = "Скиллы айдишек"
+                Type = "Скиллы", Group = "Скиллы айдишек"
             },
             new()
             {
                 Alias = "Скиллы айдишек Синклера", FullPath = Path.Combine(root, "Skills_personality-10.json"),
-                Desc = "-", Group = "Скиллы айдишек"
+                Type = "Скиллы", Desc = "-", Group = "Скиллы айдишек"
             },
             new()
             {
                 Alias = "Скиллы айдишек Отис", FullPath = Path.Combine(root, "Skills_personality-11.json"), Desc = "-",
-                Group = "Скиллы айдишек"
+                Type = "Скиллы", Group = "Скиллы айдишек"
             },
             new()
             {
                 Alias = "Скиллы айдишек Грегора", FullPath = Path.Combine(root, "Skills_personality-12.json"),
-                Desc = "-", Group = "Скиллы айдишек"
+                Type = "Скиллы", Desc = "-", Group = "Скиллы айдишек"
             },
             new()
             {
                 Alias = "Пассивки скиллов", FullPath = Path.Combine(root, "Passives.json"), Desc = "-",
-                Group = "Скиллы айдишек"
+                Type = "Скиллы", Group = "Скиллы айдишек"
             }
         };
 
         var categories = new[]
         {
-            new { Group = "Гифты", Pattern = "EGOgift_*.json", Subfolder = "" },
-            new { Group = "Анонсеры", Pattern = "*.json", Subfolder = "BattleAnnouncerDlg" },
-            new { Group = "Кейворды", Pattern = "BattleKeywords*.json", Subfolder = "" },
-            new { Group = "Сюжет канто 1", Pattern = "S1*.json", Subfolder = "StoryData" },
-            new { Group = "Сюжет канто 2", Pattern = "S2*.json", Subfolder = "StoryData" },
-            new { Group = "Сюжет канто 3", Pattern = "S3*.json", Subfolder = "StoryData" },
-            new { Group = "Сюжет канто 4", Pattern = "S4*.json", Subfolder = "StoryData" },
-            new { Group = "Сюжет канто 5", Pattern = "S5*.json", Subfolder = "StoryData" },
-            new { Group = "Сюжет канто 6", Pattern = "S6*.json", Subfolder = "StoryData" },
-            new { Group = "Сюжет канто 7", Pattern = "S7*.json", Subfolder = "StoryData" },
-            new { Group = "Сюжет канто 8", Pattern = "S8*.json", Subfolder = "StoryData" },
-            new { Group = "Сюжет канто 9", Pattern = "S9*.json", Subfolder = "StoryData" },
-            new { Group = "Интервало канто 3", Pattern = "E3*.json", Subfolder = "StoryData" },
-            new { Group = "Интервало канто 4", Pattern = "E4*.json", Subfolder = "StoryData" },
-            new { Group = "Интервало канто 5", Pattern = "E5*.json", Subfolder = "StoryData" },
-            new { Group = "Интервало канто 6", Pattern = "E6*.json", Subfolder = "StoryData" },
-            new { Group = "Интервало канто 7", Pattern = "E7*.json", Subfolder = "StoryData" },
-            new { Group = "Интервало канто 8", Pattern = "E8*.json", Subfolder = "StoryData" },
-            new { Group = "Интервало канто 8 (доп файлы)", Pattern = "ES*.json", Subfolder = "StoryData" },
-            new { Group = "Интервало канто 9", Pattern = "E9*.json", Subfolder = "StoryData" },
+            new { Type = "Разное", Group = "Гифты", Pattern = "EGOgift_*.json", Subfolder = "" },
+            new { Type = "Разное", Group = "Анонсеры", Pattern = "*.json", Subfolder = "BattleAnnouncerDlg" },
+            new { Type = "Разное", Group = "Фразы айдишек", Pattern = "*.json", Subfolder = "PersonalityVoiceDlg" },
+            new { Type = "Разное", Group = "Кейворды", Pattern = "BattleKeywords*.json", Subfolder = "" },
+            new { Type = "Сюжет канто", Group = "Сюжет канто 1", Pattern = "S1*.json", Subfolder = "StoryData" },
+            new { Type = "Сюжет канто", Group = "Сюжет канто 2", Pattern = "S2*.json", Subfolder = "StoryData" },
+            new { Type = "Сюжет канто", Group = "Сюжет канто 3", Pattern = "S3*.json", Subfolder = "StoryData" },
+            new { Type = "Сюжет канто", Group = "Сюжет канто 4", Pattern = "S4*.json", Subfolder = "StoryData" },
+            new { Type = "Сюжет канто", Group = "Сюжет канто 5", Pattern = "S5*.json", Subfolder = "StoryData" },
+            new { Type = "Сюжет канто", Group = "Сюжет канто 6", Pattern = "S6*.json", Subfolder = "StoryData" },
+            new { Type = "Сюжет канто", Group = "Сюжет канто 7", Pattern = "S7*.json", Subfolder = "StoryData" },
+            new { Type = "Сюжет канто", Group = "Сюжет канто 8", Pattern = "S8*.json", Subfolder = "StoryData" },
+            new { Type = "Сюжет канто", Group = "Сюжет канто 9", Pattern = "S9*.json", Subfolder = "StoryData" },
+            new
+            {
+                Type = "Сюжет интервало", Group = "Интервало канто 3", Pattern = "E3*.json", Subfolder = "StoryData"
+            },
+            new
+            {
+                Type = "Сюжет интервало", Group = "Интервало канто 4", Pattern = "E4*.json", Subfolder = "StoryData"
+            },
+            new
+            {
+                Type = "Сюжет интервало", Group = "Интервало канто 5", Pattern = "E5*.json", Subfolder = "StoryData"
+            },
+            new
+            {
+                Type = "Сюжет интервало", Group = "Интервало канто 6", Pattern = "E6*.json", Subfolder = "StoryData"
+            },
+            new
+            {
+                Type = "Сюжет интервало", Group = "Интервало канто 7", Pattern = "E7*.json", Subfolder = "StoryData"
+            },
+            new
+            {
+                Type = "Сюжет интервало", Group = "Интервало канто 8", Pattern = "E8*.json", Subfolder = "StoryData"
+            },
+            new
+            {
+                Type = "Сюжет интервало", Group = "Интервало канто 8 (доп файлы)", Pattern = "ES*.json",
+                Subfolder = "StoryData"
+            },
+            new
+            {
+                Type = "Сюжет интервало", Group = "Интервало канто 9", Pattern = "E9*.json", Subfolder = "StoryData"
+            },
 
 
-            new { Group = "Ачивки МД", Pattern = "UI_Mission*.json", Subfolder = "" }
+            new { Type = "Разное", Group = "Ачивки МД", Pattern = "UI_Mission*.json", Subfolder = "" }
         };
 
         foreach (var category in categories)
@@ -404,7 +446,8 @@ public partial class TranslationTabViewModel : ObservableObject
                     Alias = Path.GetFileNameWithoutExtension(file),
                     FullPath = file,
                     Desc = "-",
-                    Group = category.Group
+                    Group = category.Group,
+                    Type = category.Type
                 });
             fileShortcuts = new ObservableCollection<FileShortcut>(fileShortcuts.OrderBy(f => f.Alias));
         }
@@ -417,8 +460,7 @@ public partial class TranslationTabViewModel : ObservableObject
 
         Log.Debug(AppLang.TranslationTabViewModel_InitShortcuts_Created__0__shortcuts, fileShortcuts.Count);
 
-        _fileShortcuts = fileShortcuts;
-        OnPropertyChanged(nameof(FileShortcuts));
+        FileShortcuts = fileShortcuts;
         OnPropertyChanged(nameof(GroupedShortcuts));
     }
 
@@ -443,6 +485,22 @@ public partial class TranslationTabViewModel : ObservableObject
     public void OnTabOpened()
     {
         _discordRpcService.SetState("Готовится делать перевоз");
+    }
+
+    #endregion
+
+    #region Data types for shortcut dogshit
+
+    public class ShortcutTypeGroup
+    {
+        public string Name { get; set; } = "";
+        public IEnumerable<ShortcutFolderGroup> Groups { get; set; } = [];
+    }
+
+    public class ShortcutFolderGroup
+    {
+        public string Name { get; set; } = "";
+        public IEnumerable<FileShortcut> Shortcuts { get; set; } = [];
     }
 
     #endregion
