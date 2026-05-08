@@ -47,6 +47,7 @@
                 Classes="framed"
                 Grid.Column="1"
                 Grid.Row="1"
+                MaxLength="1800"
                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 SelectionBrush="#44FFFFFF"

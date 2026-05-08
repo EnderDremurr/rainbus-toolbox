@@ -5,7 +5,6 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MsBox.Avalonia;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Services;
 using RainbusToolbox.Views.Misc;
@@ -170,9 +169,17 @@ public partial class ReleaseTabViewModel : ObservableObject
     {
         if (string.IsNullOrWhiteSpace(_dataManager.Settings.GitHubToken))
         {
-            var messageBox = MessageBoxManager.GetMessageBoxStandard(AppLang.ErrorTitle,
-                AppLang.NoGithubLogin);
-            await messageBox.ShowAsync();
+            var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            await PopUpWindow.ShowAsync(parent!, "Ошибка!",
+                "Для создания релиза необходимо залогиниться в аккаунт гитхаб");
+            return;
+        }
+
+        if (EditorText.Length > 1800)
+        {
+            var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            await PopUpWindow.ShowAsync(parent!, "Ошибка!",
+                $"Длина описания не должна составлять больше 1800 символов. Сейчас символов - {EditorText.Length}");
             return;
         }
 
