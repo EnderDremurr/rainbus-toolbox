@@ -33,7 +33,7 @@
                         StretchDirection="Both"
                         VerticalAlignment="Stretch" />
 
-                    <Border Margin="72,54,114,195">
+                    <Border Margin="72,80,114,220">
                         <ScrollViewer>
                             <StackPanel Margin="15">
 
@@ -48,7 +48,7 @@
                                     HorizontalAlignment="Left"
                                     IsEnabled="{Binding HasAnAbnormalityName}"
                                     IsVisible="{Binding HasAnAbnormalityName}"
-                                    Margin="0,0,0,10"
+                                    Margin="0,0,0,0"
                                     Text="{Binding ReferenceLevel.AbnormalityName}"
                                     TextWrapping="Wrap" />
 
@@ -161,7 +161,7 @@
                         StretchDirection="Both"
                         VerticalAlignment="Stretch" />
 
-                    <Border Margin="72,54,114,195">
+                    <Border Margin="72,80,114,220">
                         <ScrollViewer>
                             <StackPanel Margin="15">
 
@@ -176,7 +176,7 @@
                                     HorizontalAlignment="Left"
                                     IsEnabled="{Binding HasAnAbnormalityName}"
                                     IsVisible="{Binding HasAnAbnormalityName}"
-                                    Margin="0,0,0,10"
+                                    Margin="0,0,0,0"
                                     Text="{Binding AbnormalityName, Mode=TwoWay}"
                                     TextWrapping="Wrap" />
 
@@ -296,7 +296,7 @@
             <StackPanel Orientation="Horizontal">
                 <Button
                     Click="OnPreviousLevelClick"
-                    Content="+ Уровень"
+                    Content="- Уровень"
                     Height="60"
                     IsEnabled="{Binding CanGoPreviousLevel}"
                     Margin="0,0,10,0"
@@ -318,7 +318,7 @@
                 </Border>
                 <Button
                     Click="OnNextLevelClick"
-                    Content="- Уровень"
+                    Content="+ Уровень"
                     Height="60"
                     IsEnabled="{Binding CanGoNextLevel}"
                     Margin="10,0,0,0"
