@@ -398,6 +398,10 @@ public partial class TranslationTabViewModel : ObservableObject
             new { Type = "Сюжет канто", Group = "Сюжет канто 9", Pattern = "S9*.json", Subfolder = "StoryData" },
             new
             {
+                Type = "Сюжет интервало", Group = "Пролог", Pattern = "S0*.json", Subfolder = "StoryData"
+            },
+            new
+            {
                 Type = "Сюжет интервало", Group = "Интервало канто 3", Pattern = "E3*.json", Subfolder = "StoryData"
             },
             new
@@ -430,8 +434,13 @@ public partial class TranslationTabViewModel : ObservableObject
                 Type = "Сюжет интервало", Group = "Интервало канто 9", Pattern = "E9*.json", Subfolder = "StoryData"
             },
 
+            new
+            {
+                Type = "Разное", Group = "Реплики ЭГО", Pattern = "*.json", Subfolder = "EGOVoiceDig"
+            },
 
-            new { Type = "Разное", Group = "Ачивки МД", Pattern = "UI_Mission*.json", Subfolder = "" }
+            new { Type = "Разное", Group = "Ачивки МД", Pattern = "UI_Mission*.json", Subfolder = "" },
+            new { Type = "Разное", Group = "Дневник Данте", Pattern = "StoryTheaterDanteNote*.json", Subfolder = "" }
         };
 
         foreach (var category in categories)
