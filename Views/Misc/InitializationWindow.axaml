@@ -18,7 +18,7 @@
         <!--  Background  -->
         <Image
             HorizontalAlignment="Center"
-            Source="/Assets/Init.png"
+            Source="/Assets/Backgrounds/Init.png"
             Stretch="UniformToFill"
             VerticalAlignment="Center" />
 

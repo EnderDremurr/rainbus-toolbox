@@ -28,7 +28,7 @@
                     <!--  Background Image  -->
                     <Image
                         HorizontalAlignment="Stretch"
-                        Source="avares://RainbusToolbox/Assets/SkillBG.png"
+                        Source="/Assets/Backgrounds/SkillBG.png"
                         Stretch="Uniform"
                         StretchDirection="Both"
                         VerticalAlignment="Stretch" />
@@ -112,7 +112,7 @@
                     <!--  Background Image  -->
                     <Image
                         HorizontalAlignment="Stretch"
-                        Source="avares://RainbusToolbox/Assets/SkillBG.png"
+                        Source="/Assets/Backgrounds/SkillBG.png"
                         Stretch="Uniform"
                         StretchDirection="Both"
                         VerticalAlignment="Stretch" />

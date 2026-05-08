@@ -46,54 +46,54 @@
                         <Image
                             Grid.Column="1"
                             Grid.Row="1"
-                            Source="/Assets/LoadingBarTrackCenter.png"
+                            Source="/Assets/NineSlices/LoadingBarTrackCenter.png"
                             Stretch="Fill" />
                         <!--  Corners  -->
                         <Image
                             Grid.Column="0"
                             Grid.Row="0"
                             Name="TopLeft"
-                            Source="/Assets/LoadingBarTrackTopLeft.png" />
+                            Source="/Assets/NineSlices/LoadingBarTrackTopLeft.png" />
                         <Image
                             Grid.Column="2"
                             Grid.Row="0"
                             Name="TopRight"
-                            Source="/Assets/LoadingBarTrackTopRight.png" />
+                            Source="/Assets/NineSlices/LoadingBarTrackTopRight.png" />
                         <Image
                             Grid.Column="0"
                             Grid.Row="2"
                             Name="BottomLeft"
-                            Source="/Assets/LoadingBarTrackBottomLeft.png" />
+                            Source="/Assets/NineSlices/LoadingBarTrackBottomLeft.png" />
                         <Image
                             Grid.Column="2"
                             Grid.Row="2"
                             Name="BottomRight"
-                            Source="/Assets/LoadingBarTrackBottomRight.png" />
+                            Source="/Assets/NineSlices/LoadingBarTrackBottomRight.png" />
 
                         <!--  Edges  -->
                         <Image
                             Grid.Column="1"
                             Grid.Row="0"
                             Name="Top"
-                            Source="/Assets/LoadingBarTrackTop.png"
+                            Source="/Assets/NineSlices/LoadingBarTrackTop.png"
                             Stretch="Fill" />
                         <Image
                             Grid.Column="1"
                             Grid.Row="2"
                             Name="Bottom"
-                            Source="/Assets/LoadingBarTrackBottom.png"
+                            Source="/Assets/NineSlices/LoadingBarTrackBottom.png"
                             Stretch="Fill" />
                         <Image
                             Grid.Column="0"
                             Grid.Row="1"
                             Name="Left"
-                            Source="/Assets/LoadingBarTrackLeft.png"
+                            Source="/Assets/NineSlices/LoadingBarTrackLeft.png"
                             Stretch="Fill" />
                         <Image
                             Grid.Column="2"
                             Grid.Row="1"
                             Name="Right"
-                            Source="/Assets/LoadingBarTrackRight.png"
+                            Source="/Assets/NineSlices/LoadingBarTrackRight.png"
                             Stretch="Fill" />
 
                     </Grid>

@@ -29,7 +29,7 @@
                     <Image
                         Height="741"
                         HorizontalAlignment="Stretch"
-                        Source="avares://RainbusToolbox/Assets/PopUpBackground.png"
+                        Source="/Assets/Backgrounds/PopUpBackground.png"
                         Stretch="Uniform"
                         StretchDirection="Both"
                         VerticalAlignment="Stretch" />
@@ -112,7 +112,7 @@
                     <Image
                         Height="741"
                         HorizontalAlignment="Stretch"
-                        Source="avares://RainbusToolbox/Assets/PopUpBackground.png"
+                        Source="/Assets/Backgrounds/PopUpBackground.png"
                         Stretch="Uniform"
                         StretchDirection="Both"
                         VerticalAlignment="Stretch" />

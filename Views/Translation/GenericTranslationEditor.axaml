@@ -5,10 +5,7 @@
     x:Class="RainbusToolbox.Views.Translation.GenericTranslationEditor"
     x:DataType="viewModels:GenericTranslationEditorViewModel"
     xmlns="https://github.com/avaloniaui"
-    xmlns:avaloniaEdit="https://github.com/avaloniaui/avaloniaedit"
-    xmlns:behaviors="clr-namespace:RainbusToolbox.Behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:RainbusToolbox.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">

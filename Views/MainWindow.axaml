@@ -20,7 +20,7 @@
         <!--  Background  -->
         <Image
             HorizontalAlignment="Stretch"
-            Source="avares://RainbusToolbox/Assets/ReleaseBG.png"
+            Source="/Assets/Backgrounds/ReleaseBG.png"
             Stretch="UniformToFill"
             VerticalAlignment="Stretch"
             ZIndex="0"

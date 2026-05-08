@@ -28,7 +28,7 @@
                     Height="250"
                     HorizontalAlignment="Stretch"
                     Margin="240,0,0,0"
-                    Source="avares://RainbusToolbox/Assets/StoryBG.png" />
+                    Source="/Assets/Backgrounds/StoryBG.png" />
                 <Grid Margin="20,40,20,10">
                     <TextBox
                         Background="Transparent"
@@ -54,7 +54,7 @@
                         <Image
                             Height="225"
                             Margin="0,-40,0,0"
-                            Source="avares://RainbusToolbox/Assets/StoryBGName.png"
+                            Source="/Assets/Backgrounds/StoryBGName.png"
                             Width="450" />
                         <Grid
                             HorizontalAlignment="Center"
@@ -148,7 +148,7 @@
                     Height="250"
                     HorizontalAlignment="Stretch"
                     Margin="240,0,0,0"
-                    Source="avares://RainbusToolbox/Assets/StoryBG.png" />
+                    Source="/Assets/Backgrounds/StoryBG.png" />
                 <Grid Margin="20,40,20,10">
                     <TextBox
                         AcceptsReturn="True"
@@ -173,7 +173,7 @@
                         <Image
                             Height="225"
                             Margin="0,-40,0,0"
-                            Source="avares://RainbusToolbox/Assets/StoryBGName.png"
+                            Source="/Assets/Backgrounds/StoryBGName.png"
                             Width="450" />
                         <Grid
                             HorizontalAlignment="Center"

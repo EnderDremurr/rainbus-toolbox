@@ -33,7 +33,7 @@
                     <!--  Background Image  -->
                     <Image
                         HorizontalAlignment="Stretch"
-                        Source="avares://RainbusToolbox/Assets/GiftBg.png"
+                        Source="/Assets/Backgrounds/GiftBg.png"
                         Stretch="Fill"
                         VerticalAlignment="Stretch" />
                     <!--  Gift Image  -->
@@ -84,7 +84,7 @@
                     <!--  Background Image  -->
                     <Image
                         HorizontalAlignment="Stretch"
-                        Source="avares://RainbusToolbox/Assets/GiftBg.png"
+                        Source="/Assets/Backgrounds/GiftBg.png"
                         Stretch="Fill"
                         VerticalAlignment="Stretch" />
                     <!--  Gift Image  -->

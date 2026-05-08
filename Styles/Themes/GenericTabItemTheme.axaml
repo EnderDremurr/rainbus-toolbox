@@ -81,89 +81,89 @@
 
         <!--  Idle state  -->
         <Style Selector="^ /template/ Image#TopLeft">
-            <Setter Property="Source" Value="/Assets/MainButtonIdleTopLeft.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonIdleTopLeft.png" />
         </Style>
         <Style Selector="^ /template/ Image#TopRight">
-            <Setter Property="Source" Value="/Assets/MainButtonIdleTopRight.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonIdleTopRight.png" />
         </Style>
         <Style Selector="^ /template/ Image#BottomLeft">
-            <Setter Property="Source" Value="/Assets/MainButtonIdleBottomLeft.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonIdleBottomLeft.png" />
         </Style>
         <Style Selector="^ /template/ Image#BottomRight">
-            <Setter Property="Source" Value="/Assets/MainButtonIdleBottomRight.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonIdleBottomRight.png" />
         </Style>
         <Style Selector="^ /template/ Image#Top">
-            <Setter Property="Source" Value="/Assets/MainButtonIdleTop.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonIdleTop.png" />
         </Style>
         <Style Selector="^ /template/ Image#Bottom">
-            <Setter Property="Source" Value="/Assets/MainButtonIdleBottom.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonIdleBottom.png" />
         </Style>
         <Style Selector="^ /template/ Image#Left">
-            <Setter Property="Source" Value="/Assets/MainButtonIdleLeft.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonIdleLeft.png" />
         </Style>
         <Style Selector="^ /template/ Image#Right">
-            <Setter Property="Source" Value="/Assets/MainButtonIdleRight.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonIdleRight.png" />
         </Style>
         <Style Selector="^ /template/ Image#Center">
-            <Setter Property="Source" Value="/Assets/MainButtonIdleCenter.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonIdleCenter.png" />
         </Style>
 
         <!--  Hovered state  -->
         <Style Selector="^:pointerover /template/ Image#TopLeft">
-            <Setter Property="Source" Value="/Assets/MainButtonHoverTopLeft.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonHoverTopLeft.png" />
         </Style>
         <Style Selector="^:pointerover /template/ Image#TopRight">
-            <Setter Property="Source" Value="/Assets/MainButtonHoverTopRight.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonHoverTopRight.png" />
         </Style>
         <Style Selector="^:pointerover /template/ Image#BottomLeft">
-            <Setter Property="Source" Value="/Assets/MainButtonHoverBottomLeft.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonHoverBottomLeft.png" />
         </Style>
         <Style Selector="^:pointerover /template/ Image#BottomRight">
-            <Setter Property="Source" Value="/Assets/MainButtonHoverBottomRight.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonHoverBottomRight.png" />
         </Style>
         <Style Selector="^:pointerover /template/ Image#Top">
-            <Setter Property="Source" Value="/Assets/MainButtonHoverTop.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonHoverTop.png" />
         </Style>
         <Style Selector="^:pointerover /template/ Image#Bottom">
-            <Setter Property="Source" Value="/Assets/MainButtonHoverBottom.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonHoverBottom.png" />
         </Style>
         <Style Selector="^:pointerover /template/ Image#Left">
-            <Setter Property="Source" Value="/Assets/MainButtonHoverLeft.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonHoverLeft.png" />
         </Style>
         <Style Selector="^:pointerover /template/ Image#Right">
-            <Setter Property="Source" Value="/Assets/MainButtonHoverRight.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonHoverRight.png" />
         </Style>
         <Style Selector="^:pointerover /template/ Image#Center">
-            <Setter Property="Source" Value="/Assets/MainButtonHoverCenter.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonHoverCenter.png" />
         </Style>
 
         <!--  Selected state  -->
         <Style Selector="^:selected /template/ Image#TopLeft">
-            <Setter Property="Source" Value="/Assets/MainButtonHoverTopLeft.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonHoverTopLeft.png" />
         </Style>
         <Style Selector="^:selected /template/ Image#TopRight">
-            <Setter Property="Source" Value="/Assets/MainButtonHoverTopRight.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonHoverTopRight.png" />
         </Style>
         <Style Selector="^:selected /template/ Image#BottomLeft">
-            <Setter Property="Source" Value="/Assets/MainButtonHoverBottomLeft.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonHoverBottomLeft.png" />
         </Style>
         <Style Selector="^:selected /template/ Image#BottomRight">
-            <Setter Property="Source" Value="/Assets/MainButtonHoverBottomRight.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonHoverBottomRight.png" />
         </Style>
         <Style Selector="^:selected /template/ Image#Top">
-            <Setter Property="Source" Value="/Assets/MainButtonHoverTop.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonHoverTop.png" />
         </Style>
         <Style Selector="^:selected /template/ Image#Bottom">
-            <Setter Property="Source" Value="/Assets/MainButtonHoverBottom.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonHoverBottom.png" />
         </Style>
         <Style Selector="^:selected /template/ Image#Left">
-            <Setter Property="Source" Value="/Assets/MainButtonHoverLeft.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonHoverLeft.png" />
         </Style>
         <Style Selector="^:selected /template/ Image#Right">
-            <Setter Property="Source" Value="/Assets/MainButtonHoverRight.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonHoverRight.png" />
         </Style>
         <Style Selector="^:selected /template/ Image#Center">
-            <Setter Property="Source" Value="/Assets/MainButtonHoverCenter.png" />
+            <Setter Property="Source" Value="/Assets/NineSlices/MainButtonHoverCenter.png" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

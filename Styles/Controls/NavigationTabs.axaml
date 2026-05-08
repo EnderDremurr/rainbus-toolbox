@@ -41,48 +41,48 @@
         </Setter>
     </Style>
     <Style Selector="RadioButton#TabTranslation Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonTranslation.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonTranslation.png" />
     </Style>
     <Style Selector="RadioButton#TabTranslation:pointerover Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonTranslationHov.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonTranslationHov.png" />
     </Style>
     <Style Selector="RadioButton#TabTranslation:checked Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonTranslationSelected.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonTranslationSelected.png" />
     </Style>
     <Style Selector="RadioButton#TabFiles Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonFiles.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonFiles.png" />
     </Style>
     <Style Selector="RadioButton#TabFiles:pointerover Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonFilesHov.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonFilesHov.png" />
     </Style>
     <Style Selector="RadioButton#TabFiles:checked Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonFilesSelected.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonFilesSelected.png" />
     </Style>
     <Style Selector="RadioButton#TabHistory Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonHistory.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonHistory.png" />
     </Style>
     <Style Selector="RadioButton#TabHistory:pointerover Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonHistoryHov.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonHistoryHov.png" />
     </Style>
     <Style Selector="RadioButton#TabHistory:checked Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonHistorySelected.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonHistorySelected.png" />
     </Style>
     <Style Selector="RadioButton#TabOverview Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonOverview.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonOverview.png" />
     </Style>
     <Style Selector="RadioButton#TabOverview:pointerover Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonOverviewHov.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonOverviewHov.png" />
     </Style>
     <Style Selector="RadioButton#TabOverview:checked Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonOverviewSelected.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonOverviewSelected.png" />
     </Style>
     <Style Selector="RadioButton#TabRelease Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonRelease.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonRelease.png" />
     </Style>
     <Style Selector="RadioButton#TabRelease:pointerover Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonReleaseHov.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonReleaseHov.png" />
     </Style>
     <Style Selector="RadioButton#TabRelease:checked Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonReleaseSelected.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonReleaseSelected.png" />
     </Style>
 </Styles>

@@ -14,7 +14,7 @@
         <!--  Background  -->
         <Image
             HorizontalAlignment="Center"
-            Source="/Assets/SettingsBG.png"
+            Source="/Assets/Backgrounds/SettingsBG.png"
             Stretch="UniformToFill"
             VerticalAlignment="Center" />
 

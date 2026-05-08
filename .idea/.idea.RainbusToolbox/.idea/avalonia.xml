@@ -14,6 +14,7 @@
         <entry key="Styles/Themes/TextBoxFramedTheme.axaml" value="RainbusToolbox.csproj" />
         <entry key="Styles/Themes/TextBoxInvisibleTheme.axaml" value="RainbusToolbox.csproj" />
         <entry key="Styles/Themes/Typography.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Styles/Typography.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/BattleHintsTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/ExceptionDialog.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/MainWindow.axaml" value="RainbusToolbox.csproj" />

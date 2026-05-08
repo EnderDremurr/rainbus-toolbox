@@ -37,45 +37,45 @@
                     <Image
                         Grid.Column="0"
                         Grid.Row="0"
-                        Source="/Assets/TextBoxTopLeft.png" />
+                        Source="/Assets/NineSlices/TextBoxTopLeft.png" />
                     <Image
                         Grid.Column="2"
                         Grid.Row="0"
-                        Source="/Assets/TextBoxTopRight.png" />
+                        Source="/Assets/NineSlices/TextBoxTopRight.png" />
                     <Image
                         Grid.Column="0"
                         Grid.Row="2"
-                        Source="/Assets/TextBoxBottomLeft.png" />
+                        Source="/Assets/NineSlices/TextBoxBottomLeft.png" />
                     <Image
                         Grid.Column="2"
                         Grid.Row="2"
-                        Source="/Assets/TextBoxBottomRight.png" />
+                        Source="/Assets/NineSlices/TextBoxBottomRight.png" />
 
                     <Image
                         Grid.Column="1"
                         Grid.Row="0"
-                        Source="/Assets/TextBoxTop.png"
+                        Source="/Assets/NineSlices/TextBoxTop.png"
                         Stretch="Fill" />
                     <Image
                         Grid.Column="1"
                         Grid.Row="2"
-                        Source="/Assets/TextBoxBottom.png"
+                        Source="/Assets/NineSlices/TextBoxBottom.png"
                         Stretch="Fill" />
                     <Image
                         Grid.Column="0"
                         Grid.Row="1"
-                        Source="/Assets/TextBoxLeft.png"
+                        Source="/Assets/NineSlices/TextBoxLeft.png"
                         Stretch="Fill" />
                     <Image
                         Grid.Column="2"
                         Grid.Row="1"
-                        Source="/Assets/TextBoxRight.png"
+                        Source="/Assets/NineSlices/TextBoxRight.png"
                         Stretch="Fill" />
 
                     <Image
                         Grid.Column="1"
                         Grid.Row="1"
-                        Source="/Assets/TextBoxCenter.png"
+                        Source="/Assets/NineSlices/TextBoxCenter.png"
                         Stretch="Fill" />
 
                     <ScrollViewer

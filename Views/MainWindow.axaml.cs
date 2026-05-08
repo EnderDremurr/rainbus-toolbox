@@ -31,7 +31,7 @@ public partial class MainWindow : Window
 
             if (_bg != null)
             {
-                var uri = new Uri("avares://RainbusToolbox/Assets/TranslationBG.png");
+                var uri = new Uri("avares://RainbusToolbox/Assets/Backgrounds/TranslationBG.png");
                 using var stream = AssetLoader.Open(uri);
                 _bg.Source = new Bitmap(stream);
             }
@@ -47,10 +47,10 @@ public partial class MainWindow : Window
 
         var uri = _mainTabs!.SelectedIndex switch
         {
-            0 => "avares://RainbusToolbox/Assets/TranslationBG.png",
-            1 => "avares://RainbusToolbox/Assets/ReleaseBG.png",
-            2 => "avares://RainbusToolbox/Assets/FilesBG.png",
-            _ => "avares://RainbusToolbox/Assets/TranslationBG.png"
+            0 => "avares://RainbusToolbox/Assets/Backgrounds/TranslationBG.png",
+            1 => "avares://RainbusToolbox/Assets/Backgrounds/ReleaseBG.png",
+            2 => "avares://RainbusToolbox/Assets/Backgrounds/FilesBG.png",
+            _ => "avares://RainbusToolbox/Assets/Backgrounds/TranslationBG.png"
         };
 
         using var stream = AssetLoader.Open(new Uri(uri));

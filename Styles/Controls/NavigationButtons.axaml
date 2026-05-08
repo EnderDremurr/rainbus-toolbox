@@ -40,49 +40,49 @@
 
     <!--  Close button  -->
     <Style Selector="Button#CloseButton.navigation Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonClose.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonClose.png" />
     </Style>
     <Style Selector="Button#CloseButton.navigation:pointerover Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonCloseHov.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonCloseHov.png" />
     </Style>
 
     <!--  Min button  -->
     <Style Selector="Button#MinButton.navigation Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonMin.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonMin.png" />
     </Style>
     <Style Selector="Button#MinButton.navigation:pointerover Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonMinHov.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonMinHov.png" />
     </Style>
 
     <!--  Max button  -->
     <Style Selector="Button#MaxButton.navigation Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonMax.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonMax.png" />
     </Style>
     <Style Selector="Button#MaxButton.navigation:pointerover Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonMaxHov.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonMaxHov.png" />
     </Style>
 
     <!--  Settings button  -->
     <Style Selector="Button#SettingsButton.navigation Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonSettings.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonSettings.png" />
     </Style>
     <Style Selector="Button#SettingsButton.navigation:pointerover Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonSettingsHov.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonSettingsHov.png" />
     </Style>
 
     <!--  Synchronize button  -->
     <Style Selector="Button#SynchronizeButton.navigation Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonSynchronize.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonSynchronize.png" />
     </Style>
     <Style Selector="Button#SynchronizeButton.navigation:pointerover Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonSynchronizeHov.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonSynchronizeHov.png" />
     </Style>
 
     <!--  Commit button  -->
     <Style Selector="Button#CommitButton.navigation Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonCommit.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonCommit.png" />
     </Style>
     <Style Selector="Button#CommitButton.navigation:pointerover Image#btnImage">
-        <Setter Property="Source" Value="/Assets/NavButtonCommitHov.png" />
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonCommitHov.png" />
     </Style>
 </Styles>
