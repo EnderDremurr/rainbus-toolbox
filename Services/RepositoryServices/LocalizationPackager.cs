@@ -6,9 +6,9 @@ namespace RainbusToolbox.Services;
 
 public static class LocalizationPackager
 {
-    public static string PackageLocalization(string version, RepositoryManager repositoryManager)
+    public static async Task<string> PackageLocalizationAsync(string version, RepositoryManager repositoryManager)
     {
-        repositoryManager.SynchronizeWithOrigin();
+        await repositoryManager.SynchronizeWithOriginAsync();
 
         var repoPath = repositoryManager.Repository.Info.WorkingDirectory;
         var zipFileName = $"{repositoryManager.GetRepoDisplayName(repositoryManager.Repository)} v{version}.zip";
@@ -20,13 +20,11 @@ public static class LocalizationPackager
         using var zip = ZipFile.Open(zipPath, ZipArchiveMode.Create);
         var localizePath = Path.Combine(repoPath, repositoryManager.LocalizationFolder);
         if (Directory.Exists(localizePath))
-        {
             foreach (var file in Directory.GetFiles(localizePath, "*", SearchOption.AllDirectories))
             {
                 var relativePath = Path.GetRelativePath(localizePath, file);
                 zip.CreateEntryFromFile(file, relativePath);
             }
-        }
 
         return zipPath;
     }

@@ -215,7 +215,7 @@ public partial class ReleaseTabViewModel : ObservableObject
             LoadingScreenViewModel.SetText("Упаковывается перевод...");
             // Package the localization
             var package =
-                await Task.Run(() => LocalizationPackager.PackageLocalization(nextVersion, _repositoryManager));
+                await LocalizationPackager.PackageLocalizationAsync(nextVersion, _repositoryManager);
 
             LoadingScreenViewModel.SetText("Выкладывается на гитхаб...");
             // Create GitHub release

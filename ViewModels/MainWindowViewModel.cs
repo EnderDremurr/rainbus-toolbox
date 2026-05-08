@@ -161,10 +161,25 @@ public partial class MainWindowViewModel : ObservableObject
         ownerWindow.Close();
     }
 
-    [RelayCommand] private void Synchronize()
+    [RelayCommand]
+    public async Task Synchronize()
     {
-        _repositoryManager.SynchronizeWithOrigin();
-        _ = ReparseUserDataAsync();
+        try
+        {
+            LoadingScreenViewModel.StartLoading("Синхронизация...");
+            await _repositoryManager.SynchronizeWithOriginAsync();
+            await ReparseUserDataAsync();
+        }
+        catch (Exception ex)
+        {
+            _ = App.Current.HandleGlobalExceptionAsync(
+                new Exception($"Synchronization failed: {ex.Message}", ex)
+            );
+        }
+        finally
+        {
+            LoadingScreenViewModel.FinishLoading();
+        }
     }
 
     [RelayCommand]

@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 using RainbusToolbox.Models.Data;
 using RainbusToolbox.Utilities;
 using RainbusToolbox.Utilities.Data;
-using RainbusToolbox.ViewModels;
 using Version = System.Version;
 
 namespace RainbusToolbox.Models.Managers;
@@ -421,7 +420,7 @@ public class RepositoryManager
         return new[] { divergence?.BehindBy ?? 0, divergence?.AheadBy ?? 0 };
     }
 
-    public void SynchronizeWithOrigin()
+    public async Task SynchronizeWithOriginAsync()
     {
         try
         {
@@ -433,11 +432,16 @@ public class RepositoryManager
             }
 
             Log.Debug("Starting synchronization with origin...");
-            LoadingScreenViewModel.StartLoading("Синхронизация...");
-            FetchFromOrigin();
-            Log.Debug("Fetch completed.");
 
-            var divergence = CheckRepositoryChanges();
+            await Task.Yield();
+
+            await Task.Run(() =>
+            {
+                FetchFromOrigin();
+                Log.Debug("Fetch completed.");
+            });
+
+            var divergence = await Task.Run(() => CheckRepositoryChanges());
             var behind = divergence[0];
             var ahead = divergence[1];
 
@@ -452,6 +456,7 @@ public class RepositoryManager
                     Repository.Config.Get<string>("user.name")?.Value,
                     Repository.Config.Get<string>("user.email")?.Value
                 );
+
                 if (string.IsNullOrWhiteSpace(identity.Name) ||
                     string.IsNullOrWhiteSpace(identity.Email))
                 {
@@ -460,33 +465,38 @@ public class RepositoryManager
                     return;
                 }
 
-                var upstream = Repository.Branches[$"origin/{Repository.Head.FriendlyName}"];
+                var rebaseStatus = await Task.Run(() =>
+                {
+                    var upstream = Repository.Branches[$"origin/{Repository.Head.FriendlyName}"];
 
-                var result = Repository.Rebase.Start(
-                    Repository.Head,
-                    upstream,
-                    null,
-                    identity,
-                    new RebaseOptions()
-                );
+                    var result = Repository.Rebase.Start(
+                        Repository.Head,
+                        upstream,
+                        null,
+                        identity,
+                        new RebaseOptions()
+                    );
 
-                if (result.Status == RebaseStatus.Conflicts)
+                    return result.Status;
+                });
+
+                if (rebaseStatus == RebaseStatus.Conflicts)
                 {
                     _ = App.Current.HandleNonFatalExceptionAsync(
                         new Exception("Обнаружены конфликты. Синхронизация остановлена.")
                     );
 
-                    Repository.Rebase.Abort();
+                    await Task.Run(() => Repository.Rebase.Abort());
                     return;
                 }
 
-                if (result.Status != RebaseStatus.Complete)
+                if (rebaseStatus != RebaseStatus.Complete)
                 {
                     _ = App.Current.HandleNonFatalExceptionAsync(
-                        new Exception($"Rebase failed: {result.Status}")
+                        new Exception($"Rebase failed: {rebaseStatus}")
                     );
 
-                    Repository.Rebase.Abort();
+                    await Task.Run(() => Repository.Rebase.Abort());
                     return;
                 }
 
@@ -500,7 +510,9 @@ public class RepositoryManager
             if (ahead > 0 || didRebase)
             {
                 Log.Debug(AppLang.GitLocalIsAheadNotice, ahead);
-                PushToOrigin(true);
+
+                await Task.Run(() => PushToOrigin(true));
+
                 Log.Debug(AppLang.GitPushCompleted);
             }
             else
@@ -515,10 +527,6 @@ public class RepositoryManager
             _ = App.Current.HandleGlobalExceptionAsync(
                 new Exception($"Synchronization failed: {ex.Message}", ex)
             );
-        }
-        finally
-        {
-            LoadingScreenViewModel.FinishLoading();
         }
     }
 
