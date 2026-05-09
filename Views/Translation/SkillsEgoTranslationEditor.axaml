@@ -5,11 +5,17 @@
     x:Class="RainbusToolbox.Views.SkillsEgoTranslationEditor"
     x:DataType="vm:SkillsEgoTranslationEditorViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:converters="clr-namespace:RainbusToolbox.Utilities.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:misc="clr-namespace:RainbusToolbox.Views.Misc"
     xmlns:vm="clr-namespace:RainbusToolbox.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <UserControl.Resources>
+        <converters:CoinIconConverter x:Key="CoinIconConverter" />
+    </UserControl.Resources>
+
 
     <Grid RowDefinitions="Auto,*,Auto">
         <!--  Main Content - Vertical Split  -->
@@ -113,13 +119,13 @@
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel Margin="0,0,0,10">
-                                                    <TextBlock
-                                                        Classes="invisible"
-                                                        FontFamily="{StaticResource MikodacsFont}"
-                                                        FontSize="24"
-                                                        FontWeight="Bold"
-                                                        Foreground="White"
-                                                        Text="{Binding Index, StringFormat='Coin {0}'}" />
+                                                    <Image
+                                                        Height="48"
+                                                        HorizontalAlignment="Left"
+                                                        RenderOptions.BitmapInterpolationMode="HighQuality"
+                                                        Source="{Binding Index, Converter={StaticResource CoinIconConverter}}"
+                                                        Stretch="Uniform"
+                                                        Width="48" />
 
                                                     <ItemsControl ItemsSource="{Binding Descs}">
                                                         <ItemsControl.ItemTemplate>
@@ -243,13 +249,13 @@
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel Margin="0,0,0,10">
-                                                    <TextBlock
-                                                        Classes="invisible"
-                                                        FontFamily="{StaticResource MikodacsFont}"
-                                                        FontSize="24"
-                                                        FontWeight="Bold"
-                                                        Foreground="White"
-                                                        Text="{Binding Index, StringFormat='Coin {0}'}" />
+                                                    <Image
+                                                        Height="48"
+                                                        HorizontalAlignment="Left"
+                                                        RenderOptions.BitmapInterpolationMode="HighQuality"
+                                                        Source="{Binding Index, Converter={StaticResource CoinIconConverter}}"
+                                                        Stretch="Uniform"
+                                                        Width="48" />
 
                                                     <ItemsControl ItemsSource="{Binding Descs}">
                                                         <ItemsControl.ItemTemplate>
