@@ -1,10 +1,12 @@
 using Avalonia.Controls;
+using AvaloniaEdit.Document;
 
 namespace RainbusToolbox.Models;
 
 public interface ITextEditor
 {
     string Text { get; set; }
+    TextDocument Document { get; }
 
     string SelectedText { get; }
 
@@ -14,6 +16,9 @@ public interface ITextEditor
     int CaretIndex { get; set; }
 
     void SetSelection(int start, int end);
+
+    void BeginUndoGroup();
+    void EndUndoGroup();
 
     void Cut();
 

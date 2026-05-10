@@ -1,3 +1,4 @@
+using System.Reactive.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
@@ -18,6 +19,10 @@ public partial class GameTextEditor : UserControl
             nameof(EnableSpellCheck),
             true);
 
+    public static readonly StyledProperty<bool> IsReadOnlyProperty =
+        AvaloniaProperty.Register<GameTextEditor, bool>(
+            nameof(IsReadOnly));
+
 
     private bool _updating;
 
@@ -32,7 +37,6 @@ public partial class GameTextEditor : UserControl
 
         var adapter = new AvaloniaEditTextEditor(PART_Editor);
 
-        ContextMenuHelper.Attach(adapter);
 
         PART_Editor.TextChanged += (_, _) =>
         {
@@ -43,6 +47,24 @@ public partial class GameTextEditor : UserControl
             SetCurrentValue(TextProperty, PART_Editor.Text);
             _updating = false;
         };
+
+        this.GetObservable(IsReadOnlyProperty).Subscribe(isReadOnly =>
+        {
+            PART_Editor.IsReadOnly = isReadOnly;
+            PART_Editor.IsEnabled = true;
+        });
+
+        this.GetObservable(IsReadOnlyProperty)
+            .CombineLatest(this.GetObservable(EnableSpellCheckProperty))
+            .Subscribe(x =>
+            {
+                var (readOnly, spell) = x;
+
+                if (readOnly)
+                {
+                    //TODO: Automatically disable spellcheck for the readonly editors
+                }
+            });
 
         this.GetObservable(TextProperty).Subscribe(text =>
         {
@@ -58,6 +80,14 @@ public partial class GameTextEditor : UserControl
                 _updating = false;
             }
         });
+
+        ContextMenuHelper.Attach(adapter, IsReadOnly);
+    }
+
+    public bool IsReadOnly
+    {
+        get => GetValue(IsReadOnlyProperty);
+        set => SetValue(IsReadOnlyProperty, value);
     }
 
     public bool EnableSpellCheck

@@ -240,8 +240,6 @@
                                         Margin="0,0,0,5"
                                         MinHeight="40"
                                         Text="{Binding CurrentLevel.Desc, Mode=TwoWay}" />
-                                    <!--  TextWrapping="Wrap"  -->
-                                    <!--  AcceptsReturn="True"  -->
 
                                     <ItemsControl ItemsSource="{Binding CurrentCoins}">
                                         <ItemsControl.ItemTemplate>
@@ -258,14 +256,10 @@
                                                     <ItemsControl ItemsSource="{Binding Descs}">
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
-                                                                <TextBox
-                                                                    AcceptsReturn="True"
-                                                                    Background="Transparent"
-                                                                    Classes="invisible"
+                                                                <misc:GameTextEditor
                                                                     Margin="0,0,0,5"
                                                                     MinHeight="40"
-                                                                    Text="{Binding Desc, Mode=TwoWay}"
-                                                                    TextWrapping="Wrap" />
+                                                                    Text="{Binding Desc, Mode=TwoWay}" />
                                                             </DataTemplate>
                                                         </ItemsControl.ItemTemplate>
                                                     </ItemsControl>

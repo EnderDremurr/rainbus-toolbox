@@ -7,6 +7,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:misc="clr-namespace:RainbusToolbox.Views.Misc"
     xmlns:viewModels="clr-namespace:RainbusToolbox.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
@@ -39,15 +40,12 @@
 
                     <!--  Reference JSON Content  -->
                     <ScrollViewer Margin="0,35,0,0">
-                        <TextBox
-                            Background="Transparent"
-                            Classes="invisible"
+                        <misc:GameTextEditor
                             FontSize="12"
-                            Foreground="White"
                             IsReadOnly="True"
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                            Text="{Binding ReferenceJson}"
-                            TextWrapping="Wrap" />
+                            Margin="0,0,0,5"
+                            MinHeight="40"
+                            Text="{Binding ReferenceJson}" />
                     </ScrollViewer>
 
                 </Panel>
@@ -76,14 +74,12 @@
 
                     <!--  Editable JSON Content  -->
                     <ScrollViewer Margin="0,35,0,0">
-                        <TextBox
-                            Background="Transparent"
-                            Classes="invisible"
+                        <misc:GameTextEditor
                             FontSize="12"
-                            Foreground="White"
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                            Text="{Binding EditableJson, Mode=TwoWay}"
-                            TextWrapping="Wrap" />
+                            Margin="0,0,0,5"
+                            MinHeight="40"
+                            Text="{Binding EditableJson, Mode=TwoWay}" />
+
                     </ScrollViewer>
                 </Panel>
             </Border>

@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using AvaloniaEdit;
+using AvaloniaEdit.Document;
 using RainbusToolbox.Models;
 
 public class AvaloniaEditTextEditor : ITextEditor
@@ -17,6 +18,8 @@ public class AvaloniaEditTextEditor : ITextEditor
         set => _editor.Text = value;
     }
 
+    public TextDocument Document => _editor.Document;
+
     public string SelectedText =>
         _editor.SelectedText;
 
@@ -32,6 +35,16 @@ public class AvaloniaEditTextEditor : ITextEditor
     {
         get => _editor.CaretOffset;
         set => _editor.CaretOffset = value;
+    }
+
+    public void BeginUndoGroup()
+    {
+        _editor.Document.UndoStack.StartUndoGroup();
+    }
+
+    public void EndUndoGroup()
+    {
+        _editor.Document.UndoStack.EndUndoGroup();
     }
 
     public void Cut()

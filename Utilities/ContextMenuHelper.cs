@@ -8,9 +8,12 @@ namespace RainbusToolbox.Utilities;
 
 public static class ContextMenuHelper
 {
-    public static void Attach(ITextEditor textEditor)
+    public static void Attach(ITextEditor textEditor, bool isReadOnly)
     {
-        SetupContextMenu(textEditor);
+        if (isReadOnly)
+            SetupReadOnlyContextMenu(textEditor);
+        else
+            SetupContextMenu(textEditor);
     }
 
     private static void SetupContextMenu(ITextEditor textEditor)
@@ -309,9 +312,25 @@ public static class ContextMenuHelper
         textEditor.SetContextMenu(contextMenu);
     }
 
+    private static void SetupReadOnlyContextMenu(ITextEditor textEditor)
+    {
+        var contextMenu = new ContextMenu();
+
+        #region Default actions
+
+        var copyItem = new MenuItem { Header = "Copy" };
+        copyItem.Click += (s, e) => textEditor.Copy();
+
+        contextMenu.Items.Add(copyItem);
+
+        #endregion
+
+        textEditor.SetContextMenu(contextMenu);
+    }
+
     private static async Task<string> ProcessTextWithAngela(ITextEditor textEditor)
     {
-        var text = textEditor!.Text ?? string.Empty;
+        var text = textEditor.Text ?? string.Empty;
 
         Log.Debug("Received Angela command.");
 
@@ -328,16 +347,28 @@ public static class ContextMenuHelper
     {
         var start = textEditor.SelectionStart;
         var end = textEditor.SelectionEnd;
-        var selectedText = textEditor.SelectedText;
 
-        // no text selected
-        if (start == end) return;
+        if (start == end)
+            return;
 
+        var doc = textEditor.Document;
+
+        var selectedText = doc.GetText(start, end - start);
         var wrapped = $"{tagStart}{selectedText}{tagEnd}";
-        textEditor.Text = textEditor.Text.Remove(start, end - start).Insert(start, wrapped);
-        textEditor.CaretIndex = start + wrapped.Length;
-        textEditor.SetSelection(
-            start + tagStart.Length,
-            start + tagStart.Length + selectedText.Length);
+
+        doc.BeginUpdate();
+
+        try
+        {
+            doc.Replace(start, end - start, wrapped);
+
+            textEditor.SetSelection(
+                start + tagStart.Length,
+                start + tagStart.Length + selectedText.Length);
+        }
+        finally
+        {
+            doc.EndUpdate();
+        }
     }
 }
