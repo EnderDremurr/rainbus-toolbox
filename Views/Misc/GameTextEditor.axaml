@@ -1,0 +1,17 @@
+<UserControl
+    x:Class="RainbusToolbox.Views.Misc.GameTextEditor"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:avaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <avaloniaEdit:TextEditor
+        Background="Transparent"
+        BorderThickness="0"
+        Foreground="White"
+        HorizontalScrollBarVisibility="Hidden"
+        ShowLineNumbers="False"
+        VerticalScrollBarVisibility="Hidden"
+        Watermark="Empty"
+        WordWrap="True"
+        x:Name="PART_Editor" />
+</UserControl>

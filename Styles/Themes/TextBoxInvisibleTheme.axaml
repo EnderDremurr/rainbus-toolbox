@@ -1,7 +1,4 @@
-<Styles
-    xmlns="https://github.com/avaloniaui"
-    xmlns:utilities="clr-namespace:RainbusToolbox.Utilities"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Design.PreviewWith>
         <Border Padding="20">
             <TextBox
@@ -21,9 +18,8 @@
         <Setter Property="Padding" Value="0" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Foreground" Value="White" />
-        <Setter Property="Watermark" Value="No text found" />
+        <Setter Property="Watermark" Value="Empty" />
         <Setter Property="SelectionBrush" Value="Brown" />
-        <Setter Property="utilities:ContextMenuHelper.EnableCustomContextMenu" Value="True" />
     </Style>
     <Style Selector="TextBox.invisible:focus /template/ Border#PART_BorderElement">
         <Setter Property="Background" Value="Transparent" />

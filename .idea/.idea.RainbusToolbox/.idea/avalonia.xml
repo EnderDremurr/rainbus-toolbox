@@ -19,6 +19,7 @@
         <entry key="Views/ExceptionDialog.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/MainWindow.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Misc/ExceptionDialog.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Misc/GameTextEditor.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Misc/InitializationWindow.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Misc/InputDialog.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Misc/LoadingScreen.axaml" value="RainbusToolbox.csproj" />
