@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Services;
 using RainbusToolbox.Services.ExternalServices;
+using RainbusToolbox.Utilities;
 using RainbusToolbox.ViewModels;
 using RainbusToolbox.Views;
 using RainbusToolbox.Views.Misc;
@@ -141,6 +142,8 @@ public class App : Application
             services.AddSingleton<Angela>();
             services.AddSingleton<DiscordRPCService>();
             services.AddSingleton<CachingService>();
+            services.AddSingleton<SpellCheckerService>();
+            services.AddSingleton<SpellcheckEngine>();
 
             // Windows and VMs
             services.AddSingleton<MainWindow>();

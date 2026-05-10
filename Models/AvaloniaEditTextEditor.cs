@@ -26,12 +26,14 @@ public class AvaloniaEditTextEditor : ITextEditor
     public int SelectionStart => _editor.SelectionStart;
     public int SelectionEnd => _editor.SelectionStart + _editor.SelectionLength;
 
+    public Control Visual => _editor;
+
     public void SetSelection(int start, int end)
     {
         _editor.Select(start, end - start);
     }
 
-    public int CaretIndex
+    public int CaretOffset
     {
         get => _editor.CaretOffset;
         set => _editor.CaretOffset = value;

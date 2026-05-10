@@ -1,8 +1,8 @@
-using System.Reactive.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Media;
+using RainbusToolbox.Services.ExternalServices;
 using RainbusToolbox.Utilities;
 
 namespace RainbusToolbox.Views.Misc;
@@ -23,6 +23,9 @@ public partial class GameTextEditor : UserControl
         AvaloniaProperty.Register<GameTextEditor, bool>(
             nameof(IsReadOnly));
 
+    private readonly SpellcheckColorizer _spellcheckColorizer;
+    private Point _lastRightClick;
+
 
     private bool _updating;
 
@@ -34,6 +37,11 @@ public partial class GameTextEditor : UserControl
         PART_Editor.TextArea.SelectionBrush = Brushes.Brown;
         PART_Editor.TextArea.SelectionCornerRadius = 0;
         PART_Editor.TextArea.SelectionBorder = null;
+
+        _spellcheckColorizer =
+            new SpellcheckColorizer(
+                (SpellcheckEngine)App.Current.ServiceProvider
+                    .GetService(typeof(SpellcheckEngine))!);
 
         var adapter = new AvaloniaEditTextEditor(PART_Editor);
 
@@ -48,22 +56,29 @@ public partial class GameTextEditor : UserControl
             _updating = false;
         };
 
-        this.GetObservable(IsReadOnlyProperty).Subscribe(isReadOnly =>
-        {
-            PART_Editor.IsReadOnly = isReadOnly;
-            PART_Editor.IsEnabled = true;
-        });
-
         this.GetObservable(IsReadOnlyProperty)
-            .CombineLatest(this.GetObservable(EnableSpellCheckProperty))
-            .Subscribe(x =>
+            .Subscribe(readOnly =>
             {
-                var (readOnly, spell) = x;
+                PART_Editor.IsReadOnly = readOnly;
+                PART_Editor.IsEnabled = true;
 
-                if (readOnly)
+                EnableSpellCheck = !readOnly;
+            });
+
+        this.GetObservable(EnableSpellCheckProperty)
+            .Subscribe(enabled =>
+            {
+                if (enabled)
                 {
-                    //TODO: Automatically disable spellcheck for the readonly editors
+                    if (!PART_Editor.TextArea.TextView.LineTransformers.Contains(_spellcheckColorizer))
+                        PART_Editor.TextArea.TextView.LineTransformers.Add(_spellcheckColorizer);
                 }
+                else
+                {
+                    PART_Editor.TextArea.TextView.LineTransformers.Remove(_spellcheckColorizer);
+                }
+
+                PART_Editor.TextArea.TextView.InvalidateVisual();
             });
 
         this.GetObservable(TextProperty).Subscribe(text =>
@@ -81,7 +96,28 @@ public partial class GameTextEditor : UserControl
             }
         });
 
-        ContextMenuHelper.Attach(adapter, IsReadOnly);
+        PART_Editor.PointerPressed += (s, e) =>
+        {
+            var point = e.GetCurrentPoint(PART_Editor);
+
+            if (!point.Properties.IsRightButtonPressed)
+                return;
+
+            var pos = e.GetPosition(PART_Editor);
+
+            var editor = PART_Editor;
+
+            var visualPos = editor.TextArea.TextView.GetPosition(pos);
+
+            if (visualPos is not null)
+                editor.CaretOffset =
+                    editor.Document.GetOffset(visualPos.Value.Location);
+        };
+
+        ContextMenuHelper.Attach(adapter, IsReadOnly,
+            (IsReadOnly
+                ? null
+                : (SpellCheckerService)App.Current.ServiceProvider.GetService(typeof(SpellCheckerService))!)!);
     }
 
     public bool IsReadOnly

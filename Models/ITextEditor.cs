@@ -13,7 +13,9 @@ public interface ITextEditor
     int SelectionStart { get; }
     int SelectionEnd { get; }
 
-    int CaretIndex { get; set; }
+    int CaretOffset { get; set; }
+
+    Control Visual { get; }
 
     void SetSelection(int start, int end);
 

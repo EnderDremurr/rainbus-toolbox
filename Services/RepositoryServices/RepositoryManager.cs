@@ -63,6 +63,7 @@ public class RepositoryManager
     public string PathToLocalization => Path.Combine(_dataManager.Settings.RepositoryPath!, LocalizationFolder);
     public string PathToReferenceLocalization;
     public string PathToDistribution => Path.Combine(_dataManager.Settings.RepositoryPath!, ".dist");
+    public string PathToVSCodeSettings => Path.Combine(_dataManager.Settings.RepositoryPath!, ".vscode/settings.json");
 
     // Game paths
 
