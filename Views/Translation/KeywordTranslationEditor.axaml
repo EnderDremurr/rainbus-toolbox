@@ -54,14 +54,10 @@
 
                                 <!--  Buff Description  -->
                                 <StackPanel Margin="0,2,0,0">
-                                    <TextBox
-                                        AcceptsReturn="True"
-                                        Background="Transparent"
-                                        Classes="invisible"
+                                    <misc:GameTextEditor
                                         FontSize="18"
                                         IsReadOnly="True"
-                                        Text="{Binding ReferenceItem.Desc, Mode=TwoWay}"
-                                        TextWrapping="Wrap" />
+                                        Text="{Binding ReferenceItem.Desc, Mode=TwoWay}" />
                                 </StackPanel>
 
                                 <!--  Flavor  -->
@@ -136,13 +132,7 @@
 
                                 <!--  Buff Description  -->
                                 <StackPanel Margin="0,2,0,0">
-                                    <TextBox
-                                        AcceptsReturn="True"
-                                        Background="Transparent"
-                                        Classes="invisible"
-                                        FontSize="18"
-                                        Text="{Binding CurrentItem.Desc, Mode=TwoWay}"
-                                        TextWrapping="Wrap" />
+                                    <misc:GameTextEditor FontSize="18" Text="{Binding CurrentItem.Desc, Mode=TwoWay}" />
                                 </StackPanel>
 
                                 <!--  Flavor  -->

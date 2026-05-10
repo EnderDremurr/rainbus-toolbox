@@ -52,13 +52,10 @@
 
                                 <!--  Passive Description  -->
                                 <StackPanel Margin="0,10,0,10">
-                                    <TextBox
-                                        Background="Transparent"
-                                        Classes="invisible"
+                                    <misc:GameTextEditor
                                         IsReadOnly="True"
                                         MinHeight="100"
-                                        Text="{Binding ReferenceItem.Desc}"
-                                        TextWrapping="Wrap" />
+                                        Text="{Binding ReferenceItem.Desc, Mode=TwoWay}" />
                                 </StackPanel>
                             </StackPanel>
                         </ScrollViewer>
@@ -101,13 +98,7 @@
 
                                 <!--  Passive Description  -->
                                 <StackPanel Margin="0,10,0,10">
-                                    <TextBox
-                                        AcceptsReturn="True"
-                                        Background="Transparent"
-                                        Classes="invisible"
-                                        MinHeight="100"
-                                        Text="{Binding CurrentItem.Desc, Mode=TwoWay}"
-                                        TextWrapping="Wrap" />
+                                    <misc:GameTextEditor MinHeight="100" Text="{Binding CurrentItem.Desc, Mode=TwoWay}" />
                                 </StackPanel>
                             </StackPanel>
                         </ScrollViewer>

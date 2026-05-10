@@ -30,16 +30,12 @@
                     Margin="240,0,0,0"
                     Source="/Assets/Backgrounds/StoryBG.png" />
                 <Grid Margin="20,40,20,10">
-                    <TextBox
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Classes="invisible"
+                    <misc:GameTextEditor
                         FontSize="24"
                         HorizontalAlignment="Stretch"
                         IsReadOnly="True"
                         Margin="430,60,300,40"
                         Text="{Binding ReferenceItem.Content}"
-                        TextWrapping="Wrap"
                         VerticalAlignment="Stretch" />
                     <TextBox
                         Background="Transparent"
@@ -150,16 +146,11 @@
                     Margin="240,0,0,0"
                     Source="/Assets/Backgrounds/StoryBG.png" />
                 <Grid Margin="20,40,20,10">
-                    <TextBox
-                        AcceptsReturn="True"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Classes="invisible"
+                    <misc:GameTextEditor
                         FontSize="24"
                         HorizontalAlignment="Stretch"
                         Margin="430,60,300,40"
                         Text="{Binding CurrentItem.Content, Mode=TwoWay}"
-                        TextWrapping="Wrap"
                         VerticalAlignment="Stretch" />
                     <TextBox
                         Background="Transparent"

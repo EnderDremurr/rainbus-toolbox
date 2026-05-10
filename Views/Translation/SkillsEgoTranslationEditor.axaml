@@ -107,14 +107,11 @@
 
                                 <!--  Coin Descriptions  -->
                                 <StackPanel>
-                                    <TextBox
-                                        AcceptsReturn="True"
-                                        Background="Transparent"
-                                        Classes="invisible"
+                                    <misc:GameTextEditor
+                                        IsReadOnly="True"
                                         Margin="0,0,0,5"
                                         MinHeight="40"
-                                        Text="{Binding ReferenceLevel.Desc, Mode=TwoWay}"
-                                        TextWrapping="Wrap" />
+                                        Text="{Binding ReferenceLevel.Desc, Mode=TwoWay}" />
                                     <ItemsControl ItemsSource="{Binding ReferenceCoins}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
@@ -130,14 +127,11 @@
                                                     <ItemsControl ItemsSource="{Binding Descs}">
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
-                                                                <TextBox
-                                                                    AcceptsReturn="True"
-                                                                    Background="Transparent"
-                                                                    Classes="invisible"
+                                                                <misc:GameTextEditor
+                                                                    IsReadOnly="True"
                                                                     Margin="0,0,0,5"
                                                                     MinHeight="40"
-                                                                    Text="{Binding Desc}"
-                                                                    TextWrapping="Wrap" />
+                                                                    Text="{Binding Desc}" />
                                                             </DataTemplate>
                                                         </ItemsControl.ItemTemplate>
                                                     </ItemsControl>

@@ -63,13 +63,12 @@
 
                     <!--  Gift Description Area  -->
                     <Border Margin="80,360,65,60">
-                        <TextBox
-                            AcceptsReturn="True"
-                            Classes="invisible"
+                        <misc:GameTextEditor
                             FontSize="18"
                             IsReadOnly="True"
-                            Text="{Binding ReferenceItem.Desc}"
-                            TextWrapping="Wrap"
+                            Margin="0,0,0,5"
+                            MinHeight="40"
+                            Text="{Binding ReferenceItem.Desc, Mode=TwoWay}"
                             VerticalAlignment="Stretch" />
                     </Border>
                 </Panel>
@@ -113,12 +112,11 @@
 
                     <!--  Gift Description Area  -->
                     <Border Margin="80,360,65,60">
-                        <TextBox
-                            AcceptsReturn="True"
-                            Classes="invisible"
+                        <misc:GameTextEditor
                             FontSize="18"
+                            Margin="0,0,0,5"
+                            MinHeight="40"
                             Text="{Binding CurrentItem.Desc, Mode=TwoWay}"
-                            TextWrapping="Wrap"
                             VerticalAlignment="Stretch" />
                     </Border>
                 </Panel>
