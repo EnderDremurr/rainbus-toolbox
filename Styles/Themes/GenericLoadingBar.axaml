@@ -108,7 +108,7 @@
                                 AlignmentX="Left"
                                 AlignmentY="Center"
                                 DestinationRect="0,0,38,59"
-                                Source="/Assets/LoadingBarIndicator.png"
+                                Source="/Assets/Other/LoadingBarIndicator.png"
                                 Stretch="Fill"
                                 TileMode="Tile" />
                         </Border.Background>
@@ -126,7 +126,7 @@
                                 AlignmentX="Left"
                                 AlignmentY="Center"
                                 DestinationRect="0,0,38,59"
-                                Source="/Assets/LoadingBarIndicator.png"
+                                Source="/Assets/Other/LoadingBarIndicator.png"
                                 Stretch="Fill"
                                 TileMode="Tile" />
                         </Border.Background>
