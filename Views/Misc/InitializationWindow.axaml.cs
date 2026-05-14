@@ -40,7 +40,7 @@ public partial class InitializationWindow : Window
         AvaloniaXamlLoader.Load(this);
 
         // Load the image to get its size
-        var bitmap = new Bitmap(AssetLoader.Open(new Uri("avares://RainbusToolbox/Assets/Init.png")));
+        var bitmap = new Bitmap(AssetLoader.Open(new Uri("avares://RainbusToolbox/Assets/Backgrounds/Init.png")));
 
         Width = bitmap.PixelSize.Width / 1.5f;
         Height = bitmap.PixelSize.Height / 1.5f;
