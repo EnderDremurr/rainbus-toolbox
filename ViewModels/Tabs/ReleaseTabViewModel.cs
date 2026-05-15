@@ -222,6 +222,7 @@ public partial class ReleaseTabViewModel : ObservableObject
         try
         {
             LoadingScreenViewModel.StartLoading("Создаётся релиз...");
+            LoadingScreenViewModel.SetText("Начинается замена кейвордов перед релизом...");
             await _keywordProcessingService.ReplaceEveryTagWithMesh(_repositoryManager.PathToLocalization);
             await RunAllEntriesAsyncBeforeRelease();
 

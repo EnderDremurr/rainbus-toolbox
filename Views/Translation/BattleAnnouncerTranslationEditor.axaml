@@ -49,16 +49,14 @@
 
                     <!--  Content Area (overlay)  -->
                     <ScrollViewer>
-                        <TextBox
-                            AcceptsReturn="True"
+                        <misc:GameTextEditor
                             Background="Transparent"
                             Classes="invisible"
                             FontSize="32"
                             IsReadOnly="True"
                             Margin="550,30,0,45"
                             MaxWidth="900"
-                            Text="{Binding ReferenceItem.Dialogue}"
-                            TextWrapping="Wrap" />
+                            Text="{Binding ReferenceItem.Dialogue, Mode=TwoWay}" />
                     </ScrollViewer>
                 </Grid>
             </Border>
@@ -97,15 +95,13 @@
 
                     <!--  Content Area (overlay)  -->
                     <ScrollViewer>
-                        <TextBox
-                            AcceptsReturn="True"
+                        <misc:GameTextEditor
                             Background="Transparent"
                             Classes="invisible"
                             FontSize="32"
                             Margin="550,30,0,45"
                             MaxWidth="900"
-                            Text="{Binding CurrentItem.Dialogue, Mode=TwoWay}"
-                            TextWrapping="Wrap" />
+                            Text="{Binding CurrentItem.Dialogue, Mode=TwoWay}" />
                     </ScrollViewer>
                 </Grid>
             </Border>
