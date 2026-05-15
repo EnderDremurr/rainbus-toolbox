@@ -1,5 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
+using System.Threading;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RainbusToolbox.Models;
 using RainbusToolbox.Models.Managers;
 
@@ -7,64 +11,169 @@ namespace RainbusToolbox.Services.RepositoryServices;
 
 public class MassReplacementService(RepositoryManager repositoryManager)
 {
-    // i guess it'll be faster to do "open file, check all regexes", rather than "check each file for each regex"
     // also don't forget about whitelists (if empty then there's no whitelist)
 
-    public void RunAllRegexesForAllFiles()
+
+    public async Task RunAllRegexesForAllFilesAsync(
+        List<ReplacementEntry> entries,
+        IProgress<(int Processed, int Total, string Label)>? progress = null,
+        CancellationToken cancellationToken = default)
     {
+        Log.Debug("Initializing regex replacement service for all entries");
+
+        for (var i = 0; i < entries.Count; i++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            progress?.Report((i, entries.Count, $"Entry {i + 1}/{entries.Count}: {entries[i].Target}"));
+            await RunOneRegexForAllFilesAsync(entries[i], progress, cancellationToken, entries.Count, i);
+        }
     }
 
-    public void RunOneRegexForAllFiles(ReplacementEntry entry)
+    public async Task RunOneRegexForAllFilesAsync(
+        ReplacementEntry entry,
+        IProgress<(int Processed, int Total, string Label)>? progress = null,
+        CancellationToken cancellationToken = default,
+        int totalEntries = 1,
+        int currentEntryIndex = 0)
     {
+        Log.Debug("Initializing regex replacement service for one entry");
+
+        var filesToEdit = GetWhitelistedFiles(entry.FileWhiteList.Select(f => f.FilePath).ToList());
+        var regex = BuildRegex(entry);
+        var total = filesToEdit.Count;
+
+        for (var i = 0; i < total; i++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var filePath = filesToEdit[i];
+            progress?.Report((i + 1, total, $"[{currentEntryIndex + 1}/{totalEntries}] {Path.GetFileName(filePath)}"));
+
+            await Task.Run(() =>
+            {
+                try
+                {
+                    var raw = File.ReadAllText(filePath);
+                    var root = JsonConvert.DeserializeObject<JObject>(raw);
+                    if (root == null) return;
+
+                    var dataList = root["dataList"] as JArray;
+                    if (dataList == null) return;
+
+                    var dirty = false;
+
+                    foreach (var item in dataList)
+                    foreach (var prop in item.Children<JProperty>())
+                    {
+                        if (prop.Name == "id") continue;
+                        if (prop.Value.Type != JTokenType.String) continue;
+
+                        var original = prop.Value.Value<string>()!;
+                        var replaced = regex.Replace(original,
+                            m => ReplaceWithCasePreservation(m.Value, entry.Replacement, entry.PreserveCase));
+
+                        if (replaced == original) continue;
+
+                        prop.Value = replaced;
+                        dirty = true;
+                    }
+
+                    if (dirty)
+                        File.WriteAllText(filePath, JsonConvert.SerializeObject(root, Formatting.Indented));
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"Failed processing {filePath}: {ex.Message}");
+                }
+            }, cancellationToken);
+        }
+    }
+
+    private static Regex BuildRegex(ReplacementEntry entry)
+    {
+        var options = entry.MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase;
+
+        string pattern;
+
+        if (entry.IsRegex)
+        {
+            pattern = entry.MatchWholeWord
+                ? $@"\b(?:{entry.Target})\b"
+                : entry.Target;
+        }
+        else
+        {
+            var escaped = Regex.Escape(entry.Target);
+            pattern = entry.MatchWholeWord
+                ? $@"\b{escaped}\b"
+                : escaped;
+        }
+
+        return new Regex(pattern, options,
+            TimeSpan.FromSeconds(5)); // timeout if regex is retarded
+    }
+
+    private static string ReplaceWithCasePreservation(string original, string replacement, bool preserveCase)
+    {
+        if (!preserveCase) return replacement;
+        if (string.IsNullOrEmpty(original) || string.IsNullOrEmpty(replacement))
+            return replacement;
+
+        if (original.All(char.IsUpper))
+            return replacement.ToUpper();
+
+        if (original.All(char.IsLower))
+            return replacement.ToLower();
+
+        if (char.IsUpper(original[0]) && original.Skip(1).All(char.IsLower))
+            return char.ToUpper(replacement[0]) + replacement[1..].ToLower();
+
+        return replacement;
     }
 
     private List<string> GetWhitelistedFiles(List<string> whitelist)
     {
         var result = new List<string>();
-        var localizationFiles = repositoryManager.PathToLocalization;
+        var localizationRoot = repositoryManager.PathToLocalization;
 
-        foreach (var entry in whitelist)
-        {
-            // check for wildcards (*)
-            // check for folders/directories
-            // check for folder + wildcards ( like Announcer/Skibidi*.json )
-
-            // whitelists should be relative to localization root
-            if (Path.IsPathRooted(entry))
-                continue;
-
-            if (entry.Last() == '/')
+        if (whitelist.Any())
+            foreach (var entry in whitelist)
             {
-                var fullPath = Path.Combine(localizationFiles, entry);
-                // this means it's an entire folder
-                if (!Directory.Exists(fullPath)) continue;
-                result.AddRange(Directory.GetFiles(fullPath));
-            }
-            else if (entry.Contains('*'))
-            {
-                // wildcard, check for subfolders 
-                if (entry.Contains('/'))
+                if (Path.IsPathRooted(entry)) continue;
+
+                var fullPath = Path.Combine(localizationRoot, entry);
+
+                if (entry.Contains('*'))
                 {
-                    // has subfolders
-                    var wildcard = entry.Split('/').Last();
-                    var fullPath = Path.Combine(localizationFiles, entry.Replace(wildcard, ""));
-                    if (!Directory.Exists(fullPath)) continue;
-                    result.AddRange(Directory.GetFiles(fullPath, wildcard));
-                }
-                else
-                {
-                    result.AddRange(Directory.GetFiles(localizationFiles, entry));
-                }
-            }
-            else
-            {
-                // otherwise it's just a filename
-                var fullPath = Path.Combine(localizationFiles, entry);
-                if (!Path.Exists(fullPath)) continue;
-                result.Add(fullPath);
-            }
-        }
+                    if (entry.Contains('/'))
+                    {
+                        var lastSlash = entry.LastIndexOf('/');
+                        var folder = entry[..lastSlash];
+                        var wildcard = entry[(lastSlash + 1)..];
+                        var folderPath = Path.Combine(localizationRoot, folder);
 
-        return result;
+                        if (!Directory.Exists(folderPath)) continue;
+                        result.AddRange(Directory.GetFiles(folderPath, wildcard, SearchOption.AllDirectories)
+                            .Where(f => f.EndsWith(".json", StringComparison.OrdinalIgnoreCase)));
+                    }
+                    else
+                    {
+                        result.AddRange(Directory.GetFiles(localizationRoot, entry, SearchOption.AllDirectories)
+                            .Where(f => f.EndsWith(".json", StringComparison.OrdinalIgnoreCase)));
+                    }
+                }
+                else if (Directory.Exists(fullPath))
+                {
+                    result.AddRange(Directory.GetFiles(fullPath, "*.json", SearchOption.AllDirectories));
+                }
+                else if (File.Exists(fullPath) && fullPath.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                {
+                    result.Add(fullPath);
+                }
+            }
+        else
+            result.AddRange(Directory.GetFiles(localizationRoot, "*.json", SearchOption.AllDirectories));
+
+        return result.Distinct().ToList();
     }
 }

@@ -18,6 +18,8 @@ public partial class FilesTabViewModel : ObservableObject
 
     private CancellationTokenSource? _cancellationTokenSource;
 
+    [ObservableProperty] private bool _showRegexEditor;
+
 
     [RelayCommand]
     private async Task ParseFilesAsync()
@@ -87,6 +89,18 @@ public partial class FilesTabViewModel : ObservableObject
     private void Cancel()
     {
         _cancellationTokenSource?.Cancel();
+    }
+
+    [RelayCommand]
+    public void OpenRegexEditor()
+    {
+        ShowRegexEditor = true;
+    }
+
+    [RelayCommand]
+    public void CloseRegexEditor()
+    {
+        ShowRegexEditor = false;
     }
 
 

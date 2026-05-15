@@ -1,0 +1,182 @@
+<UserControl
+    mc:Ignorable="d"
+    x:Class="RainbusToolbox.Views.Misc.RegexEditor"
+    x:DataType="viewModels:RegexEditorViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:RainbusToolbox.Models"
+    xmlns:viewModels="clr-namespace:RainbusToolbox.ViewModels"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <DockPanel>
+        <!--  Top toolbar  -->
+        <Border
+            Background="Transparent"
+            BorderThickness="0,0,0,1"
+            DockPanel.Dock="Top"
+            Padding="8,6">
+            <StackPanel
+                HorizontalAlignment="Stretch"
+                Orientation="Horizontal"
+                Spacing="6">
+                <Button
+                    Command="{Binding AddEntryCommand}"
+                    Content="Добавить замену"
+                    Height="64"
+                    Padding="14,0"
+                    Width="400" />
+                <Button
+                    Command="{Binding SaveCurrentJsonsCommand}"
+                    Content="Сохранить"
+                    Height="64"
+                    Padding="14,0"
+                    Width="400" />
+                <Button
+                    Command="{Binding RunAllEntriesCommand}"
+                    Content="Прогнать все"
+                    Height="64"
+                    HorizontalAlignment="Right"
+                    Padding="14,0"
+                    Width="400" />
+            </StackPanel>
+        </Border>
+
+        <!--  Entry list  -->
+        <ScrollViewer>
+            <ItemsControl ItemsSource="{Binding Entries}" x:Name="EntriesControl">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="models:ReplacementEntry">
+                        <Border
+                            Background="#801E1E1E"
+                            BorderBrush="Gold"
+                            BorderThickness="0,3,0,0"
+                            Margin="0,15,0,0"
+                            Padding="10,8">
+                            <Grid ColumnDefinitions="*,Auto">
+
+                                <!--  All content  -->
+                                <StackPanel
+                                    Grid.Column="0"
+                                    Margin="0,0,8,0"
+                                    Spacing="5">
+
+                                    <!--  Target + Replacement  -->
+                                    <Grid ColumnDefinitions="*,8,*">
+                                        <TextBox
+                                            Classes="invisible"
+                                            FontSize="22"
+                                            Grid.Column="0"
+                                            Margin="0,15,0,30"
+                                            Text="{Binding Target}"
+                                            Watermark="Что заменять" />
+                                        <TextBox
+                                            Classes="invisible"
+                                            FontSize="22"
+                                            Grid.Column="2"
+                                            Margin="0,15,0,30"
+                                            Text="{Binding Replacement}"
+                                            Watermark="На что заменять" />
+                                    </Grid>
+
+                                    <!--  Toggles  -->
+                                    <WrapPanel ItemSpacing="4">
+                                        <ToggleButton
+                                            Content="Регулярка"
+                                            Height="28"
+                                            IsChecked="{Binding IsRegex}"
+                                            Margin="0,0,30,0"
+                                            Padding="10,0" />
+                                        <ToggleButton
+                                            Content="Строгий регистр"
+                                            Height="28"
+                                            IsChecked="{Binding MatchCase}"
+                                            Margin="0,0,30,0"
+                                            Padding="10,0" />
+                                        <ToggleButton
+                                            Content="Целые слова"
+                                            Height="28"
+                                            IsChecked="{Binding MatchWholeWord}"
+                                            Margin="0,0,30,0"
+                                            Padding="10,0" />
+                                        <ToggleButton
+                                            Content="Сохранять регистр"
+                                            Height="28"
+                                            IsChecked="{Binding PreserveCase}"
+                                            Margin="0,0,30,0"
+                                            Padding="10,0" />
+                                    </WrapPanel>
+
+                                    <!--  File whitelist  -->
+                                    <StackPanel Margin="0,0,0,8" Spacing="4">
+                                        <TextBlock
+                                            Classes="header"
+                                            FontSize="24"
+                                            Foreground="Gold"
+                                            Margin="0,20,0,0"
+                                            Text="В каких файлах заменять" />
+                                        <Button
+                                            Command="{Binding #EntriesControl.((viewModels:RegexEditorViewModel)DataContext).AddFilePathCommand}"
+                                            CommandParameter="{Binding}"
+                                            Content="Добавить путь в белый список"
+                                            Height="64"
+                                            HorizontalAlignment="Left"
+                                            Padding="10,0"
+                                            Width="400" />
+                                        <ItemsControl ItemsSource="{Binding FileWhiteList}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="models:FilePathEntry">
+                                                    <Grid ColumnDefinitions="*,Auto" Margin="0,2">
+                                                        <TextBox
+                                                            Classes="invisible"
+                                                            FontSize="22"
+                                                            Grid.Column="0"
+                                                            Margin="0,10,0,10"
+                                                            Text="{Binding FilePath}"
+                                                            Watermark="Путь или имя файла (можно с *)" />
+                                                        <Button
+                                                            Command="{Binding #EntriesControl.((viewModels:RegexEditorViewModel)DataContext).RemoveFilePathCommand}"
+                                                            CommandParameter="{Binding}"
+                                                            Content="x"
+                                                            Grid.Column="1"
+                                                            Height="48"
+                                                            Margin="4,0,0,0"
+                                                            Padding="0"
+                                                            Width="48" />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+
+                                </StackPanel>
+
+                                <!--  Right: action buttons  -->
+                                <StackPanel
+                                    Grid.Column="1"
+                                    Spacing="4"
+                                    VerticalAlignment="Top">
+                                    <Button
+                                        Command="{Binding #EntriesControl.((viewModels:RegexEditorViewModel)DataContext).RunEntryCommand}"
+                                        CommandParameter="{Binding}"
+                                        Content="&gt;"
+                                        Height="48"
+                                        Padding="0"
+                                        Width="48" />
+                                    <Button
+                                        Command="{Binding #EntriesControl.((viewModels:RegexEditorViewModel)DataContext).RemoveEntryCommand}"
+                                        CommandParameter="{Binding}"
+                                        Content="x"
+                                        Height="48"
+                                        Padding="0"
+                                        Width="48" />
+                                </StackPanel>
+
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

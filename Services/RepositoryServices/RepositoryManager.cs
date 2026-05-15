@@ -64,6 +64,7 @@ public class RepositoryManager
     public string PathToReferenceLocalization;
     public string PathToDistribution => Path.Combine(_dataManager.Settings.RepositoryPath!, ".dist");
     public string PathToVSCodeSettings => Path.Combine(_dataManager.Settings.RepositoryPath!, ".vscode/settings.json");
+    public string PathToRegexJson => Path.Combine(_dataManager.Settings.RepositoryPath!, "regexes.json");
 
     // Game paths
 

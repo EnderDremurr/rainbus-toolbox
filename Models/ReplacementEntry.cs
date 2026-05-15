@@ -1,18 +1,16 @@
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace RainbusToolbox.Models;
 
-public class ReplacementEntry
+public partial class ReplacementEntry : ObservableObject
 {
-    public string Target { get; set; } = string.Empty;
-    public string Replacement { get; set; } = string.Empty;
+    [ObservableProperty] private bool _isRegex;
+    [ObservableProperty] private bool _matchCase;
+    [ObservableProperty] private bool _matchWholeWord;
+    [ObservableProperty] private bool _preserveCase;
+    [ObservableProperty] private string _replacement = string.Empty;
+    [ObservableProperty] private string _target = string.Empty;
 
-    public bool IsRegex { get; set; } = false;
-
-    public bool MatchCase { get; set; } = false;
-    public bool MatchWholeWord { get; set; } = false;
-
-    public bool PreserveCase { get; set; } = false;
-
-    public List<string> FileWhiteList { get; set; } = new();
+    public ObservableCollection<FilePathEntry> FileWhiteList { get; set; } = new();
 }

@@ -7,41 +7,66 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:misc="clr-namespace:RainbusToolbox.Views.Misc"
     xmlns:viewModels="clr-namespace:RainbusToolbox.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <StackPanel Margin="20" Spacing="10">
-        <Button
-            Classes="header"
-            Command="{Binding ParseFilesCommand}"
-            Content="Добавить новые файлы из игры"
-            Height="80"
-            HorizontalAlignment="Center"
-            Width="480" />
+    <Panel>
+        <!--  Main menu  -->
+        <StackPanel
+            IsVisible="{Binding !ShowRegexEditor}"
+            Margin="20"
+            Spacing="10">
+            <Button
+                Classes="header"
+                Command="{Binding ParseFilesCommand}"
+                Content="Добавить новые файлы из игры"
+                Height="80"
+                HorizontalAlignment="Center"
+                Width="480" />
+            <Button
+                Classes="header"
+                Command="{Binding ReplaceAllTagsWithMeshesAsync}"
+                Content="Заменить все теги формата [Key:'Value'] на html/TMPro"
+                Height="80"
+                HorizontalAlignment="Center"
+                Width="720" />
+            <Button
+                Classes="header"
+                Command="{Binding PullNewKeywordsFromTheGame}"
+                Content="Добавить новые кейворды из игры"
+                Height="80"
+                HorizontalAlignment="Center"
+                Width="720" />
+            <Button
+                Classes="header"
+                Command="{Binding DefineNewKeywordsFromTheGame}"
+                Content="Определить цвета новых кейвордов"
+                Height="80"
+                HorizontalAlignment="Center"
+                Width="720" />
+            <Button
+                Classes="header"
+                Command="{Binding OpenRegexEditor}"
+                Content="Редактор автозамен"
+                Height="80"
+                HorizontalAlignment="Center"
+                Width="720" />
+        </StackPanel>
 
-        <Button
-            Classes="header"
-            Command="{Binding ReplaceAllTagsWithMeshesAsync}"
-            Content="Заменить все теги формата [Key:'Value'] на html/TMPro"
-            Height="80"
-            HorizontalAlignment="Center"
-            Width="720" />
-
-        <Button
-            Classes="header"
-            Command="{Binding PullNewKeywordsFromTheGame}"
-            Content="Добавить новые кейворды из игры"
-            Height="80"
-            HorizontalAlignment="Center"
-            Width="720" />
-
-        <Button
-            Classes="header"
-            Command="{Binding DefineNewKeywordsFromTheGame}"
-            Content="Определить цвета новых кейвордов"
-            Height="80"
-            HorizontalAlignment="Center"
-            Width="720" />
-    </StackPanel>
-
+        <!--  Regex editor  -->
+        <DockPanel IsVisible="{Binding ShowRegexEditor}">
+            <Button
+                Command="{Binding CloseRegexEditorCommand}"
+                Content="Назад"
+                DockPanel.Dock="Top"
+                Height="70"
+                HorizontalAlignment="Left"
+                Margin="8,4"
+                Padding="12,4"
+                VerticalAlignment="Center"
+                Width="200" />
+            <misc:RegexEditor />
+        </DockPanel>
+    </Panel>
 </UserControl>

@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Services;
 using RainbusToolbox.Services.ExternalServices;
+using RainbusToolbox.Services.RepositoryServices;
 using RainbusToolbox.Utilities;
 using RainbusToolbox.ViewModels;
 using RainbusToolbox.Views;
@@ -144,6 +145,7 @@ public class App : Application
             services.AddSingleton<CachingService>();
             services.AddSingleton<SpellCheckerService>();
             services.AddSingleton<SpellcheckEngine>();
+            services.AddSingleton<MassReplacementService>();
 
             // Windows and VMs
             services.AddSingleton<MainWindow>();

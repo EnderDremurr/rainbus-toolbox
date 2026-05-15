@@ -1,15 +1,15 @@
-<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Design.PreviewWith>
-        <StackPanel Background="#222" Spacing="8">
-            <CheckBox Content="Unchecked" IsChecked="False" />
-            <CheckBox Content="Checked" IsChecked="True" />
-            <CheckBox Content="Indeterminate" IsChecked="{x:Null}" />
-        </StackPanel>
-    </Design.PreviewWith>
+<Styles
+    xmlns="https://github.com/avaloniaui"
+    xmlns:local="using:RainbusToolbox"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <Style Selector="CheckBox">
+    <Styles.Resources>
+        <local:CheckedToImageConverter x:Key="CheckedToImageConverter" />
+    </Styles.Resources>
+
+    <Style Selector="ToggleButton">
         <Setter Property="Template">
-            <ControlTemplate TargetType="CheckBox">
+            <ControlTemplate TargetType="ToggleButton">
                 <StackPanel
                     Orientation="Horizontal"
                     Spacing="8"
@@ -18,6 +18,7 @@
                         Height="30"
                         RenderOptions.BitmapInterpolationMode="HighQuality"
                         Source="{Binding IsChecked, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource CheckedToImageConverter}}"
+                        Stretch="Uniform"
                         Width="30" />
                     <TextBlock
                         FontFamily="{StaticResource MikodacsFont}"

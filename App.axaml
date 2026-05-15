@@ -41,6 +41,7 @@
         <StyleInclude Source="avares://RainbusToolbox/Styles/Themes/TextBoxFramedTheme.axaml" />
         <StyleInclude Source="avares://RainbusToolbox/Styles/Themes/TextBoxInvisibleTheme.axaml" />
         <StyleInclude Source="avares://RainbusToolbox/Styles/Controls/Checkbox.axaml" />
+        <StyleInclude Source="avares://RainbusToolbox/Styles/Controls/ToggleButton.axaml" />
         <StyleInclude Source="avares://RainbusToolbox/Styles/Controls/NavigationButtons.axaml" />
         <StyleInclude Source="avares://RainbusToolbox/Styles/Controls/NavigationTabs.axaml" />
         <StyleInclude Source="avares://RainbusToolbox/Styles/Themes/GenericLoadingBar.axaml" />
