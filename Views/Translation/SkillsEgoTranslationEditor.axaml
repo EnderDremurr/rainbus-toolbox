@@ -141,6 +141,19 @@
                                     </ItemsControl>
                                 </StackPanel>
 
+                                <!--  Flavor  -->
+                                <StackPanel Margin="0,2,0,0">
+                                    <TextBox
+                                        AcceptsReturn="True"
+                                        Background="Transparent"
+                                        Classes="invisible"
+                                        FontSize="20"
+                                        FontStyle="Italic"
+                                        Foreground="SaddleBrown"
+                                        Text="{Binding ReferenceLevel.Flavor, Mode=TwoWay}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
                             </StackPanel>
                         </ScrollViewer>
                     </Border>
@@ -261,6 +274,17 @@
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
+                                </StackPanel>
+                                <StackPanel Margin="0,2,0,0">
+                                    <TextBox
+                                        AcceptsReturn="True"
+                                        Background="Transparent"
+                                        Classes="invisible"
+                                        FontSize="20"
+                                        FontStyle="Italic"
+                                        Foreground="SaddleBrown"
+                                        Text="{Binding CurrentLevel.Flavor, Mode=TwoWay}"
+                                        TextWrapping="Wrap" />
                                 </StackPanel>
 
                             </StackPanel>

@@ -74,6 +74,9 @@ public class SkillLevel
     [JsonProperty("desc")]
     public string? Desc { get; set; }
 
+    [JsonProperty("flavor")]
+    public string? Flavor { get; set; }
+
     [JsonProperty("coinlist")]
     public List<CoinListItem> CoinList { get; set; } = [];
 }
