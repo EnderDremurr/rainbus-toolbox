@@ -1,12 +1,17 @@
+using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Newtonsoft.Json;
+using RainbusToolbox.Models;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Services;
+using RainbusToolbox.Services.RepositoryServices;
 using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.ViewModels;
@@ -19,13 +24,15 @@ public partial class ReleaseTabViewModel : ObservableObject
         PersistentDataManager dataManager,
         GithubManager githubManager,
         RepositoryManager repositoryManager,
-        KeywordProcessingService keywordProcessingService)
+        KeywordProcessingService keywordProcessingService,
+        MassReplacementService massReplacementService)
     {
         _dataManager = dataManager;
         Option2 = !string.IsNullOrWhiteSpace(_dataManager.Settings.DiscordRoleToPing);
         _githubManager = githubManager;
         _repositoryManager = repositoryManager;
         _keywordProcessingService = keywordProcessingService;
+        _massReplacementService = massReplacementService;
 
         VersionDisplay = _repositoryManager.GetLatestReleaseSemantic();
     }
@@ -43,14 +50,43 @@ public partial class ReleaseTabViewModel : ObservableObject
 
     #endregion
 
+    private async Task RunAllEntriesAsyncBeforeRelease()
+    {
+        try
+        {
+            LoadingScreenViewModel.SetText("Замена всех правил...");
+
+            var progress = new Progress<(int Processed, int Total, string Label)>(p =>
+            {
+                LoadingScreenViewModel.SetProgress(p.Processed, p.Total);
+                LoadingScreenViewModel.SetText(p.Label);
+            });
+
+            var pathToRegexJson = _repositoryManager.PathToRegexJson;
+            if (!File.Exists(pathToRegexJson)) return;
+
+            var entries = JsonConvert.DeserializeObject<List<ReplacementEntry>>(File.ReadAllText(pathToRegexJson));
+            if (entries is null) return;
+
+            await _massReplacementService.RunAllRegexesForAllFilesAsync(entries, progress, CancellationToken.None);
+        }
+        catch (Exception ex)
+        {
+            _ = App.Current.HandleNonFatalExceptionAsync(ex,
+                "Ошибка при замене, но релиз всё еще сделается, ничего страшного!");
+        }
+    }
+
     #region Fields
 
     private readonly PersistentDataManager _dataManager;
     private readonly GithubManager _githubManager;
     private readonly RepositoryManager _repositoryManager;
     private readonly KeywordProcessingService _keywordProcessingService;
+    private readonly MassReplacementService _massReplacementService;
     private string _username = AppLang.Unknown;
     private string _repoName = AppLang.Unknown;
+    private CancellationTokenSource? _cancellationTokenSource;
 
     #endregion
 
@@ -187,6 +223,7 @@ public partial class ReleaseTabViewModel : ObservableObject
         {
             LoadingScreenViewModel.StartLoading("Создаётся релиз...");
             await _keywordProcessingService.ReplaceEveryTagWithMesh(_repositoryManager.PathToLocalization);
+            await RunAllEntriesAsyncBeforeRelease();
 
             var currentVersion = _repositoryManager.GetLatestReleaseSemantic();
             var parts = currentVersion.Split('.');
