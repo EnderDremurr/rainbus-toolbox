@@ -114,14 +114,17 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="vm:TranslationTabViewModel+ShortcutFolderGroup">
                                         <Expander
+                                            Background="Transparent"
+                                            BorderBrush="Transparent"
+                                            BorderThickness="0"
                                             Header="{Binding Name}"
                                             IsExpanded="False"
                                             Margin="0,0,0,10">
 
-                                            <ItemsControl ItemsSource="{Binding Shortcuts}">
+                                            <ItemsControl Background="Transparent" ItemsSource="{Binding Shortcuts}">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
-                                                        <WrapPanel />
+                                                        <WrapPanel Background="Transparent" />
                                                     </ItemsPanelTemplate>
                                                 </ItemsControl.ItemsPanel>
 

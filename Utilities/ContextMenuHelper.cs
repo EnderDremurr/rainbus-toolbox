@@ -374,13 +374,13 @@ public static class ContextMenuHelper
 
             #region Default actions
 
-            var cutItem = new MenuItem { Header = "Cut" };
+            var cutItem = new MenuItem { Header = "Вырезать" };
             cutItem.Click += (s, e) => textEditor.Cut();
 
-            var copyItem = new MenuItem { Header = "Copy" };
+            var copyItem = new MenuItem { Header = "Скопировать" };
             copyItem.Click += (s, e) => textEditor.Copy();
 
-            var pasteItem = new MenuItem { Header = "Paste" };
+            var pasteItem = new MenuItem { Header = "Вставить" };
             pasteItem.Click += (s, e) => textEditor.Paste();
 
             contextMenu.Items.Add(cutItem);
@@ -399,7 +399,7 @@ public static class ContextMenuHelper
 
         #region Default actions
 
-        var copyItem = new MenuItem { Header = "Copy" };
+        var copyItem = new MenuItem { Header = "Скопировать" };
         copyItem.Click += (s, e) => textEditor.Copy();
 
         contextMenu.Items.Add(copyItem);
