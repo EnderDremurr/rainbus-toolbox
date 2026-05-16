@@ -109,7 +109,7 @@
                 <!--  Restart / continue button  -->
                 <Button
                     Click="RestartApp_Click"
-                    Content="Продолжить"
+                    Content="Сохранить"
                     Height="60"
                     HorizontalAlignment="Center"
                     Margin="0,50,0,50"

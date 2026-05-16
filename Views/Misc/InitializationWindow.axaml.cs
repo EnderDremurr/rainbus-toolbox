@@ -1,12 +1,14 @@
-using System.Diagnostics;
-using System.IO;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Platform.Storage;
 using RainbusToolbox.Models.Managers;
+using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.Views;
 
@@ -26,9 +28,10 @@ public partial class InitializationWindow : Window
 
         InitializeComponent();
 
-        _repoPathTextBox = this.FindControl<TextBox>("RepoPathTextBox");
-        _limbusPathTextBox = this.FindControl<TextBox>("LimbusPathTextBox");
-        _gitHubTokenStatusTextBlock = this.FindControl<TextBlock>("GitHubTokenStatusTextBlock");
+
+        _repoPathTextBox = RepoPathTextBox;
+        _limbusPathTextBox = LimbusPathTextBox;
+        _gitHubTokenStatusTextBlock = GitHubTokenStatusTextBlock;
 
         LoadPathsAndTokenStatus();
 
@@ -68,18 +71,53 @@ public partial class InitializationWindow : Window
 
     private async void BrowseFolder_Click(object sender, RoutedEventArgs e)
     {
-        var dialog = new OpenFolderDialog { Title = "Выбери папку с репозиторием" };
-        var result = await dialog.ShowAsync(this);
-        if (!string.IsNullOrWhiteSpace(result))
-            _repoPathTextBox.Text = result;
+        var top =
+            Application.Current!.ApplicationLifetime is
+                IClassicDesktopStyleApplicationLifetime desktop
+                ? desktop.MainWindow
+                : null;
+        if (top == null) return;
+        var storage = top.StorageProvider;
+        var pickedFolder = await storage.OpenFolderPickerAsync(new FolderPickerOpenOptions
+        {
+            Title = "Выбери папку с репозиторием",
+            AllowMultiple = false
+        });
+        if (pickedFolder.Count == 0) return;
+        var result = pickedFolder[0].Path.ToString();
+
+
+        var validatedPath = PersistentDataManager.ValidateRepoPath(result);
+        if (validatedPath != null)
+        {
+            _dataManager.Settings.RepositoryPath = validatedPath;
+            _repoPathTextBox.Text = validatedPath;
+        }
     }
 
     private async void BrowseLimbusFolder_Click(object sender, RoutedEventArgs e)
     {
-        var dialog = new OpenFolderDialog { Title = "Выбери папку с файлами игры" };
-        var result = await dialog.ShowAsync(this);
-        if (!string.IsNullOrWhiteSpace(result))
-            _limbusPathTextBox.Text = result;
+        var top =
+            Application.Current!.ApplicationLifetime is
+                IClassicDesktopStyleApplicationLifetime desktop
+                ? desktop.MainWindow
+                : null;
+        if (top == null) return;
+        var storage = top.StorageProvider;
+        var pickedFolder = await storage.OpenFolderPickerAsync(new FolderPickerOpenOptions
+        {
+            Title = "Выбери папку с лимбусом",
+            AllowMultiple = false
+        });
+        if (pickedFolder.Count == 0) return;
+        var result = pickedFolder[0].Path.ToString();
+
+        var validatedPath = PersistentDataManager.ValidateLimbusPath(result);
+        if (validatedPath != null)
+        {
+            _dataManager.Settings.PathToLimbus = validatedPath;
+            _limbusPathTextBox.Text = validatedPath;
+        }
     }
 
     private void Window_OnPointerPressed(object sender, PointerPressedEventArgs e)
@@ -90,16 +128,11 @@ public partial class InitializationWindow : Window
 
     private void RestartApp_Click(object sender, RoutedEventArgs e)
     {
-        var exePath = Environment.ProcessPath!;
-        var workDir = Path.GetDirectoryName(exePath)!;
+        SavePaths();
 
-        Process.Start(new ProcessStartInfo
-        {
-            FileName = exePath,
-            UseShellExecute = false,
-            WorkingDirectory = workDir
-        });
-        Environment.Exit(0);
+        var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+        _ = PopUpWindow.ShowAsync(parent!, "Сохранено!",
+            "Настройки были успешно сохранены, теперь нужно просто перезапустить прогу!");
     }
 
 
@@ -115,15 +148,14 @@ public partial class InitializationWindow : Window
                 ? "Ты не залогинен"
                 : "Ты залогинен";
         }
-        catch
+        catch (Exception ex)
         {
+            _ = App.Current.HandleNonFatalExceptionAsync(ex);
         }
     }
 
     private void SavePaths()
     {
-        _dataManager.Settings.RepositoryPath = _repoPathTextBox.Text;
-        _dataManager.Settings.PathToLimbus = _limbusPathTextBox.Text;
         _dataManager.Save();
     }
 }

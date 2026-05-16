@@ -26,25 +26,9 @@ public class RepositoryManager
     }
 
 
-    public Repository Repository { get; private set; }
+    public Repository Repository { get; private set; } = null!;
     public bool IsValid { get; private set; }
 
-    private string FindRepositoryPath(string originalPath)
-    {
-        if (Repository.IsValid(originalPath))
-            return originalPath;
-
-        var parentDir = Directory.GetParent(originalPath)?.FullName;
-        if (!string.IsNullOrWhiteSpace(parentDir) && Repository.IsValid(parentDir))
-            return parentDir;
-
-        if (Directory.Exists(originalPath))
-            foreach (var subDir in Directory.GetDirectories(originalPath))
-                if (Repository.IsValid(subDir))
-                    return subDir;
-
-        return null;
-    }
 
     #region Folders
 
@@ -59,16 +43,16 @@ public class RepositoryManager
     #region AbsolutePaths
 
     // Repo paths
-    public string RepositoryRoot { get; private set; }
+    public string RepositoryRoot { get; private set; } = null!;
     public string PathToLocalization => Path.Combine(_dataManager.Settings.RepositoryPath!, LocalizationFolder);
-    public string PathToReferenceLocalization;
+    public string PathToReferenceLocalization = null!;
     public string PathToDistribution => Path.Combine(_dataManager.Settings.RepositoryPath!, ".dist");
     public string PathToVSCodeSettings => Path.Combine(_dataManager.Settings.RepositoryPath!, ".vscode/settings.json");
     public string PathToRegexJson => Path.Combine(_dataManager.Settings.RepositoryPath!, "regexes.json");
 
     // Game paths
 
-    public string PathToGameRoot => _dataManager.Settings.PathToLimbus;
+    public string PathToGameRoot => _dataManager.Settings.PathToLimbus!;
 
     #endregion
 
@@ -76,19 +60,19 @@ public class RepositoryManager
 
     public string PathToKeywordColorList => Path.Combine(_dataManager.Settings.RepositoryPath!, "keyword_colors.json");
     public string PathToEgoNames => Path.Combine(PathToLocalization, "Egos.json");
-    public EgoLocalizationFile EgoNames;
-    public EgoLocalizationFile EgoNamesReference;
+    public EgoLocalizationFile EgoNames = null!;
+    public EgoLocalizationFile EgoNamesReference = null!;
 
     public string PathToAnnouncerNames => Path.Combine(PathToLocalization, "Announcer.json");
-    public AnnouncerLocalizationFile AnnouncerNames;
-    public AnnouncerLocalizationFile AnnouncerNamesReference;
+    public AnnouncerLocalizationFile AnnouncerNames = null!;
+    public AnnouncerLocalizationFile AnnouncerNamesReference = null!;
 
     public string PathToModelCodes => Path.Combine(PathToLocalization, "ScenarioModelCodes-AutoCreated.json");
-    public ScenarioModelCodesLocalizationFile ScenarioModelCodes;
-    public ScenarioModelCodesLocalizationFile ScenarioModelCodesReference;
+    public ScenarioModelCodesLocalizationFile ScenarioModelCodes = null!;
+    public ScenarioModelCodesLocalizationFile ScenarioModelCodesReference = null!;
 
     public string PathToAnnouncerVoiceTypes => Path.Combine(PathToLocalization, "AnnouncerVoiceType.json");
-    public AnnouncerVoiceTypeLocalizationFile AnnouncerVoiceTypes;
+    public AnnouncerVoiceTypeLocalizationFile AnnouncerVoiceTypes = null!;
 
     public string PathToFileMap => Path.Combine(PathToGameRoot,
         "LimbusCompany_Data/Assets/Resources_moved/Localize/RemoteLocalizeFileList.json");
@@ -101,23 +85,25 @@ public class RepositoryManager
 
     public void TryInitialize()
     {
-        var originalPath = _dataManager.Settings.RepositoryPath!;
+        var originalRepoPath = _dataManager.Settings.RepositoryPath;
+        var originalLimbusPath = _dataManager.Settings.PathToLimbus;
 
         try
         {
-            var foundRepoPath = FindRepositoryPath(originalPath) ?? null;
-            if (foundRepoPath == null ||
-                string.IsNullOrWhiteSpace(_dataManager.Settings.PathToLimbus))
+            var validatedRepoPath = PersistentDataManager.ValidateRepoPath(originalRepoPath);
+            var validatedGamePath = PersistentDataManager.ValidateLimbusPath(originalLimbusPath);
+            if (validatedRepoPath == null || validatedGamePath == null)
             {
                 IsValid = false;
                 return;
             }
 
-            if (foundRepoPath != originalPath) _dataManager.Settings.RepositoryPath = foundRepoPath;
+            if (validatedRepoPath != originalRepoPath) _dataManager.Settings.RepositoryPath = validatedRepoPath;
+            if (validatedGamePath != originalLimbusPath) _dataManager.Settings.PathToLimbus = validatedGamePath;
 
-            Repository = new Repository(foundRepoPath);
-            Directory.CreateDirectory(Path.Combine(foundRepoPath, DistPath));
-            PathToReferenceLocalization = Path.Combine(_dataManager.Settings.PathToLimbus!, ReferenceLangAppendage);
+            Repository = new Repository(validatedRepoPath);
+            Directory.CreateDirectory(Path.Combine(validatedRepoPath, DistPath));
+            PathToReferenceLocalization = Path.Combine(validatedGamePath, ReferenceLangAppendage);
 
             IsValid = true;
         }
