@@ -69,8 +69,10 @@ public class MassReplacementService(RepositoryManager repositoryManager)
                         if (prop.Value.Type != JTokenType.String) continue;
 
                         var original = prop.Value.Value<string>()!;
-                        var replaced = regex.Replace(original,
-                            m => ReplaceWithCasePreservation(m.Value, entry.Replacement, entry.PreserveCase));
+                        var replaced = entry.PreserveCase
+                            ? regex.Replace(original,
+                                m => ReplaceWithCasePreservation(m, entry.Replacement, entry.PreserveCase))
+                            : regex.Replace(original, entry.Replacement);
 
                         if (replaced == original) continue;
 
@@ -113,22 +115,23 @@ public class MassReplacementService(RepositoryManager repositoryManager)
             TimeSpan.FromSeconds(5)); // timeout if regex is retarded
     }
 
-    private static string ReplaceWithCasePreservation(string original, string replacement, bool preserveCase)
+    private static string ReplaceWithCasePreservation(Match match, string replacement, bool preserveCase)
     {
-        if (!preserveCase) return replacement;
-        if (string.IsNullOrEmpty(original) || string.IsNullOrEmpty(replacement))
-            return replacement;
+        var expanded = match.Result(replacement);
 
-        if (original.All(char.IsUpper))
-            return replacement.ToUpper();
+        if (!preserveCase)
+            return expanded;
+        if (string.IsNullOrEmpty(match.Value) || string.IsNullOrEmpty(expanded))
+            return expanded;
 
-        if (original.All(char.IsLower))
-            return replacement.ToLower();
+        if (match.Value.All(char.IsUpper))
+            return expanded.ToUpper();
+        if (match.Value.All(char.IsLower))
+            return expanded.ToLower();
+        if (char.IsUpper(match.Value[0]) && match.Value.Skip(1).All(char.IsLower))
+            return char.ToUpper(expanded[0]) + expanded[1..].ToLower();
 
-        if (char.IsUpper(original[0]) && original.Skip(1).All(char.IsLower))
-            return char.ToUpper(replacement[0]) + replacement[1..].ToLower();
-
-        return replacement;
+        return expanded;
     }
 
     private List<string> GetWhitelistedFiles(List<string> whitelist)
