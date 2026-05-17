@@ -172,7 +172,9 @@ public class MassReplacementService(RepositoryManager repositoryManager)
                 }
             }
         else
-            result.AddRange(Directory.GetFiles(localizationRoot, "*.json", SearchOption.AllDirectories));
+            // if whitelist is not enabled, get all files except from StoryData folder
+            result.AddRange(Directory.GetFiles(localizationRoot, "*.json", SearchOption.AllDirectories)
+                .Where(p => !p.Split(Path.DirectorySeparatorChar).Contains("StoryData")));
 
         return result.Distinct().ToList();
     }
