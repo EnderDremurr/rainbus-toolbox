@@ -177,7 +177,10 @@ public class MassReplacementService(RepositoryManager repositoryManager)
         else
             // if whitelist is not enabled, get all files except from StoryData folder
             result.AddRange(Directory.GetFiles(localizationRoot, "*.json", SearchOption.AllDirectories)
-                .Where(p => !p.Split(Path.DirectorySeparatorChar).Contains("StoryData")));
+                .Where(p => !p.Split(Path.DirectorySeparatorChar).Contains("StoryData")
+                            && !p.Split(Path.DirectorySeparatorChar).Contains("ScenarioModelCodes-AutoCreated.json")
+                            && !p.Contains("StageNode"))
+            );
 
         return result.Distinct().ToList();
     }

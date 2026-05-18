@@ -23,7 +23,8 @@ public class SpellcheckColorizer(SpellcheckEngine engine) : DocumentColorizingTr
                         {
                             Location = TextDecorationLocation.Underline,
                             Stroke = Brushes.Red,
-                            StrokeThickness = 2
+                            StrokeThickness = 2,
+                            
                         }
                     ]);
                 });
