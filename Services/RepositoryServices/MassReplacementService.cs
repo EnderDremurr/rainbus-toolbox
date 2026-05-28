@@ -57,18 +57,14 @@ public class MassReplacementService(RepositoryManager repositoryManager)
                     var root = JsonConvert.DeserializeObject<JObject>(raw);
                     if (root == null) return;
 
-                    var dataList = root["dataList"] as JArray;
-                    if (dataList == null) return;
-
                     var dirty = false;
 
-                    foreach (var item in dataList)
-                    foreach (var prop in item.Children<JProperty>())
+                    foreach (var token in root.Descendants().OfType<JValue>())
                     {
-                        if (prop.Name == "id") continue;
-                        if (prop.Value.Type != JTokenType.String) continue;
+                        if (token.Type != JTokenType.String) continue;
+                        if (token.Parent is JProperty { Name: "id" }) continue;
 
-                        var original = prop.Value.Value<string>()!;
+                        var original = token.Value<string>()!;
                         var replaced = entry.PreserveCase
                             ? regex.Replace(original,
                                 m => ReplaceWithCasePreservation(m, entry.Replacement, entry.PreserveCase))
@@ -76,7 +72,7 @@ public class MassReplacementService(RepositoryManager repositoryManager)
 
                         if (replaced == original) continue;
 
-                        prop.Value = replaced;
+                        token.Value = replaced;
                         dirty = true;
                     }
 
