@@ -222,9 +222,13 @@ public partial class ReleaseTabViewModel : ObservableObject
         try
         {
             LoadingScreenViewModel.StartLoading("Создаётся релиз...");
+            LoadingScreenViewModel.SetText("Начинается прогон автозамены...");
+            await RunAllEntriesAsyncBeforeRelease();
+            // replacement is ran twice before release to ensure everything is replaced properly
+            await RunAllEntriesAsyncBeforeRelease();
             LoadingScreenViewModel.SetText("Начинается замена кейвордов перед релизом...");
             await _keywordProcessingService.ReplaceEveryTagWithMesh(_repositoryManager.PathToLocalization);
-            await RunAllEntriesAsyncBeforeRelease();
+
 
             var currentVersion = _repositoryManager.GetLatestReleaseSemantic();
             var parts = currentVersion.Split('.');
