@@ -105,6 +105,12 @@
                                             IsChecked="{Binding PreserveCase}"
                                             Margin="0,0,30,0"
                                             Padding="10,0" />
+                                        <ToggleButton
+                                            Content="Заменять теги в []"
+                                            Height="28"
+                                            IsChecked="{Binding ReplaceTags}"
+                                            Margin="0,0,30,0"
+                                            Padding="10,0" />
                                     </WrapPanel>
 
                                     <!--  File whitelist  -->

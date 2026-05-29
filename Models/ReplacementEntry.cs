@@ -10,6 +10,7 @@ public partial class ReplacementEntry : ObservableObject
     [ObservableProperty] private bool _matchWholeWord;
     [ObservableProperty] private bool _preserveCase;
     [ObservableProperty] private string _replacement = string.Empty;
+    [ObservableProperty] private bool _replaceTags;
     [ObservableProperty] private string _target = string.Empty;
 
     public ObservableCollection<FilePathEntry> FileWhiteList { get; set; } = new();

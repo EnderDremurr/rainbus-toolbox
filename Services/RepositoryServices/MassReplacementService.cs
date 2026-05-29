@@ -9,11 +9,14 @@ using RainbusToolbox.Models.Managers;
 
 namespace RainbusToolbox.Services.RepositoryServices;
 
-public class MassReplacementService(RepositoryManager repositoryManager)
+public partial class MassReplacementService(RepositoryManager repositoryManager)
 {
+    private readonly Regex _protectedPattern = ProtectedRegex();
+
+    [GeneratedRegex(@"(\[[^\]]*\]|<[^>]*>)")]
+    private static partial Regex ProtectedRegex();
+
     // also don't forget about whitelists (if empty then there's no whitelist)
-
-
     public async Task RunAllRegexesForAllFilesAsync(
         List<ReplacementEntry> entries,
         IProgress<(int Processed, int Total, string Label)>? progress = null,
@@ -65,10 +68,24 @@ public class MassReplacementService(RepositoryManager repositoryManager)
                         if (token.Parent is JProperty { Name: "id" }) continue;
 
                         var original = token.Value<string>()!;
-                        var replaced = entry.PreserveCase
-                            ? regex.Replace(original,
-                                m => ReplaceWithCasePreservation(m, entry.Replacement, entry.PreserveCase))
-                            : regex.Replace(original, entry.Replacement);
+                        //check for protected pattern
+
+                        //this shit is false if it doesn't need to replace
+                        var parts = entry.ReplaceTags
+                            ? _protectedPattern.Split(original)
+                            : [original];
+
+                        for (var j = 0; j < parts.Length; j++)
+                        {
+                            if (j % 2 != 0) continue; // odd elements are ones that match the regex (don't replace)
+
+                            parts[j] = entry.PreserveCase
+                                ? regex.Replace(parts[j],
+                                    m => ReplaceWithCasePreservation(m, entry.Replacement, entry.PreserveCase))
+                                : regex.Replace(parts[j], entry.Replacement);
+                        }
+
+                        var replaced = string.Join("", parts);
 
                         if (replaced == original) continue;
 
