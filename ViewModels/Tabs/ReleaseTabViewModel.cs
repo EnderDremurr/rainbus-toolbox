@@ -33,19 +33,28 @@ public partial class ReleaseTabViewModel : ObservableObject
         _repositoryManager = repositoryManager;
         _keywordProcessingService = keywordProcessingService;
         _massReplacementService = massReplacementService;
-
-        VersionDisplay = _repositoryManager.GetLatestReleaseSemantic();
     }
 
     #endregion
 
     #region Events
 
-    public void OnTabOpened()
+    public async void OnTabOpened()
     {
         var rpc = App.Current.ServiceProvider.GetService(typeof(DiscordRPCService)) as DiscordRPCService;
 
         rpc!.SetState("Делает жесткий релиз");
+
+        if (!await _githubManager.IsConnectionValid())
+        {
+            var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            await PopUpWindow.ShowAsync(parent!, "Ты в оффлайн режиме!",
+                "Не удаётся подключится к гитхабу, поэтому увы!");
+            VersionDisplay = "Оффлайн режим!";
+            return;
+        }
+
+        VersionDisplay = _repositoryManager.GetLatestReleaseSemantic();
     }
 
     #endregion
@@ -91,35 +100,6 @@ public partial class ReleaseTabViewModel : ObservableObject
     #endregion
 
     #region Properties
-
-    // User and repo information
-    public string Username
-    {
-        get => _username;
-        set
-        {
-            if (_username != value)
-            {
-                _username = value;
-                OnPropertyChanged(nameof(UserRepoDisplay));
-            }
-        }
-    }
-
-    public string RepoName
-    {
-        get => _repoName;
-        set
-        {
-            if (_repoName != value)
-            {
-                _repoName = value;
-                OnPropertyChanged(nameof(UserRepoDisplay));
-            }
-        }
-    }
-
-    public string UserRepoDisplay => $"{Username} : [{RepoName}]";
 
     // Text editor
     [ObservableProperty]
@@ -203,6 +183,14 @@ public partial class ReleaseTabViewModel : ObservableObject
     [RelayCommand]
     public async Task Submit()
     {
+        if (!await _githubManager.IsConnectionValid())
+        {
+            var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            await PopUpWindow.ShowAsync(parent!, "Ты в оффлайн режиме!",
+                "Не удаётся подключится к гитхабу, поэтому увы!");
+            return;
+        }
+
         if (string.IsNullOrWhiteSpace(_dataManager.Settings.GitHubToken))
         {
             var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;

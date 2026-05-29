@@ -62,19 +62,34 @@ public partial class MainWindowViewModel : ObservableObject
     {
         Username = await _githubManager.GetGithubDisplayNameAsync();
 
-        var (repoName, repoChanges) = await Task.Run(() =>
+        try
         {
-            var remoteUrl = _repositoryManager.Repository.Network.Remotes["origin"].Url;
-            var name = Path.GetFileNameWithoutExtension(remoteUrl);
-            var changes = _repositoryManager.CheckRepositoryChanges();
-            return (name, changes);
-        });
+            if (!await _githubManager.IsConnectionValid())
+            {
+                RepoName = "Offline";
+                GitStatus = "Offline";
+                return;
+            }
 
-        RepoName = repoName;
-        GitStatus = repoChanges[0] == 0 && repoChanges[1] == 0 ? "✓" : $"{repoChanges[0]}↓ - {repoChanges[1]}↑";
-        _discordRPCService.ProjectName = repoName;
-        _discordRPCService.ProjectUrl = _repositoryManager.Repository.Network.Remotes["origin"].Url;
-        _discordRPCService.SetState(null);
+            var (repoName, repoChanges) = await Task.Run(() =>
+            {
+                var remoteUrl = _repositoryManager.Repository.Network.Remotes["origin"].Url;
+                var name = Path.GetFileNameWithoutExtension(remoteUrl);
+                var changes = _repositoryManager.CheckRepositoryChanges();
+                return (name, changes);
+            });
+
+            RepoName = repoName;
+            GitStatus = repoChanges[0] == 0 && repoChanges[1] == 0 ? "✓" : $"{repoChanges[0]}↓ - {repoChanges[1]}↑";
+            _discordRPCService.ProjectName = repoName;
+            _discordRPCService.ProjectUrl = _repositoryManager.Repository.Network.Remotes["origin"].Url;
+            _discordRPCService.SetState(null);
+        }
+        catch (Exception e)
+        {
+            RepoName = "Unknown";
+            GitStatus = "Unknown";
+        }
     }
 
     #endregion
@@ -164,6 +179,14 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     public async Task Synchronize()
     {
+        if (!await _githubManager.IsConnectionValid())
+        {
+            var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            await PopUpWindow.ShowAsync(parent!, "Ты в оффлайн режиме!",
+                "Не удаётся подключится к гитхабу, поэтому увы!");
+            return;
+        }
+
         try
         {
             LoadingScreenViewModel.StartLoading("Синхронизация...");

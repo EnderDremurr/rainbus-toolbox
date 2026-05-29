@@ -7,32 +7,29 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using RainbusToolbox.ViewModels;
 using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.Models.Managers;
 
-public class GithubManager
+public class GithubManager(PersistentDataManager persistentDataManager, RepositoryManager repositoryManager)
 {
     private const string ClientId = "Ov23libxwWDK2iVhx2Zg";
     private const string Scope = "repo";
 
-    private readonly PersistentDataManager _dataManager;
-    private readonly RepositoryManager _repositoryManager;
+    public bool IsOffline { get; private set; }
 
-    public GithubManager(PersistentDataManager manager, RepositoryManager repositoryManager)
+    public async Task<bool> IsConnectionValid()
     {
-        _dataManager = manager;
-        _repositoryManager = repositoryManager;
-        TryInitialize();
+        if (string.IsNullOrWhiteSpace(persistentDataManager.Settings.GitHubToken)) IsOffline = true;
+
+        if (!await IsTokenValidAsync(persistentDataManager.Settings.GitHubToken)) IsOffline = true;
+
+        return !IsOffline;
     }
 
-    public void TryInitialize()
-    {
-        if (string.IsNullOrWhiteSpace(_dataManager.Settings.GitHubToken))
-            return;
-    }
-
+    // TODO: slopreview
     public async Task RequestGithubAuthAsync(Window window)
     {
         using var http = new HttpClient();
@@ -150,15 +147,25 @@ public class GithubManager
         }
 
         // save
-        _dataManager.Settings.GitHubToken = token;
-        _dataManager.Save();
+        persistentDataManager.Settings.GitHubToken = token;
+        persistentDataManager.Save();
     }
 
 
+    // TODO: slopreview
     public async Task CreateReleaseAsync(string releaseName, string releaseDescription, string pathToZip)
     {
-        var repoPath = _repositoryManager.Repository.Info.WorkingDirectory;
-        var remoteUrl = _repositoryManager.Repository.Network.Remotes["origin"].Url;
+        if (!await IsConnectionValid())
+        {
+            var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            await PopUpWindow.ShowAsync(parent!, "Ты в оффлайн режиме!",
+                "Не удаётся подключится к гитхабу, поэтому увы!");
+            return;
+        }
+
+
+        var repoPath = repositoryManager.Repository.Info.WorkingDirectory;
+        var remoteUrl = repositoryManager.Repository.Network.Remotes["origin"].Url;
 
         // Extract owner and repo name from remote URL
         // Example: https://github.com/username/repo.git
@@ -177,7 +184,7 @@ public class GithubManager
         http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
         http.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RainbusToolbox", "1.0"));
         http.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", _dataManager.Settings.GitHubToken);
+            new AuthenticationHeaderValue("Bearer", persistentDataManager.Settings.GitHubToken);
 
         // 2. Check if release/tag already exists
         var checkResponse =
@@ -286,45 +293,59 @@ public class GithubManager
 
     public async Task<bool> IsTokenValidAsync(string? token = null)
     {
-        token ??= _dataManager.Settings.GitHubToken;
-
         if (string.IsNullOrWhiteSpace(token))
             return false;
 
-        using var http = new HttpClient();
-        http.DefaultRequestHeaders.UserAgent.ParseAdd("RainbusToolbox/1.0");
-        http.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", token);
+        try
+        {
+            using var http = new HttpClient();
+            http.DefaultRequestHeaders.UserAgent.ParseAdd("RainbusToolbox/1.0");
+            http.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await http.GetAsync("https://api.github.com/rate_limit");
-        return response.IsSuccessStatusCode;
+            var response = await http.GetAsync("https://api.github.com/rate_limit");
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
     }
 
     public async Task<string> GetGithubDisplayNameAsync()
     {
-        using var http = new HttpClient();
-        http.DefaultRequestHeaders.Accept.Clear();
-        http.DefaultRequestHeaders.Accept.Add(
-            new MediaTypeWithQualityHeaderValue("application/json"));
+        if (!await IsConnectionValid()) return "Offline";
 
-        var token = _dataManager.Settings.GitHubToken;
-        http.DefaultRequestHeaders.UserAgent.ParseAdd("RainbusToolbox/1.0");
-        http.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", token);
+        try
+        {
+            using var http = new HttpClient();
+            http.DefaultRequestHeaders.Accept.Clear();
+            http.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
 
-        var response = await http.GetAsync("https://api.github.com/user");
-        if (!response.IsSuccessStatusCode)
-            throw new Exception($"Failed to get GitHub user info: {response.StatusCode}");
-        var json = await response.Content.ReadAsStringAsync();
-        using var doc = JsonDocument.Parse(json);
+            var token = persistentDataManager.Settings.GitHubToken;
+            http.DefaultRequestHeaders.UserAgent.ParseAdd("RainbusToolbox/1.0");
+            http.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await http.GetAsync("https://api.github.com/user");
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"Failed to get GitHub user info: {response.StatusCode}");
+            var json = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
 
 
-        string displayName = null;
-        if (doc.RootElement.TryGetProperty("name", out var nameProp) &&
-            !string.IsNullOrWhiteSpace(nameProp.GetString())) displayName = nameProp.GetString();
+            var displayName = "";
+            if (doc.RootElement.TryGetProperty("name", out var nameProp) &&
+                !string.IsNullOrWhiteSpace(nameProp.GetString())) displayName = nameProp.GetString();
 
-        if (string.IsNullOrWhiteSpace(displayName)) displayName = doc.RootElement.GetProperty("login").GetString();
+            if (string.IsNullOrWhiteSpace(displayName)) displayName = doc.RootElement.GetProperty("login").GetString();
 
-        return displayName;
+            return displayName ?? "Unknown";
+        }
+        catch (Exception e)
+        {
+            return "Unknown";
+        }
     }
 }

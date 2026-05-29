@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using RainbusToolbox.Models.Managers;
-using Serilog;
 
 namespace RainbusToolbox.Services.ExternalServices;
 
@@ -12,7 +11,6 @@ public class CachingService
 {
     private const string EGOGiftWikiCategory = "Category:E.G.O_Gifts";
     private const string AnnouncersWikiCategory = "Category:Battle_Announcer_Icons";
-    private readonly CancellationToken _appCancellationToken;
 
     private readonly Dictionary<string, string> _cachePathMap =
         new()
@@ -35,23 +33,30 @@ public class CachingService
         if (string.IsNullOrWhiteSpace(persistentDataManager.Settings.PathToLimbus))
             return;
 
-        _appCancellationToken = _cts.Token;
-        _ = Task.Run(() => SyncCacheAsync("Category:E.G.O_Gifts", _appCancellationToken));
-        _ = Task.Run(() => SyncCacheAsync("Category:Battle_Announcer_Icons", _appCancellationToken));
+        try
+        {
+            var appCancellationToken = _cts.Token;
+            _ = Task.Run(() => SyncCacheAsync("Category:E.G.O_Gifts", appCancellationToken));
+            _ = Task.Run(() => SyncCacheAsync("Category:Battle_Announcer_Icons", appCancellationToken));
+        }
+        catch
+        {
+            // ignored
+        }
     }
 
-    private string _baseCachePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+    private string BaseCachePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "RainbusToolbox", "cache");
 
 
     public async Task SyncCacheAsync(string categoryTitle, CancellationToken ct)
     {
         Log.Debug("Starting cache sync for {CategoryTitle}", categoryTitle);
-        Directory.CreateDirectory(Path.Combine(_baseCachePath, _cachePathMap[categoryTitle]));
+        Directory.CreateDirectory(Path.Combine(BaseCachePath, _cachePathMap[categoryTitle]));
 
         var allFiles = await FetchAllCategoryMembersFromWikiAsync(categoryTitle, ct);
         var missing = allFiles.Where(name => !File.Exists(
-            Path.Combine(_baseCachePath, _cachePathMap[categoryTitle], name.Replace("File:", "")))).ToList();
+            Path.Combine(BaseCachePath, _cachePathMap[categoryTitle], name.Replace("File:", "")))).ToList();
 
         Log.Debug("{Missing}/{AllFiles} files need downloading for {CategoryTitle}", missing, allFiles, categoryTitle);
         if (!missing.Any()) return;
@@ -62,71 +67,85 @@ public class CachingService
 
     public async Task<List<string>> FetchAllCategoryMembersFromWikiAsync(string categoryTitle, CancellationToken ct)
     {
-        var results = new List<string>();
-        string? continueToken = null;
-
-        do
+        try
         {
-            var url = "https://limbuscompany.wiki.gg/api.php" +
-                      "?action=query&list=categorymembers" +
-                      "&cmtitle=" + Uri.EscapeDataString(categoryTitle) +
-                      "&cmtype=file&cmlimit=500&format=json";
+            var results = new List<string>();
+            string? continueToken = null;
 
-            if (continueToken != null)
-                url += $"&cmcontinue={continueToken}";
-            Log.Debug("Fetching category members from wiki for {CategoryTitle}", categoryTitle);
-            var json = await _httpClient.GetStringAsync(url, ct);
-            Log.Debug("Got response for {CategoryTitle}", categoryTitle);
-            var doc = JsonDocument.Parse(json);
+            do
+            {
+                var url = "https://limbuscompany.wiki.gg/api.php" +
+                          "?action=query&list=categorymembers" +
+                          "&cmtitle=" + Uri.EscapeDataString(categoryTitle) +
+                          "&cmtype=file&cmlimit=500&format=json";
 
-            var members = doc.RootElement
-                .GetProperty("query")
-                .GetProperty("categorymembers")
-                .EnumerateArray();
+                if (continueToken != null)
+                    url += $"&cmcontinue={continueToken}";
+                Log.Debug("Fetching category members from wiki for {CategoryTitle}", categoryTitle);
+                var json = await _httpClient.GetStringAsync(url, ct);
+                Log.Debug("Got response for {CategoryTitle}", categoryTitle);
+                var doc = JsonDocument.Parse(json);
 
-            foreach (var member in members)
-                results.Add(member.GetProperty("title").GetString()!);
+                var members = doc.RootElement
+                    .GetProperty("query")
+                    .GetProperty("categorymembers")
+                    .EnumerateArray();
 
-            continueToken = doc.RootElement.TryGetProperty("continue", out var cont)
-                ? cont.GetProperty("cmcontinue").GetString()
-                : null;
-        } while (continueToken != null);
+                foreach (var member in members)
+                    results.Add(member.GetProperty("title").GetString()!);
 
-        return results;
+                continueToken = doc.RootElement.TryGetProperty("continue", out var cont)
+                    ? cont.GetProperty("cmcontinue").GetString()
+                    : null;
+            } while (continueToken != null);
+
+            return results;
+        }
+        catch (Exception e)
+        {
+            return [];
+        }
     }
 
     public async Task<Dictionary<string, string>> BatchResolveUrlsAsync(List<string> fileNames, CancellationToken ct)
     {
-        var result = new Dictionary<string, string>();
-
-        foreach (var chunk in fileNames.Chunk(50))
+        try
         {
-            var titles = string.Join("|", chunk);
-            var url = "https://limbuscompany.wiki.gg/api.php" +
-                      $"?action=query&titles={Uri.EscapeDataString(titles)}" +
-                      "&prop=imageinfo&iiprop=url&format=json";
+            var result = new Dictionary<string, string>();
 
-            var json = await _httpClient.GetStringAsync(url, ct);
-            var doc = JsonDocument.Parse(json);
-
-            var pages = doc.RootElement
-                .GetProperty("query")
-                .GetProperty("pages")
-                .EnumerateObject();
-
-            foreach (var page in pages)
+            foreach (var chunk in fileNames.Chunk(50))
             {
-                var title = page.Value.GetProperty("title").GetString()!;
-                var imageUrl = page.Value
-                    .GetProperty("imageinfo")[0]
-                    .GetProperty("url")
-                    .GetString()!;
+                var titles = string.Join("|", chunk);
+                var url = "https://limbuscompany.wiki.gg/api.php" +
+                          $"?action=query&titles={Uri.EscapeDataString(titles)}" +
+                          "&prop=imageinfo&iiprop=url&format=json";
 
-                result[title] = imageUrl;
+                var json = await _httpClient.GetStringAsync(url, ct);
+                var doc = JsonDocument.Parse(json);
+
+                var pages = doc.RootElement
+                    .GetProperty("query")
+                    .GetProperty("pages")
+                    .EnumerateObject();
+
+                foreach (var page in pages)
+                {
+                    var title = page.Value.GetProperty("title").GetString()!;
+                    var imageUrl = page.Value
+                        .GetProperty("imageinfo")[0]
+                        .GetProperty("url")
+                        .GetString()!;
+
+                    result[title] = imageUrl;
+                }
             }
-        }
 
-        return result;
+            return result;
+        }
+        catch (Exception e)
+        {
+            return [];
+        }
     }
 
     public async Task DownloadAllAsync(Dictionary<string, string> urls, string cacheSubfolder, CancellationToken ct)
@@ -136,7 +155,7 @@ public class CachingService
         var tasks = urls.Select(async kvp =>
         {
             var fileName = kvp.Key.Replace("File:", "");
-            var savePath = Path.Combine(_baseCachePath, cacheSubfolder, fileName);
+            var savePath = Path.Combine(BaseCachePath, cacheSubfolder, fileName);
 
             if (File.Exists(savePath)) return;
 
