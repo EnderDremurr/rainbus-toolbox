@@ -111,7 +111,7 @@ public partial class SettingsWindow : Window
             );
         });
 
-        if (!await _githubManager.IsTokenValidAsync(newToken))
+        if (!await GithubManager.IsTokenValidAsync(newToken))
         {
             await App.Current.HandleNonFatalExceptionAsync(new Exception("Гитхаб вернул невалидный токен."));
             return;
