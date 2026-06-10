@@ -1,22 +1,18 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using RainbusToolbox.ViewModels;
 using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.Models.Managers;
 
 public class GithubManager(PersistentDataManager persistentDataManager, RepositoryManager repositoryManager)
 {
-    private const string ClientId = "Ov23libxwWDK2iVhx2Zg";
-    private const string Scope = "repo";
+    private readonly HttpClient _httpClient = new();
 
     public bool IsOffline { get; private set; }
 
@@ -27,128 +23,6 @@ public class GithubManager(PersistentDataManager persistentDataManager, Reposito
         if (!await IsTokenValidAsync(persistentDataManager.Settings.GitHubToken)) IsOffline = true;
 
         return !IsOffline;
-    }
-
-    // TODO: slopreview
-    public async Task RequestGithubAuthAsync(Window window)
-    {
-        using var http = new HttpClient();
-        http.DefaultRequestHeaders.Accept.Clear();
-        http.DefaultRequestHeaders.Accept.Add(
-            new MediaTypeWithQualityHeaderValue("application/json"));
-
-        var clipboard = TopLevel.GetTopLevel(window)?.Clipboard;
-
-        // Step 1: Request device/user codes
-        var deviceResp = await http.PostAsync(
-            "https://github.com/login/device/code",
-            new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("client_id", ClientId),
-                new KeyValuePair<string, string>("scope", Scope)
-            }));
-
-        if (!deviceResp.IsSuccessStatusCode)
-        {
-            await PopUpWindow.ShowAsync(window, "Ошибка",
-                "Не удалось получить код авторизации.",
-                buttons: new PopupButton { Label = "OK", ResultValue = "ok" }
-            );
-            return;
-        }
-
-        var deviceJson = JsonDocument.Parse(await deviceResp.Content.ReadAsStringAsync());
-
-        var userCode = deviceJson.RootElement.GetProperty("user_code").GetString();
-        var verificationUri = deviceJson.RootElement.GetProperty("verification_uri").GetString();
-        var deviceCode = deviceJson.RootElement.GetProperty("device_code").GetString();
-        var expiresIn = deviceJson.RootElement.GetProperty("expires_in").GetInt32();
-        var interval = deviceJson.RootElement.GetProperty("interval").GetInt32();
-
-        Process.Start(new ProcessStartInfo
-        {
-            FileName = verificationUri,
-            UseShellExecute = true
-        });
-
-        await PopUpWindow.ShowAsync(window, "Нужна авторизация",
-            $"Проге нужен токен с GitHub.\nВведи этот код на открытой странице:\n\n{userCode}\n\nЗатем нажми ОК",
-            false,
-            "",
-            null,
-            new PopupButton
-            {
-                Label = "Скопировать код",
-                ResultValue = "copy",
-                KeepOpen = true,
-                OnClick = () => clipboard?.SetTextAsync(userCode)
-            },
-            new PopupButton { Label = "OK", ResultValue = "ok" }
-        );
-
-        // Step 2: Poll for access token
-        var token = "";
-        var start = DateTime.UtcNow;
-
-        while ((DateTime.UtcNow - start).TotalSeconds < expiresIn)
-        {
-            await Task.Delay(interval * 1000);
-
-            var tokenResp = await http.PostAsync(
-                "https://github.com/login/oauth/access_token",
-                new FormUrlEncodedContent(new[]
-                {
-                    new KeyValuePair<string, string>("client_id", ClientId),
-                    new KeyValuePair<string, string>("device_code", deviceCode),
-                    new KeyValuePair<string, string>("grant_type", "urn:ietf:params:oauth:grant-type:device_code")
-                }));
-
-            if (!tokenResp.IsSuccessStatusCode)
-            {
-                await PopUpWindow.ShowAsync(window, "Ошибка",
-                    "Не удалось получить код авторизации."
-                );
-                return;
-            }
-
-            var tokenJson = JsonDocument.Parse(await tokenResp.Content.ReadAsStringAsync());
-
-            if (tokenJson.RootElement.TryGetProperty("access_token", out var accessTokenProp))
-            {
-                token = accessTokenProp.GetString() ?? "";
-                break;
-            }
-
-            if (tokenJson.RootElement.TryGetProperty("error", out var errorProp) &&
-                errorProp.GetString() != "authorization_pending")
-            {
-                await PopUpWindow.ShowAsync(window, "Ошибка",
-                    "Не удалось авторизовать."
-                );
-                return;
-            }
-        }
-
-        if (string.IsNullOrWhiteSpace(token))
-        {
-            await PopUpWindow.ShowAsync(window, "Ошибка",
-                "Гитхаб вернул пустой токен."
-            );
-            return;
-        }
-
-        // check for invalid token (idk why but for new users it just farts out 401 no matter what)
-        if (!await IsTokenValidAsync(token))
-        {
-            await PopUpWindow.ShowAsync(window, "Ошибка",
-                "Токен недействителен. Попробуй ещё раз."
-            );
-            return;
-        }
-
-        // save
-        persistentDataManager.Settings.GitHubToken = token;
-        persistentDataManager.Save();
     }
 
 
@@ -291,7 +165,7 @@ public class GithubManager(PersistentDataManager persistentDataManager, Reposito
             Log.Debug("README.md not found in repository root, skipping upload.");
     }
 
-    public async Task<bool> IsTokenValidAsync(string? token = null)
+    public static async Task<bool> IsTokenValidAsync(string? token)
     {
         if (string.IsNullOrWhiteSpace(token))
             return false;

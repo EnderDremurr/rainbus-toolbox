@@ -5,9 +5,13 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using RainbusToolbox.Models.Managers;
+using RainbusToolbox.Utilities.NetworkUtilities;
+using RainbusToolbox.ViewModels;
+using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox;
 
+// TODO: SUPER TODO, THIS SHIT SHOULD BE IN THE VIEW MODEL, NOT THE VIEW!!!!
 public partial class SettingsWindow : Window
 {
     private readonly PersistentDataManager _dataManager;
@@ -87,10 +91,36 @@ public partial class SettingsWindow : Window
     // GitHub token button
     private async void SetGitHubToken_Click(object sender, RoutedEventArgs e)
     {
-        await _githubManager.RequestGithubAuthAsync(this);
+        var newToken = await GithubAuthHelper.RequestGithubAuthAsync(async userCode =>
+        {
+            var clipboard = GetTopLevel(this)?.Clipboard;
 
-        var isAuthorized = !string.IsNullOrWhiteSpace(_dataManager.Settings.GitHubToken);
-        GitHubTokenStatusTextBlock.Text = isAuthorized ? "Ты залогинен" : "Ты не залогинен";
+            await PopUpWindow.ShowAsync(this, "Нужна авторизация",
+                $"Проге нужен токен с GitHub.\nВведи этот код на открытой странице:\n\n{userCode}\n\nЗатем нажми ОК",
+                false,
+                "",
+                null,
+                new PopupButton
+                {
+                    Label = "Скопировать код",
+                    ResultValue = "copy",
+                    KeepOpen = true,
+                    OnClick = () => clipboard?.SetTextAsync(userCode)
+                },
+                new PopupButton { Label = "OK", ResultValue = "ok" }
+            );
+        });
+
+        if (!await _githubManager.IsTokenValidAsync(newToken))
+        {
+            await App.Current.HandleNonFatalExceptionAsync(new Exception("Гитхаб вернул невалидный токен."));
+            return;
+        }
+
+        _dataManager.Settings.GitHubToken = newToken;
+        _dataManager.Save();
+
+        GitHubTokenStatusTextBlock.Text = "Ты залогинен";
     }
 
     private void SaveSettings()

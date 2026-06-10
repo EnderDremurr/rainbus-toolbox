@@ -115,15 +115,15 @@ public partial class MainWindowViewModel : ObservableObject
     #region Translation info
 
     [ObservableProperty]
-    private string _username = "Unknown";
+    private string _username = "Loading";
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(RepoDisplay))]
-    private string _repoName = "Unknown";
+    private string _repoName = "Loading";
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(RepoDisplay))]
-    private string _gitStatus = "Unknown";
+    private string _gitStatus = "Loading";
 
     public string RepoDisplay => $"<{RepoName} - {GitStatus}> ";
 
