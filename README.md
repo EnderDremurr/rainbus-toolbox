@@ -20,8 +20,7 @@ Rainbus Toolbox - кроссплатформенная альтернатива 
 - [Limbus Localization UI](https://github.com/x1bViolet/Limbus-Localization-UI)
 - [LC Localization Controls](https://github.com/x1bViolet/LC-Localization-Controls)
 
-# ВАЖНО!!! Это приложение пока что может работать достаточно нестабильно, если вам нужен редактор, что не сломается - используйте софт по ссылкам выше
-
+Я стараюсь сделать одно приложение, что может делать всё, нужное для перевода. Чтоб не приходилось открывать то одно, то другое
 ---
 
 ## Возможности
