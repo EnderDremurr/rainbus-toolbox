@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Platform.Storage;
@@ -30,7 +29,7 @@ public partial class InitializationWindow : Window
         _githubManager = githubManager;
 
         InitializeComponent();
-
+        SetupBackgroundSize();
 
         _repoPathTextBox = RepoPathTextBox;
         _limbusPathTextBox = LimbusPathTextBox;
@@ -41,13 +40,9 @@ public partial class InitializationWindow : Window
         Closing += (_, __) => SavePaths();
     }
 
-    private void InitializeComponent()
+    private void SetupBackgroundSize()
     {
-        AvaloniaXamlLoader.Load(this);
-
-        // Load the image to get its size
         var bitmap = new Bitmap(AssetLoader.Open(new Uri("avares://RainbusToolbox/Assets/Backgrounds/Init.png")));
-
         Width = bitmap.PixelSize.Width / 1.5f;
         Height = bitmap.PixelSize.Height / 1.5f;
     }
@@ -66,36 +61,43 @@ public partial class InitializationWindow : Window
 
     private async void SetGitHubToken_Click(object sender, RoutedEventArgs e)
     {
-        var newToken = await GithubAuthHelper.RequestGithubAuthAsync(async userCode =>
+        try
         {
-            var clipboard = GetTopLevel(this)?.Clipboard;
+            var newToken = await GithubAuthHelper.RequestGithubAuthAsync(async userCode =>
+            {
+                var clipboard = GetTopLevel(this)?.Clipboard;
 
-            await PopUpWindow.ShowAsync(this, "Нужна авторизация",
-                $"Проге нужен токен с GitHub.\nВведи этот код на открытой странице:\n\n{userCode}\n\nЗатем нажми ОК",
-                false,
-                "",
-                null,
-                new PopupButton
-                {
-                    Label = "Скопировать код",
-                    ResultValue = "copy",
-                    KeepOpen = true,
-                    OnClick = () => clipboard?.SetTextAsync(userCode)
-                },
-                new PopupButton { Label = "OK", ResultValue = "ok" }
-            );
-        });
+                await PopUpWindow.ShowAsync(this, "Нужна авторизация",
+                    $"Проге нужен токен с GitHub.\nВведи этот код на открытой странице:\n\n{userCode}\n\nЗатем нажми ОК",
+                    false,
+                    "",
+                    null,
+                    new PopupButton
+                    {
+                        Label = "Скопировать код",
+                        ResultValue = "copy",
+                        KeepOpen = true,
+                        OnClick = () => clipboard?.SetTextAsync(userCode)
+                    },
+                    new PopupButton { Label = "OK", ResultValue = "ok" }
+                );
+            });
 
-        if (!await GithubManager.IsTokenValidAsync(newToken))
-        {
-            await App.Current.HandleNonFatalExceptionAsync(new Exception("Гитхаб вернул невалидный токен."));
-            return;
+            if (!await GithubManager.IsTokenValidAsync(newToken))
+            {
+                await App.Current.HandleNonFatalExceptionAsync(new Exception("Гитхаб вернул невалидный токен."));
+                return;
+            }
+
+            _dataManager.Settings.GitHubToken = newToken;
+            _dataManager.Save();
+
+            GitHubTokenStatusTextBlock.Text = "Ты залогинен";
         }
-
-        _dataManager.Settings.GitHubToken = newToken;
-        _dataManager.Save();
-
-        GitHubTokenStatusTextBlock.Text = "Ты залогинен";
+        catch (Exception exception)
+        {
+            await App.Current.HandleGlobalExceptionAsync(exception);
+        }
     }
 
     private async void BrowseFolder_Click(object sender, RoutedEventArgs e)

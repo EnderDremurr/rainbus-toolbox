@@ -29,10 +29,12 @@ public class PersistentDataManager
         {
             var json = File.ReadAllText(_filePath);
             var data = JsonSerializer.Deserialize<SettingsData>(json);
-            Settings = data;
+            if (data != null)
+                Settings = data;
         }
-        catch
+        catch (Exception exception)
         {
+            _ = App.Current.HandleGlobalExceptionAsync(exception);
         }
     }
 
