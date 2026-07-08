@@ -18,9 +18,9 @@ public class GithubManager(PersistentDataManager persistentDataManager, Reposito
 
     public async Task<bool> IsConnectionValid()
     {
-        if (string.IsNullOrWhiteSpace(persistentDataManager.Settings.GitHubToken)) IsOffline = true;
-
-        if (!await IsTokenValidAsync(persistentDataManager.Settings.GitHubToken)) IsOffline = true;
+        IsOffline = 
+            string.IsNullOrWhiteSpace(persistentDataManager.Settings.GitHubToken) 
+                || !await IsTokenValidAsync(persistentDataManager.Settings.GitHubToken);
 
         return !IsOffline;
     }
