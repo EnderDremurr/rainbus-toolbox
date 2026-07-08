@@ -24,12 +24,44 @@ public partial class MassReplacementService(RepositoryManager repositoryManager)
     {
         Log.Debug("Initializing regex replacement service for all entries");
 
-        for (var i = 0; i < entries.Count; i++)
+        // compile regexes
+        var compiled = entries.Select(e => new CompiledEntry(e, BuildRegex(e))).ToList();
+
+        // now goes vice versa
+        var fileToEntries = new Dictionary<string, List<CompiledEntry>>(StringComparer.OrdinalIgnoreCase);
+        foreach (var ce in compiled)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            progress?.Report((i, entries.Count, $"Entry {i + 1}/{entries.Count}: {entries[i].Target}"));
-            await RunOneRegexForAllFilesAsync(entries[i], progress, cancellationToken, entries.Count, i);
+
+            var files = GetWhitelistedFiles(ce.Entry.FileWhiteList.Select(f => f.FilePath).ToList());
+            foreach (var file in files)
+            {
+                if (!fileToEntries.TryGetValue(file, out var list))
+                    fileToEntries[file] = list = new List<CompiledEntry>();
+                list.Add(ce);
+            }
         }
+
+        var work = fileToEntries.ToList();
+        var total = work.Count;
+        var processed = 0;
+
+        // multithreading
+        await Parallel.ForEachAsync(
+            work,
+            new ParallelOptions
+            {
+                MaxDegreeOfParallelism = Environment.ProcessorCount,
+                CancellationToken = cancellationToken
+            },
+            (kvp, ct) =>
+            {
+                ProcessFile(kvp.Key, kvp.Value, ct);
+
+                var done = Interlocked.Increment(ref processed);
+                progress?.Report((done, total, Path.GetFileName(kvp.Key)));
+                return ValueTask.CompletedTask;
+            });
     }
 
     public async Task RunOneRegexForAllFilesAsync(
@@ -41,72 +73,101 @@ public partial class MassReplacementService(RepositoryManager repositoryManager)
     {
         Log.Debug("Initializing regex replacement service for one entry");
 
+        var compiled = new CompiledEntry(entry, BuildRegex(entry));
+        var single = new List<CompiledEntry> { compiled };
+
         var filesToEdit = GetWhitelistedFiles(entry.FileWhiteList.Select(f => f.FilePath).ToList());
-        var regex = BuildRegex(entry);
         var total = filesToEdit.Count;
+        var processed = 0;
 
-        for (var i = 0; i < total; i++)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var filePath = filesToEdit[i];
-            progress?.Report((i + 1, total, $"[{currentEntryIndex + 1}/{totalEntries}] {Path.GetFileName(filePath)}"));
-
-            await Task.Run(() =>
+        await Parallel.ForEachAsync(
+            filesToEdit,
+            new ParallelOptions
             {
-                try
+                MaxDegreeOfParallelism = Environment.ProcessorCount,
+                CancellationToken = cancellationToken
+            },
+            (filePath, cancellationTokenForFile) =>
+            {
+                ProcessFile(filePath, single, cancellationTokenForFile);
+
+                var done = Interlocked.Increment(ref processed);
+                progress?.Report((done, total,
+                    $"[{currentEntryIndex + 1}/{totalEntries}] {Path.GetFileName(filePath)}"));
+                return ValueTask.CompletedTask;
+            });
+    }
+
+    // now reads file once and then farts all regexes onto it, instead of checking file for every regex
+    private void ProcessFile(string filePath, List<CompiledEntry> entries, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var raw = File.ReadAllText(filePath);
+            var root = JsonConvert.DeserializeObject<JObject>(raw);
+            if (root == null) return;
+
+            var dirty = false;
+
+            foreach (var token in root.Descendants().OfType<JValue>())
+            {
+                if (token.Type != JTokenType.String) continue;
+                if (token.Parent is JProperty { Name: "id" }) continue;
+
+                var original = token.Value<string>()!;
+                var current = original;
+
+                // tries every regex for every string
+                foreach (var compiledEntry in entries)
                 {
-                    var raw = File.ReadAllText(filePath);
-                    var root = JsonConvert.DeserializeObject<JObject>(raw);
-                    if (root == null) return;
-
-                    var dirty = false;
-
-                    foreach (var token in root.Descendants().OfType<JValue>())
-                    {
-                        if (token.Type != JTokenType.String) continue;
-                        if (token.Parent is JProperty { Name: "id" }) continue;
-
-                        var original = token.Value<string>()!;
-                        //check for protected pattern
-
-                        //this shit is false if it doesn't need to replace
-                        var parts = entry.ReplaceTags
-                            ? _protectedPattern.Split(original)
-                            : [original];
-
-                        for (var j = 0; j < parts.Length; j++)
-                        {
-                            if (j % 2 != 0) continue; // odd elements are ones that match the regex (don't replace)
-
-                            parts[j] = entry.PreserveCase
-                                ? regex.Replace(parts[j],
-                                    m => ReplaceWithCasePreservation(m, entry.Replacement, entry.PreserveCase))
-                                : regex.Replace(parts[j], entry.Replacement);
-                        }
-
-                        var replaced = string.Join("", parts);
-
-                        if (replaced == original) continue;
-
-                        token.Value = replaced;
-                        dirty = true;
-                    }
-
-                    if (dirty)
-                        File.WriteAllText(filePath, JsonConvert.SerializeObject(root, Formatting.Indented));
+                    cancellationToken.ThrowIfCancellationRequested();
+                    current = ApplyEntry(current, compiledEntry);
                 }
-                catch (Exception ex)
-                {
-                    Log.Error($"Failed processing {filePath}: {ex.Message}");
-                }
-            }, cancellationToken);
+
+                if (current == original) continue;
+
+                token.Value = current;
+                dirty = true;
+            }
+
+            if (dirty)
+                File.WriteAllText(filePath, JsonConvert.SerializeObject(root, Formatting.Indented));
         }
+        catch (Exception ex)
+        {
+            Log.Error($"Failed processing {filePath}: {ex.Message}");
+        }
+    }
+
+    private string ApplyEntry(string input, CompiledEntry ce)
+    {
+        var entry = ce.Entry;
+        var regex = ce.Regex;
+
+        //this shit is false if it doesn't need to replace
+        var parts = entry.ReplaceTags
+            ? _protectedPattern.Split(input)
+            : [input];
+
+        for (var j = 0; j < parts.Length; j++)
+        {
+            if (j % 2 != 0) continue; // odd elements are ones that match the regex (don't replace)
+
+            parts[j] = entry.PreserveCase
+                ? regex.Replace(parts[j],
+                    m => ReplaceWithCasePreservation(m, entry.Replacement, entry.PreserveCase))
+                : regex.Replace(parts[j], entry.Replacement);
+        }
+
+        return string.Join("", parts);
     }
 
     private static Regex BuildRegex(ReplacementEntry entry)
     {
-        var options = entry.MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase;
+        // compiles regexes
+        var options = entry.MatchCase
+            ? RegexOptions.Compiled
+            : RegexOptions.Compiled | RegexOptions.IgnoreCase;
 
         string pattern;
 
@@ -197,4 +258,7 @@ public partial class MassReplacementService(RepositoryManager repositoryManager)
 
         return result.Distinct().ToList();
     }
+
+    // regex
+    private sealed record CompiledEntry(ReplacementEntry Entry, Regex Regex);
 }
