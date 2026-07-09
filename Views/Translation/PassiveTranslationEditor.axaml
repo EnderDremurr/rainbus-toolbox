@@ -57,6 +57,19 @@
                                         MinHeight="100"
                                         Text="{Binding ReferenceItem.Desc, Mode=TwoWay}" />
                                 </StackPanel>
+
+                                <!--  Flavor  -->
+                                <StackPanel Margin="0,2,0,0">
+                                    <TextBox
+                                        AcceptsReturn="True"
+                                        Background="Transparent"
+                                        Classes="invisible"
+                                        FontSize="20"
+                                        FontStyle="Italic"
+                                        Foreground="SaddleBrown"
+                                        Text="{Binding ReferenceItem.Flavor, Mode=TwoWay}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
                             </StackPanel>
                         </ScrollViewer>
                     </Border>
@@ -99,6 +112,17 @@
                                 <!--  Passive Description  -->
                                 <StackPanel Margin="0,10,0,10">
                                     <misc:GameTextEditor MinHeight="100" Text="{Binding CurrentItem.Desc, Mode=TwoWay}" />
+                                </StackPanel>
+                                <StackPanel Margin="0,2,0,0">
+                                    <TextBox
+                                        AcceptsReturn="True"
+                                        Background="Transparent"
+                                        Classes="invisible"
+                                        FontSize="20"
+                                        FontStyle="Italic"
+                                        Foreground="SaddleBrown"
+                                        Text="{Binding CurrentItem.Flavor, Mode=TwoWay}"
+                                        TextWrapping="Wrap" />
                                 </StackPanel>
                             </StackPanel>
                         </ScrollViewer>

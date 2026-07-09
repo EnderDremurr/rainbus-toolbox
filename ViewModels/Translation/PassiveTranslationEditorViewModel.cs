@@ -2,6 +2,7 @@ using RainbusToolbox.Utilities.Data;
 
 namespace RainbusToolbox.ViewModels;
 
-public class PassiveTranslationEditorViewModel : TranslationEditorViewModel<PassiveLocalizationFile, GenericIdNameDesc>
+public class
+    PassiveTranslationEditorViewModel : TranslationEditorViewModel<PassiveLocalizationFile, GenericIdNameDescFlavor>
 {
 }
