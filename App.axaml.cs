@@ -150,8 +150,8 @@ public class App : Application
             // Windows and VMs
             services.AddSingleton<MainWindow>();
             services.AddSingleton<MainWindowViewModel>();
-            services.AddTransient<InitializationWindow>();
-            services.AddTransient<InitializationWindowViewModel>();
+            services.AddSingleton<InitializationWindow>();
+            services.AddSingleton<InitializationWindowViewModel>();
             services.AddTransient<SettingsWindow>();
             services.AddSingleton<ReleaseTabViewModel>();
             services.AddSingleton<ViewModelLocator>();
