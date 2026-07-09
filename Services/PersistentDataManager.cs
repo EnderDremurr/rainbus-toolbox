@@ -54,7 +54,7 @@ public class PersistentDataManager
         if (string.IsNullOrEmpty(inputPath))
             return null;
 
-        if (Repository.IsValid(inputPath) && Path.Exists(Path.Combine(inputPath, "localize"))) return inputPath;
+        if (SafeIsValidRepo(inputPath) && Path.Exists(Path.Combine(inputPath, "localize"))) return inputPath;
         // if it didn't return, means user selected wrong path
 
         var additionalPathsToCheck = new List<string>();
@@ -77,10 +77,23 @@ public class PersistentDataManager
         additionalPathsToCheck.AddRange(Directory.GetDirectories(inputPath));
 
         foreach (var path in additionalPathsToCheck)
-            if (Repository.IsValid(path) && Path.Exists(Path.Combine(path, "localize")))
+            if (SafeIsValidRepo(path) && Path.Exists(Path.Combine(path, "localize")))
                 return path;
 
         return null;
+    }
+
+    // so the isvalid for some reason throws on windows, thus i need to silence it cuz it's lowkey retarded tbh
+    private static bool SafeIsValidRepo(string path)
+    {
+        try
+        {
+            return Repository.IsValid(path);
+        }
+        catch (LibGit2SharpException)
+        {
+            return false;
+        }
     }
 
     public static string? ValidateLimbusPath(string? inputPath)
