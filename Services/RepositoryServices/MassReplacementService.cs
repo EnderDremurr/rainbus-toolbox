@@ -146,8 +146,8 @@ public partial class MassReplacementService(RepositoryManager repositoryManager)
 
         //this shit is false if it doesn't need to replace
         var parts = entry.ReplaceTags
-            ? _protectedPattern.Split(input)
-            : [input];
+            ? [input]
+            : _protectedPattern.Split(input);
 
         for (var j = 0; j < parts.Length; j++)
         {
