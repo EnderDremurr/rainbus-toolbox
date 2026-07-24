@@ -284,12 +284,42 @@ public class FileMergingService
                     if (destinationDataList
                             .FirstOrDefault(item => item["id"]?.ToString() == sourceId) is not JObject existingItem)
                         continue;
+                    
                     foreach (var property in sourceItem.Properties())
+                    {
+                        
+                        // in case this is a file with level list, the level list might be updated (like uptie 5 releases)
+                        if (property.Name == "levelList" && existingItem["levelList"] is JArray existingLevelList
+                                                         && property.Value is JArray sourceLevelList)
+                        {
+                            var existingLevels = new HashSet<string>(
+                                existingLevelList
+                                    .Where(lvl => lvl["level"] != null)
+                                    .Select(lvl => lvl["level"]!.ToString())
+                            );
+
+                            foreach (var sourceLevel in sourceLevelList)
+                            {
+                                var levelKey = sourceLevel["level"]?.ToString();
+                                if (string.IsNullOrWhiteSpace(levelKey) || existingLevels.Contains(levelKey))
+                                    continue;
+
+                                existingLevelList.Add(sourceLevel.DeepClone());
+                                existingLevels.Add(levelKey);
+                                isDirty = true;
+                            }
+
+                            continue;
+                        }
+                        
+                            
+                        // otherwise it just handles normally
                         if (existingItem[property.Name] == null)
                         {
                             existingItem.Add(property.Name, property.Value.DeepClone());
                             isDirty = true;
                         }
+                    }
                 }
                 else
                 {
