@@ -10,8 +10,11 @@ namespace RainbusToolbox.Services;
 
 public class FileMergingService
 {
+    public static readonly string[] ConflictMarkers = ["<<<<<<<", "=======", ">>>>>>>"];
+
+
     public async Task<int[]> PullFilesFromTheGameAsync(string pathToLocalization, string pathToReferenceLocalization,
-        CancellationToken cancellationToken = default, IProgress<string> progress = null)
+        CancellationToken cancellationToken = default, IProgress<string>? progress = null)
     {
         return await Task.Run(() =>
         {
@@ -19,11 +22,15 @@ public class FileMergingService
             var expandedFiles = 0;
             var checkedFiles = 0;
 
-            progress.Report("Starting file processing...");
+            progress?.Report("Starting file process ing...");
             Log.Debug("Starting file processing...");
 
             var localizationFiles =
                 Directory.GetFiles(pathToLocalization, "*.json", SearchOption.AllDirectories).ToList();
+
+            if (HasMergeConflict(localizationFiles))
+                throw new Exception("Были айдены мердж конфликты в файлах перевода, нужно сначала их починить!!!");
+
             var referenceFiles = Directory.GetFiles(pathToReferenceLocalization, "*.json", SearchOption.AllDirectories)
                 .ToList();
 
@@ -34,7 +41,6 @@ public class FileMergingService
 
             // Debug: Log all filenames to see what's happening
             Log.Debug("\n=== DEBUGGING DUPLICATE FILES ===");
-            var fileNames = new List<string>();
             var duplicateCheck = new Dictionary<string, List<string>>();
 
             foreach (var file in localizationFiles)
@@ -42,7 +48,6 @@ public class FileMergingService
                 var fileName = Path.GetFileName(file);
                 var fullPath = file;
 
-                fileNames.Add(fileName);
 
                 if (!duplicateCheck.ContainsKey(fileName)) duplicateCheck[fileName] = new List<string>();
                 duplicateCheck[fileName].Add(fullPath);
@@ -101,10 +106,10 @@ public class FileMergingService
                     continue;
                 }
 
-                if (localizationFileMap.ContainsKey(fileName))
+                if (localizationFileMap.TryGetValue(fileName, out var existingFile))
                 {
                     Log.Debug($"ERROR: Duplicate key '{fileName}' detected!");
-                    Log.Debug($"  Existing: {localizationFileMap[fileName]}");
+                    Log.Debug($"  Existing: {existingFile}");
                     Log.Debug($"  New: {file}");
                     Log.Debug("  Using existing file and skipping new one.");
                 }
@@ -166,7 +171,6 @@ public class FileMergingService
                 }
             }
 
-
             var finalMessage =
                 $"Completed! Added {newFiles} files, merged {expandedFiles} files. Total files processed: {checkedFiles}.";
             progress?.Report(finalMessage);
@@ -188,65 +192,17 @@ public class FileMergingService
         var isDirty = false;
         try
         {
-            // Read files with explicit encoding
+            // forces an encoding when reading the files
             var destinationContent = File.ReadAllText(destinationPath, new UTF8Encoding(false));
             var sourceContent = File.ReadAllText(sourcePath, new UTF8Encoding(false));
 
-            // Quick validation - skip empty files
+            // skips empty files
             if (string.IsNullOrWhiteSpace(sourceContent))
             {
                 Log.Debug($"Skipping empty source file: {sourcePath}");
                 return false;
             }
 
-            // Check for Git merge conflict markers and offer to clean them
-            var gitConflictMarkers = new[] { "<<<<<<<", "=======", ">>>>>>>" };
-            var hasSourceConflicts = gitConflictMarkers.Any(marker => sourceContent.Contains(marker));
-            var hasDestinationConflicts = gitConflictMarkers.Any(marker => destinationContent.Contains(marker));
-
-            if (hasSourceConflicts)
-            {
-                Log.Debug($"Source file has Git merge conflict markers: {sourcePath}");
-                Log.Debug("Attempting to auto-clean conflict markers...");
-                sourceContent = CleanGitConflictMarkers(sourceContent);
-                Log.Debug("Source file cleaned. Please verify the result manually.");
-            }
-
-            if (hasDestinationConflicts)
-            {
-                Log.Debug($"Destination file has Git merge conflict markers: {destinationPath}");
-                Log.Debug("Attempting to auto-clean conflict markers...");
-                destinationContent = CleanGitConflictMarkers(destinationContent);
-
-                // Write the cleaned content back to the file
-                try
-                {
-                    File.WriteAllText(destinationPath, destinationContent, new UTF8Encoding(false));
-                    Log.Debug($"Cleaned and saved destination file: {destinationPath}");
-                }
-                catch (Exception ex)
-                {
-                    Log.Debug($"Failed to save cleaned destination file: {ex.Message}");
-                    return false;
-                }
-            }
-
-            // Check for HTML/XML content that might be corrupting the JSON
-            if (sourceContent.TrimStart().StartsWith("<") && !sourceContent.Contains("<<<<<<<"))
-            {
-                Log.Debug($"Skipping file that appears to contain HTML/XML instead of JSON: {sourcePath}");
-                Log.Debug(
-                    $"First 200 characters: {sourceContent.Substring(0, Math.Min(200, sourceContent.Length))}");
-                return false;
-            }
-
-            // Additional validation for common JSON corruption indicators
-            if (sourceContent.Contains("<!DOCTYPE") || sourceContent.Contains("<html") ||
-                sourceContent.Contains("<?xml"))
-            {
-                Log.Debug($"Skipping file that contains HTML/XML markers: {sourcePath}");
-                return false;
-            }
 
             JObject deserializedDestination;
             JObject deserializedSource;
@@ -310,7 +266,7 @@ public class FileMergingService
             var existingIds = new HashSet<string>(
                 destinationDataList
                     .Where(item => item["id"] != null)
-                    .Select(item => item["id"].ToString())
+                    .Select(item => item["id"]!.ToString())
             );
 
             foreach (var jToken in sourceDataList)
@@ -324,16 +280,16 @@ public class FileMergingService
                 if (existingIds.Contains(sourceId))
                 {
                     // Find and merge existing item
-                    var existingItem = destinationDataList
-                        .FirstOrDefault(item => item["id"]?.ToString() == sourceId) as JObject;
 
-                    if (existingItem != null)
-                        foreach (var property in sourceItem.Properties())
-                            if (existingItem[property.Name] == null)
-                            {
-                                existingItem.Add(property.Name, property.Value?.DeepClone());
-                                isDirty = true;
-                            }
+                    if (destinationDataList
+                            .FirstOrDefault(item => item["id"]?.ToString() == sourceId) is not JObject existingItem)
+                        continue;
+                    foreach (var property in sourceItem.Properties())
+                        if (existingItem[property.Name] == null)
+                        {
+                            existingItem.Add(property.Name, property.Value.DeepClone());
+                            isDirty = true;
+                        }
                 }
                 else
                 {
@@ -362,46 +318,6 @@ public class FileMergingService
         return isDirty;
     }
 
-    private string CleanGitConflictMarkers(string content)
-    {
-        var lines = content.Split('\n').ToList();
-        var cleanedLines = new List<string>();
-        var skipUntilEnd = false;
-        var inConflict = false;
-
-        for (var i = 0; i < lines.Count; i++)
-        {
-            var line = lines[i];
-
-            if (line.Contains("<<<<<<<"))
-            {
-                // Start of conflict - keep HEAD version (our changes)
-                inConflict = true;
-                continue;
-            }
-
-            if (line.Contains("======="))
-            {
-                // Separator - start skipping until end marker
-                skipUntilEnd = true;
-                continue;
-            }
-
-            if (line.Contains(">>>>>>>"))
-            {
-                // End of conflict
-                inConflict = false;
-                skipUntilEnd = false;
-                continue;
-            }
-
-            // Keep lines that are not part of the "theirs" section
-            if (!skipUntilEnd) cleanedLines.Add(line);
-        }
-
-        return string.Join('\n', cleanedLines);
-    }
-
     private void CopyFileFromTo(string pathToFileToCopy, string destinationRoot, string referenceRoot)
     {
         try
@@ -418,7 +334,7 @@ public class FileMergingService
 
             // Remove EN_ prefix from the filename in the relative path
             var fileName = Path.GetFileName(relativePath);
-            var cleanFileName = fileName.StartsWith("EN_") ? fileName.Substring(3) : fileName;
+            var cleanFileName = fileName.StartsWith("EN_") ? fileName[3..] : fileName;
             var directory = Path.GetDirectoryName(relativePath) ?? "";
             relativePath = Path.Combine(directory, cleanFileName);
 
@@ -435,5 +351,21 @@ public class FileMergingService
             Log.Debug($"Error copying file from {pathToFileToCopy}: {ex.Message}");
             throw;
         }
+    }
+
+
+    // check for conflicts to abort
+    private static bool HasMergeConflict(List<string> filesToCheck)
+    {
+        foreach (var file in filesToCheck)
+        {
+            var hasConflict = File.ReadLines(file)
+                .Any(line => ConflictMarkers.Any(line.Contains));
+
+            if (hasConflict)
+                return true;
+        }
+
+        return false;
     }
 }
