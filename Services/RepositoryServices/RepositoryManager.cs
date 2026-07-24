@@ -46,7 +46,7 @@ public class RepositoryManager
     public string RepositoryRoot { get; private set; } = null!;
     public string PathToLocalization => Path.Combine(_dataManager.Settings.RepositoryPath!, LocalizationFolder);
     public string PathToReferenceLocalization = null!;
-    public string PathToDistribution => Path.Combine(_dataManager.Settings.RepositoryPath!, ".dist");
+    public string PathToDistribution => Path.Combine(_dataManager.Settings.RepositoryPath!, DistPath);
     public string PathToVSCodeSettings => Path.Combine(_dataManager.Settings.RepositoryPath!, ".vscode/settings.json");
     public string PathToRegexJson => Path.Combine(_dataManager.Settings.RepositoryPath!, "regexes.json");
 
@@ -235,7 +235,7 @@ public class RepositoryManager
         Log.Debug($"FileName: '{obj?.FileName}'");
         Log.Debug($"FullPath: '{obj?.FullPath}'");
 
-        if (string.IsNullOrWhiteSpace(obj.FileName) || string.IsNullOrWhiteSpace(obj.FullPath))
+        if (string.IsNullOrWhiteSpace(obj?.FileName) || string.IsNullOrWhiteSpace(obj.FullPath))
         {
             Log.Debug("ERROR: FileName or FullPath is null/empty - returning false");
             return false;
@@ -251,15 +251,10 @@ public class RepositoryManager
         {
             string json;
 
-            Log.Debug("Checking if object is UnidentifiedFile...");
-            Log.Debug($"GetType().Name == 'UnidentifiedFile': {obj.GetType().Name == "UnidentifiedFile"}");
-            Log.Debug($"obj is UnidentifiedFile: {obj is UnidentifiedFile}");
-
-            // Check if it's an UnidentifiedFile type
-            if (obj.GetType().Name == "UnidentifiedFile" || obj is UnidentifiedFile)
+            if (obj is UnidentifiedFile)
             {
                 Log.Debug("Using UnidentifiedFile serialization (no type info)");
-                // For UnidentifiedFile, serialize as plain object without type information
+
                 json = JsonConvert.SerializeObject(
                     obj,
                     Formatting.Indented,
@@ -269,7 +264,7 @@ public class RepositoryManager
             else
             {
                 Log.Debug("Using normal serialization");
-                // For other types, use normal serialization
+
                 json = JsonConvert.SerializeObject(
                     obj,
                     Formatting.Indented,

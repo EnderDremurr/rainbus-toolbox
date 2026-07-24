@@ -149,6 +149,7 @@ public partial class MassReplacementService(RepositoryManager repositoryManager)
             ? [input]
             : _protectedPattern.Split(input);
 
+        // TODO: ULTRA TODO THIS FUCK EATS 20 GB RAM I NEED TO OPTIMIZE THIS LIL JONKLER
         for (var j = 0; j < parts.Length; j++)
         {
             if (j % 2 != 0) continue; // odd elements are ones that match the regex (don't replace)
@@ -193,8 +194,6 @@ public partial class MassReplacementService(RepositoryManager repositoryManager)
     {
         var expanded = match.Result(replacement);
 
-        if (!preserveCase)
-            return expanded;
         if (string.IsNullOrEmpty(match.Value) || string.IsNullOrEmpty(expanded))
             return expanded;
 

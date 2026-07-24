@@ -47,7 +47,7 @@ public partial class TranslationTabViewModel : ObservableObject
     [ObservableProperty]
     private string _fileName = "Не выбран";
 
-    private ObservableCollection<FileShortcut> _fileShortcuts;
+    private ObservableCollection<FileShortcut> _fileShortcuts = [];
 
     [ObservableProperty]
     private string _fileType = "";
@@ -68,7 +68,7 @@ public partial class TranslationTabViewModel : ObservableObject
     }
 
     public IEnumerable<ShortcutTypeGroup> GroupedShortcuts =>
-        _fileShortcuts?
+        _fileShortcuts
             .GroupBy(s => string.IsNullOrWhiteSpace(s.Type) ? "Разное" : s.Type)
             .Select(typeGroup => new ShortcutTypeGroup
             {
@@ -458,13 +458,14 @@ public partial class TranslationTabViewModel : ObservableObject
                     Group = category.Group,
                     Type = category.Type
                 });
-            fileShortcuts = new ObservableCollection<FileShortcut>(fileShortcuts.OrderBy(f => f.Alias));
         }
+
+        fileShortcuts = new ObservableCollection<FileShortcut>(fileShortcuts.OrderBy(f => f.Alias));
 
         foreach (var shortcut in fileShortcuts)
         {
             shortcut.DoesExist = File.Exists(shortcut.FullPath);
-            shortcut.OpenCommand = OpenShortcutFileCommand;
+            shortcut.OpenCommand = LoadFileCommand;
         }
 
         Log.Debug(AppLang.TranslationTabViewModel_InitShortcuts_Created__0__shortcuts, fileShortcuts.Count);
@@ -473,21 +474,6 @@ public partial class TranslationTabViewModel : ObservableObject
         OnPropertyChanged(nameof(GroupedShortcuts));
     }
 
-    [RelayCommand]
-    public void OpenShortcutFile(string filePath)
-    {
-        Log.Debug(AppLang.TranslationTabViewModel_OpenShortcutFile_OpenShortcutFile_called_with___0_, filePath);
-
-        if (!string.IsNullOrWhiteSpace(filePath))
-        {
-            Log.Debug(AppLang.TranslationTabViewModel_OpenShortcutFile_Calling_LoadFile);
-            LoadFile(filePath);
-        }
-        else
-        {
-            Log.Debug(AppLang.TranslationTabViewModel_OpenShortcutFile_FilePath_is_null_or_empty);
-        }
-    }
 
     #region Events
 
