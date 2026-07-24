@@ -16,6 +16,8 @@
         <AvaloniaResource Include="Assets\**"/>
         <AvaloniaResource Include="Assets\Fonts\Pretendard.ttf"/>
         <AvaloniaResource Include="Assets\Fonts\Mikodacs.ttf"/>
+        <Compile Remove="RainbusToolbox.Tests/**"/>
+        <Compile Remove="RainbusToolbox.Tests\**"/>
         <EmbeddedResource Include="Assets/Dictionaries/ru_RU.aff"/>
         <EmbeddedResource Include="Assets/Dictionaries/ru_RU.dic"/>
     </ItemGroup>
