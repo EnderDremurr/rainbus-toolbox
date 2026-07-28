@@ -69,3 +69,12 @@ jobs:
           gh release upload "$VERSION" RainbusToolbox-win-x64-${VERSION}.zip --clobber
           gh release upload "$VERSION" RainbusToolbox-osx-x64-${VERSION}.tar.gz --clobber
           gh release upload "$VERSION" RainbusToolbox-osx-arm64-${VERSION}.tar.gz --clobber
+
+      - name: Notify Discord
+        uses: teneplaysofficial/releasify-action@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          title: "Release!"
+          footer: "Published by CI"
+          username: "Skebob"
+          avatar_url: "https://cdn.example.com/bot-avatar.png"
