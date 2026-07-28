@@ -74,9 +74,9 @@ jobs:
         uses: teneplaysofficial/releasify-action@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          title: "New release!"
+          title: "Новый релиз Тулбокса!"
           color: "#901d22"
-          mention: 1367133945967284364
+          mention: "@here"
           image: "https://cdn.discordapp.com/attachments/1034132702712037438/1516266740261322782/images_3ad5fa8d-0743-4a.gif?ex=6a6963f1&is=6a681271&hm=447bec77a5866bf83f67f02706bcbaf9a85cc3c9d9b54a51c929c620b42f144c&"
           username: "Елена Дилдо"
           avatar_url: "https://cdn.discordapp.com/attachments/1507019573080231938/1531590904455106790/3hh6b35.jpeg?ex=6a69c4af&is=6a68732f&hm=aeac1458eadb21b73b2e1330fc55dfd17494d370846fc38c3adf36ad358177c0&"
