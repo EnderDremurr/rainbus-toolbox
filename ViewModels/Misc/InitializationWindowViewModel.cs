@@ -66,7 +66,7 @@ public partial class InitializationWindowViewModel : ObservableObject
         if (RequestFolderPicker == null) return;
         var pickedFolder = await RequestFolderPicker.Invoke("Выбери папку с репозиторием");
         if (pickedFolder == null) return;
-        var result = pickedFolder.Path.ToString();
+        var result = pickedFolder.Path.LocalPath;
 
         var validatedPath = PersistentDataManager.ValidateRepoPath(result);
         if (validatedPath != null)
@@ -82,7 +82,7 @@ public partial class InitializationWindowViewModel : ObservableObject
         if (RequestFolderPicker == null) return;
         var pickedFolder = await RequestFolderPicker.Invoke("Выбери папку с лимбусом");
         if (pickedFolder == null) return;
-        var result = pickedFolder.Path.ToString();
+        var result = pickedFolder.Path.LocalPath;
 
         var validatedPath = PersistentDataManager.ValidateLimbusPath(result);
         if (validatedPath != null)
