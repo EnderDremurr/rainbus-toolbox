@@ -50,6 +50,7 @@
         <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1"/>
         <PackageReference Include="Serilog.Sinks.File" Version="7.0.0"/>
         <PackageReference Include="WeCantSpell.Hunspell" Version="7.0.1"/>
+        <PackageReference Include="YamlDotNet" Version="18.1.0"/>
 
     </ItemGroup>
 

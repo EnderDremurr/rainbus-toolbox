@@ -1,0 +1,175 @@
+# Commonly edited UI files
+- Alias: Баттл хинты (загрузка)
+  PathRelativeToRoot: BattleHint.json
+  Desc: "-"
+  Type: Разное
+  Group: Интерфейс
+- Alias: Баттл хинты (обычная битва)
+  PathRelativeToRoot: BattleHint_NormalBattle.json
+  Desc: "-"
+  Type: Разное
+  Group: Интерфейс
+- Alias: Баттл хинты (битва с аномалией)
+  PathRelativeToRoot: BattleHint_AbnorBattle.json
+  Desc: "-"
+  Type: Разное
+  Group: Интерфейс
+- Alias: Представления (Куриный шашлычок)
+  PathRelativeToRoot: IntroductionPreset.json
+  Desc: "-"
+  Type: Разное
+  Group: Интерфейс
+- Alias: Кейворды скиллов
+  PathRelativeToRoot: SkillTag.json
+  Desc: "-"
+  Type: Разное
+  Group: Интерфейс
+- Alias: Battle кейворды
+  PathRelativeToRoot: BattleKeywords.json
+  Desc: "-"
+  Type: Разное
+  Group: Интерфейс
+- Alias: Battle UI Text
+  PathRelativeToRoot: BattleUIText.json
+  Desc: "-"
+  Type: Разное
+  Group: Интерфейс
+
+# EGOs
+- Alias: Старые ЭГО
+  PathRelativeToRoot: Skills_Ego.json
+  Desc: эго, что были добавлены в игру давно, все грешники в одном файле
+  Type: Скиллы
+  Group: ЭГО
+- Alias: Эго И Сана
+  PathRelativeToRoot: Skills_Ego_Personality-01.json
+  Desc: "-"
+  Type: Скиллы
+  Group: ЭГО
+- Alias: Эго Фауст
+  PathRelativeToRoot: Skills_Ego_Personality-02.json
+  Desc: "-"
+  Type: Скиллы
+  Group: ЭГО
+- Alias: Эго Дон
+  PathRelativeToRoot: Skills_Ego_Personality-03.json
+  Desc: "-"
+  Type: Скиллы
+  Group: ЭГО
+- Alias: Эго Решу
+  PathRelativeToRoot: Skills_Ego_Personality-04.json
+  Desc: "-"
+  Type: Скиллы
+  Group: ЭГО
+- Alias: Эго Мерсо
+  PathRelativeToRoot: Skills_Ego_Personality-05.json
+  Desc: "-"
+  Type: Скиллы
+  Group: ЭГО
+- Alias: Эго Хонлу
+  PathRelativeToRoot: Skills_Ego_Personality-06.json
+  Desc: "-"
+  Type: Скиллы
+  Group: ЭГО
+- Alias: Эго Хитклифа
+  PathRelativeToRoot: Skills_Ego_Personality-07.json
+  Desc: "-"
+  Type: Скиллы
+  Group: ЭГО
+- Alias: Эго Ишмы
+  PathRelativeToRoot: Skills_Ego_Personality-08.json
+  Desc: "-"
+  Type: Скиллы
+  Group: ЭГО
+- Alias: Эго Роди
+  PathRelativeToRoot: Skills_Ego_Personality-09.json
+  Desc: "-"
+  Type: Скиллы
+  Group: ЭГО
+- Alias: Эго Синклера
+  PathRelativeToRoot: Skills_Ego_Personality-10.json
+  Desc: "-"
+  Type: Скиллы
+  Group: ЭГО
+- Alias: Эго Отис
+  PathRelativeToRoot: Skills_Ego_Personality-11.json
+  Desc: "-"
+  Type: Скиллы
+  Group: ЭГО
+- Alias: Эго Грегора
+  PathRelativeToRoot: Skills_Ego_Personality-12.json
+  Desc: "-"
+  Type: Скиллы
+  Group: ЭГО
+- Alias: Пассивки ЭГО
+  PathRelativeToRoot: Passive_Ego.json
+  Desc: "-"
+  Type: Скиллы
+  Group: ЭГО
+
+# Identity skills
+- Alias: Скиллы айдишек И Сана
+  PathRelativeToRoot: Skills_personality-01.json
+  Desc: "-"
+  Type: Скиллы
+  Group: Скиллы айдишек
+- Alias: Скиллы айдишек Фауст
+  PathRelativeToRoot: Skills_personality-02.json
+  Desc: "-"
+  Type: Скиллы
+  Group: Скиллы айдишек
+- Alias: Скиллы айдишек Дон
+  PathRelativeToRoot: Skills_personality-03.json
+  Desc: "-"
+  Type: Скиллы
+  Group: Скиллы айдишек
+- Alias: Скиллы айдишек Решу
+  PathRelativeToRoot: Skills_personality-04.json
+  Desc: "-"
+  Type: Скиллы
+  Group: Скиллы айдишек
+- Alias: Скиллы айдишек Мерсо
+  PathRelativeToRoot: Skills_personality-05.json
+  Desc: "-"
+  Type: Скиллы
+  Group: Скиллы айдишек
+- Alias: Скиллы айдишек Хонлу
+  PathRelativeToRoot: Skills_personality-06.json
+  Desc: "-"
+  Type: Скиллы
+  Group: Скиллы айдишек
+- Alias: Скиллы айдишек Хитклифа
+  PathRelativeToRoot: Skills_personality-07.json
+  Desc: "-"
+  Type: Скиллы
+  Group: Скиллы айдишек
+- Alias: Скиллы айдишек Ишмы
+  PathRelativeToRoot: Skills_personality-08.json
+  Desc: "-"
+  Type: Скиллы
+  Group: Скиллы айдишек
+- Alias: Скиллы айдишек Роди
+  PathRelativeToRoot: Skills_personality-09.json
+  Desc: "-"
+  Type: Скиллы
+  Group: Скиллы айдишек
+- Alias: Скиллы айдишек Синклера
+  PathRelativeToRoot: Skills_personality-10.json
+  Desc: "-"
+  Type: Скиллы
+  Group: Скиллы айдишек
+- Alias: Скиллы айдишек Отис
+  PathRelativeToRoot: Skills_personality-11.json
+  Desc: "-"
+  Type: Скиллы
+  Group: Скиллы айдишек
+- Alias: Скиллы айдишек Грегора
+  PathRelativeToRoot: Skills_personality-12.json
+  Desc: "-"
+  Type: Скиллы
+  Group: Скиллы айдишек
+- Alias: Пассивки скиллов
+  PathRelativeToRoot: Passives.json
+  Desc: "-"
+  Type: Скиллы
+  Group: Скиллы айдишек

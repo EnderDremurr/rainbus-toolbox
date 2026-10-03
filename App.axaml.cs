@@ -146,6 +146,7 @@ public class App : Application
             services.AddSingleton<SpellCheckerService>();
             services.AddSingleton<SpellcheckEngine>();
             services.AddSingleton<MassReplacementService>();
+            services.AddSingleton<ConfigProvider>();
 
             // Windows and VMs
             services.AddSingleton<MainWindow>();

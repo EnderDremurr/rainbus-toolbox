@@ -1,0 +1,99 @@
+- Type: Разное
+  Group: Гифты
+  Pattern: "EGOgift_*.json"
+- Type: Разное
+  Group: Анонсеры
+  Pattern: "*.json"
+  Subfolder: BattleAnnouncerDlg
+- Type: Разное
+  Group: Фразы айдишек
+  Pattern: "*.json"
+  Subfolder: PersonalityVoiceDlg
+- Type: Разное
+  Group: Кейворды
+  Pattern: "BattleKeywords*.json"
+
+- Type: Сюжет канто
+  Group: Сюжет канто 1
+  Pattern: "S1*.json"
+  Subfolder: StoryData
+- Type: Сюжет канто
+  Group: Сюжет канто 2
+  Pattern: "S2*.json"
+  Subfolder: StoryData
+- Type: Сюжет канто
+  Group: Сюжет канто 3
+  Pattern: "S3*.json"
+  Subfolder: StoryData
+- Type: Сюжет канто
+  Group: Сюжет канто 4
+  Pattern: "S4*.json"
+  Subfolder: StoryData
+- Type: Сюжет канто
+  Group: Сюжет канто 5
+  Pattern: "S5*.json"
+  Subfolder: StoryData
+- Type: Сюжет канто
+  Group: Сюжет канто 6
+  Pattern: "S6*.json"
+  Subfolder: StoryData
+- Type: Сюжет канто
+  Group: Сюжет канто 7
+  Pattern: "S7*.json"
+  Subfolder: StoryData
+- Type: Сюжет канто
+  Group: Сюжет канто 8
+  Pattern: "S8*.json"
+  Subfolder: StoryData
+- Type: Сюжет канто
+  Group: Сюжет канто 9
+  Pattern: "S9*.json"
+  Subfolder: StoryData
+
+- Type: Сюжет интервало
+  Group: Пролог
+  Pattern: "S0*.json"
+  Subfolder: StoryData
+- Type: Сюжет интервало
+  Group: Интервало канто 3
+  Pattern: "E3*.json"
+  Subfolder: StoryData
+- Type: Сюжет интервало
+  Group: Интервало канто 4
+  Pattern: "E4*.json"
+  Subfolder: StoryData
+- Type: Сюжет интервало
+  Group: Интервало канто 5
+  Pattern: "E5*.json"
+  Subfolder: StoryData
+- Type: Сюжет интервало
+  Group: Интервало канто 6
+  Pattern: "E6*.json"
+  Subfolder: StoryData
+- Type: Сюжет интервало
+  Group: Интервало канто 7
+  Pattern: "E7*.json"
+  Subfolder: StoryData
+- Type: Сюжет интервало
+  Group: Интервало канто 8
+  Pattern: "E8*.json"
+  Subfolder: StoryData
+- Type: Сюжет интервало
+  Group: Интервало канто 8 (доп файлы)
+  Pattern: "ES*.json"
+  Subfolder: StoryData
+- Type: Сюжет интервало
+  Group: Интервало канто 9
+  Pattern: "E9*.json"
+  Subfolder: StoryData
+
+- Type: Разное
+  Group: Реплики ЭГО
+  Pattern: "*.json"
+  Subfolder: EGOVoiceDig
+- Type: Разное
+  Group: Ачивки МД
+  Pattern: "UI_Mission*.json"
+- Type: Разное
+  Group: Дневник Данте
+  Pattern: "StoryTheaterDanteNote*.json"
