@@ -92,6 +92,11 @@
                                 Content="Добавить README.md с описанием обновления"
                                 IsChecked="{Binding MergeWithReadme}"
                                 Margin="5,0" />
+
+                            <CheckBox
+                                Content="Прогнать автозамены перед релизом"
+                                IsChecked="{Binding RunRegexesBeforeRelease}"
+                                Margin="5,0" />
                         </StackPanel>
                     </Border>
 
@@ -112,7 +117,7 @@
 
                             <CheckBox
                                 Content="Оставить ссылку на лаунчер"
-                                IsChecked="{Binding MustAppendLauncherLink}"
+                                IsChecked="{Binding AppendLauncherLink}"
                                 Margin="5,0" />
                             <CheckBox
                                 Content="Оставить ссылку на релиз"
@@ -121,7 +126,7 @@
 
                             <CheckBox
                                 Content="Пингануть роль в дискорде (Указывается в настройках)"
-                                IsChecked="{Binding Option2}"
+                                IsChecked="{Binding PingSetRole}"
                                 Margin="5,0" />
 
 

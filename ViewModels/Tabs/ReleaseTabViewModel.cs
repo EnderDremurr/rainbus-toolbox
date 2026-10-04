@@ -28,7 +28,7 @@ public partial class ReleaseTabViewModel : ObservableObject
         MassReplacementService massReplacementService)
     {
         _dataManager = dataManager;
-        Option2 = !string.IsNullOrWhiteSpace(_dataManager.Settings.DiscordRoleToPing);
+        PingSetRole = !string.IsNullOrWhiteSpace(_dataManager.Settings.DiscordRoleToPing);
         _githubManager = githubManager;
         _repositoryManager = repositoryManager;
         _keywordProcessingService = keywordProcessingService;
@@ -93,8 +93,6 @@ public partial class ReleaseTabViewModel : ObservableObject
     private readonly RepositoryManager _repositoryManager;
     private readonly KeywordProcessingService _keywordProcessingService;
     private readonly MassReplacementService _massReplacementService;
-    private string _username = AppLang.Unknown;
-    private string _repoName = AppLang.Unknown;
     private CancellationTokenSource? _cancellationTokenSource;
 
     #endregion
@@ -112,10 +110,13 @@ public partial class ReleaseTabViewModel : ObservableObject
 
     // General section checkboxes
     [ObservableProperty]
-    private bool _mustAppendLauncherLink = true;
+    private bool _appendLauncherLink = true;
 
     [ObservableProperty]
     private bool _mergeWithReadme = true;
+
+    [ObservableProperty]
+    private bool _runRegexesBeforeRelease = true;
 
     // Discord section checkboxes
     [ObservableProperty]
@@ -144,7 +145,7 @@ public partial class ReleaseTabViewModel : ObservableObject
 
 
     [ObservableProperty]
-    private bool _option2;
+    private bool _pingSetRole;
 
     #endregion
 
@@ -183,9 +184,10 @@ public partial class ReleaseTabViewModel : ObservableObject
     [RelayCommand]
     public async Task Submit()
     {
+        var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+
         if (!await _githubManager.IsConnectionValid())
         {
-            var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
             await PopUpWindow.ShowAsync(parent!, "Ты в оффлайн режиме!",
                 "Не удаётся подключится к гитхабу, поэтому увы!");
             return;
@@ -193,7 +195,6 @@ public partial class ReleaseTabViewModel : ObservableObject
 
         if (string.IsNullOrWhiteSpace(_dataManager.Settings.GitHubToken))
         {
-            var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
             await PopUpWindow.ShowAsync(parent!, "Ошибка!",
                 "Для создания релиза необходимо залогиниться в аккаунт гитхаб");
             return;
@@ -201,7 +202,6 @@ public partial class ReleaseTabViewModel : ObservableObject
 
         if (EditorText.Length > 1800)
         {
-            var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
             await PopUpWindow.ShowAsync(parent!, "Ошибка!",
                 $"Длина описания не должна составлять больше 1800 символов. Сейчас символов - {EditorText.Length}");
             return;
@@ -209,16 +209,24 @@ public partial class ReleaseTabViewModel : ObservableObject
 
         try
         {
-            LoadingScreenViewModel.StartLoading("Создаётся релиз...");
-            LoadingScreenViewModel.SetText("Начинается прогон автозамены...");
-            await RunAllEntriesAsyncBeforeRelease();
-            // replacement is ran twice before release to ensure everything is replaced properly
-            await RunAllEntriesAsyncBeforeRelease();
-            LoadingScreenViewModel.SetText("Начинается замена кейвордов перед релизом...");
-            await _keywordProcessingService.ReplaceEveryTagWithMesh(_repositoryManager.PathToLocalization);
+            // run replacements if user enabled the option
+            if (RunRegexesBeforeRelease)
+            {
+                LoadingScreenViewModel.StartLoading("Начинается прогон автозамены...");
 
+                // replacement is run twice before release to ensure everything is replaced properly
+                await RunAllEntriesAsyncBeforeRelease();
+                await RunAllEntriesAsyncBeforeRelease();
+            }
 
-            var currentVersion = _repositoryManager.GetLatestReleaseSemantic();
+            LoadingScreenViewModel.StartLoading("Начинается замена кейвордов перед релизом...");
+            await _keywordProcessingService.ReplaceEveryTagWithMesh(_repositoryManager
+                .PathToLocalization); // TODO: don't forget to change this after i move to new keyword conversion pipeline
+
+            var currentVersion =
+                _repositoryManager
+                    .GetLatestReleaseSemantic(); // TODO: this section should probably be moved to github manager, so this command will only get next verion
+            // i guess, like have an enum for version types and then string GetNextSemanticVersion(VersionType type) with major minor patch
             var parts = currentVersion.Split('.');
             var major = int.Parse(parts[0]);
             var minor = int.Parse(parts[1]);
@@ -241,13 +249,22 @@ public partial class ReleaseTabViewModel : ObservableObject
             }
 
             var nextVersion = $"{major}.{minor}.{patch}";
+            // down to here
 
-            LoadingScreenViewModel.SetText("Упаковывается перевод...");
+            // commit and sync release version, dunno what i didn't think of doing that back then
+
+            _repositoryManager.CommitLocalChanges($"Automatic commit of release version {nextVersion}");
+            await _repositoryManager
+                .SynchronizeWithOriginAsync(); // TODO: don't forget, all the git shit should be moved to another service later cuz my repo manager is fucking huge!!!!!
+
+            // i believe start loading should reset the previous bars? bro i don't even know how my own shit works anymore :sob:
+
+            LoadingScreenViewModel.StartLoading("Упаковывается перевод...");
             // Package the localization
             var package =
                 await LocalizationPackager.PackageLocalizationAsync(nextVersion, _repositoryManager);
 
-            LoadingScreenViewModel.SetText("Выкладывается на гитхаб...");
+            LoadingScreenViewModel.StartLoading("Выкладывается на гитхаб...");
             // Create GitHub release
             var localizationName = _repositoryManager.GetRepoDisplayName(_repositoryManager.Repository);
 
@@ -256,17 +273,18 @@ public partial class ReleaseTabViewModel : ObservableObject
             // Handle Discord section options - only send if SendToDiscord is checked
             if (SendToDiscord && DiscordManager.ValidateWebhook(_dataManager.Settings.DiscordWebHook))
             {
-                LoadingScreenViewModel.SetText("Отправляется сообщение в дискорд...");
+                LoadingScreenViewModel.StartLoading("Отправляется сообщение в дискорд...");
                 var discordManager = new DiscordManager(_dataManager.Settings.DiscordWebHook!);
 
                 var discordMessage = $"# {localizationName} v{nextVersion}!!!\n" + EditorText;
 
-                if (MustAppendLauncherLink)
+                if (AppendLauncherLink)
                     discordMessage +=
                         $"\n\n[{AppLang.LocalizationManagerHyperlink}](<https://github.com/kimght/LimbusLocalizationManager/releases>)";
-                //if (Option1) TODO:implement later
+                //if (Option1) TODO:implement later LMAO I JUST FORGOT ABOUT TS
                 //discordMessage += $"\n\n[Ссылка на релиз](<https://github.com/enqenqenqenqenq/RCR/releases/latest>)";
-                if (Option2 && !string.IsNullOrWhiteSpace(_dataManager.Settings.DiscordRoleToPing))
+
+                if (PingSetRole && !string.IsNullOrWhiteSpace(_dataManager.Settings.DiscordRoleToPing))
                     discordMessage += $"\n<@&{_dataManager.Settings.DiscordRoleToPing}>";
 
                 await discordManager.SendMessageAsync(discordMessage, _selectedFilePath);
@@ -274,7 +292,6 @@ public partial class ReleaseTabViewModel : ObservableObject
 
             LoadingScreenViewModel.SetText("Готово!");
             // Success message
-            var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
             await PopUpWindow.ShowAsync(parent!, "Успешно!",
                 string.Format(AppLang.ReleaseCreationSuccess, nextVersion));
         }
