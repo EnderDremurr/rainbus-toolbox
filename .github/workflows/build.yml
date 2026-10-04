@@ -79,5 +79,7 @@ jobs:
           username: "Елена Дилдо"
           avatar_url: "https://cdn.discordapp.com/attachments/1507019573080231938/1531590904455106790/3hh6b35.jpeg?ex=6a69c4af&is=6a68732f&hm=aeac1458eadb21b73b2e1330fc55dfd17494d370846fc38c3adf36ad358177c0&"
           content: |
-            @here Новый релиз Тулбокса!
-            [Windows](https://github.com/${{ github.repository }}/releases/download/${{ env.TAG }}/RainbusToolbox-win-x64-${{ env.VERSION }}.zip) | [Linux](https://github.com/${{ github.repository }}/releases/download/${{ env.TAG }}/RainbusToolbox-linux-x64-${{ env.VERSION }}.tar.gz) | [macOS Intel](https://github.com/${{ github.repository }}/releases/download/${{ env.TAG }}/RainbusToolbox-osx-x64-${{ env.VERSION }}.tar.gz) | [macOS Apple Silicon](https://github.com/${{ github.repository }}/releases/download/${{ env.TAG }}/RainbusToolbox-osx-arm64-${{ env.VERSION }}.tar.gz)
+            # Новый релиз Тулбокса!
+            @here 
+            ### Ссылки для скачивания:
+            [Windows](https://github.com/${{ github.repository }}/releases/download/${{ env.TAG }}/RainbusToolbox-win-x64-${{ env.VERSION }}.zip) **|** [Linux](https://github.com/${{ github.repository }}/releases/download/${{ env.TAG }}/RainbusToolbox-linux-x64-${{ env.VERSION }}.tar.gz) **|** [macOS Intel](https://github.com/${{ github.repository }}/releases/download/${{ env.TAG }}/RainbusToolbox-osx-x64-${{ env.VERSION }}.tar.gz) **|** [macOS Apple Silicon](https://github.com/${{ github.repository }}/releases/download/${{ env.TAG }}/RainbusToolbox-osx-arm64-${{ env.VERSION }}.tar.gz)
