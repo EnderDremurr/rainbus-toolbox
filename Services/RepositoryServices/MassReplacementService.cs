@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Microsoft.Extensions.FileSystemGlobbing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RainbusToolbox.Models;
@@ -9,9 +10,53 @@ using RainbusToolbox.Models.Managers;
 
 namespace RainbusToolbox.Services.RepositoryServices;
 
-public partial class MassReplacementService(RepositoryManager repositoryManager)
+public partial class MassReplacementService
 {
+    private readonly Matcher _defaultBlacklistMatcher = new(StringComparison.OrdinalIgnoreCase);
     private readonly Regex _protectedPattern = ProtectedRegex();
+
+    private readonly RepositoryManager _repositoryManager;
+
+    public MassReplacementService(RepositoryManager repositoryManager, ConfigProvider configProvider)
+    {
+        _repositoryManager = repositoryManager;
+
+        // populate matcher
+        _defaultBlacklistMatcher.AddInclude("**/*.json");
+
+        var blacklist = configProvider.GetYamlConfig<List<string>>("regex-blacklist");
+        var sanitizedBlacklist = new List<string>();
+        foreach (var entry in blacklist) // sanitizing
+        {
+            if (string.IsNullOrEmpty(entry))
+                continue;
+
+            var sanitizedEntry = entry.Trim();
+            sanitizedEntry = sanitizedEntry.Replace('\\', '/'); // murder stupid windows slashes
+
+            sanitizedEntry = sanitizedEntry.TrimStart('/');
+
+            var isADirectory = false;
+            if (sanitizedEntry.EndsWith('/')) // strip / if this is a directory
+            {
+                sanitizedEntry = sanitizedEntry.TrimEnd('/');
+                isADirectory = true;
+            }
+
+            if (string.IsNullOrEmpty(sanitizedEntry))
+                continue;
+
+            if (!sanitizedEntry.Contains('/')) // add a prefix if it's not a folder
+                sanitizedEntry = "**/" + sanitizedEntry;
+
+            if (isADirectory) // append directory glob
+                sanitizedEntry += "/**";
+
+            sanitizedBlacklist.Add(sanitizedEntry);
+        }
+
+        sanitizedBlacklist.ForEach(p => _defaultBlacklistMatcher.AddExclude(p));
+    }
 
     [GeneratedRegex(@"(\[[^\]]*\]|<[^>]*>)")]
     private static partial Regex ProtectedRegex();
@@ -24,8 +69,18 @@ public partial class MassReplacementService(RepositoryManager repositoryManager)
     {
         Log.Debug("Initializing regex replacement service for all entries");
 
+        // update default blacklist
+        var defaultAllowedFileList = _defaultBlacklistMatcher
+            .GetResultsInFullPath(_repositoryManager.PathToLocalization)
+            .ToList();
+
         // compile regexes
-        var compiled = entries.Select(e => new CompiledEntry(e, BuildRegex(e))).ToList();
+        var compiled = entries.Select(e => new CompiledEntry(
+                e,
+                BuildRegex(e),
+                BuildMatchEvaluator(e)
+            )
+        ).ToList();
 
         // now goes vice versa
         var fileToEntries = new Dictionary<string, List<CompiledEntry>>(StringComparer.OrdinalIgnoreCase);
@@ -33,7 +88,13 @@ public partial class MassReplacementService(RepositoryManager repositoryManager)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var files = GetWhitelistedFiles(ce.Entry.FileWhiteList.Select(f => f.FilePath).ToList());
+            var sanitizedWhitelist = ce.Entry.FileWhiteList.Where(f => !string.IsNullOrWhiteSpace(f.FilePath))
+                .Select(f => f.FilePath.Trim()).ToList();
+            var files =
+                sanitizedWhitelist.Count != 0
+                    ? GetWhitelistedFiles(sanitizedWhitelist)
+                    : defaultAllowedFileList;
+
             foreach (var file in files)
             {
                 if (!fileToEntries.TryGetValue(file, out var list))
@@ -73,10 +134,26 @@ public partial class MassReplacementService(RepositoryManager repositoryManager)
     {
         Log.Debug("Initializing regex replacement service for one entry");
 
-        var compiled = new CompiledEntry(entry, BuildRegex(entry));
+        // update default blacklist
+        var defaultAllowedFileList = _defaultBlacklistMatcher
+            .GetResultsInFullPath(_repositoryManager.PathToLocalization)
+            .ToList();
+
+        var compiled = new CompiledEntry(
+            entry,
+            BuildRegex(entry),
+            BuildMatchEvaluator(entry)
+        );
         var single = new List<CompiledEntry> { compiled };
 
-        var filesToEdit = GetWhitelistedFiles(entry.FileWhiteList.Select(f => f.FilePath).ToList());
+
+        var sanitizedWhitelist = entry.FileWhiteList.Where(f => !string.IsNullOrWhiteSpace(f.FilePath))
+            .Select(f => f.FilePath.Trim()).ToList();
+        var filesToEdit =
+            sanitizedWhitelist.Count != 0
+                ? GetWhitelistedFiles(sanitizedWhitelist)
+                : defaultAllowedFileList;
+
         var total = filesToEdit.Count;
         var processed = 0;
 
@@ -135,28 +212,33 @@ public partial class MassReplacementService(RepositoryManager repositoryManager)
         }
         catch (Exception ex)
         {
-            Log.Error($"Failed processing {filePath}: {ex.Message}");
+            Log.Error("Failed processing {FilePath}: {ExMessage}", filePath, ex.Message);
         }
     }
 
-    private string ApplyEntry(string input, CompiledEntry ce)
+    private string ApplyEntry(string input, CompiledEntry compiledEntry)
     {
-        var entry = ce.Entry;
-        var regex = ce.Regex;
+        if (!compiledEntry.Regex.IsMatch(input))
+            return input;
 
-        //this shit is false if it doesn't need to replace
+        var entry = compiledEntry.Entry;
+        var regex = compiledEntry.Regex;
+
+        // so this seems to be not ram usage but gc allocation warning, and should be fixed now (i hope i didnt break everything)
+        //this shit is false if it is not allowed to replace tags
         var parts = entry.ReplaceTags
             ? [input]
-            : _protectedPattern.Split(input);
+            : input.AsSpan().IndexOfAny('[', '<') < 0
+                ? [input]
+                : _protectedPattern.Split(input);
 
-        // TODO: ULTRA TODO THIS FUCK EATS 20 GB RAM I NEED TO OPTIMIZE THIS LIL JONKLER
+
         for (var j = 0; j < parts.Length; j++)
         {
             if (j % 2 != 0) continue; // odd elements are ones that match the regex (don't replace)
 
-            parts[j] = entry.PreserveCase
-                ? regex.Replace(parts[j],
-                    m => ReplaceWithCasePreservation(m, entry.Replacement, entry.PreserveCase))
+            parts[j] = compiledEntry.Evaluator is { } evaluator
+                ? regex.Replace(parts[j], evaluator)
                 : regex.Replace(parts[j], entry.Replacement);
         }
 
@@ -190,7 +272,7 @@ public partial class MassReplacementService(RepositoryManager repositoryManager)
             TimeSpan.FromSeconds(5)); // timeout if regex is retarded
     }
 
-    private static string ReplaceWithCasePreservation(Match match, string replacement, bool preserveCase)
+    private static string ReplaceWithCasePreservation(Match match, string replacement)
     {
         var expanded = match.Result(replacement);
 
@@ -210,54 +292,54 @@ public partial class MassReplacementService(RepositoryManager repositoryManager)
     private List<string> GetWhitelistedFiles(List<string> whitelist)
     {
         var result = new List<string>();
-        var localizationRoot = repositoryManager.PathToLocalization;
+        var localizationRoot = _repositoryManager.PathToLocalization;
 
-        if (whitelist.Any())
-            foreach (var entry in whitelist)
+        foreach (var dirtyEntry in whitelist)
+        {
+            var cleanEntry = dirtyEntry.Replace('\\', '/');
+
+            if (Path.IsPathRooted(dirtyEntry)) continue;
+
+            var fullPath = Path.Combine(localizationRoot, cleanEntry);
+
+
+            if (cleanEntry.Contains('*'))
             {
-                if (Path.IsPathRooted(entry)) continue;
-
-                var fullPath = Path.Combine(localizationRoot, entry);
-
-                if (entry.Contains('*'))
+                if (cleanEntry.Contains('/'))
                 {
-                    if (entry.Contains('/'))
-                    {
-                        var lastSlash = entry.LastIndexOf('/');
-                        var folder = entry[..lastSlash];
-                        var wildcard = entry[(lastSlash + 1)..];
-                        var folderPath = Path.Combine(localizationRoot, folder);
+                    var lastSlash = cleanEntry.LastIndexOf('/');
+                    var folder = cleanEntry[..lastSlash];
+                    var wildcard = cleanEntry[(lastSlash + 1)..];
+                    var folderPath = Path.Combine(localizationRoot, folder);
 
-                        if (!Directory.Exists(folderPath)) continue;
-                        result.AddRange(Directory.GetFiles(folderPath, wildcard, SearchOption.AllDirectories)
-                            .Where(f => f.EndsWith(".json", StringComparison.OrdinalIgnoreCase)));
-                    }
-                    else
-                    {
-                        result.AddRange(Directory.GetFiles(localizationRoot, entry, SearchOption.AllDirectories)
-                            .Where(f => f.EndsWith(".json", StringComparison.OrdinalIgnoreCase)));
-                    }
+                    if (!Directory.Exists(folderPath)) continue;
+                    result.AddRange(Directory.GetFiles(folderPath, wildcard, SearchOption.AllDirectories)
+                        .Where(f => f.EndsWith(".json", StringComparison.OrdinalIgnoreCase)));
                 }
-                else if (Directory.Exists(fullPath))
+                else
                 {
-                    result.AddRange(Directory.GetFiles(fullPath, "*.json", SearchOption.AllDirectories));
-                }
-                else if (File.Exists(fullPath) && fullPath.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-                {
-                    result.Add(fullPath);
+                    result.AddRange(Directory.GetFiles(localizationRoot, cleanEntry, SearchOption.AllDirectories)
+                        .Where(f => f.EndsWith(".json", StringComparison.OrdinalIgnoreCase)));
                 }
             }
-        else
-            // if whitelist is not enabled, get all files except from StoryData folder
-            result.AddRange(Directory.GetFiles(localizationRoot, "*.json", SearchOption.AllDirectories)
-                .Where(p => !p.Split(Path.DirectorySeparatorChar).Contains("StoryData")
-                            && !p.Split(Path.DirectorySeparatorChar).Contains("ScenarioModelCodes-AutoCreated.json")
-                            && !p.Contains("StageNode"))
-            );
+            else if (Directory.Exists(fullPath))
+            {
+                result.AddRange(Directory.GetFiles(fullPath, "*.json", SearchOption.AllDirectories));
+            }
+            else if (File.Exists(fullPath) && fullPath.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            {
+                result.Add(fullPath);
+            }
+        }
 
-        return result.Distinct().ToList();
+        return result.Select(Path.GetFullPath).Distinct().ToList();
+    }
+
+    private MatchEvaluator? BuildMatchEvaluator(ReplacementEntry entry)
+    {
+        return entry.PreserveCase ? new MatchEvaluator(m => ReplaceWithCasePreservation(m, entry.Replacement)) : null;
     }
 
     // regex
-    private sealed record CompiledEntry(ReplacementEntry Entry, Regex Regex);
+    private sealed record CompiledEntry(ReplacementEntry Entry, Regex Regex, MatchEvaluator? Evaluator);
 }
