@@ -8,6 +8,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:conv="clr-namespace:RainbusToolbox.Utilities.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:data="clr-namespace:RainbusToolbox.Utilities.Data"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:RainbusToolbox.Models"
     xmlns:vm="clr-namespace:RainbusToolbox.ViewModels"
@@ -99,7 +100,7 @@
                 ItemsSource="{Binding GroupedShortcuts}"
                 Margin="0,30,0,0">
                 <TabControl.ItemTemplate>
-                    <DataTemplate x:DataType="vm:TranslationTabViewModel+ShortcutTypeGroup">
+                    <DataTemplate x:DataType="models:ShortcutTypeGroup">
                         <TextBlock
                             FontFamily="{StaticResource MikodacsFont}"
                             FontSize="22"
@@ -108,11 +109,11 @@
                     </DataTemplate>
                 </TabControl.ItemTemplate>
                 <TabControl.ContentTemplate>
-                    <DataTemplate x:DataType="vm:TranslationTabViewModel+ShortcutTypeGroup">
+                    <DataTemplate x:DataType="models:ShortcutTypeGroup">
                         <ScrollViewer HorizontalScrollBarVisibility="Disabled">
                             <ItemsControl ItemsSource="{Binding Groups}" Margin="20,0">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="vm:TranslationTabViewModel+ShortcutFolderGroup">
+                                    <DataTemplate x:DataType="data:ShortcutFolderGroup">
                                         <Expander
                                             Background="Transparent"
                                             BorderBrush="Transparent"

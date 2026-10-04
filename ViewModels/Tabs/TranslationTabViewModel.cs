@@ -60,6 +60,9 @@ public partial class TranslationTabViewModel : ObservableObject
     private string _fileType = "";
 
     [ObservableProperty]
+    private ObservableCollection<ShortcutTypeGroup> _groupedShortcuts = [];
+
+    [ObservableProperty]
     private bool _isFileLoaded;
 
     public TranslationTabViewModel()
@@ -71,26 +74,12 @@ public partial class TranslationTabViewModel : ObservableObject
     public ObservableCollection<FileShortcut> FileShortcuts
     {
         get => _fileShortcuts;
-        private set => SetProperty(ref _fileShortcuts, value);
+        private set
+        {
+            SetProperty(ref _fileShortcuts, value);
+            GroupShortcuts();
+        }
     }
-
-    public IEnumerable<ShortcutTypeGroup> GroupedShortcuts =>
-        _fileShortcuts
-            .GroupBy(s => string.IsNullOrWhiteSpace(s.Type) ? "Разное" : s.Type)
-            .Select(typeGroup => new ShortcutTypeGroup
-            {
-                Name = typeGroup.Key,
-                Groups = typeGroup
-                    .GroupBy(s => string.IsNullOrWhiteSpace(s.Group) ? "Общее" : s.Group)
-                    .Select(group => new ShortcutFolderGroup
-                    {
-                        Name = group.Key,
-                        Shortcuts = group.OrderBy(s => s.Alias)
-                    })
-                    .OrderBy(g => g.Name)
-            })
-            .OrderBy(t => t.Name)
-        ?? Enumerable.Empty<ShortcutTypeGroup>();
 
     [RelayCommand]
     public async Task SelectFile()
@@ -179,7 +168,6 @@ public partial class TranslationTabViewModel : ObservableObject
         FileType = "";
         CurrentEditor = null;
         IsFileLoaded = false;
-        FileShortcuts = FileShortcuts;
         _discordRpcService.SetState("Готовится делать перевоз");
     }
 
@@ -247,7 +235,30 @@ public partial class TranslationTabViewModel : ObservableObject
         Log.Debug(AppLang.TranslationTabViewModel_InitShortcuts_Created__0__shortcuts, fileShortcuts.Count);
 
         FileShortcuts = fileShortcuts;
-        OnPropertyChanged(nameof(GroupedShortcuts));
+    }
+
+    private void GroupShortcuts()
+    {
+        var groupedShortcuts =
+            _fileShortcuts
+                .GroupBy(s => string.IsNullOrWhiteSpace(s.Type) ? "Разное" : s.Type)
+                .Select(typeGroup => new ShortcutTypeGroup
+                {
+                    Name = typeGroup.Key,
+                    Groups = typeGroup
+                        .GroupBy(s => string.IsNullOrWhiteSpace(s.Group) ? "Общее" : s.Group)
+                        .Select(group => new ShortcutFolderGroup
+                        {
+                            Name = group.Key,
+                            Shortcuts = group.OrderBy(s => s.Alias).ToList()
+                        })
+                        .OrderBy(g => g.Name)
+                        .ToList()
+                })
+                .OrderBy(t => t.Name)
+                .ToList();
+
+        GroupedShortcuts = new ObservableCollection<ShortcutTypeGroup>(groupedShortcuts);
     }
 
 
@@ -259,5 +270,4 @@ public partial class TranslationTabViewModel : ObservableObject
     }
 
     #endregion
-
 }
