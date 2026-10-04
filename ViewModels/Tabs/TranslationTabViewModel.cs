@@ -260,19 +260,4 @@ public partial class TranslationTabViewModel : ObservableObject
 
     #endregion
 
-    #region Data types for shortcut dogshit
-
-    public class ShortcutTypeGroup
-    {
-        public string Name { get; set; } = "";
-        public IEnumerable<ShortcutFolderGroup> Groups { get; set; } = [];
-    }
-
-    public class ShortcutFolderGroup
-    {
-        public string Name { get; set; } = "";
-        public IEnumerable<FileShortcut> Shortcuts { get; set; } = [];
-    }
-
-    #endregion
 }
