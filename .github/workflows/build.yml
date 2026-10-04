@@ -29,6 +29,7 @@ jobs:
           VERSION=$(echo "$VERSION" | tr -c '[:alnum:].+-' '-')
           VERSION="${VERSION%-}"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
 
       - name: Build Linux
         run: |
@@ -65,18 +66,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          gh release upload "$VERSION" RainbusToolbox-linux-x64-${VERSION}.tar.gz --clobber
-          gh release upload "$VERSION" RainbusToolbox-win-x64-${VERSION}.zip --clobber
-          gh release upload "$VERSION" RainbusToolbox-osx-x64-${VERSION}.tar.gz --clobber
-          gh release upload "$VERSION" RainbusToolbox-osx-arm64-${VERSION}.tar.gz --clobber
+          gh release upload "$TAG" RainbusToolbox-linux-x64-${VERSION}.tar.gz --clobber
+          gh release upload "$TAG" RainbusToolbox-win-x64-${VERSION}.zip --clobber
+          gh release upload "$TAG" RainbusToolbox-osx-x64-${VERSION}.tar.gz --clobber
+          gh release upload "$TAG" RainbusToolbox-osx-arm64-${VERSION}.tar.gz --clobber
 
       - name: Notify Discord
-        uses: teneplaysofficial/releasify-action@v1
+        uses: SethCohen/github-releases-to-discord@v1.13.1
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          title: "Новый релиз Тулбокса!"
-          color: "#901d22"
-          mention: "@here"
-          image: "https://cdn.discordapp.com/attachments/1034132702712037438/1516266740261322782/images_3ad5fa8d-0743-4a.gif?ex=6a6963f1&is=6a681271&hm=447bec77a5866bf83f67f02706bcbaf9a85cc3c9d9b54a51c929c620b42f144c&"
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
+          color: "9444642"
           username: "Елена Дилдо"
           avatar_url: "https://cdn.discordapp.com/attachments/1507019573080231938/1531590904455106790/3hh6b35.jpeg?ex=6a69c4af&is=6a68732f&hm=aeac1458eadb21b73b2e1330fc55dfd17494d370846fc38c3adf36ad358177c0&"
+          content: |
+            @here Новый релиз Тулбокса!
+            [Windows](https://github.com/${{ github.repository }}/releases/download/${{ env.TAG }}/RainbusToolbox-win-x64-${{ env.VERSION }}.zip) | [Linux](https://github.com/${{ github.repository }}/releases/download/${{ env.TAG }}/RainbusToolbox-linux-x64-${{ env.VERSION }}.tar.gz) | [macOS Intel](https://github.com/${{ github.repository }}/releases/download/${{ env.TAG }}/RainbusToolbox-osx-x64-${{ env.VERSION }}.tar.gz) | [macOS Apple Silicon](https://github.com/${{ github.repository }}/releases/download/${{ env.TAG }}/RainbusToolbox-osx-arm64-${{ env.VERSION }}.tar.gz)
