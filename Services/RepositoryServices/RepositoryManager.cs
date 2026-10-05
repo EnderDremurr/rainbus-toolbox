@@ -29,6 +29,12 @@ public class RepositoryManager
     public Repository Repository { get; private set; } = null!;
     public bool IsValid { get; private set; }
 
+    #region Events
+
+    public event Action? OnInitializedSuccessfully;
+
+    #endregion
+
 
     #region Folders
 
@@ -101,11 +107,13 @@ public class RepositoryManager
             if (validatedRepoPath != originalRepoPath) _dataManager.Settings.RepositoryPath = validatedRepoPath;
             if (validatedGamePath != originalLimbusPath) _dataManager.Settings.PathToLimbus = validatedGamePath;
 
+            Repository?.Dispose();
             Repository = new Repository(validatedRepoPath);
             Directory.CreateDirectory(Path.Combine(validatedRepoPath, DistPath));
             PathToReferenceLocalization = Path.Combine(validatedGamePath, ReferenceLangAppendage);
 
             IsValid = true;
+            OnInitializedSuccessfully?.Invoke();
         }
         catch (Exception ex)
         {
@@ -121,6 +129,7 @@ public class RepositoryManager
 
         var json = File.ReadAllText(PathToFileMap);
         var parsed = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(json);
+        DeveloperFileTypeMap.Clear();
 
         foreach (var entry in parsed!)
         {
@@ -300,6 +309,8 @@ public class RepositoryManager
 
 
     #region Git shit
+
+    // TODO: Git shit is git shit, this should be another service in the future
 
     public Signature GetLocalSignature(Repository repo)
     {

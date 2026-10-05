@@ -67,8 +67,12 @@ public partial class TranslationTabViewModel : ObservableObject
 
     public TranslationTabViewModel()
     {
-        _ = InitShortcuts();
         _discordRpcService = (App.Current.ServiceProvider.GetService(typeof(DiscordRPCService)) as DiscordRPCService)!;
+        _repositoryManager.OnInitializedSuccessfully += InitShortcuts;
+
+        // first run won't see event so run it by hand
+        if (_repositoryManager.IsValid)
+            InitShortcuts();
     }
 
     public ObservableCollection<FileShortcut> FileShortcuts
@@ -177,27 +181,16 @@ public partial class TranslationTabViewModel : ObservableObject
         CurrentEditor?.AskEditorToSave(_repositoryManager);
     }
 
-    private async Task InitShortcuts()
+    private void InitShortcuts()
     {
-        Log.Debug(AppLang.TranslationTabViewModel_InitShortcuts_Getting_root);
-        var timeout = TimeSpan.FromSeconds(10); // 10 second timeout
-        var start = DateTime.Now;
+        //TODO: I made a mistake by moving log messages to lang resource, as logs need only english anyway
+        // i need to check other files for those too, later
 
-        while (string.IsNullOrWhiteSpace(_repositoryManager.PathToLocalization))
-        {
-            if (DateTime.Now - start > timeout)
-            {
-                Log.Debug(AppLang.TranslationTabViewModel_InitShortcuts_Timeout_waiting_for_repository_root);
-                _fileShortcuts = new ObservableCollection<FileShortcut>();
-                return;
-            }
+        _fileShortcuts = [];
 
-            Log.Debug(AppLang.TranslationTabViewModel_InitShortcuts_Didn_t_receive_root_for_0_1_ms);
-            await Task.Delay(100);
-        }
-
+        Log.Debug("Getting root");
         var root = _repositoryManager.PathToLocalization;
-        Log.Debug(AppLang.TranslationTabViewModel_InitShortcuts_Repository_root___0_, root);
+        Log.Debug("Repository root: {Root}", root);
 
         // "hard" shortcuts init here
         var fileShortcuts = _configProvider.GetYamlConfig<ObservableCollection<FileShortcut>>("shortcut-files");
@@ -232,7 +225,7 @@ public partial class TranslationTabViewModel : ObservableObject
             shortcut.OpenCommand = LoadFileCommand;
         }
 
-        Log.Debug(AppLang.TranslationTabViewModel_InitShortcuts_Created__0__shortcuts, fileShortcuts.Count);
+        Log.Debug("Created {Count} shortcuts", fileShortcuts.Count);
 
         FileShortcuts = fileShortcuts;
     }
