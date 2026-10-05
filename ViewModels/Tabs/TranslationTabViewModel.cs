@@ -158,10 +158,17 @@ public partial class TranslationTabViewModel : ObservableObject
         var file = _repositoryManager.GetObjectFromPath(filePath);
         var refFile = _repositoryManager.GetReference(file);
 
-        CurrentEditor.SetFileToEdit(file!);
-        CurrentEditor.SetReferenceFile(refFile!);
+        if (file == null || refFile == null)
+        {
+            _ = App.Current.HandleNonFatalExceptionAsync(new FileNotFoundException(
+                $"Референс для {filePath} не удалось найти в игре. Редактор не сможет открыться!", fileName));
+            return;
+        }
 
-        _discordRpcService.SetState($"Делает перевоз файла {FileName} ({file!.GetSanityName()})");
+        CurrentEditor.SetFileToEdit(file);
+        CurrentEditor.SetReferenceFile(refFile);
+
+        _discordRpcService.SetState($"Делает перевоз файла {FileName} ({file.GetSanityName()})");
     }
 
     [RelayCommand]
