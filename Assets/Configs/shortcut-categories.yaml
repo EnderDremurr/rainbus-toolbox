@@ -97,3 +97,114 @@
 - Type: Разное
   Group: Дневник Данте
   Pattern: "StoryTheaterDanteNote*.json"
+
+# Per canto per part
+- Type: Канто 5
+  Group: Часть 1
+  Pattern: "*a1c5p1*"
+- Type: Канто 5
+  Group: Часть 2
+  Pattern: "*a1c5p2*"
+- Type: Канто 5
+  Group: Часть 3
+  Pattern: "*a1c5p3*"
+
+- Type: Канто 6
+  Group: Часть 1
+  Pattern: "*a1c6p1*"
+- Type: Канто 6
+  Group: Часть 2
+  Pattern: "*a1c6p2*"
+- Type: Канто 6
+  Group: Часть 3
+  Pattern: "*a1c6p3*"
+
+- Type: Канто 7
+  Group: Часть 1
+  Pattern: "*a1c7p1*"
+- Type: Канто 7
+  Group: Часть 2
+  Pattern: "*a1c7p2*"
+- Type: Канто 7
+  Group: Часть 3
+  Pattern: "*a1c7p3*"
+
+- Type: Канто 8
+  Group: Часть 1
+  Pattern: "*a1c8p1*"
+- Type: Канто 8
+  Group: Часть 2
+  Pattern: "*a1c8p2*"
+- Type: Канто 8
+  Group: Часть 3
+  Pattern: "*a1c8p3*"
+
+- Type: Канто 9
+  Group: Часть 1
+  Pattern: "*a1c9p1*"
+- Type: Канто 9
+  Group: Часть 2
+  Pattern: "*a1c9p2*"
+- Type: Канто 9
+  Group: Часть 3
+  Pattern: "*a1c9p3*"
+
+- Type: Канто 10
+  Group: Часть 1
+  Pattern: "*a1c10p1*"
+- Type: Канто 10
+  Group: Часть 2
+  Pattern: "*a1c10p2*"
+- Type: Канто 10
+  Group: Часть 3
+  Pattern: "*a1c10p3*"
+
+- Type: Канто 11
+  Group: Часть 1
+  Pattern: "*a1c11p1*"
+- Type: Канто 11
+  Group: Часть 2
+  Pattern: "*a1c11p2*"
+- Type: Канто 11
+  Group: Часть 3
+  Pattern: "*a1c11p3*"
+
+- Type: Канто 12
+  Group: Часть 1
+  Pattern: "*a1c12p1*"
+- Type: Канто 12
+  Group: Часть 2
+  Pattern: "*a1c12p2*"
+- Type: Канто 12
+  Group: Часть 3
+  Pattern: "*a1c12p3*"
+
+- Type: Канто 13
+  Group: Часть 1
+  Pattern: "*a1c13p1*"
+- Type: Канто 13
+  Group: Часть 2
+  Pattern: "*a1c13p2*"
+- Type: Канто 13
+  Group: Часть 3
+  Pattern: "*a1c13p3*"
+
+- Type: Канто 14
+  Group: Часть 1
+  Pattern: "*a1c14p1*"
+- Type: Канто 14
+  Group: Часть 2
+  Pattern: "*a1c14p2*"
+- Type: Канто 14
+  Group: Часть 3
+  Pattern: "*a1c14p3*"
+
+- Type: Канто 15
+  Group: Часть 1
+  Pattern: "*a1c15p1*"
+- Type: Канто 15
+  Group: Часть 2
+  Pattern: "*a1c15p2*"
+- Type: Канто 15
+  Group: Часть 3
+  Pattern: "*a1c15p3*"
