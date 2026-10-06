@@ -93,7 +93,7 @@ public sealed class GithubManager(
         var uploadUrl = uploadUrlTemplate.Substring(0, uploadUrlTemplate.IndexOf("{")); // Remove template part
 
         // 4. Upload ZIP asset
-        using var fileStream = File.OpenRead(pathToZip);
+        await using var fileStream = File.OpenRead(pathToZip);
         using var content = new StreamContent(fileStream);
         content.Headers.ContentType = new MediaTypeHeaderValue("application/zip");
 
@@ -103,6 +103,7 @@ public sealed class GithubManager(
 
         // 5. Upload README.md if it exists (with HTML stripped and release description prepended)
         var readmePath = Path.Combine(repoPath, "README.md");
+        // TODO: Make it require a separate readme just for releases, so i won't need trimming the shit in code!! like RELEASE_FOOTER.MD
         if (File.Exists(readmePath))
             try
             {
@@ -158,15 +159,15 @@ public sealed class GithubManager(
                 var readmeResponseBody = await readmeResponse.Content.ReadAsStringAsync();
                 if (!readmeResponse.IsSuccessStatusCode)
                     // Log warning but don't fail the entire operation
-                    Log.Debug($"Warning: Failed to upload README.md: {readmeResponseBody}");
+                    Log.Debug("Warning: Failed to upload README.md: {ReadmeResponseBody}", readmeResponseBody);
             }
             catch (Exception ex)
             {
-                Log.Debug($"Warning: Error processing README.md: {ex.Message}");
+                Log.Debug("Warning: Error processing README.md: {ExMessage}", ex.Message);
             }
         else
             // Log info that README.md was not found
-            Log.Debug("README.md not found in repository root, skipping upload.");
+            Log.Debug("README.md not found in repository root, skipping upload");
     }
 
     public static async Task<bool> IsTokenValidAsync(string? token)
@@ -186,6 +187,7 @@ public sealed class GithubManager(
         }
         catch (Exception e)
         {
+            _ = App.Current.HandleNonFatalExceptionAsync(e);
             return false;
         }
     }
@@ -223,6 +225,7 @@ public sealed class GithubManager(
         }
         catch (Exception e)
         {
+            _ = App.Current.HandleNonFatalExceptionAsync(e);
             return "Unknown";
         }
     }
