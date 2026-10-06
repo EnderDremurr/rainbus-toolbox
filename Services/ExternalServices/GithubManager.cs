@@ -58,15 +58,14 @@ public sealed class GithubManager(
         // Replace all invalid characters with '-'. Valid: letters, numbers, dash, underscore, dot
         var sanitizedTag = Regex.Replace(releaseName, @"[^0-9A-Za-z\-_\.]", "-");
 
-        using var http = new HttpClient();
-        http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
-        http.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RainbusToolbox", "1.0"));
-        http.DefaultRequestHeaders.Authorization =
+        _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
+        _httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RainbusToolbox", "1.0"));
+        _httpClient.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", persistentDataManager.Settings.GitHubToken);
 
         // 2. Check if release/tag already exists
         var checkResponse =
-            await http.GetAsync($"https://api.github.com/repos/{owner}/{repo}/releases/tags/{sanitizedTag}");
+            await _httpClient.GetAsync($"https://api.github.com/repos/{owner}/{repo}/releases/tags/{sanitizedTag}");
         if (checkResponse.IsSuccessStatusCode)
             throw new Exception($"Release with tag '{sanitizedTag}' already exists.");
 
@@ -84,7 +83,7 @@ public sealed class GithubManager(
             new StringContent(JsonSerializer.Serialize(releaseContent), Encoding.UTF8, "application/json");
 
         var releaseResponse =
-            await http.PostAsync($"https://api.github.com/repos/{owner}/{repo}/releases", releaseJson);
+            await _httpClient.PostAsync($"https://api.github.com/repos/{owner}/{repo}/releases", releaseJson);
         var releaseBody = await releaseResponse.Content.ReadAsStringAsync();
         if (!releaseResponse.IsSuccessStatusCode) throw new Exception($"Failed to create release: {releaseBody}");
 
@@ -97,7 +96,7 @@ public sealed class GithubManager(
         using var content = new StreamContent(fileStream);
         content.Headers.ContentType = new MediaTypeHeaderValue("application/zip");
 
-        var assetResponse = await http.PostAsync($"{uploadUrl}?name={Path.GetFileName(pathToZip)}", content);
+        var assetResponse = await _httpClient.PostAsync($"{uploadUrl}?name={Path.GetFileName(pathToZip)}", content);
         var assetBody = await assetResponse.Content.ReadAsStringAsync();
         if (!assetResponse.IsSuccessStatusCode) throw new Exception($"Failed to upload ZIP asset: {assetBody}");
 
@@ -155,7 +154,7 @@ public sealed class GithubManager(
                 using var readmeContent = new StreamContent(readmeStream);
                 readmeContent.Headers.ContentType = new MediaTypeHeaderValue("text/markdown");
 
-                var readmeResponse = await http.PostAsync($"{uploadUrl}?name=README.md", readmeContent);
+                var readmeResponse = await _httpClient.PostAsync($"{uploadUrl}?name=README.md", readmeContent);
                 var readmeResponseBody = await readmeResponse.Content.ReadAsStringAsync();
                 if (!readmeResponse.IsSuccessStatusCode)
                     // Log warning but don't fail the entire operation
@@ -198,17 +197,16 @@ public sealed class GithubManager(
 
         try
         {
-            using var http = new HttpClient();
-            http.DefaultRequestHeaders.Accept.Clear();
-            http.DefaultRequestHeaders.Accept.Add(
+            _httpClient.DefaultRequestHeaders.Accept.Clear();
+            _httpClient.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
             var token = persistentDataManager.Settings.GitHubToken;
-            http.DefaultRequestHeaders.UserAgent.ParseAdd("RainbusToolbox/1.0");
-            http.DefaultRequestHeaders.Authorization =
+            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("RainbusToolbox/1.0");
+            _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await http.GetAsync("https://api.github.com/user");
+            var response = await _httpClient.GetAsync("https://api.github.com/user");
             if (!response.IsSuccessStatusCode)
                 throw new Exception($"Failed to get GitHub user info: {response.StatusCode}");
             var json = await response.Content.ReadAsStringAsync();
