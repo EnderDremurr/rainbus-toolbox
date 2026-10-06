@@ -29,10 +29,9 @@ public sealed class
                 throw new ArgumentException($"The file provided is not of YAML format. File: {configFileName}");
 
             configFileName = split.First(); // remove the extension from filename
-            configFileName += ".yaml";
         } // helper enforces .yaml naming, so if i forget and add a type in parameter, this should sanitize it or throw
 
-
+        configFileName += ".yaml";
         return GetOverride<T>(configFileName) ?? GetBuiltin<T>(configFileName);
     }
 
