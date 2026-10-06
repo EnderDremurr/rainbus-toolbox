@@ -49,16 +49,16 @@ public class RepositoryManager
     #region AbsolutePaths
 
     // Repo paths
-    public string RepositoryRoot { get; private set; } = null!;
-    public string PathToLocalization => Path.Combine(_dataManager.Settings.RepositoryPath!, LocalizationFolder);
-    public string PathToReferenceLocalization = null!;
-    public string PathToDistribution => Path.Combine(_dataManager.Settings.RepositoryPath!, DistPath);
-    public string PathToVSCodeSettings => Path.Combine(_dataManager.Settings.RepositoryPath!, ".vscode/settings.json");
-    public string PathToRegexJson => Path.Combine(_dataManager.Settings.RepositoryPath!, "regexes.json");
+    public required string RepositoryRoot;
+    public string PathToLocalization => Path.Combine(RepositoryRoot, LocalizationFolder);
+    public required string PathToReferenceLocalization = null!;
+    public string PathToDistribution => Path.Combine(RepositoryRoot, DistPath);
+    public string PathToVSCodeSettings => Path.Combine(RepositoryRoot, ".vscode/settings.json");
+    public string PathToRegexJson => Path.Combine(RepositoryRoot, "regexes.json");
 
     // Game paths
 
-    public string PathToGameRoot => _dataManager.Settings.PathToLimbus!;
+    public required string PathToGameRoot;
 
     #endregion
 
@@ -89,37 +89,66 @@ public class RepositoryManager
 
     #region Initialization
 
-    public void TryInitialize()
+    public bool TryInitialize()
     {
+        var oldRepoPath = RepositoryRoot;
+        var oldLimbusPath = PathToGameRoot;
+
         var originalRepoPath = _dataManager.Settings.RepositoryPath;
         var originalLimbusPath = _dataManager.Settings.PathToLimbus;
+
+        Repository? tempRepository = null;
+
+        var didSucceed = false;
 
         try
         {
             var validatedRepoPath = PersistentDataManager.ValidateRepoPath(originalRepoPath);
             var validatedGamePath = PersistentDataManager.ValidateLimbusPath(originalLimbusPath);
             if (validatedRepoPath == null || validatedGamePath == null)
-            {
-                IsValid = false;
-                return;
-            }
+                throw new InvalidOperationException("Path to localization repo or game is not valid!");
 
-            if (validatedRepoPath != originalRepoPath) _dataManager.Settings.RepositoryPath = validatedRepoPath;
-            if (validatedGamePath != originalLimbusPath) _dataManager.Settings.PathToLimbus = validatedGamePath;
 
-            Repository?.Dispose();
-            Repository = new Repository(validatedRepoPath);
+            // try creating a repo into local first, to not override if th throws
+            tempRepository = new Repository(validatedRepoPath);
             Directory.CreateDirectory(Path.Combine(validatedRepoPath, DistPath));
+
+            // overwrite only if nothing threw
+            if (validatedRepoPath != originalRepoPath)
+                _dataManager.Settings.RepositoryPath = validatedRepoPath;
+            if (validatedGamePath != originalLimbusPath)
+                _dataManager.Settings.PathToLimbus = validatedGamePath;
+
+            RepositoryRoot = validatedRepoPath;
+            PathToGameRoot = validatedGamePath;
             PathToReferenceLocalization = Path.Combine(validatedGamePath, ReferenceLangAppendage);
 
+
+            var oldRepository = Repository;
+            Repository = tempRepository;
+
+            didSucceed = true;
             IsValid = true;
-            OnInitializedSuccessfully?.Invoke();
+
+            tempRepository = null;
+            oldRepository?.Dispose();
         }
         catch (Exception ex)
         {
-            IsValid = false;
+            tempRepository?.Dispose();
             _ = App.Current.HandleNonFatalExceptionAsync(ex);
+
+            if (!string.IsNullOrEmpty(oldLimbusPath) && !string.IsNullOrEmpty(oldRepoPath))
+            {
+                _dataManager.Settings.PathToLimbus = oldLimbusPath;
+                _dataManager.Settings.RepositoryPath = oldRepoPath;
+                // revert old paths
+            }
         }
+
+        if (didSucceed)
+            OnInitializedSuccessfully?.Invoke();
+        return didSucceed;
     }
 
     public void ParseFileMap()
