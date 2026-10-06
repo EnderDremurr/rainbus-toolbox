@@ -8,14 +8,11 @@ using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.ViewModels;
 
-public partial class FilesTabViewModel : ObservableObject
+public partial class FilesTabViewModel(
+    RepositoryManager repositoryManager,
+    KeywordProcessingService keywordProcessingService)
+    : ObservableObject
 {
-    private readonly KeywordProcessingService _keywordProcessingService =
-        (App.Current.ServiceProvider.GetService(typeof(KeywordProcessingService)) as KeywordProcessingService)!;
-
-    private readonly RepositoryManager _repositoryManager =
-        (App.Current.ServiceProvider.GetService(typeof(RepositoryManager)) as RepositoryManager)!;
-
     private CancellationTokenSource? _cancellationTokenSource;
 
     [ObservableProperty] private bool _showRegexEditor;
@@ -54,8 +51,8 @@ public partial class FilesTabViewModel : ObservableObject
             });
 
             var result = await mergingService.PullFilesFromTheGameAsync(
-                _repositoryManager.PathToLocalization,
-                _repositoryManager.PathToReferenceLocalization,
+                repositoryManager.PathToLocalization,
+                repositoryManager.PathToReferenceLocalization,
                 _cancellationTokenSource.Token,
                 progress
             );
@@ -132,8 +129,8 @@ public partial class FilesTabViewModel : ObservableObject
                     }
             });
 
-            var finalProcessed = await _keywordProcessingService.ReplaceEveryTagWithMesh(
-                _repositoryManager.PathToLocalization,
+            var finalProcessed = await keywordProcessingService.ReplaceEveryTagWithMesh(
+                repositoryManager.PathToLocalization,
                 _cancellationTokenSource.Token,
                 progress
             );
@@ -167,7 +164,7 @@ public partial class FilesTabViewModel : ObservableObject
         {
             LoadingScreenViewModel.StartLoading("Начинается поиск новых кейвордов...");
             var progress = new Progress<string>(LoadingScreenViewModel.SetText);
-            await _keywordProcessingService.PullNewKeywordsFromTheGame(
+            await keywordProcessingService.PullNewKeywordsFromTheGame(
                 _cancellationTokenSource.Token,
                 progress
             );
@@ -195,7 +192,7 @@ public partial class FilesTabViewModel : ObservableObject
     [RelayCommand]
     public async Task DefineNewKeywordsFromTheGame()
     {
-        await _keywordProcessingService.AskToDefineKeywords();
+        await keywordProcessingService.AskToDefineKeywords();
     }
 
     #region Events
