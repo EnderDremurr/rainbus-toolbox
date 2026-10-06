@@ -23,14 +23,14 @@ public sealed class GameFilesService
             var expandedFiles = 0;
             var checkedFiles = 0;
 
-            progress?.Report("Starting file process ing...");
+            progress?.Report("Starting file processing...");
             Log.Debug("Starting file processing...");
 
             var localizationFiles =
                 Directory.GetFiles(pathToLocalization, "*.json", SearchOption.AllDirectories).ToList();
 
             if (HasMergeConflict(localizationFiles))
-                throw new Exception("Были айдены мердж конфликты в файлах перевода, нужно сначала их починить!!!");
+                throw new Exception("Были найдены мердж конфликты в файлах перевода, нужно сначала их починить!!!");
 
             var referenceFiles = Directory.GetFiles(pathToReferenceLocalization, "*.json", SearchOption.AllDirectories)
                 .ToList();
@@ -38,45 +38,41 @@ public sealed class GameFilesService
             var message =
                 $"Found {localizationFiles.Count} localization files and {referenceFiles.Count} reference files";
             progress?.Report(message);
-            Log.Debug(message);
+            Log.Debug("{Message}", message);
 
-            // Debug: Log all filenames to see what's happening
-            Log.Debug("\n=== DEBUGGING DUPLICATE FILES ===");
             var duplicateCheck = new Dictionary<string, List<string>>();
 
             foreach (var file in localizationFiles)
             {
                 var fileName = Path.GetFileName(file);
-                var fullPath = file;
 
 
                 if (!duplicateCheck.ContainsKey(fileName)) duplicateCheck[fileName] = new List<string>();
-                duplicateCheck[fileName].Add(fullPath);
+                duplicateCheck[fileName].Add(file);
 
-                Log.Debug($"File: '{fileName}' -> Path: '{fullPath}'");
+                Log.Debug("File: \'{FileName}\' -> Path: \'{FullPath}\'", fileName, file);
             }
 
             // Check for actual duplicates
             var actualDuplicates = duplicateCheck.Where(kvp => kvp.Value.Count > 1).ToList();
-            if (actualDuplicates.Any())
+            if (actualDuplicates.Count != 0)
             {
-                Log.Debug("\n=== FOUND ACTUAL DUPLICATES ===");
                 foreach (var duplicate in actualDuplicates)
                 {
-                    Log.Debug($"Duplicate filename: '{duplicate.Key}'");
-                    foreach (var path in duplicate.Value) Log.Debug($"  -> {path}");
+                    Log.Debug("Found duplicates!!!");
+                    Log.Debug("Duplicate filename: \'{DuplicateKey}\'", duplicate.Key);
+                    foreach (var path in duplicate.Value) Log.Debug("  -> {Path}", path);
                 }
             }
             else
             {
                 Log.Debug("No actual duplicates found. Checking for other issues...");
-
                 // Check for null/empty filenames
                 var emptyNames = localizationFiles.Where(f => string.IsNullOrWhiteSpace(Path.GetFileName(f))).ToList();
                 if (emptyNames.Any())
                 {
                     Log.Debug("Found files with empty/null names:");
-                    emptyNames.ForEach(f => Log.Debug($"  -> {f}"));
+                    emptyNames.ForEach(f => Log.Debug("  -> {Obj}", f));
                 }
 
                 // Check for special characters or encoding issues
@@ -89,7 +85,7 @@ public sealed class GameFilesService
                 if (suspiciousFiles.Any())
                 {
                     Log.Debug("Found files with suspicious characters:");
-                    suspiciousFiles.ForEach(f => Log.Debug($"  -> '{Path.GetFileName(f)}' in {f}"));
+                    suspiciousFiles.ForEach(f => Log.Debug("  -> \'{FileName}\' in {Obj}", Path.GetFileName(f), f));
                 }
             }
 
@@ -103,16 +99,16 @@ public sealed class GameFilesService
 
                 if (string.IsNullOrWhiteSpace(fileName))
                 {
-                    Log.Debug($"Skipping file with null/empty name: {file}");
+                    Log.Debug("Skipping file with null/empty name: {File}", file);
                     continue;
                 }
 
                 if (localizationFileMap.TryGetValue(fileName, out var existingFile))
                 {
-                    Log.Debug($"ERROR: Duplicate key '{fileName}' detected!");
-                    Log.Debug($"  Existing: {existingFile}");
-                    Log.Debug($"  New: {file}");
-                    Log.Debug("  Using existing file and skipping new one.");
+                    Log.Debug("ERROR: Duplicate key \'{FileName}\' detected!", fileName);
+                    Log.Debug("  Existing: {ExistingFile}", existingFile);
+                    Log.Debug("  New: {File}", file);
+                    Log.Debug("  Using existing file and skipping new one");
                 }
                 else
                 {
@@ -133,7 +129,7 @@ public sealed class GameFilesService
                     var progressMessage =
                         $"Processed {checkedFiles}/{referenceFiles.Count} files... (Added: {newFiles}, Merged: {expandedFiles})";
                     progress?.Report(progressMessage);
-                    Log.Debug(progressMessage);
+                    Log.Debug("{ProgressMessage}", progressMessage);
 
                     // Yield control to prevent UI freezing
                     Thread.Sleep(1);
@@ -153,7 +149,7 @@ public sealed class GameFilesService
                     {
                         var errorMessage = $"Error copying file {referenceFile}: {ex.Message}";
                         progress?.Report(errorMessage);
-                        Log.Debug(errorMessage);
+                        Log.Debug("{ErrorMessage}", errorMessage);
                     }
 
                     continue;
@@ -168,14 +164,14 @@ public sealed class GameFilesService
                 {
                     var errorMessage = $"Error merging file {referenceFile}: {ex.Message}";
                     progress?.Report(errorMessage);
-                    Log.Debug(errorMessage);
+                    Log.Debug("{ErrorMessage}", errorMessage);
                 }
             }
 
             var finalMessage =
                 $"Completed! Added {newFiles} files, merged {expandedFiles} files. Total files processed: {checkedFiles}.";
             progress?.Report(finalMessage);
-            Log.Debug(finalMessage);
+            Log.Debug("{FinalMessage}", finalMessage);
 
             return new[] { newFiles, expandedFiles, checkedFiles };
         }, cancellationToken);
@@ -200,7 +196,7 @@ public sealed class GameFilesService
             // skips empty files
             if (string.IsNullOrWhiteSpace(sourceContent))
             {
-                Log.Debug($"Skipping empty source file: {sourcePath}");
+                Log.Debug("Skipping empty source file: {SourcePath}", sourcePath);
                 return false;
             }
 
@@ -214,9 +210,8 @@ public sealed class GameFilesService
             }
             catch (JsonException ex)
             {
-                Log.Debug($"Failed to parse destination JSON file {destinationPath}: {ex.Message}");
-                Log.Debug(
-                    $"First 200 characters of destination: {destinationContent.Substring(0, Math.Min(200, destinationContent.Length))}");
+                Log.Debug("Failed to parse destination JSON file {DestinationPath}: {ExMessage}", destinationPath,
+                    ex.Message);
                 throw;
             }
 
@@ -226,17 +221,13 @@ public sealed class GameFilesService
             }
             catch (JsonException ex)
             {
-                Log.Debug($"Failed to parse source JSON file {sourcePath}: {ex.Message}");
-                Log.Debug(
-                    $"First 500 characters of source: {sourceContent.Substring(0, Math.Min(500, sourceContent.Length))}");
-                Log.Debug(
-                    $"Last 200 characters of source: {sourceContent.Substring(Math.Max(0, sourceContent.Length - 200))}");
+                Log.Debug("Failed to parse source JSON file {SourcePath}: {ExMessage}", sourcePath, ex.Message);
 
                 // Try to find the problematic character
                 var lines = sourceContent.Split('\n');
                 for (var i = 0; i < Math.Min(10, lines.Length); i++)
                     if (lines[i].Contains('<'))
-                        Log.Debug($"Found '<' character on line {i + 1}: {lines[i]}");
+                        Log.Debug("Found \'<\' character on line {I}: {Line}", i + 1, lines[i]);
 
                 throw;
             }
@@ -248,7 +239,7 @@ public sealed class GameFilesService
 
             if (sourceDataList == null)
             {
-                Log.Debug($"Warning: No DataList or dataList found in source file: {sourcePath}");
+                Log.Debug("Warning: No DataList or dataList found in source file: {SourcePath}", sourcePath);
                 return false;
             }
 
@@ -336,12 +327,13 @@ public sealed class GameFilesService
         }
         catch (JsonException ex)
         {
-            Log.Debug($"JSON parsing error in files {destinationPath} or {sourcePath}: {ex.Message}");
+            Log.Debug("JSON parsing error in files {DestinationPath} or {SourcePath}: {ExMessage}", destinationPath,
+                sourcePath, ex.Message);
             throw;
         }
         catch (Exception ex)
         {
-            Log.Debug($"Unexpected error processing {destinationPath}: {ex.Message}");
+            Log.Debug("Unexpected error processing {DestinationPath}: {ExMessage}", destinationPath, ex.Message);
             throw;
         }
 
@@ -378,7 +370,7 @@ public sealed class GameFilesService
         }
         catch (Exception ex)
         {
-            Log.Debug($"Error copying file from {pathToFileToCopy}: {ex.Message}");
+            Log.Debug("Error copying file from {PathToFileToCopy}: {ExMessage}", pathToFileToCopy, ex.Message);
             throw;
         }
     }
