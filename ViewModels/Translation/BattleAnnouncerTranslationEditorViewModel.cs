@@ -64,14 +64,16 @@ public partial class BattleAnnouncerTranslationEditorViewModel
     [ObservableProperty]
     private string _referenceAnnouncerName = "";
 
-    private RepositoryManager _repositoryManager =>
-        (RepositoryManager)App.Current.ServiceProvider.GetService(typeof(RepositoryManager));
+    private LocalizationManager LocalizationManager =>
+        (LocalizationManager)App.Current.ServiceProvider.GetService(typeof(LocalizationManager));
 
-    private AnnouncerLocalizationFile _announcerLocalizationFile => _repositoryManager.AnnouncerNames;
-    private AnnouncerLocalizationFile _referenceAnnouncerLocalizationFile => _repositoryManager.AnnouncerNamesReference;
+    private AnnouncerLocalizationFile _announcerLocalizationFile => LocalizationManager.AnnouncerNames;
+
+    private AnnouncerLocalizationFile _referenceAnnouncerLocalizationFile =>
+        LocalizationManager.AnnouncerNamesReference;
 
     private AnnouncerVoiceTypeLocalizationFile _announcerVoiceTypeLocalizationFile =>
-        _repositoryManager.AnnouncerVoiceTypes;
+        LocalizationManager.AnnouncerVoiceTypes;
 
     public override void LoadEditableFile(AnnouncerVoiceLocalizationFile file)
     {

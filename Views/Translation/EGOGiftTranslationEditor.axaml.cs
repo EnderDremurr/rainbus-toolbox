@@ -1,6 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Interactivity;
-using RainbusToolbox.Models.Data;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Utilities.Data;
 using RainbusToolbox.ViewModels;
@@ -9,16 +7,26 @@ namespace RainbusToolbox.Views;
 
 public partial class EGOGiftTranslationEditor : UserControl, IFileEditor
 {
-    public EGOGiftTranslationEditorViewModel VM => (EGOGiftTranslationEditorViewModel)DataContext!;
-
     public EGOGiftTranslationEditor()
     {
         InitializeComponent();
         DataContext ??= new EGOGiftTranslationEditorViewModel();
     }
 
-    public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((EgoGiftsLocalizationFile)file);
+    public EGOGiftTranslationEditorViewModel VM => (EGOGiftTranslationEditorViewModel)DataContext!;
 
-    public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((EgoGiftsLocalizationFile)file);
-    public void AskEditorToSave(RepositoryManager repositoryManager) => VM.SaveCurrentFile(repositoryManager);
+    public void SetFileToEdit(LocalizationFileBase file)
+    {
+        VM.LoadEditableFile((EgoGiftsLocalizationFile)file);
+    }
+
+    public void SetReferenceFile(LocalizationFileBase file)
+    {
+        VM.LoadReferenceFile((EgoGiftsLocalizationFile)file);
+    }
+
+    public void AskEditorToSave(LocalizationManager localizationManager)
+    {
+        VM.SaveCurrentFile(localizationManager);
+    }
 }

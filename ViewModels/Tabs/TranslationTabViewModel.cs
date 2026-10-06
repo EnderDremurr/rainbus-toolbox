@@ -44,7 +44,7 @@ public partial class TranslationTabViewModel : ObservableObject
     };
 
 
-    private readonly RepositoryManager _repositoryManager;
+    private readonly LocalizationManager _localizationManager;
 
     [ObservableProperty]
     private IFileEditor? _currentEditor;
@@ -63,17 +63,17 @@ public partial class TranslationTabViewModel : ObservableObject
     [ObservableProperty]
     private bool _isFileLoaded;
 
-    public TranslationTabViewModel(RepositoryManager repositoryManager, ConfigProvider configProvider,
+    public TranslationTabViewModel(LocalizationManager localizationManager, ConfigProvider configProvider,
         DiscordRPCService discordRpcService)
     {
         _discordRpcService = discordRpcService;
         _configProvider = configProvider;
-        _repositoryManager = repositoryManager;
+        _localizationManager = localizationManager;
 
-        _repositoryManager.OnInitializedSuccessfully += InitShortcuts;
+        _localizationManager.OnInitializedSuccessfully += InitShortcuts;
 
         // first run won't see event so run it by hand
-        if (_repositoryManager.IsValid)
+        if (_localizationManager.IsValid)
             InitShortcuts();
     }
 
@@ -144,7 +144,7 @@ public partial class TranslationTabViewModel : ObservableObject
             return;
         }
 
-        var detectedType = FileToObjectCaster.GetType(filePath, _repositoryManager.DeveloperFileTypeMap);
+        var detectedType = FileToObjectCaster.GetType(filePath, _localizationManager.DeveloperFileTypeMap);
 
         var editorType = detectedType != null && _editorMap.TryGetValue(detectedType, out var value)
             ? value
@@ -156,8 +156,8 @@ public partial class TranslationTabViewModel : ObservableObject
         FileType = detectedType?.Name ?? "Unknown";
         IsFileLoaded = true;
 
-        var file = _repositoryManager.GetObjectFromPath(filePath);
-        var refFile = _repositoryManager.GetReference(file);
+        var file = _localizationManager.GetObjectFromPath(filePath);
+        var refFile = _localizationManager.GetReference(file);
 
         if (file == null || refFile == null)
         {
@@ -175,7 +175,7 @@ public partial class TranslationTabViewModel : ObservableObject
     [RelayCommand]
     public void SaveObjectFromCurrentEditorAndClose()
     {
-        CurrentEditor?.AskEditorToSave(_repositoryManager);
+        CurrentEditor?.AskEditorToSave(_localizationManager);
         FileName = "Не выбран";
         FileType = "";
         CurrentEditor = null;
@@ -186,7 +186,7 @@ public partial class TranslationTabViewModel : ObservableObject
     [RelayCommand]
     public void SaveObjectFromCurrentEditor()
     {
-        CurrentEditor?.AskEditorToSave(_repositoryManager);
+        CurrentEditor?.AskEditorToSave(_localizationManager);
     }
 
     private void InitShortcuts()
@@ -197,7 +197,7 @@ public partial class TranslationTabViewModel : ObservableObject
         _fileShortcuts = [];
 
         Log.Debug("Getting root");
-        var root = _repositoryManager.PathToLocalization;
+        var root = _localizationManager.PathToLocalization;
         Log.Debug("Repository root: {Root}", root);
 
         // "hard" shortcuts init here

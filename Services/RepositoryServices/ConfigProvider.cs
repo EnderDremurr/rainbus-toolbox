@@ -7,7 +7,7 @@ using YamlDotNet.Serialization.NamingConventions;
 namespace RainbusToolbox.Utilities.RepositoryServices;
 
 public sealed class
-    ConfigProvider(RepositoryManager repositoryManager) // repo manager is required for future override handling
+    ConfigProvider(LocalizationManager localizationManager) // repo manager is required for future override handling
 {
     private const string BaseAvaresPath = "avares://RainbusToolbox/Assets/Configs/";
 
@@ -59,11 +59,11 @@ public sealed class
 
     private T? GetOverride<T>(string sanitizedFileNameWithExtension) where T : class
     {
-        if (string.IsNullOrEmpty(repositoryManager.RepositoryRoot))
+        if (string.IsNullOrEmpty(localizationManager.RepositoryRoot))
             throw new NullReferenceException("Path to localization repo is null! This is a dev error!");
 
 
-        var possibleOverridePath = Path.Combine(repositoryManager.PathToLocalization, sanitizedFileNameWithExtension);
+        var possibleOverridePath = Path.Combine(localizationManager.PathToLocalization, sanitizedFileNameWithExtension);
         var hasOverride = File.Exists(possibleOverridePath);
 
         if (!hasOverride)

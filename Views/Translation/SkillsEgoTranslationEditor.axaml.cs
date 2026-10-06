@@ -26,9 +26,9 @@ public partial class SkillsEgoTranslationEditor : UserControl, IFileEditor
         VM.LoadReferenceFile((SkillLocalizationFile)file);
     }
 
-    public void AskEditorToSave(RepositoryManager repositoryManager)
+    public void AskEditorToSave(LocalizationManager localizationManager)
     {
-        VM.SaveCurrentFile(repositoryManager);
+        VM.SaveCurrentFile(localizationManager);
     }
 
     private void OnPreviousLevelClick(object? sender, RoutedEventArgs e)

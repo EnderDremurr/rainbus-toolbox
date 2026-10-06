@@ -16,16 +16,16 @@ public partial class SettingsWindow : Window
 {
     private readonly PersistentDataManager _dataManager;
     private readonly GithubManager _githubManager;
-    private readonly RepositoryManager _repositoryManager;
+    private readonly LocalizationManager _localizationManager;
 
     public SettingsWindow(PersistentDataManager manager, GithubManager githubManager,
-        RepositoryManager repositoryManager)
+        LocalizationManager localizationManager)
     {
         InitializeComponent();
 
         _dataManager = manager;
         _githubManager = githubManager;
-        _repositoryManager = repositoryManager;
+        _localizationManager = localizationManager;
 
         LoadSettings();
 
@@ -171,7 +171,7 @@ public partial class SettingsWindow : Window
             _dataManager.Save();
 
         if (didRepoChange)
-            _repositoryManager.TryInitialize();
+            _localizationManager.TryInitialize();
     }
 
     private void ToggleWebhookVisibility_Click(object sender, RoutedEventArgs e)

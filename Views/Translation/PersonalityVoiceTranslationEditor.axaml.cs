@@ -1,25 +1,32 @@
 using Avalonia.Controls;
-using Avalonia.Interactivity;
-using System.ComponentModel;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Utilities.Data;
 using RainbusToolbox.ViewModels;
 
-namespace RainbusToolbox.Views
+namespace RainbusToolbox.Views;
+
+public partial class PersonalityVoiceTranslationEditor : UserControl, IFileEditor
 {
-    public partial class PersonalityVoiceTranslationEditor : UserControl, IFileEditor
+    public PersonalityVoiceTranslationEditor()
     {
-        public PersonalityVoiceTranslationEditorViewModel VM => (PersonalityVoiceTranslationEditorViewModel)DataContext!;
+        InitializeComponent();
+        DataContext ??= new PersonalityVoiceTranslationEditorViewModel();
+    }
 
-        public PersonalityVoiceTranslationEditor()
-        {
-            InitializeComponent();
-            DataContext ??= new PersonalityVoiceTranslationEditorViewModel();
-        }
+    public PersonalityVoiceTranslationEditorViewModel VM => (PersonalityVoiceTranslationEditorViewModel)DataContext!;
 
-        public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((PersonalityVoiceLocalizationFile)file);
+    public void SetFileToEdit(LocalizationFileBase file)
+    {
+        VM.LoadEditableFile((PersonalityVoiceLocalizationFile)file);
+    }
 
-        public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((PersonalityVoiceLocalizationFile)file);
-        public void AskEditorToSave(RepositoryManager repositoryManager) => VM.SaveCurrentFile(repositoryManager);
+    public void SetReferenceFile(LocalizationFileBase file)
+    {
+        VM.LoadReferenceFile((PersonalityVoiceLocalizationFile)file);
+    }
+
+    public void AskEditorToSave(LocalizationManager localizationManager)
+    {
+        VM.SaveCurrentFile(localizationManager);
     }
 }

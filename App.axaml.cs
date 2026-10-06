@@ -6,6 +6,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using RainbusToolbox.Models.Managers;
+using RainbusToolbox.Services.RepositoryServices;
 using RainbusToolbox.Utilities;
 using RainbusToolbox.Utilities.ExternalServices;
 using RainbusToolbox.Utilities.RepositoryServices;
@@ -135,8 +136,9 @@ public class App : Application
             var services = new ServiceCollection();
 
             // Singletons
+            services.AddSingleton<GitManager>();
             services.AddSingleton<PersistentDataManager>();
-            services.AddSingleton<RepositoryManager>();
+            services.AddSingleton<LocalizationManager>();
             services.AddSingleton<GithubManager>();
             services.AddSingleton<KeywordProcessingService>();
             services.AddSingleton<Angela>();
@@ -171,7 +173,7 @@ public class App : Application
 
             try
             {
-                var repoManager = ServiceProvider.GetRequiredService<RepositoryManager>();
+                var repoManager = ServiceProvider.GetRequiredService<LocalizationManager>();
                 var dataManager = ServiceProvider.GetRequiredService<PersistentDataManager>();
                 var githubManager = ServiceProvider.GetRequiredService<GithubManager>();
 

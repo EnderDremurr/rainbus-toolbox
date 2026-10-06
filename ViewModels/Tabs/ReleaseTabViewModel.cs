@@ -10,6 +10,7 @@ using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using RainbusToolbox.Models;
 using RainbusToolbox.Models.Managers;
+using RainbusToolbox.Services.RepositoryServices;
 using RainbusToolbox.Utilities;
 using RainbusToolbox.Utilities.RepositoryServices;
 using RainbusToolbox.Views.Misc;
@@ -23,14 +24,16 @@ public partial class ReleaseTabViewModel : ObservableObject
     public ReleaseTabViewModel(
         PersistentDataManager dataManager,
         GithubManager githubManager,
-        RepositoryManager repositoryManager,
+        LocalizationManager localizationManager,
         KeywordProcessingService keywordProcessingService,
-        MassReplacementService massReplacementService)
+        MassReplacementService massReplacementService,
+        GitManager gitManager)
     {
         _dataManager = dataManager;
         PingSetRole = !string.IsNullOrWhiteSpace(_dataManager.Settings.DiscordRoleToPing);
         _githubManager = githubManager;
-        _repositoryManager = repositoryManager;
+        _gitManager = gitManager;
+        _localizationManager = localizationManager;
         _keywordProcessingService = keywordProcessingService;
         _massReplacementService = massReplacementService;
     }
@@ -39,7 +42,7 @@ public partial class ReleaseTabViewModel : ObservableObject
 
     #region Events
 
-    public async void OnTabOpened()
+    public async Task OnTabOpened()
     {
         var rpc = App.Current.ServiceProvider.GetService(typeof(DiscordRPCService)) as DiscordRPCService;
 
@@ -54,7 +57,7 @@ public partial class ReleaseTabViewModel : ObservableObject
             return;
         }
 
-        VersionDisplay = _repositoryManager.GetLatestReleaseSemantic();
+        VersionDisplay = _gitManager.GetLatestReleaseSemantic();
     }
 
     #endregion
@@ -71,7 +74,7 @@ public partial class ReleaseTabViewModel : ObservableObject
                 LoadingScreenViewModel.SetText(p.Label);
             });
 
-            var pathToRegexJson = _repositoryManager.PathToRegexJson;
+            var pathToRegexJson = _localizationManager.PathToRegexJson;
             if (!File.Exists(pathToRegexJson)) return;
 
             var entries = JsonConvert.DeserializeObject<List<ReplacementEntry>>(File.ReadAllText(pathToRegexJson));
@@ -88,9 +91,10 @@ public partial class ReleaseTabViewModel : ObservableObject
 
     #region Fields
 
+    private readonly GitManager _gitManager;
     private readonly PersistentDataManager _dataManager;
     private readonly GithubManager _githubManager;
-    private readonly RepositoryManager _repositoryManager;
+    private readonly LocalizationManager _localizationManager;
     private readonly KeywordProcessingService _keywordProcessingService;
     private readonly MassReplacementService _massReplacementService;
     private CancellationTokenSource? _cancellationTokenSource;
@@ -220,11 +224,11 @@ public partial class ReleaseTabViewModel : ObservableObject
             }
 
             LoadingScreenViewModel.StartLoading("Начинается замена кейвордов перед релизом...");
-            await _keywordProcessingService.ReplaceEveryTagWithMesh(_repositoryManager
+            await _keywordProcessingService.ReplaceEveryTagWithMesh(_localizationManager
                 .PathToLocalization); // TODO: don't forget to change this after i move to new keyword conversion pipeline
 
             var currentVersion =
-                _repositoryManager
+                _gitManager
                     .GetLatestReleaseSemantic(); // TODO: this section should probably be moved to github manager, so this command will only get next verion
             // i guess, like have an enum for version types and then string GetNextSemanticVersion(VersionType type) with major minor patch
             var parts = currentVersion.Split('.');
@@ -253,20 +257,20 @@ public partial class ReleaseTabViewModel : ObservableObject
 
             // commit and sync release version, dunno what i didn't think of doing that back then
 
-            _repositoryManager.CommitLocalChanges($"Automatic commit of release version {nextVersion}");
-            await _repositoryManager
-                .SynchronizeWithOriginAsync(); // TODO: don't forget, all the git shit should be moved to another service later cuz my repo manager is fucking huge!!!!!
+            _gitManager.CommitLocalChanges($"Automatic commit of release version {nextVersion}");
+            await _gitManager
+                .SynchronizeWithOriginAsync();
 
             // i believe start loading should reset the previous bars? bro i don't even know how my own shit works anymore :sob:
 
             LoadingScreenViewModel.StartLoading("Упаковывается перевод...");
             // Package the localization
             var package =
-                await LocalizationPackager.PackageLocalizationAsync(nextVersion, _repositoryManager);
+                await LocalizationPackager.PackageLocalizationAsync(nextVersion, _localizationManager, _gitManager);
 
             LoadingScreenViewModel.StartLoading("Выкладывается на гитхаб...");
             // Create GitHub release
-            var localizationName = _repositoryManager.GetRepoDisplayName(_repositoryManager.Repository);
+            var localizationName = _gitManager.GetCurrentRepoDisplayName();
 
             await _githubManager.CreateReleaseAsync($"{localizationName} v{nextVersion}", EditorText, package);
 
@@ -301,7 +305,7 @@ public partial class ReleaseTabViewModel : ObservableObject
         }
         finally
         {
-            VersionDisplay = _repositoryManager.GetLatestReleaseSemantic();
+            VersionDisplay = _gitManager.GetLatestReleaseSemantic();
             LoadingScreenViewModel.FinishLoading();
         }
     }

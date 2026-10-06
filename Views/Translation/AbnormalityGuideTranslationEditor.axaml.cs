@@ -1,25 +1,32 @@
 using Avalonia.Controls;
-using Avalonia.Interactivity;
-using System.ComponentModel;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Utilities.Data;
 using RainbusToolbox.ViewModels;
 
-namespace RainbusToolbox.Views
+namespace RainbusToolbox.Views;
+
+public partial class AbnormalityGuideTranslationEditor : UserControl, IFileEditor
 {
-    public partial class AbnormalityGuideTranslationEditor : UserControl, IFileEditor
+    public AbnormalityGuideTranslationEditor()
     {
-        public AbnormalityGuideTranslationEditorViewModel VM => (AbnormalityGuideTranslationEditorViewModel)DataContext!;
+        InitializeComponent();
+        DataContext ??= new AbnormalityGuideTranslationEditorViewModel();
+    }
 
-        public AbnormalityGuideTranslationEditor()
-        {
-            InitializeComponent();
-            DataContext ??= new AbnormalityGuideTranslationEditorViewModel();
-        }
+    public AbnormalityGuideTranslationEditorViewModel VM => (AbnormalityGuideTranslationEditorViewModel)DataContext!;
 
-        public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((AbnormalityGuideContentLocalizationFile)file);
+    public void SetFileToEdit(LocalizationFileBase file)
+    {
+        VM.LoadEditableFile((AbnormalityGuideContentLocalizationFile)file);
+    }
 
-        public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((AbnormalityGuideContentLocalizationFile)file);
-        public void AskEditorToSave(RepositoryManager repositoryManager) => VM.SaveCurrentFile(repositoryManager);
+    public void SetReferenceFile(LocalizationFileBase file)
+    {
+        VM.LoadReferenceFile((AbnormalityGuideContentLocalizationFile)file);
+    }
+
+    public void AskEditorToSave(LocalizationManager localizationManager)
+    {
+        VM.SaveCurrentFile(localizationManager);
     }
 }

@@ -1,34 +1,33 @@
 using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Avalonia.Platform.Storage;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Avalonia;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Utilities.Data;
 using RainbusToolbox.ViewModels;
 
-namespace RainbusToolbox.Views
+namespace RainbusToolbox.Views;
+
+public partial class PanicTranslationEditor : UserControl, IFileEditor
 {
-    public partial class PanicTranslationEditor : UserControl, IFileEditor
+    public PanicTranslationEditor()
     {
-        public PanicTranslationEditorViewModel VM => (PanicTranslationEditorViewModel)DataContext!;
+        InitializeComponent();
+        DataContext ??= new PanicTranslationEditorViewModel();
+    }
 
-        public PanicTranslationEditor()
-        {
-            InitializeComponent();
-            DataContext ??= new PanicTranslationEditorViewModel();
-        }
+    public PanicTranslationEditorViewModel VM => (PanicTranslationEditorViewModel)DataContext!;
 
 
-        public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((PanicInfoLocalizationFile)file);
+    public void SetFileToEdit(LocalizationFileBase file)
+    {
+        VM.LoadEditableFile((PanicInfoLocalizationFile)file);
+    }
 
-        public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((PanicInfoLocalizationFile)file);
-        public void AskEditorToSave(RepositoryManager repositoryManager) => VM.SaveCurrentFile(repositoryManager);
+    public void SetReferenceFile(LocalizationFileBase file)
+    {
+        VM.LoadReferenceFile((PanicInfoLocalizationFile)file);
+    }
+
+    public void AskEditorToSave(LocalizationManager localizationManager)
+    {
+        VM.SaveCurrentFile(localizationManager);
     }
 }

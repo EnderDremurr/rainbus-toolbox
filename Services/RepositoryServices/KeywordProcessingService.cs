@@ -13,7 +13,7 @@ using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.Utilities;
 
-public sealed class KeywordProcessingService(RepositoryManager repositoryManager)
+public sealed class KeywordProcessingService(LocalizationManager localizationManager)
 {
     private const string RCRKeywordColorsLink =
         "https://raw.githubusercontent.com/Let-It-Rain/RCR-LCB/refs/heads/main/keyword_colors.json";
@@ -40,7 +40,7 @@ public sealed class KeywordProcessingService(RepositoryManager repositoryManager
 
     public async Task InitializeAsync()
     {
-        var keywordColorPath = repositoryManager.PathToKeywordColorList;
+        var keywordColorPath = localizationManager.PathToKeywordColorList;
 
         // check if there is a cached keyword colors file
         if (Path.Exists(keywordColorPath)
@@ -157,7 +157,7 @@ public sealed class KeywordProcessingService(RepositoryManager repositoryManager
             _keywordColorList[colorlessKeyword.Key] = response.Result!;
         }
 
-        await File.WriteAllTextAsync(repositoryManager.PathToKeywordColorList,
+        await File.WriteAllTextAsync(localizationManager.PathToKeywordColorList,
             JsonConvert.SerializeObject(_keywordColorList, Formatting.Indented));
         await PopUpWindow.ShowAsync(parent!, "Определение цвета кейвордов",
             "Все кейворды были определены!");
@@ -298,7 +298,7 @@ public sealed class KeywordProcessingService(RepositoryManager repositoryManager
     {
         await EnsureInitializedAsync();
 
-        var pathToGameLocalization = repositoryManager.PathToReferenceLocalization;
+        var pathToGameLocalization = localizationManager.PathToReferenceLocalization;
 
         // find all files of BattleKeywords*.json
         var filesToScan =
@@ -318,7 +318,7 @@ public sealed class KeywordProcessingService(RepositoryManager repositoryManager
             foreach (var id in ids) _keywordColorList.TryAdd(id, "Unknown");
         }
 
-        await File.WriteAllTextAsync(repositoryManager.PathToKeywordColorList,
+        await File.WriteAllTextAsync(localizationManager.PathToKeywordColorList,
             JsonConvert.SerializeObject(_keywordColorList, Formatting.Indented), cancellationToken);
         progress?.Report($"Added {_keywordColorList.Count - oldKeywordCount} keywords");
     }

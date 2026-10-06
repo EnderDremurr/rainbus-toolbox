@@ -122,10 +122,10 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
         NavigationCountText = $"{EditableFile?.DataList.Count ?? 0}";
     }
 
-    public virtual void SaveCurrentFile(RepositoryManager repositoryManager)
+    public virtual void SaveCurrentFile(LocalizationManager localizationManager)
     {
         if (EditableFile == null)
             return;
-        repositoryManager.SaveObjectToFile(EditableFile);
+        localizationManager.SaveObjectToFile(EditableFile);
     }
 }

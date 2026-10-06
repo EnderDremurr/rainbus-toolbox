@@ -1,26 +1,31 @@
-using System;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
-using Microsoft.Extensions.DependencyInjection;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Utilities.Data;
-using RainbusToolbox.ViewModels;
 
 namespace RainbusToolbox.Views;
 
 public partial class BattleHintsTranslationEditor : UserControl, IFileEditor
 {
-    public BattleHintsEditorViewModel VM => (BattleHintsEditorViewModel)DataContext!;
-
     public BattleHintsTranslationEditor()
     {
         InitializeComponent();
         DataContext ??= new BattleHintsEditorViewModel();
     }
-    public void SetFileToEdit(LocalizationFileBase file) => VM.LoadEditableFile((NormalBattleHintLocalizationFile)file);
 
-    public void SetReferenceFile(LocalizationFileBase file) => VM.LoadReferenceFile((NormalBattleHintLocalizationFile)file);
-    public void AskEditorToSave(RepositoryManager repositoryManager) => VM.SaveCurrentFile(repositoryManager);
+    public BattleHintsEditorViewModel VM => (BattleHintsEditorViewModel)DataContext!;
+
+    public void SetFileToEdit(LocalizationFileBase file)
+    {
+        VM.LoadEditableFile((NormalBattleHintLocalizationFile)file);
+    }
+
+    public void SetReferenceFile(LocalizationFileBase file)
+    {
+        VM.LoadReferenceFile((NormalBattleHintLocalizationFile)file);
+    }
+
+    public void AskEditorToSave(LocalizationManager localizationManager)
+    {
+        VM.SaveCurrentFile(localizationManager);
+    }
 }

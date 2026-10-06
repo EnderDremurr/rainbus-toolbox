@@ -3,33 +3,35 @@ using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Utilities.Data;
 using RainbusToolbox.ViewModels;
 
-namespace RainbusToolbox.Views.Translation
+namespace RainbusToolbox.Views.Translation;
+
+public partial class GenericTranslationEditor : UserControl, IFileEditor
 {
-    public partial class GenericTranslationEditor : UserControl, IFileEditor
+    public GenericTranslationEditor()
     {
-        public GenericTranslationEditorViewModel VM => (GenericTranslationEditorViewModel)DataContext!;
+        InitializeComponent();
+        DataContext ??= new GenericTranslationEditorViewModel();
+    }
 
-        public GenericTranslationEditor()
-        {
-            InitializeComponent();
-            DataContext ??= new GenericTranslationEditorViewModel();
-        }
+    public GenericTranslationEditorViewModel VM => (GenericTranslationEditorViewModel)DataContext!;
 
-        public void SetFileToEdit(LocalizationFileBase file)
-        {
-            VM.LoadEditableFile(file);
-        }
+    public void SetFileToEdit(LocalizationFileBase file)
+    {
+        VM.LoadEditableFile(file);
+    }
 
-        public void SetReferenceFile(LocalizationFileBase file)
-        {
-            VM.LoadReferenceFile(file);
-        }
+    public void SetReferenceFile(LocalizationFileBase file)
+    {
+        VM.LoadReferenceFile(file);
+    }
 
-        public void AskEditorToSave(RepositoryManager repositoryManager) => VM.SaveEditableFile();
+    public void AskEditorToSave(LocalizationManager localizationManager)
+    {
+        VM.SaveEditableFile();
+    }
 
-        public void SaveUnknownFile()
-        {
-            VM.SaveEditableFile();
-        }
+    public void SaveUnknownFile()
+    {
+        VM.SaveEditableFile();
     }
 }

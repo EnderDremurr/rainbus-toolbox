@@ -9,7 +9,7 @@ using RainbusToolbox.Views.Misc;
 namespace RainbusToolbox.ViewModels;
 
 public partial class FilesTabViewModel(
-    RepositoryManager repositoryManager,
+    LocalizationManager localizationManager,
     KeywordProcessingService keywordProcessingService)
     : ObservableObject
 {
@@ -51,8 +51,8 @@ public partial class FilesTabViewModel(
             });
 
             var result = await mergingService.PullFilesFromTheGameAsync(
-                repositoryManager.PathToLocalization,
-                repositoryManager.PathToReferenceLocalization,
+                localizationManager.PathToLocalization,
+                localizationManager.PathToReferenceLocalization,
                 _cancellationTokenSource.Token,
                 progress
             );
@@ -130,7 +130,7 @@ public partial class FilesTabViewModel(
             });
 
             var finalProcessed = await keywordProcessingService.ReplaceEveryTagWithMesh(
-                repositoryManager.PathToLocalization,
+                localizationManager.PathToLocalization,
                 _cancellationTokenSource.Token,
                 progress
             );

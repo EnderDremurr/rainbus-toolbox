@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using CommunityToolkit.Mvvm.ComponentModel;
-using RainbusToolbox.Models.Data;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Utilities.Data;
 
@@ -8,7 +6,8 @@ namespace RainbusToolbox.ViewModels;
 
 public partial class StoryTranslationEditorViewModel : TranslationEditorViewModel<StoryDataFile, StoryDataItem>
 {
-    private readonly RepositoryManager _repositoryManager = (App.Current.ServiceProvider.GetService(typeof(RepositoryManager)) as RepositoryManager)!;
+    private readonly LocalizationManager _localizationManager =
+        (App.Current.ServiceProvider.GetService(typeof(LocalizationManager)) as LocalizationManager)!;
 
     [ObservableProperty] private ScenarioModelCode? _scenarioModel;
     [ObservableProperty] private ScenarioModelCode? _scenarioModelReference;
@@ -39,7 +38,7 @@ public partial class StoryTranslationEditorViewModel : TranslationEditorViewMode
         }
     }
 
-    
+
     public string DisplayTellerReference => ReferenceItem?.Teller ?? ScenarioModelReference?.Name ?? string.Empty;
     public string DisplayTitleReference => ReferenceItem?.Title ?? ScenarioModelReference?.NickName ?? string.Empty;
 
@@ -77,17 +76,13 @@ public partial class StoryTranslationEditorViewModel : TranslationEditorViewMode
     protected override void UpdateCurrentItem()
     {
         base.UpdateCurrentItem();
-        
+
         if (CurrentItem?.Model != null)
-        {
-            ScenarioModel = _repositoryManager.ScenarioModelCodes?.DataList
+            ScenarioModel = _localizationManager.ScenarioModelCodes?.DataList
                 .FirstOrDefault(x => x.Id == CurrentItem.Model);
-        }
         else
-        {
             ScenarioModel = null;
-        }
-        
+
         OnPropertyChanged(nameof(DisplayTeller));
         OnPropertyChanged(nameof(DisplayTitle));
         OnPropertyChanged(nameof(EditableTeller));
@@ -99,17 +94,13 @@ public partial class StoryTranslationEditorViewModel : TranslationEditorViewMode
     protected override void UpdateReferenceItem()
     {
         base.UpdateReferenceItem();
-        
+
         if (ReferenceItem?.Model != null)
-        {
-            ScenarioModelReference = _repositoryManager.ScenarioModelCodesReference?.DataList
+            ScenarioModelReference = _localizationManager.ScenarioModelCodesReference?.DataList
                 .FirstOrDefault(x => x.Id == ReferenceItem.Model);
-        }
         else
-        {
             ScenarioModelReference = null;
-        }
-        
+
         OnPropertyChanged(nameof(DisplayTellerReference));
         OnPropertyChanged(nameof(DisplayTitleReference));
     }

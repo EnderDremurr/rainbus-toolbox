@@ -21,9 +21,9 @@ public partial class RegexEditorViewModel : ObservableObject
     private CancellationTokenSource? _cancellationTokenSource;
 
 
-    public RegexEditorViewModel(RepositoryManager repositoryManager, MassReplacementService massReplacementService)
+    public RegexEditorViewModel(LocalizationManager localizationManager, MassReplacementService massReplacementService)
     {
-        _pathToRegexJson = repositoryManager.PathToRegexJson;
+        _pathToRegexJson = localizationManager.PathToRegexJson;
         _massReplacementService = massReplacementService;
 
         if (!File.Exists(_pathToRegexJson)) return;

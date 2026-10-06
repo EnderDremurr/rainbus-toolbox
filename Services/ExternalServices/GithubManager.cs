@@ -6,11 +6,15 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Avalonia.Controls.ApplicationLifetimes;
+using RainbusToolbox.Services.RepositoryServices;
 using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.Models.Managers;
 
-public sealed class GithubManager(PersistentDataManager persistentDataManager, RepositoryManager repositoryManager)
+public sealed class GithubManager(
+    PersistentDataManager persistentDataManager,
+    LocalizationManager localizationManager,
+    GitManager gitManager)
 {
     private readonly HttpClient _httpClient = new();
 
@@ -18,9 +22,9 @@ public sealed class GithubManager(PersistentDataManager persistentDataManager, R
 
     public async Task<bool> IsConnectionValid()
     {
-        IsOffline = 
-            string.IsNullOrWhiteSpace(persistentDataManager.Settings.GitHubToken) 
-                || !await IsTokenValidAsync(persistentDataManager.Settings.GitHubToken);
+        IsOffline =
+            string.IsNullOrWhiteSpace(persistentDataManager.Settings.GitHubToken)
+            || !await IsTokenValidAsync(persistentDataManager.Settings.GitHubToken);
 
         return !IsOffline;
     }
@@ -38,8 +42,8 @@ public sealed class GithubManager(PersistentDataManager persistentDataManager, R
         }
 
 
-        var repoPath = repositoryManager.Repository.Info.WorkingDirectory;
-        var remoteUrl = repositoryManager.Repository.Network.Remotes["origin"].Url;
+        var repoPath = gitManager.Repository.Info.WorkingDirectory;
+        var remoteUrl = gitManager.Repository.Network.Remotes["origin"].Url;
 
         // Extract owner and repo name from remote URL
         // Example: https://github.com/username/repo.git

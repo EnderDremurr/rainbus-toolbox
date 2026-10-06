@@ -14,9 +14,9 @@ public sealed class SpellCheckerService
     private HashSet<string> _customWords = new(StringComparer.OrdinalIgnoreCase);
     private WordList? _wordList;
 
-    public SpellCheckerService(RepositoryManager repositoryManager)
+    public SpellCheckerService(LocalizationManager localizationManager)
     {
-        _cspellPath = repositoryManager.PathToVSCodeSettings;
+        _cspellPath = localizationManager.PathToVSCodeSettings;
         LoadCSpell(_cspellPath);
         LoadEmbeddedDictionary();
     }

@@ -17,8 +17,8 @@ public partial class SkillsEgoTranslationEditorViewModel(
     string referenceEgoName = "")
     : TranslationEditorViewModel<SkillLocalizationFile, Skill>
 {
-    private readonly RepositoryManager _repositoryManager =
-        (App.Current.ServiceProvider.GetService(typeof(RepositoryManager)) as RepositoryManager)!;
+    private readonly LocalizationManager _localizationManager =
+        (App.Current.ServiceProvider.GetService(typeof(LocalizationManager)) as LocalizationManager)!;
 
     [ObservableProperty] private bool _canGoNextLevel;
     [ObservableProperty] private bool _canGoPreviousLevel;
@@ -81,11 +81,11 @@ public partial class SkillsEgoTranslationEditorViewModel(
         _currentId = idString.Length >= 5 ? idString[..5] : idString;
 
 
-        CurrentEgoName = _repositoryManager.EgoNames.DataList
+        CurrentEgoName = _localizationManager.EgoNames.DataList
                              .FirstOrDefault(i => i.Id.ToString() == _currentId)?.Name.ToString()
                          ?? "Не найдено =(";
 
-        ReferenceEgoName = _repositoryManager.EgoNamesReference.DataList
+        ReferenceEgoName = _localizationManager.EgoNamesReference.DataList
                                .FirstOrDefault(i => i.Id.ToString() == _currentId)?.Name.ToString()
                            ?? "Не найдено =(";
     }

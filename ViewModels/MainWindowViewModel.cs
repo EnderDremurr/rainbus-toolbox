@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using RainbusToolbox.Models.Managers;
+using RainbusToolbox.Services.RepositoryServices;
 using RainbusToolbox.Utilities;
 using RainbusToolbox.Views.Misc;
 
@@ -20,7 +21,8 @@ public partial class MainWindowViewModel : ObservableObject
     public MainWindowViewModel(
         PersistentDataManager dataManager,
         GithubManager githubManager,
-        RepositoryManager repositoryManager,
+        GitManager gitManager,
+        LocalizationManager localizationManager,
         IServiceProvider serviceProvider,
         TranslationTabViewModel translationTabViewModel,
         FilesTabViewModel filesTabViewModel,
@@ -30,7 +32,8 @@ public partial class MainWindowViewModel : ObservableObject
     {
         _dataManager = dataManager;
         _githubManager = githubManager;
-        _repositoryManager = repositoryManager;
+        _gitManager = gitManager;
+        _localizationManager = localizationManager;
         _serviceProvider = serviceProvider;
         _discordRPCService = discordRPCService;
 
@@ -67,6 +70,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     public async Task ReparseUserDataAsync()
     {
+        // TODO: THE FUCK IS THIS SHIT!!!!! NEED SLOP REVIEW
         Username = await _githubManager.GetGithubDisplayNameAsync();
 
         try
@@ -80,16 +84,16 @@ public partial class MainWindowViewModel : ObservableObject
 
             var (repoName, repoChanges) = await Task.Run(() =>
             {
-                var remoteUrl = _repositoryManager.Repository.Network.Remotes["origin"].Url;
+                var remoteUrl = _gitManager.Repository.Network.Remotes["origin"].Url;
                 var name = Path.GetFileNameWithoutExtension(remoteUrl);
-                var changes = _repositoryManager.CheckRepositoryChanges();
+                var changes = _gitManager.CheckRepositoryChanges();
                 return (name, changes);
             });
 
             RepoName = repoName;
             GitStatus = repoChanges[0] == 0 && repoChanges[1] == 0 ? "✓" : $"{repoChanges[0]}↓ - {repoChanges[1]}↑";
             _discordRPCService.ProjectName = repoName;
-            _discordRPCService.ProjectUrl = _repositoryManager.Repository.Network.Remotes["origin"].Url;
+            _discordRPCService.ProjectUrl = _gitManager.Repository.Network.Remotes["origin"].Url;
             _discordRPCService.SetState(null);
         }
         catch (Exception e)
@@ -106,7 +110,8 @@ public partial class MainWindowViewModel : ObservableObject
     // ReSharper disable once NotAccessedField.Local
     private readonly PersistentDataManager _dataManager;
     private readonly GithubManager _githubManager;
-    private readonly RepositoryManager _repositoryManager;
+    private readonly GitManager _gitManager;
+    private readonly LocalizationManager _localizationManager;
     private readonly IServiceProvider _serviceProvider;
     private readonly DiscordRPCService _discordRPCService;
 
@@ -186,7 +191,7 @@ public partial class MainWindowViewModel : ObservableObject
         try
         {
             LoadingScreenViewModel.StartLoading("Синхронизация...");
-            await _repositoryManager.SynchronizeWithOriginAsync();
+            await _gitManager.SynchronizeWithOriginAsync();
             await ReparseUserDataAsync();
         }
         catch (Exception ex)
@@ -216,7 +221,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (vm.Result == "ok" && !string.IsNullOrWhiteSpace(vm.InputValue))
         {
-            _repositoryManager.CommitLocalChanges(vm.InputValue);
+            _gitManager.CommitLocalChanges(vm.InputValue);
             await ReparseUserDataAsync();
         }
     }

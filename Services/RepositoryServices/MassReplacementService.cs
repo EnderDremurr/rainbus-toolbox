@@ -13,13 +13,13 @@ namespace RainbusToolbox.Utilities.RepositoryServices;
 public partial class MassReplacementService
 {
     private readonly Matcher _defaultBlacklistMatcher = new(StringComparison.OrdinalIgnoreCase);
+
+    private readonly LocalizationManager _localizationManager;
     private readonly Regex _protectedPattern = ProtectedRegex();
 
-    private readonly RepositoryManager _repositoryManager;
-
-    public MassReplacementService(RepositoryManager repositoryManager, ConfigProvider configProvider)
+    public MassReplacementService(LocalizationManager localizationManager, ConfigProvider configProvider)
     {
-        _repositoryManager = repositoryManager;
+        _localizationManager = localizationManager;
 
         // populate matcher
         _defaultBlacklistMatcher.AddInclude("**/*.json");
@@ -71,7 +71,7 @@ public partial class MassReplacementService
 
         // update default blacklist
         var defaultAllowedFileList = _defaultBlacklistMatcher
-            .GetResultsInFullPath(_repositoryManager.PathToLocalization)
+            .GetResultsInFullPath(_localizationManager.PathToLocalization)
             .ToList();
 
         // compile regexes
@@ -136,7 +136,7 @@ public partial class MassReplacementService
 
         // update default blacklist
         var defaultAllowedFileList = _defaultBlacklistMatcher
-            .GetResultsInFullPath(_repositoryManager.PathToLocalization)
+            .GetResultsInFullPath(_localizationManager.PathToLocalization)
             .ToList();
 
         var compiled = new CompiledEntry(
@@ -292,7 +292,7 @@ public partial class MassReplacementService
     private List<string> GetWhitelistedFiles(List<string> whitelist)
     {
         var result = new List<string>();
-        var localizationRoot = _repositoryManager.PathToLocalization;
+        var localizationRoot = _localizationManager.PathToLocalization;
 
         foreach (var dirtyEntry in whitelist)
         {

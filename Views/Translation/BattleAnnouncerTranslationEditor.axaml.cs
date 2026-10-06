@@ -25,8 +25,8 @@ public partial class BattleAnnouncerTranslationEditor : UserControl, IFileEditor
         VM.LoadReferenceFile((AnnouncerVoiceLocalizationFile)file);
     }
 
-    public void AskEditorToSave(RepositoryManager repositoryManager)
+    public void AskEditorToSave(LocalizationManager localizationManager)
     {
-        VM.SaveCurrentFile(repositoryManager);
+        VM.SaveCurrentFile(localizationManager);
     }
 }

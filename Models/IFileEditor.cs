@@ -6,5 +6,5 @@ public interface IFileEditor
     public void SetFileToEdit(LocalizationFileBase file);
     public void SetReferenceFile(LocalizationFileBase file);
 
-    public void AskEditorToSave(RepositoryManager repositoryManager);
+    public void AskEditorToSave(LocalizationManager localizationManager);
 }

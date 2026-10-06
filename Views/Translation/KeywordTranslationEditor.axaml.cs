@@ -26,8 +26,8 @@ public partial class KeywordTranslationEditor : UserControl, INotifyPropertyChan
         VM.LoadReferenceFile((KeywordLocalizationFile)file);
     }
 
-    public void AskEditorToSave(RepositoryManager repositoryManager)
+    public void AskEditorToSave(LocalizationManager localizationManager)
     {
-        VM.SaveCurrentFile(repositoryManager);
+        VM.SaveCurrentFile(localizationManager);
     }
 }

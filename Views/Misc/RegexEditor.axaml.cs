@@ -14,7 +14,7 @@ public partial class RegexEditor : UserControl
         InitializeComponent();
         DataContext = _viewModel =
             new RegexEditorViewModel(
-                (RepositoryManager)App.Current.ServiceProvider.GetService(typeof(RepositoryManager)),
+                (LocalizationManager)App.Current.ServiceProvider.GetService(typeof(LocalizationManager)),
                 (MassReplacementService)App.Current.ServiceProvider.GetService(typeof(MassReplacementService)));
     }
 }
