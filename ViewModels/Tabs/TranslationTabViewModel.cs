@@ -26,6 +26,7 @@ public partial class TranslationTabViewModel : ObservableObject
 
     private readonly DiscordRPCService _discordRpcService;
 
+
     private readonly Dictionary<Type, Type> _editorMap = new()
     {
         { typeof(StoryDataFile), typeof(StoryTranslationEditor) },
@@ -43,10 +44,11 @@ public partial class TranslationTabViewModel : ObservableObject
         { typeof(UiLocalizationFile), typeof(UiElementTranslationEditor) }
     };
 
-    private readonly RepositoryManager _repositoryManager =
-        (App.Current.ServiceProvider.GetService(typeof(RepositoryManager)) as RepositoryManager)!;
 
     //TODO: move all these to use DI later!!!!!
+
+    private readonly RepositoryManager _repositoryManager =
+        (App.Current.ServiceProvider.GetService(typeof(RepositoryManager)) as RepositoryManager)!;
 
     [ObservableProperty]
     private IFileEditor? _currentEditor;
@@ -153,7 +155,6 @@ public partial class TranslationTabViewModel : ObservableObject
         FileName = Path.GetFileName(filePath);
         FileType = detectedType?.Name ?? "Unknown";
         IsFileLoaded = true;
-
 
         var file = _repositoryManager.GetObjectFromPath(filePath);
         var refFile = _repositoryManager.GetReference(file);
