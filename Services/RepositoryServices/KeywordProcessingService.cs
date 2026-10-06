@@ -13,7 +13,7 @@ using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.Utilities;
 
-public sealed class KeywordProcessingService(LocalizationManager localizationManager)
+public sealed partial class KeywordProcessingService(LocalizationManager localizationManager)
 {
     private const string RCRKeywordColorsLink =
         "https://raw.githubusercontent.com/Let-It-Rain/RCR-LCB/refs/heads/main/keyword_colors.json";
@@ -23,7 +23,7 @@ public sealed class KeywordProcessingService(LocalizationManager localizationMan
 
     private readonly HttpClient _httpClient = new();
 
-    private readonly Regex _tagRegex = new(@"\[[^:\]]+:[`*'][^`*']+[`*']\]", RegexOptions.Compiled);
+    private readonly Regex _tagRegex = MyRegex();
 
     private bool _isInitialized;
 
@@ -95,8 +95,7 @@ public sealed class KeywordProcessingService(LocalizationManager localizationMan
             var dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             using var reader = new StringReader(content);
-            string? line;
-            while ((line = reader.ReadLine()) != null)
+            while (await reader.ReadLineAsync() is { } line)
             {
                 if (string.IsNullOrWhiteSpace(line)) continue;
                 var parts = line.Split('¤', StringSplitOptions.RemoveEmptyEntries);
@@ -104,8 +103,7 @@ public sealed class KeywordProcessingService(LocalizationManager localizationMan
                 {
                     var key = parts[0].Trim();
                     var value = parts[1].Trim();
-                    if (!dict.ContainsKey(key))
-                        dict[key] = value;
+                    dict.TryAdd(key, value);
                 }
             }
 
@@ -343,4 +341,7 @@ public sealed class KeywordProcessingService(LocalizationManager localizationMan
         reader.Peek();
         return reader.CurrentEncoding;
     }
+
+    [GeneratedRegex(@"\[[^:\]]+:[`*'][^`*']+[`*']\]", RegexOptions.Compiled)]
+    private static partial Regex MyRegex();
 }

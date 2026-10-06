@@ -8,7 +8,7 @@ using Formatting = Newtonsoft.Json.Formatting;
 
 namespace RainbusToolbox.Utilities;
 
-public sealed class FileMergingService
+public sealed class GameFilesService
 {
     public static readonly string[] ConflictMarkers = ["<<<<<<<", "=======", ">>>>>>>"];
 

@@ -27,7 +27,7 @@ public partial class FilesTabViewModel(
         {
             LoadingScreenViewModel.StartLoading("Обработка файлов...");
 
-            var mergingService = new FileMergingService();
+            var mergingService = new GameFilesService();
             // Create progress reporter
             var progress = new Progress<string>(message =>
             {

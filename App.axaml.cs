@@ -19,8 +19,6 @@ namespace RainbusToolbox;
 public class App : Application
 {
     public IServiceProvider ServiceProvider { get; private set; }
-
-    public static ViewModelLocator Locator { get; private set; }
     public new static App Current => (App)Application.Current!;
 
     public override void Initialize()
@@ -158,8 +156,6 @@ public class App : Application
 
             services.AddTransient<SettingsWindow>();
 
-            services.AddSingleton<ViewModelLocator>();
-
             // tab viewmodels
             services.AddSingleton<TranslationTabViewModel>();
             services.AddSingleton<FilesTabViewModel>();
@@ -176,8 +172,6 @@ public class App : Application
                 var repoManager = ServiceProvider.GetRequiredService<LocalizationManager>();
                 var dataManager = ServiceProvider.GetRequiredService<PersistentDataManager>();
                 var githubManager = ServiceProvider.GetRequiredService<GithubManager>();
-
-                Locator = ServiceProvider.GetRequiredService<ViewModelLocator>();
 
                 if (repoManager.IsValid && !string.IsNullOrWhiteSpace(dataManager.Settings.GitHubToken) &&
                     !string.IsNullOrWhiteSpace(dataManager.Settings.PathToLimbus))
