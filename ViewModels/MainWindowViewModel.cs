@@ -22,6 +22,9 @@ public partial class MainWindowViewModel : ObservableObject
         GithubManager githubManager,
         RepositoryManager repositoryManager,
         IServiceProvider serviceProvider,
+        TranslationTabViewModel translationTabViewModel,
+        FilesTabViewModel filesTabViewModel,
+        OverviewTabViewModel overviewTabViewModel,
         ReleaseTabViewModel releaseTabViewModel,
         DiscordRPCService discordRPCService)
     {
@@ -31,7 +34,11 @@ public partial class MainWindowViewModel : ObservableObject
         _serviceProvider = serviceProvider;
         _discordRPCService = discordRPCService;
 
+        TranslationTabViewModel = translationTabViewModel;
+        FilesTabViewModel = filesTabViewModel;
+        OverviewTabViewModel = overviewTabViewModel;
         ReleaseTabViewModel = releaseTabViewModel;
+
 
         // Initial parse
         _ = ReparseUserDataAsync();
@@ -103,6 +110,11 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly IServiceProvider _serviceProvider;
     private readonly DiscordRPCService _discordRPCService;
 
+    // viewmodels for tabs
+
+    public TranslationTabViewModel TranslationTabViewModel { get; }
+    public FilesTabViewModel FilesTabViewModel { get; }
+    public OverviewTabViewModel OverviewTabViewModel { get; }
     public ReleaseTabViewModel ReleaseTabViewModel { get; }
 
     // ReSharper disable once NotAccessedField.Local
@@ -128,22 +140,6 @@ public partial class MainWindowViewModel : ObservableObject
     public string RepoDisplay => $"<{RepoName} - {GitStatus}> ";
 
     #endregion
-
-    #region Checkboxes
-
-    // General section checkboxes
-    [ObservableProperty] private bool _appendLauncherLink = true; // Default checked
-    [ObservableProperty] private bool _mergeWithReadme = true; // Default checked
-
-    // Discord section checkboxes
-    [ObservableProperty] private bool _sendToDiscord;
-    [ObservableProperty] private bool _option1;
-    [ObservableProperty] private bool _option2;
-    [ObservableProperty] private string _roleToPing = string.Empty;
-
-    #endregion
-
-    [ObservableProperty] private string _editorText = string.Empty;
 
     #endregion
 

@@ -227,17 +227,17 @@
                                 </Style>
                             </TabControl.Styles>
                             <TabItem IsSelected="{Binding #TabTranslation.IsChecked}">
-                                <views:TranslationTab x:Name="TranslationTabControl" />
+                                <views:TranslationTab DataContext="{Binding TranslationTabViewModel}" x:Name="TranslationTabControl" />
                             </TabItem>
                             <TabItem IsSelected="{Binding #TabFiles.IsChecked}">
-                                <views:FilesTab x:Name="FilesTabControl" />
+                                <views:FilesTab DataContext="{Binding FilesTabViewModel}" x:Name="FilesTabControl" />
                             </TabItem>
                             <TabItem IsSelected="{Binding #TabHistory.IsChecked}">
                                 <!-- <views:HistoryTab x:Name="HistoryTabControl" /> -->
                                 <Grid />
                             </TabItem>
                             <TabItem IsSelected="{Binding #TabOverview.IsChecked}">
-                                <views:OverviewTab x:Name="OverviewTabControl" />
+                                <views:OverviewTab DataContext="{Binding OverviewTabViewModel}" x:Name="OverviewTab" />
                             </TabItem>
                             <TabItem IsSelected="{Binding #TabRelease.IsChecked}">
                                 <views:ReleaseTab DataContext="{Binding ReleaseTabViewModel}" x:Name="ReleaseTabControl" />

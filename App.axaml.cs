@@ -151,11 +151,20 @@ public class App : Application
             // Windows and VMs
             services.AddSingleton<MainWindow>();
             services.AddSingleton<MainWindowViewModel>();
+
             services.AddSingleton<InitializationWindow>();
             services.AddSingleton<InitializationWindowViewModel>();
+
             services.AddTransient<SettingsWindow>();
-            services.AddSingleton<ReleaseTabViewModel>();
+
             services.AddSingleton<ViewModelLocator>();
+
+            // tab viewmodels
+            services.AddSingleton<TranslationTabViewModel>();
+            services.AddSingleton<FilesTabViewModel>();
+            services.AddSingleton<ReleaseTabViewModel>();
+            services.AddSingleton<OverviewTabViewModel>();
+
 
             ServiceProvider = services.BuildServiceProvider();
             ServiceProvider.GetRequiredService<CachingService>();

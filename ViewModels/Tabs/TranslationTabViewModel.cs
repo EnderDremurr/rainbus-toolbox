@@ -21,8 +21,7 @@ namespace RainbusToolbox.ViewModels;
 
 public partial class TranslationTabViewModel : ObservableObject
 {
-    private readonly ConfigProvider _configProvider =
-        (App.Current.ServiceProvider.GetService(typeof(ConfigProvider)) as ConfigProvider)!;
+    private readonly ConfigProvider _configProvider;
 
     private readonly DiscordRPCService _discordRpcService;
 
@@ -45,10 +44,7 @@ public partial class TranslationTabViewModel : ObservableObject
     };
 
 
-    //TODO: move all these to use DI later!!!!!
-
-    private readonly RepositoryManager _repositoryManager =
-        (App.Current.ServiceProvider.GetService(typeof(RepositoryManager)) as RepositoryManager)!;
+    private readonly RepositoryManager _repositoryManager;
 
     [ObservableProperty]
     private IFileEditor? _currentEditor;
@@ -67,9 +63,13 @@ public partial class TranslationTabViewModel : ObservableObject
     [ObservableProperty]
     private bool _isFileLoaded;
 
-    public TranslationTabViewModel()
+    public TranslationTabViewModel(RepositoryManager repositoryManager, ConfigProvider configProvider,
+        DiscordRPCService discordRpcService)
     {
-        _discordRpcService = (App.Current.ServiceProvider.GetService(typeof(DiscordRPCService)) as DiscordRPCService)!;
+        _discordRpcService = discordRpcService;
+        _configProvider = configProvider;
+        _repositoryManager = repositoryManager;
+
         _repositoryManager.OnInitializedSuccessfully += InitShortcuts;
 
         // first run won't see event so run it by hand
