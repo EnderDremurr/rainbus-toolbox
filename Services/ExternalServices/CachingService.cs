@@ -5,9 +5,9 @@ using System.Text.Json;
 using System.Threading;
 using RainbusToolbox.Models.Managers;
 
-namespace RainbusToolbox.Services.ExternalServices;
+namespace RainbusToolbox.Utilities.ExternalServices;
 
-public class CachingService
+public sealed class CachingService
 {
     private const string EGOGiftWikiCategory = "Category:E.G.O_Gifts";
     private const string AnnouncersWikiCategory = "Category:Battle_Announcer_Icons";

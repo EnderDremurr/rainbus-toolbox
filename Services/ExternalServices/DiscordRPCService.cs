@@ -1,9 +1,9 @@
 using System.Threading;
 using DiscordRPC;
 
-namespace RainbusToolbox.Services;
+namespace RainbusToolbox.Utilities;
 
-public class DiscordRPCService : IDisposable
+public sealed class DiscordRPCService : IDisposable
 {
     private readonly DiscordRpcClient _client;
 

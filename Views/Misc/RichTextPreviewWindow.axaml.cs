@@ -1,7 +1,5 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
-using RainbusToolbox.Services;
+using RainbusToolbox.Utilities;
 
 namespace RainbusToolbox.Views.Misc;
 
@@ -16,9 +14,6 @@ public partial class RichTextPreviewWindow : Window
     {
         var inlines = TextMarkupProcessor.ConvertRawToRich(text);
 
-        foreach (var inline in inlines)
-        {
-            TextBlock.Inlines?.Add(inline);
-        }
+        foreach (var inline in inlines) TextBlock.Inlines?.Add(inline);
     }
 }

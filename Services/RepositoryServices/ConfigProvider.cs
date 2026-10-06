@@ -4,7 +4,7 @@ using RainbusToolbox.Models.Managers;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace RainbusToolbox.Services.RepositoryServices;
+namespace RainbusToolbox.Utilities.RepositoryServices;
 
 public sealed class
     ConfigProvider(RepositoryManager repositoryManager) // repo manager is required for future override handling

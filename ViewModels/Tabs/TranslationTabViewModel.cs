@@ -10,10 +10,10 @@ using DynamicData.Binding;
 using RainbusToolbox.Models;
 using RainbusToolbox.Models.Data;
 using RainbusToolbox.Models.Managers;
-using RainbusToolbox.Services;
-using RainbusToolbox.Services.RepositoryServices;
+using RainbusToolbox.Utilities;
 using RainbusToolbox.Utilities.Converters;
 using RainbusToolbox.Utilities.Data;
+using RainbusToolbox.Utilities.RepositoryServices;
 using RainbusToolbox.Views;
 using RainbusToolbox.Views.Translation;
 

@@ -11,9 +11,9 @@ using RainbusToolbox.Utilities.Data;
 using RainbusToolbox.ViewModels;
 using RainbusToolbox.Views.Misc;
 
-namespace RainbusToolbox.Services;
+namespace RainbusToolbox.Utilities;
 
-public class KeywordProcessingService(RepositoryManager repositoryManager)
+public sealed class KeywordProcessingService(RepositoryManager repositoryManager)
 {
     private const string RCRKeywordColorsLink =
         "https://raw.githubusercontent.com/Let-It-Rain/RCR-LCB/refs/heads/main/keyword_colors.json";

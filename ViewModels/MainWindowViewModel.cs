@@ -8,7 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using RainbusToolbox.Models.Managers;
-using RainbusToolbox.Services;
+using RainbusToolbox.Utilities;
 using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.ViewModels;

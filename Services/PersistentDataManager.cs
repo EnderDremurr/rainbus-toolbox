@@ -5,7 +5,7 @@ using LibGit2Sharp;
 
 namespace RainbusToolbox.Models.Managers;
 
-public class PersistentDataManager
+public sealed class PersistentDataManager
 {
     private readonly string _filePath;
 

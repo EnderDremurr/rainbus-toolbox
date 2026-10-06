@@ -5,9 +5,9 @@ using DeepSeek.Core.Models;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Views.Misc;
 
-namespace RainbusToolbox.Services;
+namespace RainbusToolbox.Utilities;
 
-public class Angela(PersistentDataManager dataManager)
+public sealed class Angela(PersistentDataManager dataManager)
 {
     public async Task<string?> ProcessText(string text)
     {

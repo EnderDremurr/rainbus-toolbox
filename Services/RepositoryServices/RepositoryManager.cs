@@ -11,7 +11,7 @@ using Version = System.Version;
 
 namespace RainbusToolbox.Models.Managers;
 
-public class RepositoryManager
+public sealed class RepositoryManager
 {
     private readonly PersistentDataManager _dataManager;
     public readonly string LocalizationFolder = "localize";

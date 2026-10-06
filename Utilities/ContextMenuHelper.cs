@@ -1,8 +1,7 @@
 using Avalonia.Controls;
 using AvaloniaEdit;
 using RainbusToolbox.Models;
-using RainbusToolbox.Services;
-using RainbusToolbox.Services.ExternalServices;
+using RainbusToolbox.Utilities.ExternalServices;
 using RainbusToolbox.ViewModels;
 using RainbusToolbox.Views.Misc;
 

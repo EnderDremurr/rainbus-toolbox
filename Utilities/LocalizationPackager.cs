@@ -2,7 +2,7 @@ using System.IO;
 using System.IO.Compression;
 using RainbusToolbox.Models.Managers;
 
-namespace RainbusToolbox.Services;
+namespace RainbusToolbox.Utilities;
 
 public static class LocalizationPackager
 {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using RainbusToolbox.Services.ExternalServices;
+using RainbusToolbox.Utilities.ExternalServices;
 
 namespace RainbusToolbox.Utilities;
 

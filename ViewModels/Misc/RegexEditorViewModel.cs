@@ -8,7 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using RainbusToolbox.Models;
 using RainbusToolbox.Models.Managers;
-using RainbusToolbox.Services.RepositoryServices;
+using RainbusToolbox.Utilities.RepositoryServices;
 using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.ViewModels;

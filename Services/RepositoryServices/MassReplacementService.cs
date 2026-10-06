@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 using RainbusToolbox.Models;
 using RainbusToolbox.Models.Managers;
 
-namespace RainbusToolbox.Services.RepositoryServices;
+namespace RainbusToolbox.Utilities.RepositoryServices;
 
 public partial class MassReplacementService
 {

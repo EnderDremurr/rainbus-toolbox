@@ -5,7 +5,7 @@ using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.Models.Managers;
 
-public class DiscordManager
+public sealed class DiscordManager
 {
     public DiscordManager(string webhookUrl)
     {

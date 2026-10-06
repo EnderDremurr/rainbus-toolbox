@@ -6,12 +6,13 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Formatting = Newtonsoft.Json.Formatting;
 
-namespace RainbusToolbox.Services;
+namespace RainbusToolbox.Utilities;
 
-public class FileMergingService
+public sealed class FileMergingService
 {
     public static readonly string[] ConflictMarkers = ["<<<<<<<", "=======", ">>>>>>>"];
 
+    // TODO: slop review!!! this is super old and was slopped, review ts later
 
     public async Task<int[]> PullFilesFromTheGameAsync(string pathToLocalization, string pathToReferenceLocalization,
         CancellationToken cancellationToken = default, IProgress<string>? progress = null)
@@ -284,10 +285,9 @@ public class FileMergingService
                     if (destinationDataList
                             .FirstOrDefault(item => item["id"]?.ToString() == sourceId) is not JObject existingItem)
                         continue;
-                    
+
                     foreach (var property in sourceItem.Properties())
                     {
-                        
                         // in case this is a file with level list, the level list might be updated (like uptie 5 releases)
                         if (property.Name == "levelList" && existingItem["levelList"] is JArray existingLevelList
                                                          && property.Value is JArray sourceLevelList)
@@ -311,8 +311,8 @@ public class FileMergingService
 
                             continue;
                         }
-                        
-                            
+
+
                         // otherwise it just handles normally
                         if (existingItem[property.Name] == null)
                         {

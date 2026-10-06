@@ -6,9 +6,9 @@ using Newtonsoft.Json.Linq;
 using RainbusToolbox.Models.Managers;
 using WeCantSpell.Hunspell;
 
-namespace RainbusToolbox.Services.ExternalServices;
+namespace RainbusToolbox.Utilities.ExternalServices;
 
-public class SpellCheckerService
+public sealed class SpellCheckerService
 {
     private readonly string _cspellPath;
     private HashSet<string> _customWords = new(StringComparer.OrdinalIgnoreCase);

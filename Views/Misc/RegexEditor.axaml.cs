@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 using RainbusToolbox.Models.Managers;
-using RainbusToolbox.Services.RepositoryServices;
+using RainbusToolbox.Utilities.RepositoryServices;
 using RainbusToolbox.ViewModels;
 
 namespace RainbusToolbox.Views.Misc;

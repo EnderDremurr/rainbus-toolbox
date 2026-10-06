@@ -10,7 +10,7 @@ using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.Models.Managers;
 
-public class GithubManager(PersistentDataManager persistentDataManager, RepositoryManager repositoryManager)
+public sealed class GithubManager(PersistentDataManager persistentDataManager, RepositoryManager repositoryManager)
 {
     private readonly HttpClient _httpClient = new();
 

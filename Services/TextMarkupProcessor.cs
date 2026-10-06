@@ -9,10 +9,11 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 
-namespace RainbusToolbox.Services;
+namespace RainbusToolbox.Utilities;
 
-public class TextMarkupProcessor
+public sealed class TextMarkupProcessor
 {
+    // TODO: slopreview
     public static List<Inline> ConvertRawToRich(string raw)
     {
         if (string.IsNullOrWhiteSpace(raw))
