@@ -4,22 +4,19 @@ using RainbusToolbox.Utilities.Data;
 
 namespace RainbusToolbox.ViewModels;
 
-public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
+public partial class GenericTranslationEditorViewModel<TFile, TItem> : TranslationEditorViewModelBase
     where TFile : LocalizationFileBase, ILocalizationContainer<TItem>
     where TItem : LocalizationItemBase
 {
     [ObservableProperty] protected TItem? _currentItem;
-    [ObservableProperty] protected string _navigationCountText = "";
-
-
-    [ObservableProperty] protected string _navigationText = "";
     [ObservableProperty] protected TItem? _referenceItem;
     public TFile? EditableFile { get; protected set; }
     public TFile? ReferenceFile { get; protected set; }
-    public int CurrentIndex { get; protected set; }
 
 
     public bool IsFileLoaded => EditableFile != null && EditableFile.DataList.Count > 0;
+
+    public override int ItemCount { get; protected set; }
 
     public virtual void LoadEditableFile(TFile file)
     {
@@ -37,10 +34,9 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
         UpdateReferenceItem();
     }
 
-    public virtual void GoPrevious(object stepObj)
-    {
-        var step = int.Parse(stepObj.ToString() ?? throw new InvalidOperationException()) * -1;
 
+    public override void StepIndex(int step)
+    {
         if (EditableFile == null)
             return;
 
@@ -52,35 +48,17 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
         if (tempIndex < 0)
             tempIndex = 0;
         CurrentIndex = tempIndex;
-
-        UpdateCurrentItem();
-        UpdateReferenceItem();
-        UpdateNavigation();
+        OnIndexChanged();
     }
 
-    public virtual void GoNext(object stepObj)
+    public override void OnIndexChanged()
     {
-        var step = int.Parse(stepObj.ToString() ?? throw new InvalidOperationException());
-
-        if (EditableFile == null)
-            return;
-
-        var maxIndex = EditableFile.DataList.Count - 1;
-
-        var tempIndex = CurrentIndex + step;
-        if (tempIndex >= maxIndex)
-            tempIndex = maxIndex;
-        if (tempIndex < 0)
-            tempIndex = 0;
-        CurrentIndex = tempIndex;
-
-
         UpdateCurrentItem();
         UpdateReferenceItem();
         UpdateNavigation();
     }
 
-    partial void OnNavigationTextChanged(string value)
+    private void OnNavigationTextChanged(string value)
     {
         if (int.TryParse(value, out var userIndex) && userIndex > 0) GoCustom();
     }
@@ -95,9 +73,7 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
         if (CurrentIndex != index)
         {
             CurrentIndex = index;
-            UpdateCurrentItem();
-            UpdateReferenceItem();
-            UpdateNavigation();
+            OnIndexChanged();
         }
     }
 
@@ -122,7 +98,33 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
         NavigationCountText = $"{EditableFile?.DataList.Count ?? 0}";
     }
 
-    public virtual void SaveCurrentFile(LocalizationManager localizationManager)
+    public override void SetFileToEdit(LocalizationFileBase file)
+    {
+        if (file is not TFile typedFile)
+        {
+            _ = App.Current.HandleNonFatalExceptionAsync(
+                new ArgumentException("Приложение попыталось открыть редактор для неверного файла!"));
+            return;
+        }
+
+        EditableFile = typedFile;
+        OnIndexChanged();
+    }
+
+    public override void SetReferenceFile(LocalizationFileBase file)
+    {
+        if (file is not TFile typedFile)
+        {
+            _ = App.Current.HandleNonFatalExceptionAsync(
+                new ArgumentException("Приложение попыталось открыть редактор для неверного файла!"));
+            return;
+        }
+
+        ReferenceFile = typedFile;
+        OnIndexChanged();
+    }
+
+    public override void AskEditorToSave(LocalizationManager localizationManager)
     {
         if (EditableFile == null)
             return;

@@ -15,7 +15,7 @@ public partial class SkillsEgoTranslationEditorViewModel(
     string currentId = "",
     string currentEgoName = "",
     string referenceEgoName = "")
-    : TranslationEditorViewModel<SkillLocalizationFile, Skill>
+    : GenericTranslationEditorViewModel<SkillLocalizationFile, Skill>
 {
     private readonly LocalizationManager _localizationManager =
         (App.Current.ServiceProvider.GetService(typeof(LocalizationManager)) as LocalizationManager)!;
@@ -109,52 +109,13 @@ public partial class SkillsEgoTranslationEditorViewModel(
         UpdateReferenceItem();
     }
 
-    public override void GoPrevious(object stepObj)
+    public override void OnIndexChanged()
     {
-        var step = int.Parse(stepObj.ToString() ?? throw new InvalidOperationException()) * -1;
-
-        if (EditableFile == null)
-            return;
-
-        var maxIndex = EditableFile.DataList.Count - 1;
-
-        var tempIndex = CurrentIndex + step;
-        if (tempIndex >= maxIndex)
-            tempIndex = maxIndex;
-        if (tempIndex < 0)
-            tempIndex = 0;
-        CurrentIndex = tempIndex;
-        _currentLevelIndex = 0;
-
-        UpdateCurrentItem();
-        UpdateReferenceItem();
-        UpdateNavigation();
+        base.OnIndexChanged();
         GetCurrentSkillsEgoName();
+        _currentLevelIndex = 0;
     }
 
-    public override void GoNext(object stepObj)
-    {
-        var step = int.Parse(stepObj.ToString() ?? throw new InvalidOperationException());
-
-        if (EditableFile == null)
-            return;
-
-        var maxIndex = EditableFile.DataList.Count - 1;
-
-        var tempIndex = CurrentIndex + step;
-        if (tempIndex >= maxIndex)
-            tempIndex = maxIndex;
-        if (tempIndex < 0)
-            tempIndex = 0;
-        CurrentIndex = tempIndex;
-        _currentLevelIndex = 0;
-
-
-        UpdateCurrentItem();
-        UpdateReferenceItem();
-        UpdateNavigation();
-        GetCurrentSkillsEgoName();
-    }
 
     public void GoPreviousLevel()
     {

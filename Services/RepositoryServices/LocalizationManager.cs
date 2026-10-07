@@ -226,8 +226,8 @@ public sealed class LocalizationManager
 
 
         LocalizationFileBase? deserialized;
-        if (targetType == null || targetType == typeof(UnidentifiedFile))
-            deserialized = new UnidentifiedFile();
+        if (targetType == null || targetType == typeof(UnknownFile))
+            deserialized = new UnknownFile();
         else
             try
             {
@@ -307,7 +307,7 @@ public sealed class LocalizationManager
         {
             string json;
 
-            if (obj is UnidentifiedFile)
+            if (obj is UnknownFile)
             {
                 Log.Debug("Using UnidentifiedFile serialization (no type info)");
 

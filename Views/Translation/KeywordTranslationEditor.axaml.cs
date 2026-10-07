@@ -1,33 +1,11 @@
-using System.ComponentModel;
 using Avalonia.Controls;
-using RainbusToolbox.Models.Managers;
-using RainbusToolbox.Utilities.Data;
-using RainbusToolbox.ViewModels;
 
-namespace RainbusToolbox.Views;
+namespace RainbusToolbox.Views.Translation;
 
-public partial class KeywordTranslationEditor : UserControl, INotifyPropertyChanged, IFileEditor
+public partial class KeywordTranslationEditor : UserControl
 {
     public KeywordTranslationEditor()
     {
         InitializeComponent();
-        DataContext ??= new KeywordTranslationEditorViewModel();
-    }
-
-    public KeywordTranslationEditorViewModel VM => (KeywordTranslationEditorViewModel)DataContext!;
-
-    public void SetFileToEdit(LocalizationFileBase file)
-    {
-        VM.LoadEditableFile((KeywordLocalizationFile)file);
-    }
-
-    public void SetReferenceFile(LocalizationFileBase file)
-    {
-        VM.LoadReferenceFile((KeywordLocalizationFile)file);
-    }
-
-    public void AskEditorToSave(LocalizationManager localizationManager)
-    {
-        VM.SaveCurrentFile(localizationManager);
     }
 }

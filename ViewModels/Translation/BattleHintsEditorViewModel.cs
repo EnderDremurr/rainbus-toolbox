@@ -1,13 +1,13 @@
 using System.Collections.ObjectModel;
 using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.Input;
-using RainbusToolbox;
 using RainbusToolbox.Utilities.Data;
-using RainbusToolbox.ViewModels;
 using RainbusToolbox.Views.Misc;
 
+namespace RainbusToolbox.ViewModels;
+
 public partial class
-    BattleHintsEditorViewModel : TranslationEditorViewModel<NormalBattleHintLocalizationFile, GenericIdContent>
+    BattleHintsEditorViewModel : GenericTranslationEditorViewModel<NormalBattleHintLocalizationFile, GenericIdContent>
 {
     public ObservableCollection<GenericIdContent> ObservableDataList { get; } = [];
 

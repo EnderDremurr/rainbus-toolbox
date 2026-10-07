@@ -3,11 +3,12 @@ using System.IO;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
+using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Utilities.Data;
 
 namespace RainbusToolbox.ViewModels;
 
-public partial class GenericTranslationEditorViewModel : ObservableObject
+public partial class UnknownFileTranslationEditorViewModel : ObservableObject, IFileEditor
 {
     [ObservableProperty]
     private string _editableJson = string.Empty;
@@ -29,7 +30,34 @@ public partial class GenericTranslationEditorViewModel : ObservableObject
 
     public LocalizationFileBase? EditableFile { get; private set; }
 
-    public void LoadReferenceFile(LocalizationFileBase file)
+    public void AskEditorToSave(LocalizationManager localizationManager)
+    {
+        if (EditableFile == null || string.IsNullOrWhiteSpace(EditableFile.FullPath))
+            return;
+
+        try
+        {
+            JsonConvert.DeserializeObject(EditableJson);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(EditableFile.FullPath)!);
+            File.WriteAllText(EditableFile.FullPath, EditableJson, Encoding.UTF8);
+
+            HasParseError = false;
+            ParseErrorMessage = string.Empty;
+        }
+        catch (JsonException ex)
+        {
+            HasParseError = true;
+            ParseErrorMessage = $"JSON Parse Error: {ex.Message}";
+        }
+        catch (Exception ex)
+        {
+            HasParseError = true;
+            ParseErrorMessage = $"Save Error: {ex.Message}";
+        }
+    }
+
+    public void SetReferenceFile(LocalizationFileBase file)
     {
         try
         {
@@ -49,7 +77,7 @@ public partial class GenericTranslationEditorViewModel : ObservableObject
         }
     }
 
-    public void LoadEditableFile(LocalizationFileBase file)
+    public void SetFileToEdit(LocalizationFileBase file)
     {
         try
         {
@@ -72,43 +100,7 @@ public partial class GenericTranslationEditorViewModel : ObservableObject
 
     partial void OnEditableJsonChanged(string value)
     {
-        // No validation - let the user handle JSON structure
-        // Clear any previous error states
         HasParseError = false;
         ParseErrorMessage = string.Empty;
-    }
-
-    public bool SaveEditableFile()
-    {
-        if (EditableFile == null || string.IsNullOrWhiteSpace(EditableFile.FullPath))
-            return false;
-
-        try
-        {
-            // Validate JSON before saving
-            JsonConvert.DeserializeObject(EditableJson);
-
-            // Create directory if it doesn't exist
-            Directory.CreateDirectory(Path.GetDirectoryName(EditableFile.FullPath)!);
-
-            // Write the JSON directly to file
-            File.WriteAllText(EditableFile.FullPath, EditableJson, Encoding.UTF8);
-
-            HasParseError = false;
-            ParseErrorMessage = string.Empty;
-            return true;
-        }
-        catch (JsonException ex)
-        {
-            HasParseError = true;
-            ParseErrorMessage = $"JSON Parse Error: {ex.Message}";
-            return false;
-        }
-        catch (Exception ex)
-        {
-            HasParseError = true;
-            ParseErrorMessage = $"Save Error: {ex.Message}";
-            return false;
-        }
     }
 }

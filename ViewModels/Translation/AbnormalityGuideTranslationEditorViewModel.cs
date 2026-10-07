@@ -2,4 +2,5 @@ using RainbusToolbox.Utilities.Data;
 
 namespace RainbusToolbox.ViewModels;
 
-public class AbnormalityGuideTranslationEditorViewModel : TranslationEditorViewModel<AbnormalityGuideContentLocalizationFile, AbnormalityGuide>;
+public class AbnormalityGuideTranslationEditorViewModel : GenericTranslationEditorViewModel<
+    AbnormalityGuideContentLocalizationFile, AbnormalityGuide>;

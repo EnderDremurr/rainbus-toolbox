@@ -4,6 +4,8 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:global1="clr-namespace:"
     xmlns:local="using:RainbusToolbox"
+    xmlns:translation="clr-namespace:RainbusToolbox.Views.Translation"
+    xmlns:vm="clr-namespace:RainbusToolbox.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Application.Resources>
@@ -51,4 +53,60 @@
 
 
     </Application.Styles>
+
+    <Application.DataTemplates>
+
+        <DataTemplate DataType="{x:Type vm:AbnormalityGuideTranslationEditorViewModel}">
+            <translation:AbnormalityGuideTranslationEditor />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:BattleAnnouncerTranslationEditorViewModel}">
+            <translation:BattleAnnouncerTranslationEditor />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:BattleHintsEditorViewModel}">
+            <translation:BattleHintsTranslationEditor />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:EGOGiftTranslationEditorViewModel}">
+            <translation:EGOGiftTranslationEditor />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:EGOVoiceTranslationEditorViewModel}">
+            <translation:EGOVoiceTranslationEditor />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:UnknownFileTranslationEditorViewModel}">
+            <translation:UnknownFileTranslationEditor />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:KeywordTranslationEditorViewModel}">
+            <translation:KeywordTranslationEditor />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:PanicTranslationEditorViewModel}">
+            <translation:PanicTranslationEditor />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:PassiveTranslationEditorViewModel}">
+            <translation:PassiveTranslationEditor />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:PersonalityVoiceTranslationEditorViewModel}">
+            <translation:PersonalityVoiceTranslationEditor />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:SkillsEgoTranslationEditorViewModel}">
+            <translation:SkillsEgoTranslationEditor />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:StoryTranslationEditorViewModel}">
+            <translation:StoryTranslationEditor />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:UiElementTranslationEditorViewModel}">
+            <translation:UiElementTranslationEditor />
+        </DataTemplate>
+
+    </Application.DataTemplates>
 </Application>

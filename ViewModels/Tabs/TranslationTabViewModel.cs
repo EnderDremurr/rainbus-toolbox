@@ -14,8 +14,6 @@ using RainbusToolbox.Utilities;
 using RainbusToolbox.Utilities.Converters;
 using RainbusToolbox.Utilities.Data;
 using RainbusToolbox.Utilities.RepositoryServices;
-using RainbusToolbox.Views;
-using RainbusToolbox.Views.Translation;
 
 namespace RainbusToolbox.ViewModels;
 
@@ -25,23 +23,7 @@ public partial class TranslationTabViewModel : ObservableObject
 
     private readonly DiscordRPCService _discordRpcService;
 
-
-    private readonly Dictionary<Type, Type> _editorMap = new()
-    {
-        { typeof(StoryDataFile), typeof(StoryTranslationEditor) },
-        { typeof(EgoGiftsLocalizationFile), typeof(EGOGiftTranslationEditor) },
-        { typeof(SkillLocalizationFile), typeof(SkillsEgoTranslationEditor) },
-        { typeof(NormalBattleHintLocalizationFile), typeof(BattleHintsTranslationEditor) },
-        { typeof(PanicInfoLocalizationFile), typeof(PanicTranslationEditor) },
-        { typeof(PassiveLocalizationFile), typeof(PassiveTranslationEditor) },
-        { typeof(AnnouncerVoiceLocalizationFile), typeof(BattleAnnouncerTranslationEditor) },
-        { typeof(KeywordLocalizationFile), typeof(KeywordTranslationEditor) },
-        { typeof(PersonalityVoiceLocalizationFile), typeof(PersonalityVoiceTranslationEditor) },
-        { typeof(EgoVoiceLocalizationFile), typeof(EGOVoiceTranslationEditor) },
-        { typeof(AbnormalityGuideContentLocalizationFile), typeof(AbnormalityGuideTranslationEditor) },
-        { typeof(UnidentifiedFile), typeof(GenericTranslationEditor) },
-        { typeof(UiLocalizationFile), typeof(UiElementTranslationEditor) }
-    };
+    private readonly EditorFactory _editorFactory;
 
 
     private readonly LocalizationManager _localizationManager;
@@ -64,11 +46,12 @@ public partial class TranslationTabViewModel : ObservableObject
     private bool _isFileLoaded;
 
     public TranslationTabViewModel(LocalizationManager localizationManager, ConfigProvider configProvider,
-        DiscordRPCService discordRpcService)
+        DiscordRPCService discordRpcService, EditorFactory editorFactory)
     {
         _discordRpcService = discordRpcService;
         _configProvider = configProvider;
         _localizationManager = localizationManager;
+        _editorFactory = editorFactory;
 
         _localizationManager.OnInitializedSuccessfully += InitShortcuts;
 
@@ -144,16 +127,12 @@ public partial class TranslationTabViewModel : ObservableObject
             return;
         }
 
-        var detectedType = FileToObjectCaster.GetType(filePath, _localizationManager.DeveloperFileTypeMap);
+        var detectedType = FileToObjectCaster.GetType(filePath, _localizationManager.DeveloperFileTypeMap) ??
+                           typeof(UnknownFile);
 
-        var editorType = detectedType != null && _editorMap.TryGetValue(detectedType, out var value)
-            ? value
-            : typeof(GenericTranslationEditor);
-
-        CurrentEditor = (IFileEditor)Activator.CreateInstance(editorType)!;
 
         FileName = Path.GetFileName(filePath);
-        FileType = detectedType?.Name ?? "Unknown";
+        FileType = detectedType.Name;
         IsFileLoaded = true;
 
         var file = _localizationManager.GetObjectFromPath(filePath);
@@ -166,8 +145,10 @@ public partial class TranslationTabViewModel : ObservableObject
             return;
         }
 
-        CurrentEditor.SetFileToEdit(file);
-        CurrentEditor.SetReferenceFile(refFile);
+        var newEditor = _editorFactory.CreateFileEditor(detectedType);
+        newEditor.SetFileToEdit(file);
+        newEditor.SetReferenceFile(refFile);
+        CurrentEditor = newEditor;
 
         _discordRpcService.SetState($"Делает перевоз файла {FileName} ({file.GetSanityName()})");
     }

@@ -1,8 +1,9 @@
 <UserControl
+    d:DataContext=""
     d:DesignHeight="800"
     d:DesignWidth="1200"
     mc:Ignorable="d"
-    x:Class="RainbusToolbox.Views.AbnormalityGuideTranslationEditor"
+    x:Class="RainbusToolbox.Views.Translation.AbnormalityGuideTranslationEditor"
     x:DataType="viewModels:AbnormalityGuideTranslationEditorViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"

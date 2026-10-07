@@ -5,7 +5,8 @@ using RainbusToolbox.Utilities.Data;
 
 namespace RainbusToolbox.ViewModels;
 
-public partial class EGOGiftTranslationEditorViewModel : TranslationEditorViewModel<EgoGiftsLocalizationFile, EgoGift>
+public partial class
+    EGOGiftTranslationEditorViewModel : GenericTranslationEditorViewModel<EgoGiftsLocalizationFile, EgoGift>
 {
     [ObservableProperty] private Bitmap _currentGiftImage;
 

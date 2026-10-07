@@ -2,7 +2,7 @@
     d:DesignHeight="800"
     d:DesignWidth="1200"
     mc:Ignorable="d"
-    x:Class="RainbusToolbox.Views.SkillsEgoTranslationEditor"
+    x:Class="RainbusToolbox.Views.Translation.SkillsEgoTranslationEditor"
     x:DataType="vm:SkillsEgoTranslationEditorViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:converters="clr-namespace:RainbusToolbox.Utilities.Converters"
@@ -311,7 +311,7 @@
             <!--  Level Navigation  -->
             <StackPanel Orientation="Horizontal">
                 <Button
-                    Click="OnPreviousLevelClick"
+                    Command="{Binding GoPreviousLevel}"
                     Content="- Уровень"
                     Height="60"
                     IsEnabled="{Binding CanGoPreviousLevel}"
@@ -333,7 +333,7 @@
                         Width="100" />
                 </Border>
                 <Button
-                    Click="OnNextLevelClick"
+                    Command="{Binding GoNextLevel}"
                     Content="+ Уровень"
                     Height="60"
                     IsEnabled="{Binding CanGoNextLevel}"

@@ -4,11 +4,10 @@ using RainbusToolbox.Utilities.Data;
 
 namespace RainbusToolbox.ViewModels;
 
-public partial class StoryTranslationEditorViewModel : TranslationEditorViewModel<StoryDataFile, StoryDataItem>
+public partial class
+    StoryTranslationEditorViewModel(LocalizationManager localizationManager)
+    : GenericTranslationEditorViewModel<StoryDataFile, StoryDataItem>
 {
-    private readonly LocalizationManager _localizationManager =
-        (App.Current.ServiceProvider.GetService(typeof(LocalizationManager)) as LocalizationManager)!;
-
     [ObservableProperty] private ScenarioModelCode? _scenarioModel;
     [ObservableProperty] private ScenarioModelCode? _scenarioModelReference;
 
@@ -17,11 +16,9 @@ public partial class StoryTranslationEditorViewModel : TranslationEditorViewMode
         get => CurrentItem?.Teller ?? ScenarioModel?.Name ?? string.Empty;
         set
         {
-            if (CurrentItem != null && CurrentItem.Teller != null)
-            {
-                CurrentItem.Teller = value;
-                OnPropertyChanged();
-            }
+            if (CurrentItem?.Teller == null) return;
+            CurrentItem.Teller = value;
+            OnPropertyChanged();
         }
     }
 
@@ -30,11 +27,9 @@ public partial class StoryTranslationEditorViewModel : TranslationEditorViewMode
         get => CurrentItem?.Title ?? ScenarioModel?.NickName ?? string.Empty;
         set
         {
-            if (CurrentItem != null && CurrentItem.Title != null)
-            {
-                CurrentItem.Title = value;
-                OnPropertyChanged();
-            }
+            if (CurrentItem?.Title == null) return;
+            CurrentItem.Title = value;
+            OnPropertyChanged();
         }
     }
 
@@ -47,12 +42,10 @@ public partial class StoryTranslationEditorViewModel : TranslationEditorViewMode
         get => CurrentItem?.Teller;
         set
         {
-            if (CurrentItem != null && CurrentItem.Teller != null)
-            {
-                CurrentItem.Teller = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(DisplayTeller));
-            }
+            if (CurrentItem?.Teller == null) return;
+            CurrentItem.Teller = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(DisplayTeller));
         }
     }
 
@@ -61,12 +54,10 @@ public partial class StoryTranslationEditorViewModel : TranslationEditorViewMode
         get => CurrentItem?.Title;
         set
         {
-            if (CurrentItem != null && CurrentItem.Title != null)
-            {
-                CurrentItem.Title = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(DisplayTitle));
-            }
+            if (CurrentItem?.Title == null) return;
+            CurrentItem.Title = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(DisplayTitle));
         }
     }
 
@@ -78,7 +69,7 @@ public partial class StoryTranslationEditorViewModel : TranslationEditorViewMode
         base.UpdateCurrentItem();
 
         if (CurrentItem?.Model != null)
-            ScenarioModel = _localizationManager.ScenarioModelCodes?.DataList
+            ScenarioModel = localizationManager.ScenarioModelCodes.DataList
                 .FirstOrDefault(x => x.Id == CurrentItem.Model);
         else
             ScenarioModel = null;
@@ -96,7 +87,7 @@ public partial class StoryTranslationEditorViewModel : TranslationEditorViewMode
         base.UpdateReferenceItem();
 
         if (ReferenceItem?.Model != null)
-            ScenarioModelReference = _localizationManager.ScenarioModelCodesReference?.DataList
+            ScenarioModelReference = localizationManager.ScenarioModelCodesReference.DataList
                 .FirstOrDefault(x => x.Id == ReferenceItem.Model);
         else
             ScenarioModelReference = null;

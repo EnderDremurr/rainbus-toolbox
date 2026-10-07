@@ -2,4 +2,6 @@ using RainbusToolbox.Utilities.Data;
 
 namespace RainbusToolbox.ViewModels;
 
-public class EGOVoiceTranslationEditorViewModel : TranslationEditorViewModel<EgoVoiceLocalizationFile, GenericIdDescDlg>;
+public class
+    EGOVoiceTranslationEditorViewModel : GenericTranslationEditorViewModel<EgoVoiceLocalizationFile,
+    GenericIdDescDlg>;

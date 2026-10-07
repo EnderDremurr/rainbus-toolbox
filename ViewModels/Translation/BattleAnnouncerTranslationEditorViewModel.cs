@@ -6,8 +6,8 @@ using Path = System.IO.Path;
 
 namespace RainbusToolbox.ViewModels;
 
-public partial class BattleAnnouncerTranslationEditorViewModel
-    : TranslationEditorViewModel<AnnouncerVoiceLocalizationFile, AnnouncerVoice>
+public partial class BattleAnnouncerTranslationEditorViewModel(LocalizationManager localizationManager)
+    : GenericTranslationEditorViewModel<AnnouncerVoiceLocalizationFile, AnnouncerVoice>
 {
     private readonly Dictionary<string, string> _announcerVoiceTypeLookupMap = new()
     {
@@ -64,16 +64,13 @@ public partial class BattleAnnouncerTranslationEditorViewModel
     [ObservableProperty]
     private string _referenceAnnouncerName = "";
 
-    private LocalizationManager LocalizationManager =>
-        (LocalizationManager)App.Current.ServiceProvider.GetService(typeof(LocalizationManager));
-
-    private AnnouncerLocalizationFile _announcerLocalizationFile => LocalizationManager.AnnouncerNames;
+    private AnnouncerLocalizationFile _announcerLocalizationFile => localizationManager.AnnouncerNames;
 
     private AnnouncerLocalizationFile _referenceAnnouncerLocalizationFile =>
-        LocalizationManager.AnnouncerNamesReference;
+        localizationManager.AnnouncerNamesReference;
 
     private AnnouncerVoiceTypeLocalizationFile _announcerVoiceTypeLocalizationFile =>
-        LocalizationManager.AnnouncerVoiceTypes;
+        localizationManager.AnnouncerVoiceTypes;
 
     public override void LoadEditableFile(AnnouncerVoiceLocalizationFile file)
     {
@@ -96,7 +93,7 @@ public partial class BattleAnnouncerTranslationEditorViewModel
 
     protected override void UpdateCurrentItem()
     {
-        if (EditableFile != null && EditableFile.DataList.Count > 0)
+        if (EditableFile is { DataList.Count: > 0 })
             CurrentItem = EditableFile.DataList[CurrentIndex];
 
         var currentAnnouncerVoiceTypeId = CurrentItem!.Id;

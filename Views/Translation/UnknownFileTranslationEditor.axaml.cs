@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace RainbusToolbox.Views.Translation;
 
-public partial class UiElementTranslationEditor : UserControl
+public partial class UnknownFileTranslationEditor : UserControl
 {
-    public UiElementTranslationEditor()
+    public UnknownFileTranslationEditor()
     {
         InitializeComponent();
     }

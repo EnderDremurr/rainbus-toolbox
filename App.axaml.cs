@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RainbusToolbox.Models.Managers;
 using RainbusToolbox.Services.RepositoryServices;
 using RainbusToolbox.Utilities;
+using RainbusToolbox.Utilities.Data;
 using RainbusToolbox.Utilities.ExternalServices;
 using RainbusToolbox.Utilities.RepositoryServices;
 using RainbusToolbox.ViewModels;
@@ -135,7 +136,7 @@ public class App : Application
 
             RegisterBackendServices(services);
             RegisterUIServices(services);
-            RegisterTranslationEditors(services);
+            RegisterTranslationEditorVMs(services);
 
             ServiceProvider = services.BuildServiceProvider();
             ServiceProvider.GetRequiredService<CachingService>();
@@ -184,6 +185,7 @@ public class App : Application
         services.AddSingleton<SpellcheckEngine>();
         services.AddSingleton<MassReplacementService>();
         services.AddSingleton<ConfigProvider>();
+        services.AddSingleton<EditorFactory>();
     }
 
     private static void RegisterUIServices(ServiceCollection services)
@@ -204,8 +206,26 @@ public class App : Application
         services.AddSingleton<OverviewTabViewModel>();
     }
 
-    private static void RegisterTranslationEditors(ServiceCollection services)
+    private static void RegisterTranslationEditorVMs(ServiceCollection services)
     {
+        services.AddKeyedTransient<IFileEditor, StoryTranslationEditorViewModel>(typeof(StoryDataFile));
+        services.AddKeyedTransient<IFileEditor, EGOGiftTranslationEditorViewModel>(typeof(EgoGiftsLocalizationFile));
+        services.AddKeyedTransient<IFileEditor, SkillsEgoTranslationEditorViewModel>(typeof(SkillLocalizationFile));
+        services.AddKeyedTransient<IFileEditor, BattleHintsEditorViewModel>(typeof(NormalBattleHintLocalizationFile));
+        services.AddKeyedTransient<IFileEditor, PanicTranslationEditorViewModel>(typeof(PanicInfoLocalizationFile));
+        services.AddKeyedTransient<IFileEditor, PassiveTranslationEditorViewModel>(typeof(PassiveLocalizationFile));
+        services.AddKeyedTransient<IFileEditor, BattleAnnouncerTranslationEditorViewModel>(
+            typeof(AnnouncerVoiceLocalizationFile));
+        services.AddKeyedTransient<IFileEditor, KeywordTranslationEditorViewModel>(typeof(KeywordLocalizationFile));
+        services.AddKeyedTransient<IFileEditor, PersonalityVoiceTranslationEditorViewModel>(
+            typeof(PersonalityVoiceLocalizationFile));
+        services.AddKeyedTransient<IFileEditor, EGOVoiceTranslationEditorViewModel>(typeof(EgoVoiceLocalizationFile));
+        services.AddKeyedTransient<IFileEditor, AbnormalityGuideTranslationEditorViewModel>(
+            typeof(AbnormalityGuideContentLocalizationFile));
+        services.AddKeyedTransient<IFileEditor, UiElementTranslationEditorViewModel>(typeof(UiLocalizationFile));
+
+
+        services.AddTransient<IFileEditor, UnknownFileTranslationEditorViewModel>();
     }
 
     private void DisableAvaloniaDataAnnotationValidation()

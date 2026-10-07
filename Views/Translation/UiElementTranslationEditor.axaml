@@ -2,7 +2,7 @@
     d:DesignHeight="800"
     d:DesignWidth="1200"
     mc:Ignorable="d"
-    x:Class="RainbusToolbox.Views.UiElementTranslationEditor"
+    x:Class="RainbusToolbox.Views.Translation.UiElementTranslationEditor"
     x:CompileBindings="False"
     x:DataType="viewModels:UiElementTranslationEditorViewModel"
     xmlns="https://github.com/avaloniaui"

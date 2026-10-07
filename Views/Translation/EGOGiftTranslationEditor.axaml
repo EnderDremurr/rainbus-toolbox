@@ -2,7 +2,7 @@
     d:DesignHeight="800"
     d:DesignWidth="1200"
     mc:Ignorable="d"
-    x:Class="RainbusToolbox.Views.EGOGiftTranslationEditor"
+    x:Class="RainbusToolbox.Views.Translation.EGOGiftTranslationEditor"
     x:DataType="vm:EGOGiftTranslationEditorViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"

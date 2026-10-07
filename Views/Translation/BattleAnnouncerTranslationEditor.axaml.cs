@@ -1,32 +1,11 @@
 using Avalonia.Controls;
-using RainbusToolbox.Models.Managers;
-using RainbusToolbox.Utilities.Data;
-using RainbusToolbox.ViewModels;
 
-namespace RainbusToolbox.Views;
+namespace RainbusToolbox.Views.Translation;
 
-public partial class BattleAnnouncerTranslationEditor : UserControl, IFileEditor
+public partial class BattleAnnouncerTranslationEditor : UserControl
 {
     public BattleAnnouncerTranslationEditor()
     {
         InitializeComponent();
-        DataContext ??= new BattleAnnouncerTranslationEditorViewModel();
-    }
-
-    public BattleAnnouncerTranslationEditorViewModel VM => (BattleAnnouncerTranslationEditorViewModel)DataContext!;
-
-    public void SetFileToEdit(LocalizationFileBase file)
-    {
-        VM.LoadEditableFile((AnnouncerVoiceLocalizationFile)file);
-    }
-
-    public void SetReferenceFile(LocalizationFileBase file)
-    {
-        VM.LoadReferenceFile((AnnouncerVoiceLocalizationFile)file);
-    }
-
-    public void AskEditorToSave(LocalizationManager localizationManager)
-    {
-        VM.SaveCurrentFile(localizationManager);
     }
 }
