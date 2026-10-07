@@ -133,39 +133,12 @@ public class App : Application
 
             var services = new ServiceCollection();
 
-            // Singletons
-            services.AddSingleton<GitManager>();
-            services.AddSingleton<PersistentDataManager>();
-            services.AddSingleton<LocalizationManager>();
-            services.AddSingleton<GithubManager>();
-            services.AddSingleton<KeywordProcessingService>();
-            services.AddSingleton<Angela>();
-            services.AddSingleton<DiscordRPCService>();
-            services.AddSingleton<CachingService>();
-            services.AddSingleton<SpellCheckerService>();
-            services.AddSingleton<SpellcheckEngine>();
-            services.AddSingleton<MassReplacementService>();
-            services.AddSingleton<ConfigProvider>();
-
-            // Windows and VMs
-            services.AddSingleton<MainWindow>();
-            services.AddSingleton<MainWindowViewModel>();
-
-            services.AddSingleton<InitializationWindow>();
-            services.AddSingleton<InitializationWindowViewModel>();
-
-            services.AddTransient<SettingsWindow>();
-
-            // tab viewmodels
-            services.AddSingleton<TranslationTabViewModel>();
-            services.AddSingleton<FilesTabViewModel>();
-            services.AddSingleton<ReleaseTabViewModel>();
-            services.AddSingleton<OverviewTabViewModel>();
-
+            RegisterBackendServices(services);
+            RegisterUIServices(services);
+            RegisterTranslationEditors(services);
 
             ServiceProvider = services.BuildServiceProvider();
             ServiceProvider.GetRequiredService<CachingService>();
-
 
             try
             {
@@ -195,6 +168,44 @@ public class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private static void RegisterBackendServices(ServiceCollection services)
+    {
+        services.AddSingleton<GitManager>();
+        services.AddSingleton<PersistentDataManager>();
+        services.AddSingleton<LocalizationManager>();
+        services.AddSingleton<GithubManager>();
+        services.AddSingleton<KeywordProcessingService>();
+        services.AddSingleton<Angela>();
+        services.AddSingleton<DiscordRPCService>();
+        services.AddSingleton<CachingService>();
+        services.AddSingleton<SpellCheckerService>();
+        services.AddSingleton<SpellcheckEngine>();
+        services.AddSingleton<MassReplacementService>();
+        services.AddSingleton<ConfigProvider>();
+    }
+
+    private static void RegisterUIServices(ServiceCollection services)
+    {
+        // windows
+        services.AddSingleton<MainWindow>();
+        services.AddSingleton<MainWindowViewModel>();
+
+        services.AddSingleton<InitializationWindow>();
+        services.AddSingleton<InitializationWindowViewModel>();
+
+        services.AddTransient<SettingsWindow>();
+
+        // tab viewmodels
+        services.AddSingleton<TranslationTabViewModel>();
+        services.AddSingleton<FilesTabViewModel>();
+        services.AddSingleton<ReleaseTabViewModel>();
+        services.AddSingleton<OverviewTabViewModel>();
+    }
+
+    private static void RegisterTranslationEditors(ServiceCollection services)
+    {
     }
 
     private void DisableAvaloniaDataAnnotationValidation()
