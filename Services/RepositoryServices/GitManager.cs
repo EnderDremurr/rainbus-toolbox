@@ -65,19 +65,20 @@ public sealed class GitManager(PersistentDataManager persistentDataManager)
             return null;
 
         var tracked = branch.TrackedBranch;
-        if (tracked == null)
-        {
-            Log.Debug("Tracked branch is null! Trying to get remote branch manually");
-            tracked = Repository.Branches[$"{remote.Name}/{branch.FriendlyName}"];
-        }
+
+        if (tracked != null)
+            return tracked;
+
+        Log.Debug("Tracked branch is null! Trying to get remote branch manually");
+        tracked = Repository.Branches[$"{remote.Name}/{branch.FriendlyName}"];
 
         return tracked;
     }
 
-    public int[] CheckRepositoryChanges()
+    public (int Behind, int Ahead) CheckRepositoryChanges()
     {
         if (Repository == null)
-            return [0, 0];
+            return (0, 0);
 
         var branch = Repository.Head;
         Log.Debug("Current branch: {BranchFriendlyName}", branch.FriendlyName);
@@ -85,7 +86,7 @@ public sealed class GitManager(PersistentDataManager persistentDataManager)
         if (string.IsNullOrWhiteSpace(branch.RemoteName))
         {
             Log.Debug("No remote set for the current branch");
-            return [0, 0];
+            return (0, 0);
         }
 
         var remote = Repository.Network.Remotes[branch.RemoteName];
@@ -102,7 +103,7 @@ public sealed class GitManager(PersistentDataManager persistentDataManager)
         catch (Exception ex)
         {
             Log.Debug("Fetch failed: {ExMessage}", ex.Message);
-            return [0, 0];
+            return (0, 0);
         }
 
         branch = Repository.Head;
@@ -115,7 +116,7 @@ public sealed class GitManager(PersistentDataManager persistentDataManager)
         Log.Debug("Divergence: AheadBy {DivergenceAheadBy}, BehindBy {DivergenceBehindBy}", divergence?.AheadBy,
             divergence?.BehindBy);
 
-        return [divergence?.BehindBy ?? 0, divergence?.AheadBy ?? 0];
+        return (divergence?.BehindBy ?? 0, divergence?.AheadBy ?? 0);
     }
 
     public async Task SynchronizeWithOriginAsync()
@@ -143,8 +144,8 @@ public sealed class GitManager(PersistentDataManager persistentDataManager)
             });
 
             var divergence = await Task.Run(CheckRepositoryChanges);
-            var behind = divergence[0];
-            var ahead = divergence[1];
+            var behind = divergence.Behind;
+            var ahead = divergence.Ahead;
 
             var didRebase = false;
 
@@ -255,7 +256,8 @@ public sealed class GitManager(PersistentDataManager persistentDataManager)
                                                       entry.State.HasFlag(FileStatus.ModifiedInIndex) ||
                                                       entry.State.HasFlag(FileStatus.DeletedFromIndex) ||
                                                       entry.State.HasFlag(FileStatus.RenamedInIndex) ||
-                                                      entry.State.HasFlag(FileStatus.TypeChangeInIndex))) return;
+                                                      entry.State.HasFlag(FileStatus.TypeChangeInIndex)))
+            return;
 
         var author = GetLocalSignature(Repository);
         Repository.Commit(comment, author, author);
