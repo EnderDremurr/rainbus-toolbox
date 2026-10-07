@@ -126,6 +126,6 @@ public partial class TranslationEditorViewModel<TFile, TItem> : ObservableObject
     {
         if (EditableFile == null)
             return;
-        localizationManager.SaveObjectToFile(EditableFile);
+        LocalizationManager.SaveObjectToFile(EditableFile);
     }
 }

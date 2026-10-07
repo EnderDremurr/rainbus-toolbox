@@ -69,19 +69,19 @@ public sealed class LocalizationManager
         Path.Combine(_persistentDataManager.Settings.RepositoryPath!, "keyword_colors.json");
 
     public string PathToEgoNames => Path.Combine(PathToLocalization, "Egos.json");
-    public EgoLocalizationFile EgoNames = null!;
-    public EgoLocalizationFile EgoNamesReference = null!;
+    public required EgoLocalizationFile EgoNames { get; set; }
+    public required EgoLocalizationFile EgoNamesReference { get; set; }
 
     public string PathToAnnouncerNames => Path.Combine(PathToLocalization, "Announcer.json");
-    public AnnouncerLocalizationFile AnnouncerNames = null!;
-    public AnnouncerLocalizationFile AnnouncerNamesReference = null!;
+    public required AnnouncerLocalizationFile AnnouncerNames { get; set; }
+    public required AnnouncerLocalizationFile AnnouncerNamesReference { get; set; }
 
     public string PathToModelCodes => Path.Combine(PathToLocalization, "ScenarioModelCodes-AutoCreated.json");
-    public ScenarioModelCodesLocalizationFile ScenarioModelCodes = null!;
-    public ScenarioModelCodesLocalizationFile ScenarioModelCodesReference = null!;
+    public required ScenarioModelCodesLocalizationFile ScenarioModelCodes { get; set; }
+    public required ScenarioModelCodesLocalizationFile ScenarioModelCodesReference { get; set; }
 
     public string PathToAnnouncerVoiceTypes => Path.Combine(PathToLocalization, "AnnouncerVoiceType.json");
-    public AnnouncerVoiceTypeLocalizationFile AnnouncerVoiceTypes = null!;
+    public required AnnouncerVoiceTypeLocalizationFile AnnouncerVoiceTypes { get; set; }
 
     public string PathToFileMap => Path.Combine(PathToGameRoot,
         "LimbusCompany_Data/Assets/Resources_moved/Localize/RemoteLocalizeFileList.json");
@@ -172,16 +172,33 @@ public sealed class LocalizationManager
         foreach (var fileName in fileNames)
             DeveloperFileTypeMap.TryAdd(fileName, type);
 
-        EgoNames = (EgoLocalizationFile)GetObjectFromPath(PathToEgoNames);
-        EgoNamesReference = (EgoLocalizationFile)GetReference(EgoNames);
+        var localizedEgoNames = (EgoLocalizationFile?)GetObjectFromPath(PathToEgoNames);
+        var egoNamesReference = (EgoLocalizationFile?)GetReference(localizedEgoNames);
 
-        ScenarioModelCodes = (ScenarioModelCodesLocalizationFile)GetObjectFromPath(PathToModelCodes);
-        ScenarioModelCodesReference = (ScenarioModelCodesLocalizationFile)GetReference(ScenarioModelCodes);
+        var localizedScenarioModelCodes = (ScenarioModelCodesLocalizationFile?)GetObjectFromPath(PathToModelCodes);
+        var referenceScenarioModelCodes = (ScenarioModelCodesLocalizationFile?)GetReference(ScenarioModelCodes);
 
-        AnnouncerNames = (AnnouncerLocalizationFile)GetObjectFromPath(PathToAnnouncerNames);
-        AnnouncerNamesReference = (AnnouncerLocalizationFile)GetReference(AnnouncerNames);
+        var localizedAnnouncerNames = (AnnouncerLocalizationFile?)GetObjectFromPath(PathToAnnouncerNames);
+        var referenceAnnouncerNames = (AnnouncerLocalizationFile?)GetReference(AnnouncerNames);
 
-        AnnouncerVoiceTypes = (AnnouncerVoiceTypeLocalizationFile)GetObjectFromPath(PathToAnnouncerVoiceTypes);
+        var announcerVoiceTypes = (AnnouncerVoiceTypeLocalizationFile?)GetObjectFromPath(PathToAnnouncerVoiceTypes);
+
+        if (localizedEgoNames == null || egoNamesReference == null || localizedScenarioModelCodes == null ||
+            referenceScenarioModelCodes == null || localizedAnnouncerNames == null || referenceAnnouncerNames == null ||
+            announcerVoiceTypes == null)
+            throw new InvalidOperationException(
+                "Некоторые из обязательных файлов перевода отсутствуют или были испорчены!");
+
+        EgoNames = localizedEgoNames;
+        EgoNamesReference = egoNamesReference;
+
+        ScenarioModelCodes = localizedScenarioModelCodes;
+        ScenarioModelCodesReference = referenceScenarioModelCodes;
+
+        AnnouncerNames = localizedAnnouncerNames;
+        AnnouncerNamesReference = referenceAnnouncerNames;
+
+        AnnouncerVoiceTypes = announcerVoiceTypes;
     }
 
     #endregion
@@ -271,7 +288,7 @@ public sealed class LocalizationManager
         return referencePath == null ? null : GetObjectFromPath(referencePath, refTo);
     }
 
-    public bool SaveObjectToFile(LocalizationFileBase obj)
+    public static bool SaveObjectToFile(LocalizationFileBase obj)
     {
         Log.Debug("Saving an object: {Name}, FileName: {ObjFileName}, FullPath: {ObjFullPath}", obj.GetType().Name,
             obj.FileName, obj.FullPath);
@@ -325,7 +342,7 @@ public sealed class LocalizationManager
         }
         catch (Exception e)
         {
-            Log.Debug(e.ToString());
+            Log.Debug("{Error}", e.ToString());
             _ = App.Current.HandleNonFatalExceptionAsync(e);
             return false;
         }
