@@ -36,7 +36,6 @@ public sealed class LocalizationManager
 
     #endregion
 
-
     #region Folders
 
     // Relative to repo root
@@ -176,10 +175,11 @@ public sealed class LocalizationManager
         var egoNamesReference = (EgoLocalizationFile?)GetReference(localizedEgoNames);
 
         var localizedScenarioModelCodes = (ScenarioModelCodesLocalizationFile?)GetObjectFromPath(PathToModelCodes);
-        var referenceScenarioModelCodes = (ScenarioModelCodesLocalizationFile?)GetReference(ScenarioModelCodes);
+        var referenceScenarioModelCodes =
+            (ScenarioModelCodesLocalizationFile?)GetReference(localizedScenarioModelCodes);
 
         var localizedAnnouncerNames = (AnnouncerLocalizationFile?)GetObjectFromPath(PathToAnnouncerNames);
-        var referenceAnnouncerNames = (AnnouncerLocalizationFile?)GetReference(AnnouncerNames);
+        var referenceAnnouncerNames = (AnnouncerLocalizationFile?)GetReference(localizedAnnouncerNames);
 
         var announcerVoiceTypes = (AnnouncerVoiceTypeLocalizationFile?)GetObjectFromPath(PathToAnnouncerVoiceTypes);
 
