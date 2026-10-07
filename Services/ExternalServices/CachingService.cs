@@ -58,7 +58,6 @@ public sealed class CachingService
         var missing = allFiles.Where(name => !File.Exists(
             Path.Combine(BaseCachePath, _cachePathMap[categoryTitle], name.Replace("File:", "")))).ToList();
 
-        Log.Debug("{Missing}/{AllFiles} files need downloading for {CategoryTitle}", missing, allFiles, categoryTitle);
         if (!missing.Any()) return;
 
         var urls = await BatchResolveUrlsAsync(missing, ct);
@@ -83,7 +82,6 @@ public sealed class CachingService
                     url += $"&cmcontinue={continueToken}";
                 Log.Debug("Fetching category members from wiki for {CategoryTitle}", categoryTitle);
                 var json = await _httpClient.GetStringAsync(url, ct);
-                Log.Debug("Got response for {CategoryTitle}", categoryTitle);
                 var doc = JsonDocument.Parse(json);
 
                 var members = doc.RootElement
@@ -142,8 +140,9 @@ public sealed class CachingService
 
             return result;
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
+            _ = App.Current.HandleNonFatalExceptionAsync(ex);
             return [];
         }
     }
@@ -164,7 +163,6 @@ public sealed class CachingService
             {
                 var bytes = await _httpClient.GetByteArrayAsync(kvp.Value, ct);
                 await File.WriteAllBytesAsync(savePath, bytes, ct);
-                Log.Debug("Downloaded {FileName}", fileName);
             }
             finally
             {
