@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -11,22 +10,34 @@ using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.Models.Managers;
 
-public sealed partial class GithubManager(
-    PersistentDataManager persistentDataManager,
-    LocalizationManager localizationManager,
-    GitManager gitManager)
+public sealed partial class GithubManager
 {
     private const string RemoteParseRegex = "[:/](?<owner>[^/:]+)/(?<repo>[^/]+?)(?:\\.git)?/?$";
 
+
+    private const string ReleaseFooterFileName = "RELEASE_FOOTER.md";
+    private readonly GitManager _gitManager;
+
     private readonly HttpClient _httpClient = new();
+    private readonly PersistentDataManager _persistentDataManager;
+
+    public GithubManager(PersistentDataManager persistentDataManager,
+        GitManager gitManager)
+    {
+        _persistentDataManager = persistentDataManager;
+        _gitManager = gitManager;
+
+        _httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RainbusToolbox", "1.0"));
+    }
+
 
     public bool IsOffline { get; private set; }
 
     public async Task<bool> IsConnectionValid()
     {
         IsOffline =
-            string.IsNullOrWhiteSpace(persistentDataManager.Settings.GitHubToken)
-            || !await IsTokenValidAsync(persistentDataManager.Settings.GitHubToken);
+            string.IsNullOrWhiteSpace(_persistentDataManager.Settings.GitHubToken)
+            || !await IsTokenValidAsync(_persistentDataManager.Settings.GitHubToken);
 
         return !IsOffline;
     }
@@ -47,7 +58,7 @@ public sealed partial class GithubManager(
     // TODO: slopreview
     public async Task<string?>
         CreateReleaseAsync(string releaseName, string releaseDescription,
-            string pathToZip) // return link to the release if successful
+            string pathToZip, bool appendReleaseFooter) // return link to the release if successful
     {
         if (!await IsConnectionValid())
         {
@@ -57,8 +68,8 @@ public sealed partial class GithubManager(
             return null;
         }
 
-        var repoPath = gitManager.Repository.Info.WorkingDirectory;
-        var remoteUrl = gitManager.Repository.Network.Remotes["origin"].Url;
+        var repoPath = _gitManager.Repository.Info.WorkingDirectory;
+        var remoteUrl = _gitManager.Repository.Network.Remotes["origin"].Url;
 
         string owner, repo;
         try
@@ -74,15 +85,14 @@ public sealed partial class GithubManager(
         _httpClient.DefaultRequestHeaders.Accept.Clear();
         _httpClient.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
-        _httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RainbusToolbox", "1.0"));
         _httpClient.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", persistentDataManager.Settings.GitHubToken);
+            new AuthenticationHeaderValue("Bearer", _persistentDataManager.Settings.GitHubToken);
 
         // sanitize illegal symbols in release name (need sani cuz release name is not a version, but a repo name + version)
         var sanitizedTag = TagSanitizerRegex().Replace(releaseName, "-");
 
 
-        // ensure it wont create a dupe release
+        // ensure it won't create a dupe release
         var checkResponse =
             await _httpClient.GetAsync($"https://api.github.com/repos/{owner}/{repo}/releases/tags/{sanitizedTag}");
         if (checkResponse.IsSuccessStatusCode)
@@ -101,7 +111,7 @@ public sealed partial class GithubManager(
             body = releaseDescription,
             draft = false,
             prerelease = false
-        };
+        }; // TODO: make release a draft first, then publish if it didn't throw (later)
         var releaseJson =
             new StringContent(JsonSerializer.Serialize(releaseContent), Encoding.UTF8, "application/json");
         var releaseResponse =
@@ -113,94 +123,65 @@ public sealed partial class GithubManager(
             return null;
         }
 
-        // TODO: remove release if something throws
         var releaseData = JsonDocument.Parse(releaseBody);
         var uploadUrlTemplate = releaseData.RootElement.GetProperty("upload_url").GetString();
         var uploadUrl = uploadUrlTemplate.Substring(0, uploadUrlTemplate.IndexOf("{")); // Remove template part
-
-        // 4. Upload ZIP asset
         await using var fileStream = File.OpenRead(pathToZip);
         using var content = new StreamContent(fileStream);
         content.Headers.ContentType = new MediaTypeHeaderValue("application/zip");
-
         var assetResponse = await _httpClient.PostAsync($"{uploadUrl}?name={Path.GetFileName(pathToZip)}", content);
         var assetBody = await assetResponse.Content.ReadAsStringAsync();
         if (!assetResponse.IsSuccessStatusCode) throw new Exception($"Failed to upload ZIP asset: {assetBody}");
 
 
-        // 5. Upload README.md if it exists (with HTML stripped and release description prepended)
-        var readmePath = Path.Combine(repoPath, "README.md");
-        // TODO: Make it require a separate readme just for releases, so i won't need trimming the shit in code!! like RELEASE_FOOTER.MD
-        if (File.Exists(readmePath))
-            try
-            {
-                // Read the original README content
-                var originalReadmeContent = await File.ReadAllTextAsync(readmePath);
+        // upload a Readme.md (required by the launcher) containing the release description + a special footer copy if user has enabled it
+        var readmeString = $"# Release: {releaseName}\n\n{releaseDescription}";
 
-                // Strip HTML tags using regex
-                var htmlStrippedContent = Regex.Replace(originalReadmeContent, @"<[^>]*>", string.Empty);
+        if (appendReleaseFooter)
+        {
+            var readmeFooterPath = Path.Combine(repoPath, ReleaseFooterFileName);
 
-                // Remove specific sections: "## Полезные ссылки" and "## Установка"
-                // Split content by lines to process section by section
-                var lines = htmlStrippedContent.Split('\n');
-                var filteredLines = new List<string>();
-                var skipSection = false;
-
-                foreach (var line in lines)
+            if (!File.Exists(readmeFooterPath))
+                _ = App.Current.HandleNonFatalExceptionAsync(
+                    new Exception(
+                        $"Была указана опция добавить футер к README.md, однако файл футера отсутствует! Требуется файл по пути {readmeFooterPath}!" +
+                        $"\nБудет использовано обычное описание релиза."));
+            else
+                try
                 {
-                    var trimmedLine = line.Trim();
-
-                    // Check if we're starting a section to skip
-                    if (trimmedLine == "## Полезные ссылки" || trimmedLine == "## Установка")
-                    {
-                        skipSection = true;
-                        continue;
-                    }
-
-                    // Check if we're starting a new ## section (end of section to skip)
-                    if (trimmedLine.StartsWith("## ") && skipSection) skipSection = false;
-                    // Don't skip this line, it's a new section
-                    // Add line if we're not skipping
-                    if (!skipSection) filteredLines.Add(line);
+                    var footerText = await File.ReadAllTextAsync(readmeFooterPath);
+                    footerText = footerText.Trim();
+                    if (!string.IsNullOrEmpty(footerText))
+                        readmeString += $"\n\n---\n\n{footerText}";
+                    else
+                        _ = App.Current.HandleNonFatalExceptionAsync(
+                            new Exception("Твой файл с футером для README.md пустой!!!"));
                 }
+                catch (Exception e)
+                {
+                    _ = App.Current.HandleNonFatalExceptionAsync(
+                        new Exception("Произошла ошибка при чтении футера! Это не помешает релизу!", e));
+                }
+        }
 
-                htmlStrippedContent = string.Join('\n', filteredLines);
+        var readmeBytes = Encoding.UTF8.GetBytes(readmeString);
+        using var readmeStream = new MemoryStream(readmeBytes);
+        using var readmeContent = new StreamContent(readmeStream);
+        readmeContent.Headers.ContentType = new MediaTypeHeaderValue("text/markdown");
 
-                // Clean up extra whitespace that might be left after HTML removal and section removal
-                htmlStrippedContent =
-                    Regex.Replace(htmlStrippedContent, @"\n\s*\n\s*\n",
-                        "\n\n"); // Replace multiple empty lines with double newline
-                htmlStrippedContent = htmlStrippedContent.Trim();
-
-                // Prepend release description
-                var modifiedReadmeContent =
-                    $"# Release: {releaseName}\n\n{releaseDescription}\n\n---\n\n{htmlStrippedContent}";
-
-                // Convert to byte array for upload
-                var readmeBytes = Encoding.UTF8.GetBytes(modifiedReadmeContent);
-                using var readmeStream = new MemoryStream(readmeBytes);
-                using var readmeContent = new StreamContent(readmeStream);
-                readmeContent.Headers.ContentType = new MediaTypeHeaderValue("text/markdown");
-
-                var readmeResponse = await _httpClient.PostAsync($"{uploadUrl}?name=README.md", readmeContent);
-                var readmeResponseBody = await readmeResponse.Content.ReadAsStringAsync();
-                if (!readmeResponse.IsSuccessStatusCode)
-                    // Log warning but don't fail the entire operation
-                    Log.Debug("Warning: Failed to upload README.md: {ReadmeResponseBody}", readmeResponseBody);
-            }
-            catch (Exception ex)
-            {
-                Log.Debug("Warning: Error processing README.md: {ExMessage}", ex.Message);
-            }
-        else
-            // Log info that README.md was not found
-            Log.Debug("README.md not found in repository root, skipping upload");
+        var readmeResponse = await _httpClient.PostAsync($"{uploadUrl}?name=README.md", readmeContent);
+        var readmeResponseBody = await readmeResponse.Content.ReadAsStringAsync();
+        if (!readmeResponse.IsSuccessStatusCode)
+            _ = App.Current.HandleNonFatalExceptionAsync(
+                new Exception(
+                    $"Не удалось загрузить README.md для релиза! Информация: {readmeResponseBody}\nСам релиз был успешно выложен!"));
 
         if (releaseData.RootElement.TryGetProperty("html_url", out var urlElement))
             return urlElement.GetString();
         _ = App.Current.HandleNonFatalExceptionAsync(new Exception(
             $"Релиз был успешно выложен, но не удалось получить ссылку релиза, это не страшно! Информация: {releaseBody}"));
         return string.Empty;
+        // returns link or empty string if release succeeded (empty if something's wrong with the link) and null if it's failed
     }
 
     public static async Task<bool> IsTokenValidAsync(string? token)
@@ -235,8 +216,7 @@ public sealed partial class GithubManager(
             _httpClient.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
-            var token = persistentDataManager.Settings.GitHubToken;
-            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("RainbusToolbox/1.0");
+            var token = _persistentDataManager.Settings.GitHubToken;
             _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", token);
 

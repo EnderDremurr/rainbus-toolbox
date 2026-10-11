@@ -117,7 +117,7 @@ public partial class ReleaseTabViewModel : ObservableObject
     private bool _appendLauncherLink = true;
 
     [ObservableProperty]
-    private bool _mergeWithReadme = true;
+    private bool _appendReleaseFooter = true;
 
     [ObservableProperty]
     private bool _runRegexesBeforeRelease = true;
@@ -127,7 +127,7 @@ public partial class ReleaseTabViewModel : ObservableObject
     private bool _sendToDiscord = true;
 
     [ObservableProperty]
-    private bool _option1;
+    private bool _appendReleaseLink;
 
     [ObservableProperty]
     private bool _attachAnImage;
@@ -272,7 +272,11 @@ public partial class ReleaseTabViewModel : ObservableObject
             // Create GitHub release
             var localizationName = _gitManager.GetCurrentRepoDisplayName();
 
-            await _githubManager.CreateReleaseAsync($"{localizationName} v{nextVersion}", EditorText, package);
+            var releaseLink =
+                await _githubManager.CreateReleaseAsync($"{localizationName} v{nextVersion}", EditorText, package,
+                    AppendReleaseFooter);
+
+            if (releaseLink == null) throw new Exception("Релиз провалился!");
 
             // Handle Discord section options - only send if SendToDiscord is checked
             if (SendToDiscord && DiscordManager.ValidateWebhook(_dataManager.Settings.DiscordWebHook))
@@ -285,8 +289,8 @@ public partial class ReleaseTabViewModel : ObservableObject
                 if (AppendLauncherLink)
                     discordMessage +=
                         $"\n\n[{AppLang.LocalizationManagerHyperlink}](<https://github.com/kimght/LimbusLocalizationManager/releases>)";
-                //if (Option1) TODO:implement later LMAO I JUST FORGOT ABOUT TS
-                //discordMessage += $"\n\n[Ссылка на релиз](<https://github.com/enqenqenqenqenq/RCR/releases/latest>)";
+                if (AppendReleaseLink)
+                    discordMessage += $"\n\n[Ссылка на релиз]({releaseLink})";
 
                 if (PingSetRole && !string.IsNullOrWhiteSpace(_dataManager.Settings.DiscordRoleToPing))
                     discordMessage += $"\n<@&{_dataManager.Settings.DiscordRoleToPing}>";

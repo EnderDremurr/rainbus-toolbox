@@ -90,7 +90,7 @@
 
                             <CheckBox
                                 Content="Добавить README.md с описанием обновления"
-                                IsChecked="{Binding MergeWithReadme}"
+                                IsChecked="{Binding AppendReleaseFooter}"
                                 Margin="5,0" />
 
                             <CheckBox
@@ -121,7 +121,7 @@
                                 Margin="5,0" />
                             <CheckBox
                                 Content="Оставить ссылку на релиз"
-                                IsChecked="{Binding Option1}"
+                                IsChecked="{Binding AppendReleaseLink}"
                                 Margin="5,0" />
 
                             <CheckBox
