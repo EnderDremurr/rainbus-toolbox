@@ -11,11 +11,13 @@ using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.Models.Managers;
 
-public sealed class GithubManager(
+public sealed partial class GithubManager(
     PersistentDataManager persistentDataManager,
     LocalizationManager localizationManager,
     GitManager gitManager)
 {
+    private const string RemoteParseRegex = "[:/](?<owner>[^/:]+)/(?<repo>[^/]+?)(?:\\.git)?/?$";
+
     private readonly HttpClient _httpClient = new();
 
     public bool IsOffline { get; private set; }
@@ -29,47 +31,69 @@ public sealed class GithubManager(
         return !IsOffline;
     }
 
+    private static (string Owner, string Repo) ParseOwnerAndRepoFromUrl(string remoteUrl)
+    {
+        var match = Regex.Match(remoteUrl, RemoteParseRegex);
+        if (!match.Success)
+            throw new Exception($"Can't parse remote URL: {remoteUrl}");
+
+        var owner = match.Groups["owner"].Value;
+        var repo = match.Groups["repo"].Value;
+
+        return (owner, repo);
+    }
+
 
     // TODO: slopreview
-    public async Task CreateReleaseAsync(string releaseName, string releaseDescription, string pathToZip)
+    public async Task<string?>
+        CreateReleaseAsync(string releaseName, string releaseDescription,
+            string pathToZip) // return link to the release if successful
     {
         if (!await IsConnectionValid())
         {
             var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
             await PopUpWindow.ShowAsync(parent!, "Ты в оффлайн режиме!",
                 "Не удаётся подключится к гитхабу, поэтому увы!");
-            return;
+            return null;
         }
-
 
         var repoPath = gitManager.Repository.Info.WorkingDirectory;
         var remoteUrl = gitManager.Repository.Network.Remotes["origin"].Url;
 
-        // Extract owner and repo name from remote URL
-        // Example: https://github.com/username/repo.git
-        var segments = remoteUrl.Replace(".git", "").Split('/');
-        if (segments.Length < 2)
-            throw new Exception("Invalid remote URL");
+        string owner, repo;
+        try
+        {
+            (owner, repo) = ParseOwnerAndRepoFromUrl(remoteUrl);
+        }
+        catch (Exception e)
+        {
+            _ = App.Current.HandleNonFatalExceptionAsync(e);
+            return null;
+        }
 
-        var owner = segments[^2];
-        var repo = segments[^1];
-
-        // 1. Sanitize tag for GitHub
-        // Replace all invalid characters with '-'. Valid: letters, numbers, dash, underscore, dot
-        var sanitizedTag = Regex.Replace(releaseName, @"[^0-9A-Za-z\-_\.]", "-");
-
-        _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
+        _httpClient.DefaultRequestHeaders.Accept.Clear();
+        _httpClient.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
         _httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RainbusToolbox", "1.0"));
         _httpClient.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", persistentDataManager.Settings.GitHubToken);
 
-        // 2. Check if release/tag already exists
+        // sanitize illegal symbols in release name (need sani cuz release name is not a version, but a repo name + version)
+        var sanitizedTag = TagSanitizerRegex().Replace(releaseName, "-");
+
+
+        // ensure it wont create a dupe release
         var checkResponse =
             await _httpClient.GetAsync($"https://api.github.com/repos/{owner}/{repo}/releases/tags/{sanitizedTag}");
         if (checkResponse.IsSuccessStatusCode)
-            throw new Exception($"Release with tag '{sanitizedTag}' already exists.");
+        {
+            _ = App.Current.HandleNonFatalExceptionAsync(
+                new Exception(
+                    $"Релиз с тегом '{sanitizedTag}' уже существует! Возможно, что-то создало релиз параллельно!"));
+            return null;
+        }
 
-        // 3. Create release
+        // prepare release data and try creating a release at the remote
         var releaseContent = new
         {
             tag_name = sanitizedTag, // must be sanitized
@@ -78,15 +102,18 @@ public sealed class GithubManager(
             draft = false,
             prerelease = false
         };
-
         var releaseJson =
             new StringContent(JsonSerializer.Serialize(releaseContent), Encoding.UTF8, "application/json");
-
         var releaseResponse =
             await _httpClient.PostAsync($"https://api.github.com/repos/{owner}/{repo}/releases", releaseJson);
         var releaseBody = await releaseResponse.Content.ReadAsStringAsync();
-        if (!releaseResponse.IsSuccessStatusCode) throw new Exception($"Failed to create release: {releaseBody}");
+        if (!releaseResponse.IsSuccessStatusCode)
+        {
+            _ = App.Current.HandleNonFatalExceptionAsync(new Exception($"Failed to create release: {releaseBody}"));
+            return null;
+        }
 
+        // TODO: remove release if something throws
         var releaseData = JsonDocument.Parse(releaseBody);
         var uploadUrlTemplate = releaseData.RootElement.GetProperty("upload_url").GetString();
         var uploadUrl = uploadUrlTemplate.Substring(0, uploadUrlTemplate.IndexOf("{")); // Remove template part
@@ -99,6 +126,7 @@ public sealed class GithubManager(
         var assetResponse = await _httpClient.PostAsync($"{uploadUrl}?name={Path.GetFileName(pathToZip)}", content);
         var assetBody = await assetResponse.Content.ReadAsStringAsync();
         if (!assetResponse.IsSuccessStatusCode) throw new Exception($"Failed to upload ZIP asset: {assetBody}");
+
 
         // 5. Upload README.md if it exists (with HTML stripped and release description prepended)
         var readmePath = Path.Combine(repoPath, "README.md");
@@ -167,6 +195,12 @@ public sealed class GithubManager(
         else
             // Log info that README.md was not found
             Log.Debug("README.md not found in repository root, skipping upload");
+
+        if (releaseData.RootElement.TryGetProperty("html_url", out var urlElement))
+            return urlElement.GetString();
+        _ = App.Current.HandleNonFatalExceptionAsync(new Exception(
+            $"Релиз был успешно выложен, но не удалось получить ссылку релиза, это не страшно! Информация: {releaseBody}"));
+        return string.Empty;
     }
 
     public static async Task<bool> IsTokenValidAsync(string? token)
@@ -227,4 +261,7 @@ public sealed class GithubManager(
             return "Unknown";
         }
     }
+
+    [GeneratedRegex(@"[^0-9A-Za-z\-_\.]")]
+    private static partial Regex TagSanitizerRegex();
 }
