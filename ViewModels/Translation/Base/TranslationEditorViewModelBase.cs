@@ -1,9 +1,10 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using RainbusToolbox.Services.ExternalServices;
-using RainbusToolbox.Services.ExternalServices.Data;
+using RainbusToolbox.Models;
+using RainbusToolbox.Models.LimbusSerialization;
+using RainbusToolbox.Services.RepositoryServices;
 
-namespace RainbusToolbox.ViewModels;
+namespace RainbusToolbox.ViewModels.Translation.Base;
 
 public abstract partial class TranslationEditorViewModelBase : ObservableObject, IFileEditor
 {

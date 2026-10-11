@@ -1,12 +1,12 @@
 <UserControl
     mc:Ignorable="d"
-    x:Class="RainbusToolbox.Views.ReleaseTab"
-    x:DataType="vm:ReleaseTabViewModel"
+    x:Class="RainbusToolbox.Views.Tabs.ReleaseTab"
+    x:DataType="tabs:ReleaseTabViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
-    xmlns:vm="clr-namespace:RainbusToolbox.ViewModels"
+    xmlns:tabs="clr-namespace:RainbusToolbox.ViewModels.Tabs"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Grid>

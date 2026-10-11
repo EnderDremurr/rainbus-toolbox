@@ -1,8 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using RainbusToolbox.Services.ExternalServices;
-using RainbusToolbox.Services.ExternalServices.Data;
+using RainbusToolbox.Models.LimbusSerialization;
+using RainbusToolbox.Services.RepositoryServices;
+using RainbusToolbox.ViewModels.Translation.Base;
 
-namespace RainbusToolbox.ViewModels;
+namespace RainbusToolbox.ViewModels.Translation;
 
 public partial class
     StoryTranslationEditorViewModel(LocalizationManager localizationManager)

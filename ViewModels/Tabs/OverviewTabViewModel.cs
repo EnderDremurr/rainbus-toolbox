@@ -1,8 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace RainbusToolbox.ViewModels;
+namespace RainbusToolbox.ViewModels.Tabs;
 
-public partial class OverviewTabViewModel : ObservableObject
+public class OverviewTabViewModel : ObservableObject
 {
-    
 }

@@ -1,7 +1,8 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using CommunityToolkit.Mvvm.Input;
-using RainbusToolbox.ViewModels;
+using RainbusToolbox.ViewModels.Misc;
+using PopUpWindowViewModel = RainbusToolbox.ViewModels.Misc.PopUpWindowViewModel;
 
 namespace RainbusToolbox.Views.Misc;
 

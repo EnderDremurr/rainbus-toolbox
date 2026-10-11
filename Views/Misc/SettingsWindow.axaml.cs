@@ -4,12 +4,13 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
+using RainbusToolbox.Services;
 using RainbusToolbox.Services.ExternalServices;
-using RainbusToolbox.Services.ExternalServices.NetworkUtilities;
-using RainbusToolbox.ViewModels;
-using RainbusToolbox.Views.Misc;
+using RainbusToolbox.Services.RepositoryServices;
+using RainbusToolbox.Utilities.NetworkUtilities;
+using RainbusToolbox.ViewModels.Misc;
 
-namespace RainbusToolbox;
+namespace RainbusToolbox.Views.Misc;
 
 // TODO: SUPER TODO, THIS SHIT SHOULD BE IN THE VIEW MODEL, NOT THE VIEW!!!!
 public partial class SettingsWindow : Window

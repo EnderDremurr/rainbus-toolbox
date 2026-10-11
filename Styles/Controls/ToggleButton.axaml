@@ -1,10 +1,10 @@
 <Styles
     xmlns="https://github.com/avaloniaui"
-    xmlns:local="using:RainbusToolbox"
+    xmlns:converters="clr-namespace:RainbusToolbox.Utilities.Converters"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Styles.Resources>
-        <local:CheckedToImageConverter x:Key="CheckedToImageConverter" />
+        <converters:CheckedToImageConverter x:Key="CheckedToImageConverter" />
     </Styles.Resources>
 
     <Style Selector="ToggleButton">

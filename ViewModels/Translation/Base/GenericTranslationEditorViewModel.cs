@@ -1,8 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using RainbusToolbox.Services.ExternalServices;
-using RainbusToolbox.Services.ExternalServices.Data;
+using RainbusToolbox.Models.LimbusSerialization;
+using RainbusToolbox.Services.RepositoryServices;
 
-namespace RainbusToolbox.ViewModels;
+namespace RainbusToolbox.ViewModels.Translation.Base;
 
 public partial class GenericTranslationEditorViewModel<TFile, TItem> : TranslationEditorViewModelBase
     where TFile : LocalizationFileBase, ILocalizationContainer<TItem>
@@ -65,7 +65,7 @@ public partial class GenericTranslationEditorViewModel<TFile, TItem> : Translati
 
     public virtual void GoCustom()
     {
-        var index = int.Parse(NavigationText ?? throw new InvalidOperationException()) - 1;
+        var index = int.Parse((string)(NavigationText ?? throw new InvalidOperationException())) - 1;
         var sanitizedStep = index;
         if (index < 0) index = 0;
         if (index > EditableFile.DataList.Count - 1) index = EditableFile.DataList.Count - 1;

@@ -7,12 +7,13 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData.Binding;
+using RainbusToolbox.Models;
+using RainbusToolbox.Models.LimbusSerialization;
 using RainbusToolbox.Services.ExternalServices;
-using RainbusToolbox.Services.ExternalServices.Data;
-using RainbusToolbox.Services.ExternalServices.Converters;
 using RainbusToolbox.Services.RepositoryServices;
+using RainbusToolbox.Utilities;
 
-namespace RainbusToolbox.ViewModels;
+namespace RainbusToolbox.ViewModels.Tabs;
 
 public partial class TranslationTabViewModel : ObservableObject
 {

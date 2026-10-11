@@ -1,7 +1,7 @@
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace RainbusToolbox.ViewModels;
+namespace RainbusToolbox.ViewModels.Misc;
 
 public partial class LoadingScreenViewModel : ObservableObject
 {

@@ -2,20 +2,20 @@
     d:DesignHeight="800"
     d:DesignWidth="1200"
     mc:Ignorable="d"
-    x:Class="RainbusToolbox.Views.TranslationTab"
-    x:DataType="vm:TranslationTabViewModel"
+    x:Class="RainbusToolbox.Views.Tabs.TranslationTab"
+    x:DataType="tabs:TranslationTabViewModel"
     x:Name="TopLevelControl"
     xmlns="https://github.com/avaloniaui"
-    xmlns:conv="clr-namespace:RainbusToolbox.Services.ExternalServices.Converters"
+    xmlns:converters="clr-namespace:RainbusToolbox.Utilities.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:data="clr-namespace:RainbusToolbox.Services.ExternalServices.Data"
+    xmlns:data="clr-namespace:RainbusToolbox.Models.LimbusSerialization"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="clr-namespace:RainbusToolbox.Services.ExternalServices"
-    xmlns:vm="clr-namespace:RainbusToolbox.ViewModels"
+    xmlns:models1="clr-namespace:RainbusToolbox.Models"
+    xmlns:tabs="clr-namespace:RainbusToolbox.ViewModels.Tabs"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <UserControl.Resources>
-        <conv:InverseBoolConverter x:Key="InverseBoolConverter" />
+        <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
     </UserControl.Resources>
 
     <Grid RowDefinitions="Auto,*">
@@ -100,7 +100,7 @@
                 ItemsSource="{Binding GroupedShortcuts}"
                 Margin="0,30,0,0">
                 <TabControl.ItemTemplate>
-                    <DataTemplate x:DataType="models:ShortcutTypeGroup">
+                    <DataTemplate x:DataType="models1:ShortcutTypeGroup">
                         <TextBlock
                             FontFamily="{StaticResource MikodacsFont}"
                             FontSize="22"
@@ -109,7 +109,7 @@
                     </DataTemplate>
                 </TabControl.ItemTemplate>
                 <TabControl.ContentTemplate>
-                    <DataTemplate x:DataType="models:ShortcutTypeGroup">
+                    <DataTemplate x:DataType="models1:ShortcutTypeGroup">
                         <ScrollViewer HorizontalScrollBarVisibility="Disabled">
                             <ItemsControl ItemsSource="{Binding Groups}" Margin="20,0">
                                 <ItemsControl.ItemTemplate>
@@ -130,7 +130,7 @@
                                                 </ItemsControl.ItemsPanel>
 
                                                 <ItemsControl.ItemTemplate>
-                                                    <DataTemplate x:DataType="models:FileShortcut">
+                                                    <DataTemplate x:DataType="models1:FileShortcut">
                                                         <Button
                                                             Command="{Binding OpenCommand}"
                                                             CommandParameter="{Binding FullPath}"

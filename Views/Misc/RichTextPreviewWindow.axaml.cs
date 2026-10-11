@@ -1,5 +1,5 @@
 using Avalonia.Controls;
-using RainbusToolbox.Services.ExternalServices;
+using RainbusToolbox.Services;
 
 namespace RainbusToolbox.Views.Misc;
 

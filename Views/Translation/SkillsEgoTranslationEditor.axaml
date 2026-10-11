@@ -3,13 +3,13 @@
     d:DesignWidth="1200"
     mc:Ignorable="d"
     x:Class="RainbusToolbox.Views.Translation.SkillsEgoTranslationEditor"
-    x:DataType="vm:SkillsEgoTranslationEditorViewModel"
+    x:DataType="translation:SkillsEgoTranslationEditorViewModel"
     xmlns="https://github.com/avaloniaui"
-    xmlns:converters="clr-namespace:RainbusToolbox.Services.ExternalServices.Converters"
+    xmlns:converters="clr-namespace:RainbusToolbox.Utilities.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:misc="clr-namespace:RainbusToolbox.Views.Misc"
-    xmlns:vm="clr-namespace:RainbusToolbox.ViewModels"
+    xmlns:translation="clr-namespace:RainbusToolbox.ViewModels.Translation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <UserControl.Resources>

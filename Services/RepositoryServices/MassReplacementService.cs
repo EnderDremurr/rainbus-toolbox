@@ -5,7 +5,7 @@ using System.Threading;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using RainbusToolbox.Services.ExternalServices;
+using ReplacementEntry = RainbusToolbox.Models.ReplacementEntry;
 
 namespace RainbusToolbox.Services.RepositoryServices;
 

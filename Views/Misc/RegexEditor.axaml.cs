@@ -1,7 +1,6 @@
 using Avalonia.Controls;
-using RainbusToolbox.Services.ExternalServices;
 using RainbusToolbox.Services.RepositoryServices;
-using RainbusToolbox.ViewModels;
+using RegexEditorViewModel = RainbusToolbox.ViewModels.Misc.RegexEditorViewModel;
 
 namespace RainbusToolbox.Views.Misc;
 

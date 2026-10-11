@@ -1,9 +1,10 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using RainbusToolbox.Services.ExternalServices;
-using RainbusToolbox.Services.ExternalServices.Data;
+using RainbusToolbox.Models.LimbusSerialization;
+using RainbusToolbox.Services.RepositoryServices;
+using RainbusToolbox.ViewModels.Translation.Base;
 
-namespace RainbusToolbox.ViewModels;
+namespace RainbusToolbox.ViewModels.Translation;
 
 public class CoinListItemViewModel
 {
@@ -38,7 +39,7 @@ public partial class SkillsEgoTranslationEditorViewModel(
 
     public string SkillName
     {
-        get => CurrentItem?.LevelList.FirstOrDefault()?.Name ?? string.Empty;
+        get => (CurrentItem?.LevelList).FirstOrDefault<SkillLevel>()?.Name ?? string.Empty;
         set
         {
             if (CurrentItem?.LevelList != null)
@@ -52,16 +53,16 @@ public partial class SkillsEgoTranslationEditorViewModel(
 
     public string AbnormalityName
     {
-        get => CurrentItem?.LevelList.FirstOrDefault()?.AbnormalityName ?? string.Empty;
+        get => (CurrentItem?.LevelList).FirstOrDefault<SkillLevel>()?.AbnormalityName ?? string.Empty;
         set
         {
             if (CurrentItem?.LevelList != null)
             {
-                Log.Debug(AppLang.AbnormalityRenameStart, CurrentItem.LevelList.Count, value);
+                Log.Debug<int, string>(AppLang.AbnormalityRenameStart, CurrentItem.LevelList.Count, value);
                 foreach (var level in CurrentItem.LevelList)
                 {
                     level.AbnormalityName = value;
-                    Log.Debug(AppLang.AbnormalityRenameProcess, level.AbnormalityName);
+                    Log.Debug<string>(AppLang.AbnormalityRenameProcess, level.AbnormalityName);
                 }
 
                 OnPropertyChanged();
@@ -70,7 +71,7 @@ public partial class SkillsEgoTranslationEditorViewModel(
     }
 
     public bool HasAnAbnormalityName =>
-        !string.IsNullOrWhiteSpace(CurrentItem?.LevelList.FirstOrDefault()?.AbnormalityName);
+        !string.IsNullOrWhiteSpace((CurrentItem?.LevelList).FirstOrDefault<SkillLevel>()?.AbnormalityName);
 
     private void GetCurrentSkillsEgoName()
     {

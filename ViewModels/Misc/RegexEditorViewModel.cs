@@ -6,11 +6,11 @@ using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
-using RainbusToolbox.Services.ExternalServices;
+using RainbusToolbox.Models;
 using RainbusToolbox.Services.RepositoryServices;
 using RainbusToolbox.Views.Misc;
 
-namespace RainbusToolbox.ViewModels;
+namespace RainbusToolbox.ViewModels.Misc;
 
 public partial class RegexEditorViewModel : ObservableObject
 {

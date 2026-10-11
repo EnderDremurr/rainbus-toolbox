@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using RainbusToolbox.Services.ExternalServices;
 
-namespace RainbusToolbox.Services.ExternalServices.Data;
+namespace RainbusToolbox.Models.LimbusSerialization;
 
 public class ShortcutFolderGroup
 {

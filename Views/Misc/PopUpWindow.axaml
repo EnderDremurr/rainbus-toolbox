@@ -7,11 +7,11 @@
     Width="1035"
     mc:Ignorable="d"
     x:Class="RainbusToolbox.Views.Misc.PopUpWindow"
-    x:DataType="viewModels:PopUpWindowViewModel"
+    x:DataType="misc:PopUpWindowViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewModels="clr-namespace:RainbusToolbox.ViewModels"
+    xmlns:misc="clr-namespace:RainbusToolbox.ViewModels.Misc"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Grid>
         <!--  Background  -->

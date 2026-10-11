@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
-namespace RainbusToolbox.Services.ExternalServices.NetworkUtilities;
+namespace RainbusToolbox.Utilities.NetworkUtilities;
 
 public static class GithubAuthHelper
 {

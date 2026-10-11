@@ -3,9 +3,11 @@ using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RainbusToolbox.Services.ExternalServices;
+using RainbusToolbox.Services.RepositoryServices;
+using RainbusToolbox.ViewModels.Misc;
 using RainbusToolbox.Views.Misc;
 
-namespace RainbusToolbox.ViewModels;
+namespace RainbusToolbox.ViewModels.Tabs;
 
 public partial class FilesTabViewModel(
     LocalizationManager localizationManager,

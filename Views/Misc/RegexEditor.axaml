@@ -1,12 +1,12 @@
 <UserControl
     mc:Ignorable="d"
     x:Class="RainbusToolbox.Views.Misc.RegexEditor"
-    x:DataType="viewModels:RegexEditorViewModel"
+    x:DataType="misc:RegexEditorViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="clr-namespace:RainbusToolbox.Services.ExternalServices"
-    xmlns:viewModels="clr-namespace:RainbusToolbox.ViewModels"
+    xmlns:misc="clr-namespace:RainbusToolbox.ViewModels.Misc"
+    xmlns:models1="clr-namespace:RainbusToolbox.Models"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <DockPanel>
@@ -46,7 +46,7 @@
         <ScrollViewer>
             <ItemsControl ItemsSource="{Binding Entries}" x:Name="EntriesControl">
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="models:ReplacementEntry">
+                    <DataTemplate x:DataType="models1:ReplacementEntry">
                         <Border
                             Background="#801E1E1E"
                             BorderBrush="Gold"
@@ -122,7 +122,7 @@
                                             Margin="0,20,0,0"
                                             Text="В каких файлах заменять" />
                                         <Button
-                                            Command="{Binding #EntriesControl.((viewModels:RegexEditorViewModel)DataContext).AddFilePathCommand}"
+                                            Command="{Binding #EntriesControl.((misc:RegexEditorViewModel)DataContext).AddFilePathCommand}"
                                             CommandParameter="{Binding}"
                                             Content="Добавить путь в белый список"
                                             Height="64"
@@ -131,7 +131,7 @@
                                             Width="400" />
                                         <ItemsControl ItemsSource="{Binding FileWhiteList}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate x:DataType="models:FilePathEntry">
+                                                <DataTemplate x:DataType="models1:FilePathEntry">
                                                     <Grid ColumnDefinitions="*,Auto" Margin="0,2">
                                                         <TextBox
                                                             Classes="invisible"
@@ -141,7 +141,7 @@
                                                             Text="{Binding FilePath}"
                                                             Watermark="Путь или имя файла (можно с *)" />
                                                         <Button
-                                                            Command="{Binding #EntriesControl.((viewModels:RegexEditorViewModel)DataContext).RemoveFilePathCommand}"
+                                                            Command="{Binding #EntriesControl.((misc:RegexEditorViewModel)DataContext).RemoveFilePathCommand}"
                                                             CommandParameter="{Binding}"
                                                             Content="x"
                                                             Grid.Column="1"
@@ -163,14 +163,14 @@
                                     Spacing="4"
                                     VerticalAlignment="Top">
                                     <Button
-                                        Command="{Binding #EntriesControl.((viewModels:RegexEditorViewModel)DataContext).RunEntryCommand}"
+                                        Command="{Binding #EntriesControl.((misc:RegexEditorViewModel)DataContext).RunEntryCommand}"
                                         CommandParameter="{Binding}"
                                         Content="&gt;"
                                         Height="48"
                                         Padding="0"
                                         Width="48" />
                                     <Button
-                                        Command="{Binding #EntriesControl.((viewModels:RegexEditorViewModel)DataContext).RemoveEntryCommand}"
+                                        Command="{Binding #EntriesControl.((misc:RegexEditorViewModel)DataContext).RemoveEntryCommand}"
                                         CommandParameter="{Binding}"
                                         Content="x"
                                         Height="48"

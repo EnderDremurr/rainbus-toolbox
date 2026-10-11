@@ -4,10 +4,10 @@ using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Platform.Storage;
-using RainbusToolbox.ViewModels;
-using RainbusToolbox.Views.Misc;
+using RainbusToolbox.ViewModels.Misc;
+using InitializationWindowViewModel = RainbusToolbox.ViewModels.Misc.InitializationWindowViewModel;
 
-namespace RainbusToolbox.Views;
+namespace RainbusToolbox.Views.Misc;
 
 // TODO: SUPER TODO, THIS SHIT SHOULD BE IN THE VIEW MODEL, NOT THE VIEW!!!!
 public partial class InitializationWindow : Window

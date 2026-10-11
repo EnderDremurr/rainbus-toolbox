@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace RainbusToolbox.Services.ExternalServices.Data;
+namespace RainbusToolbox.Models.LimbusSerialization;
 
 public class EgoGiftsLocalizationFile : LocalizationFileBase, ILocalizationContainer<EgoGift>
 {

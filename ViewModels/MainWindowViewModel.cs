@@ -7,8 +7,11 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
+using RainbusToolbox.Services;
 using RainbusToolbox.Services.ExternalServices;
 using RainbusToolbox.Services.RepositoryServices;
+using RainbusToolbox.ViewModels.Misc;
+using RainbusToolbox.ViewModels.Tabs;
 using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.ViewModels;

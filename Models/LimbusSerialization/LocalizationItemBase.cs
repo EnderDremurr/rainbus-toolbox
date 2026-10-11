@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace RainbusToolbox.Services.ExternalServices.Data;
+namespace RainbusToolbox.Models.LimbusSerialization;
 
 public abstract class LocalizationItemBase
 {

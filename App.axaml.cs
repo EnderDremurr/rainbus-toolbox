@@ -5,12 +5,32 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Microsoft.Extensions.DependencyInjection;
-using RainbusToolbox.Services.RepositoryServices;
-using RainbusToolbox.Services.ExternalServices.Data;
+using RainbusToolbox.Models;
+using RainbusToolbox.Models.LimbusSerialization;
+using RainbusToolbox.Services;
 using RainbusToolbox.Services.ExternalServices;
+using RainbusToolbox.Services.RepositoryServices;
+using RainbusToolbox.Utilities;
+using RainbusToolbox.Utilities.Textbox;
 using RainbusToolbox.ViewModels;
+using RainbusToolbox.ViewModels.Misc;
+using RainbusToolbox.ViewModels.Tabs;
+using RainbusToolbox.ViewModels.Translation;
 using RainbusToolbox.Views;
 using RainbusToolbox.Views.Misc;
+using BattleAnnouncerTranslationEditorViewModel =
+    RainbusToolbox.ViewModels.Translation.BattleAnnouncerTranslationEditorViewModel;
+using BattleHintsEditorViewModel = RainbusToolbox.ViewModels.Translation.BattleHintsEditorViewModel;
+using EGOGiftTranslationEditorViewModel = RainbusToolbox.ViewModels.Translation.EGOGiftTranslationEditorViewModel;
+using FilesTabViewModel = RainbusToolbox.ViewModels.Tabs.FilesTabViewModel;
+using InitializationWindow = RainbusToolbox.Views.Misc.InitializationWindow;
+using InitializationWindowViewModel = RainbusToolbox.ViewModels.Misc.InitializationWindowViewModel;
+using ReleaseTabViewModel = RainbusToolbox.ViewModels.Tabs.ReleaseTabViewModel;
+using SkillsEgoTranslationEditorViewModel = RainbusToolbox.ViewModels.Translation.SkillsEgoTranslationEditorViewModel;
+using StoryTranslationEditorViewModel = RainbusToolbox.ViewModels.Translation.StoryTranslationEditorViewModel;
+using TranslationTabViewModel = RainbusToolbox.ViewModels.Tabs.TranslationTabViewModel;
+using UnknownFileTranslationEditorViewModel =
+    RainbusToolbox.ViewModels.Translation.Base.UnknownFileTranslationEditorViewModel;
 
 namespace RainbusToolbox;
 

@@ -2,10 +2,10 @@
     RequestedThemeVariant="Default"
     x:Class="RainbusToolbox.App"
     xmlns="https://github.com/avaloniaui"
-    xmlns:global1="clr-namespace:"
-    xmlns:local="using:RainbusToolbox"
+    xmlns:base="clr-namespace:RainbusToolbox.ViewModels.Translation.Base"
+    xmlns:converters="clr-namespace:RainbusToolbox.Utilities.Converters"
     xmlns:translation="clr-namespace:RainbusToolbox.Views.Translation"
-    xmlns:vm="clr-namespace:RainbusToolbox.ViewModels"
+    xmlns:vm1="clr-namespace:RainbusToolbox.ViewModels.Translation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Application.Resources>
@@ -14,11 +14,11 @@
                 <ResourceInclude Source="avares://RainbusToolbox/Styles/Themes/GenericTabItemTheme.axaml" />
             </ResourceDictionary.MergedDictionaries>
             <!--  Converter instance for checkbox images  -->
-            <local:CheckedToImageConverter x:Key="CheckedToImageConverter" />
+            <converters:CheckedToImageConverter x:Key="CheckedToImageConverter" />
             <!--  Custom font registration  -->
             <FontFamily x:Key="PretendardFont">avares://RainbusToolbox/Assets/Fonts/Pretendard.ttf#Pretendard</FontFamily>
             <FontFamily x:Key="MikodacsFont">avares://RainbusToolbox/Assets/Fonts/Mikodacs.ttf#Mikodacs Regular</FontFamily>
-            <global1:TextBoxTextConverter x:Key="TextBoxTextConverter" />
+            <converters:TextBoxTextConverter x:Key="TextBoxTextConverter" />
             <DropShadowEffect
                 BlurRadius="0"
                 Color="Black"
@@ -56,55 +56,55 @@
 
     <Application.DataTemplates>
 
-        <DataTemplate DataType="{x:Type vm:AbnormalityGuideTranslationEditorViewModel}">
+        <DataTemplate DataType="{x:Type vm1:AbnormalityGuideTranslationEditorViewModel}">
             <translation:AbnormalityGuideTranslationEditor />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vm:BattleAnnouncerTranslationEditorViewModel}">
+        <DataTemplate DataType="{x:Type vm1:BattleAnnouncerTranslationEditorViewModel}">
             <translation:BattleAnnouncerTranslationEditor />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vm:BattleHintsEditorViewModel}">
+        <DataTemplate DataType="{x:Type vm1:BattleHintsEditorViewModel}">
             <translation:BattleHintsTranslationEditor />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vm:EGOGiftTranslationEditorViewModel}">
+        <DataTemplate DataType="{x:Type vm1:EGOGiftTranslationEditorViewModel}">
             <translation:EGOGiftTranslationEditor />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vm:EGOVoiceTranslationEditorViewModel}">
+        <DataTemplate DataType="{x:Type vm1:EGOVoiceTranslationEditorViewModel}">
             <translation:EGOVoiceTranslationEditor />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vm:UnknownFileTranslationEditorViewModel}">
+        <DataTemplate DataType="{x:Type base:UnknownFileTranslationEditorViewModel}">
             <translation:UnknownFileTranslationEditor />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vm:KeywordTranslationEditorViewModel}">
+        <DataTemplate DataType="{x:Type vm1:KeywordTranslationEditorViewModel}">
             <translation:KeywordTranslationEditor />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vm:PanicTranslationEditorViewModel}">
+        <DataTemplate DataType="{x:Type vm1:PanicTranslationEditorViewModel}">
             <translation:PanicTranslationEditor />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vm:PassiveTranslationEditorViewModel}">
+        <DataTemplate DataType="{x:Type vm1:PassiveTranslationEditorViewModel}">
             <translation:PassiveTranslationEditor />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vm:PersonalityVoiceTranslationEditorViewModel}">
+        <DataTemplate DataType="{x:Type vm1:PersonalityVoiceTranslationEditorViewModel}">
             <translation:PersonalityVoiceTranslationEditor />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vm:SkillsEgoTranslationEditorViewModel}">
+        <DataTemplate DataType="{x:Type vm1:SkillsEgoTranslationEditorViewModel}">
             <translation:SkillsEgoTranslationEditor />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vm:StoryTranslationEditorViewModel}">
+        <DataTemplate DataType="{x:Type vm1:StoryTranslationEditorViewModel}">
             <translation:StoryTranslationEditor />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vm:UiElementTranslationEditorViewModel}">
+        <DataTemplate DataType="{x:Type vm1:UiElementTranslationEditorViewModel}">
             <translation:UiElementTranslationEditor />
         </DataTemplate>
 

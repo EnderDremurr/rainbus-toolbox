@@ -4,7 +4,10 @@ using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using RainbusToolbox.ViewModels;
+using RainbusToolbox.Views.Tabs;
+using FilesTabViewModel = RainbusToolbox.ViewModels.Tabs.FilesTabViewModel;
+using ReleaseTabViewModel = RainbusToolbox.ViewModels.Tabs.ReleaseTabViewModel;
+using TranslationTabViewModel = RainbusToolbox.ViewModels.Tabs.TranslationTabViewModel;
 
 namespace RainbusToolbox.Views;
 

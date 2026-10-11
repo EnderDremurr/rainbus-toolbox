@@ -9,7 +9,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 
-namespace RainbusToolbox.Services.ExternalServices;
+namespace RainbusToolbox.Services;
 
 public sealed class TextMarkupProcessor
 {

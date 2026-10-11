@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.ComponentModel;
-using RainbusToolbox.Services.ExternalServices;
-using RainbusToolbox.Services.ExternalServices.Data;
+using RainbusToolbox.Models.LimbusSerialization;
+using RainbusToolbox.Services.RepositoryServices;
+using RainbusToolbox.ViewModels.Translation.Base;
 using Path = System.IO.Path;
 
-namespace RainbusToolbox.ViewModels;
+namespace RainbusToolbox.ViewModels.Translation;
 
 public partial class BattleAnnouncerTranslationEditorViewModel(LocalizationManager localizationManager)
     : GenericTranslationEditorViewModel<AnnouncerVoiceLocalizationFile, AnnouncerVoice>
@@ -111,7 +112,7 @@ public partial class BattleAnnouncerTranslationEditorViewModel(LocalizationManag
             : "Специальная реплика";
 
         if (PhraseType == "Специальная реплика")
-            Log.Debug(
+            Log.Debug<string, string>(
                 "No match for: {CurrentAnnouncerVoiceTypeId} (type: {Middle})", currentAnnouncerVoiceTypeId,
                 typeFromMap);
     }

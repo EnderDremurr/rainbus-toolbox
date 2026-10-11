@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace RainbusToolbox.Views;
+namespace RainbusToolbox.Views.Tabs;
 
 public partial class FilesTab : UserControl
 {

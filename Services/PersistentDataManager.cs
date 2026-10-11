@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using LibGit2Sharp;
+using RainbusToolbox.Models;
 
-namespace RainbusToolbox.Services.ExternalServices;
+namespace RainbusToolbox.Services;
 
 public sealed class PersistentDataManager
 {

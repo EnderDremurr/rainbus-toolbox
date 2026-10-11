@@ -13,8 +13,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:misc="clr-namespace:RainbusToolbox.Views.Misc"
-    xmlns:views="clr-namespace:RainbusToolbox.Views"
+    xmlns:tabs="clr-namespace:RainbusToolbox.Views.Tabs"
     xmlns:vm="clr-namespace:RainbusToolbox.ViewModels"
+    xmlns:vm1="clr-namespace:RainbusToolbox.ViewModels.Misc"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Grid>
         <!--  Background  -->
@@ -227,25 +228,25 @@
                                 </Style>
                             </TabControl.Styles>
                             <TabItem IsSelected="{Binding #TabTranslation.IsChecked}">
-                                <views:TranslationTab DataContext="{Binding TranslationTabViewModel}" x:Name="TranslationTabControl" />
+                                <tabs:TranslationTab DataContext="{Binding TranslationTabViewModel}" x:Name="TranslationTabControl" />
                             </TabItem>
                             <TabItem IsSelected="{Binding #TabFiles.IsChecked}">
-                                <views:FilesTab DataContext="{Binding FilesTabViewModel}" x:Name="FilesTabControl" />
+                                <tabs:FilesTab DataContext="{Binding FilesTabViewModel}" x:Name="FilesTabControl" />
                             </TabItem>
                             <TabItem IsSelected="{Binding #TabHistory.IsChecked}">
                                 <!-- <views:HistoryTab x:Name="HistoryTabControl" /> -->
                                 <Grid />
                             </TabItem>
                             <TabItem IsSelected="{Binding #TabOverview.IsChecked}">
-                                <views:OverviewTab DataContext="{Binding OverviewTabViewModel}" x:Name="OverviewTab" />
+                                <tabs:OverviewTab DataContext="{Binding OverviewTabViewModel}" x:Name="OverviewTab" />
                             </TabItem>
                             <TabItem IsSelected="{Binding #TabRelease.IsChecked}">
-                                <views:ReleaseTab DataContext="{Binding ReleaseTabViewModel}" x:Name="ReleaseTabControl" />
+                                <tabs:ReleaseTab DataContext="{Binding ReleaseTabViewModel}" x:Name="ReleaseTabControl" />
                             </TabItem>
                         </TabControl>
 
                         <misc:LoadingScreen
-                            DataContext="{x:Static vm:LoadingScreenViewModel.Instance}"
+                            DataContext="{x:Static vm1:LoadingScreenViewModel.Instance}"
                             Grid.Column=""
                             Grid.ColumnSpan="2" />
                     </Grid>

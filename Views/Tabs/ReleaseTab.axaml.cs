@@ -2,7 +2,7 @@ using System.Text;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace RainbusToolbox.Views;
+namespace RainbusToolbox.Views.Tabs;
 
 public partial class ReleaseTab : UserControl
 {

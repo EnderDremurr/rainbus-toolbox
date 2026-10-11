@@ -3,6 +3,8 @@ using Avalonia.Media;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.Rendering;
 
+namespace RainbusToolbox.Utilities.Textbox;
+
 public class TagColorizer : DocumentColorizingTransformer
 {
     private static readonly Regex YellowTags =

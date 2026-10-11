@@ -3,7 +3,7 @@ using Avalonia.Data.Converters;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 
-namespace RainbusToolbox;
+namespace RainbusToolbox.Utilities.Converters;
 
 public class CheckedToImageConverter : IValueConverter
 {

@@ -1,10 +1,12 @@
 using System.Collections.ObjectModel;
 using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.Input;
-using RainbusToolbox.Services.ExternalServices.Data;
+using RainbusToolbox.Models.LimbusSerialization;
+using RainbusToolbox.ViewModels.Misc;
+using RainbusToolbox.ViewModels.Translation.Base;
 using RainbusToolbox.Views.Misc;
 
-namespace RainbusToolbox.ViewModels;
+namespace RainbusToolbox.ViewModels.Translation;
 
 public partial class
     BattleHintsEditorViewModel : GenericTranslationEditorViewModel<NormalBattleHintLocalizationFile, GenericIdContent>

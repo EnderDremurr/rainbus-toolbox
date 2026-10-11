@@ -2,7 +2,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace RainbusToolbox.ViewModels;
+namespace RainbusToolbox.ViewModels.Misc;
 
 public partial class PopUpWindowViewModel : ObservableObject
 {

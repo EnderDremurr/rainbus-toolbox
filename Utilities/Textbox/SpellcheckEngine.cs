@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using RainbusToolbox.Services.ExternalServices;
 
-namespace RainbusToolbox.Services.ExternalServices;
+namespace RainbusToolbox.Utilities.Textbox;
 
 public class SpellcheckEngine(SpellCheckerService service)
 {

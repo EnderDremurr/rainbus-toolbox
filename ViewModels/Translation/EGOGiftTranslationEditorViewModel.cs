@@ -1,9 +1,10 @@
 using System.IO;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
-using RainbusToolbox.Services.ExternalServices.Data;
+using RainbusToolbox.Models.LimbusSerialization;
+using RainbusToolbox.ViewModels.Translation.Base;
 
-namespace RainbusToolbox.ViewModels;
+namespace RainbusToolbox.ViewModels.Translation;
 
 public partial class
     EGOGiftTranslationEditorViewModel : GenericTranslationEditorViewModel<EgoGiftsLocalizationFile, EgoGift>

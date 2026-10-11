@@ -1,4 +1,4 @@
-namespace RainbusToolbox.Services.ExternalServices;
+namespace RainbusToolbox.Models;
 
 public class FileShortcutCategory
 {

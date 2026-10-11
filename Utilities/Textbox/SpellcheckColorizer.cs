@@ -2,7 +2,7 @@ using Avalonia.Media;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.Rendering;
 
-namespace RainbusToolbox.Services.ExternalServices;
+namespace RainbusToolbox.Utilities.Textbox;
 
 public class SpellcheckColorizer(SpellcheckEngine engine) : DocumentColorizingTransformer
 {
@@ -23,8 +23,7 @@ public class SpellcheckColorizer(SpellcheckEngine engine) : DocumentColorizingTr
                         {
                             Location = TextDecorationLocation.Underline,
                             Stroke = Brushes.Red,
-                            StrokeThickness = 2,
-                            
+                            StrokeThickness = 2
                         }
                     ]);
                 });

@@ -1,22 +1,35 @@
 using Avalonia;
 using Avalonia.Controls;
 
-namespace RainbusToolbox.Services.ExternalServices
+namespace RainbusToolbox.Models;
+
+public static class ButtonHoverProperties
 {
-    public static class ButtonHoverProperties
+    public static readonly AttachedProperty<string> TagNormalProperty =
+        AvaloniaProperty.RegisterAttached<Button, Button, string>(
+            "TagNormal");
+
+    public static readonly AttachedProperty<string> TagHoverProperty =
+        AvaloniaProperty.RegisterAttached<Button, Button, string>(
+            "TagHover");
+
+    public static string GetTagNormal(Button button)
     {
-        public static readonly AttachedProperty<string> TagNormalProperty =
-            AvaloniaProperty.RegisterAttached<Button, Button, string>(
-                "TagNormal");
+        return button.GetValue(TagNormalProperty);
+    }
 
-        public static string GetTagNormal(Button button) => button.GetValue(TagNormalProperty);
-        public static void SetTagNormal(Button button, string value) => button.SetValue(TagNormalProperty, value);
+    public static void SetTagNormal(Button button, string value)
+    {
+        button.SetValue(TagNormalProperty, value);
+    }
 
-        public static readonly AttachedProperty<string> TagHoverProperty =
-            AvaloniaProperty.RegisterAttached<Button, Button, string>(
-                "TagHover");
+    public static string GetTagHover(Button button)
+    {
+        return button.GetValue(TagHoverProperty);
+    }
 
-        public static string GetTagHover(Button button) => button.GetValue(TagHoverProperty);
-        public static void SetTagHover(Button button, string value) => button.SetValue(TagHoverProperty, value);
+    public static void SetTagHover(Button button, string value)
+    {
+        button.SetValue(TagHoverProperty, value);
     }
 }

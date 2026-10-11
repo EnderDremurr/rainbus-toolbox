@@ -3,12 +3,12 @@
     d:DesignWidth="1200"
     mc:Ignorable="d"
     x:Class="RainbusToolbox.Views.Translation.EGOVoiceTranslationEditor"
-    x:DataType="viewModels:EGOVoiceTranslationEditorViewModel"
+    x:DataType="translation:EGOVoiceTranslationEditorViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:misc="clr-namespace:RainbusToolbox.Views.Misc"
-    xmlns:viewModels="clr-namespace:RainbusToolbox.ViewModels"
+    xmlns:translation="clr-namespace:RainbusToolbox.ViewModels.Translation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Grid RowDefinitions="Auto,*,Auto">

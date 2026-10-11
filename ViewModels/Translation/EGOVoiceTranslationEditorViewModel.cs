@@ -1,6 +1,7 @@
-using RainbusToolbox.Services.ExternalServices.Data;
+using RainbusToolbox.Models.LimbusSerialization;
+using RainbusToolbox.ViewModels.Translation.Base;
 
-namespace RainbusToolbox.ViewModels;
+namespace RainbusToolbox.ViewModels.Translation;
 
 public class
     EGOVoiceTranslationEditorViewModel : GenericTranslationEditorViewModel<EgoVoiceLocalizationFile,

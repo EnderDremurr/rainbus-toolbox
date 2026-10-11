@@ -2,11 +2,12 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using RainbusToolbox.Services;
 using RainbusToolbox.Services.ExternalServices;
-using RainbusToolbox.Services.ExternalServices.NetworkUtilities;
+using RainbusToolbox.Utilities.NetworkUtilities;
 using RainbusToolbox.Views.Misc;
 
-namespace RainbusToolbox.ViewModels;
+namespace RainbusToolbox.ViewModels.Misc;
 
 public partial class InitializationWindowViewModel : ObservableObject
 {
