@@ -1,7 +1,7 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using LibGit2Sharp;
-using RainbusToolbox.Models.Managers;
+using RainbusToolbox.Services.ExternalServices;
 using Version = System.Version;
 
 

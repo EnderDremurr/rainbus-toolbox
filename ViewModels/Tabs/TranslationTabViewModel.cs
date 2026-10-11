@@ -7,13 +7,10 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData.Binding;
-using RainbusToolbox.Models;
-using RainbusToolbox.Models.Data;
-using RainbusToolbox.Models.Managers;
-using RainbusToolbox.Utilities;
-using RainbusToolbox.Utilities.Converters;
-using RainbusToolbox.Utilities.Data;
-using RainbusToolbox.Utilities.RepositoryServices;
+using RainbusToolbox.Services.ExternalServices;
+using RainbusToolbox.Services.ExternalServices.Data;
+using RainbusToolbox.Services.ExternalServices.Converters;
+using RainbusToolbox.Services.RepositoryServices;
 
 namespace RainbusToolbox.ViewModels;
 

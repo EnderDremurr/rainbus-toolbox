@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace RainbusToolbox.Models;
+namespace RainbusToolbox.Services.ExternalServices;
 
 public partial class ReplacementEntry : ObservableObject
 {

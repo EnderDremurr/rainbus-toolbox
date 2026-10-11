@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.Input;
-using RainbusToolbox.Utilities.Data;
+using RainbusToolbox.Services.ExternalServices.Data;
 using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.ViewModels;

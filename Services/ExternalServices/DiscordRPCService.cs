@@ -1,7 +1,7 @@
 using System.Threading;
 using DiscordRPC;
 
-namespace RainbusToolbox.Utilities;
+namespace RainbusToolbox.Services.ExternalServices;
 
 public sealed class DiscordRPCService : IDisposable
 {

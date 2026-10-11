@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace RainbusToolbox.Utilities;
+namespace RainbusToolbox.Services.ExternalServices;
 
 public class EditorFactory
 {

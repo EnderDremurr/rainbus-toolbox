@@ -4,8 +4,8 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
-using RainbusToolbox.Models.Managers;
-using RainbusToolbox.Utilities.NetworkUtilities;
+using RainbusToolbox.Services.ExternalServices;
+using RainbusToolbox.Services.ExternalServices.NetworkUtilities;
 using RainbusToolbox.ViewModels;
 using RainbusToolbox.Views.Misc;
 

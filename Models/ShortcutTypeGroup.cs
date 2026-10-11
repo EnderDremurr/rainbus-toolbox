@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using RainbusToolbox.Utilities.Data;
+using RainbusToolbox.Services.ExternalServices.Data;
 
-namespace RainbusToolbox.Models;
+namespace RainbusToolbox.Services.ExternalServices;
 
 public class ShortcutTypeGroup
 {

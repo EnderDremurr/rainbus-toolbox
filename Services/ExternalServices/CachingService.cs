@@ -3,9 +3,9 @@ using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
-using RainbusToolbox.Models.Managers;
+using RainbusToolbox.Services.ExternalServices;
 
-namespace RainbusToolbox.Utilities.ExternalServices;
+namespace RainbusToolbox.Services.ExternalServices;
 
 public sealed class CachingService
 {

@@ -3,7 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Discord.Webhook;
 using RainbusToolbox.Views.Misc;
 
-namespace RainbusToolbox.Models.Managers;
+namespace RainbusToolbox.Services.ExternalServices;
 
 public sealed class DiscordManager
 {

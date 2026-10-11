@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using Avalonia.Data.Converters;
 
-namespace RainbusToolbox.Models
+namespace RainbusToolbox.Services.ExternalServices
 {
     public class BoolToOpacityConverter : IValueConverter
     {

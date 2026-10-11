@@ -1,5 +1,5 @@
-using RainbusToolbox.Models.Managers;
-using RainbusToolbox.Utilities.Data;
+using RainbusToolbox.Services.ExternalServices;
+using RainbusToolbox.Services.ExternalServices.Data;
 
 public interface IFileEditor
 {

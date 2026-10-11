@@ -6,12 +6,12 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using Avalonia.Controls.ApplicationLifetimes;
 using Newtonsoft.Json;
-using RainbusToolbox.Models.Managers;
-using RainbusToolbox.Utilities.Data;
+using RainbusToolbox.Services.ExternalServices;
+using RainbusToolbox.Services.ExternalServices.Data;
 using RainbusToolbox.ViewModels;
 using RainbusToolbox.Views.Misc;
 
-namespace RainbusToolbox.Utilities;
+namespace RainbusToolbox.Services.RepositoryServices;
 
 public sealed partial class KeywordProcessingService(LocalizationManager localizationManager)
 {

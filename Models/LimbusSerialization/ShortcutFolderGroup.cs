@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using RainbusToolbox.Models;
+using RainbusToolbox.Services.ExternalServices;
 
-namespace RainbusToolbox.Utilities.Data;
+namespace RainbusToolbox.Services.ExternalServices.Data;
 
 public class ShortcutFolderGroup
 {

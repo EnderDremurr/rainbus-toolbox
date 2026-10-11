@@ -3,8 +3,8 @@ using System.IO;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
-using RainbusToolbox.Models.Managers;
-using RainbusToolbox.Utilities.Data;
+using RainbusToolbox.Services.ExternalServices;
+using RainbusToolbox.Services.ExternalServices.Data;
 
 namespace RainbusToolbox.ViewModels;
 

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace RainbusToolbox.Utilities.Data;
+namespace RainbusToolbox.Services.ExternalServices.Data;
 
 public class ScenarioModelCodesLocalizationFile : LocalizationFileBase, ILocalizationContainer<ScenarioModelCode>
 {

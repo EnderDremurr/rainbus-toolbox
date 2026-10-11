@@ -9,7 +9,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using RainbusToolbox.Services.RepositoryServices;
 using RainbusToolbox.Views.Misc;
 
-namespace RainbusToolbox.Models.Managers;
+namespace RainbusToolbox.Services.ExternalServices;
 
 public sealed partial class GithubManager
 {

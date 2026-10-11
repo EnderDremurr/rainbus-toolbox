@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using RainbusToolbox.Utilities.ExternalServices;
+using RainbusToolbox.Services.ExternalServices;
 
-namespace RainbusToolbox.Utilities;
+namespace RainbusToolbox.Services.ExternalServices;
 
 public class SpellcheckEngine(SpellCheckerService service)
 {

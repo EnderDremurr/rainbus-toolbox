@@ -1,10 +1,10 @@
 using System.IO;
 using Avalonia.Platform;
-using RainbusToolbox.Models.Managers;
+using RainbusToolbox.Services.ExternalServices;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace RainbusToolbox.Utilities.RepositoryServices;
+namespace RainbusToolbox.Services.RepositoryServices;
 
 public sealed class
     ConfigProvider(LocalizationManager localizationManager) // repo manager is required for future override handling

@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using Avalonia.Data.Converters;
 
-namespace RainbusToolbox.Utilities.Converters
+namespace RainbusToolbox.Services.ExternalServices.Converters
 {
     public class InverseBoolConverter : IValueConverter
     {

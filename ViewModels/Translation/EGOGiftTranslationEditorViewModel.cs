@@ -1,7 +1,7 @@
 using System.IO;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
-using RainbusToolbox.Utilities.Data;
+using RainbusToolbox.Services.ExternalServices.Data;
 
 namespace RainbusToolbox.ViewModels;
 

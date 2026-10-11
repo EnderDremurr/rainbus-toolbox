@@ -2,7 +2,7 @@ using Avalonia.Media;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.Rendering;
 
-namespace RainbusToolbox.Utilities;
+namespace RainbusToolbox.Services.ExternalServices;
 
 public class SpellcheckColorizer(SpellcheckEngine engine) : DocumentColorizingTransformer
 {

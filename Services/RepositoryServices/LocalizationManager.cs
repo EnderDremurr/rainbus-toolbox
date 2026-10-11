@@ -3,12 +3,11 @@ using System.IO;
 using System.Text;
 using LibGit2Sharp;
 using Newtonsoft.Json;
-using RainbusToolbox.Models.Data;
+using RainbusToolbox.Services.ExternalServices;
+using RainbusToolbox.Services.ExternalServices.Data;
 using RainbusToolbox.Services.RepositoryServices;
-using RainbusToolbox.Utilities;
-using RainbusToolbox.Utilities.Data;
 
-namespace RainbusToolbox.Models.Managers;
+namespace RainbusToolbox.Services.RepositoryServices;
 
 public sealed class LocalizationManager
 {

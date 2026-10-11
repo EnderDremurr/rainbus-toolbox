@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Formatting = Newtonsoft.Json.Formatting;
 
-namespace RainbusToolbox.Utilities;
+namespace RainbusToolbox.Services.RepositoryServices;
 
 public sealed class GameFilesService
 {

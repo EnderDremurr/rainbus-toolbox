@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using RainbusToolbox.Models.Managers;
-using RainbusToolbox.Utilities.Data;
+using RainbusToolbox.Services.ExternalServices;
+using RainbusToolbox.Services.ExternalServices.Data;
 
 namespace RainbusToolbox.ViewModels;
 

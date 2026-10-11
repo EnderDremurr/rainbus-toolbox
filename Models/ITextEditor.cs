@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using AvaloniaEdit.Document;
 
-namespace RainbusToolbox.Models;
+namespace RainbusToolbox.Services.ExternalServices;
 
 public interface ITextEditor
 {

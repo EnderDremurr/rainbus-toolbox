@@ -1,7 +1,7 @@
 using System.Windows.Input;
 using YamlDotNet.Serialization;
 
-namespace RainbusToolbox.Models;
+namespace RainbusToolbox.Services.ExternalServices;
 
 public class FileShortcut
 {

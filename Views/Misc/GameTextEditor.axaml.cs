@@ -2,8 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Media;
-using RainbusToolbox.Utilities;
-using RainbusToolbox.Utilities.ExternalServices;
+using RainbusToolbox.Services.ExternalServices;
 
 namespace RainbusToolbox.Views.Misc;
 

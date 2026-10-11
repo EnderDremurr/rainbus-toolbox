@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace RainbusToolbox.Utilities.Data;
+namespace RainbusToolbox.Services.ExternalServices.Data;
 
 public class TutorialDescLocalizationFile : LocalizationFileBase, ILocalizationContainer<GenericIdContent>
 {

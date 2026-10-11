@@ -1,9 +1,9 @@
 using System.IO;
 using System.IO.Compression;
-using RainbusToolbox.Models.Managers;
+using RainbusToolbox.Services.ExternalServices;
 using RainbusToolbox.Services.RepositoryServices;
 
-namespace RainbusToolbox.Utilities;
+namespace RainbusToolbox.Services.ExternalServices;
 
 public static class LocalizationPackager
 {

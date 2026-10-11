@@ -1,11 +1,10 @@
 using Avalonia.Controls;
 using AvaloniaEdit;
-using RainbusToolbox.Models;
-using RainbusToolbox.Utilities.ExternalServices;
+using RainbusToolbox.Services.ExternalServices;
 using RainbusToolbox.ViewModels;
 using RainbusToolbox.Views.Misc;
 
-namespace RainbusToolbox.Utilities;
+namespace RainbusToolbox.Services.ExternalServices;
 
 public static class ContextMenuHelper
 {

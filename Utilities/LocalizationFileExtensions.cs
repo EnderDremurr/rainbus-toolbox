@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
-using RainbusToolbox.Utilities.Data;
+using RainbusToolbox.Services.ExternalServices.Data;
 
-namespace RainbusToolbox.Utilities.Converters;
+namespace RainbusToolbox.Services.ExternalServices.Converters;
 
 public static class LocalizationFileExtensions
 {

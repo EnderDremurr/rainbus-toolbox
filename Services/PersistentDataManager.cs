@@ -3,7 +3,7 @@ using System.IO;
 using System.Text.Json;
 using LibGit2Sharp;
 
-namespace RainbusToolbox.Models.Managers;
+namespace RainbusToolbox.Services.ExternalServices;
 
 public sealed class PersistentDataManager
 {

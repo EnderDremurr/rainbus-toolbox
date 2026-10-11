@@ -2,8 +2,7 @@ using System.Threading;
 using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using RainbusToolbox.Models.Managers;
-using RainbusToolbox.Utilities;
+using RainbusToolbox.Services.ExternalServices;
 using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.ViewModels;

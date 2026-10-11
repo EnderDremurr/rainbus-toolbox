@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.ComponentModel;
-using RainbusToolbox.Models.Managers;
-using RainbusToolbox.Utilities.Data;
+using RainbusToolbox.Services.ExternalServices;
+using RainbusToolbox.Services.ExternalServices.Data;
 using Path = System.IO.Path;
 
 namespace RainbusToolbox.ViewModels;

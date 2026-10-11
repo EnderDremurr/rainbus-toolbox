@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace RainbusToolbox.Utilities;
+namespace RainbusToolbox.Services.ExternalServices;
 
 internal static class LocalizationJsonSettings
 {

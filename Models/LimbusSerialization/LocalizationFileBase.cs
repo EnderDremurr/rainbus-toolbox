@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace RainbusToolbox.Utilities.Data;
+namespace RainbusToolbox.Services.ExternalServices.Data;
 
 public abstract class LocalizationFileBase
 {

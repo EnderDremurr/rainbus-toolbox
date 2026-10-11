@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
-using RainbusToolbox.Utilities.Data;
+using RainbusToolbox.Services.ExternalServices.Data;
 
-namespace RainbusToolbox.Models.Data;
+namespace RainbusToolbox.Services.ExternalServices.Data;
 
 public static class FileToObjectCaster
 {

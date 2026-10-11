@@ -5,7 +5,7 @@
     x:Class="RainbusToolbox.Views.Translation.SkillsEgoTranslationEditor"
     x:DataType="vm:SkillsEgoTranslationEditorViewModel"
     xmlns="https://github.com/avaloniaui"
-    xmlns:converters="clr-namespace:RainbusToolbox.Utilities.Converters"
+    xmlns:converters="clr-namespace:RainbusToolbox.Services.ExternalServices.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:misc="clr-namespace:RainbusToolbox.Views.Misc"

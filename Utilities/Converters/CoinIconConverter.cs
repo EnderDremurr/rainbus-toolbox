@@ -3,7 +3,7 @@ using Avalonia.Data.Converters;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 
-namespace RainbusToolbox.Utilities.Converters;
+namespace RainbusToolbox.Services.ExternalServices.Converters;
 
 public class CoinIconConverter : IValueConverter
 {

@@ -5,10 +5,9 @@ using System.Threading;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using RainbusToolbox.Models;
-using RainbusToolbox.Models.Managers;
+using RainbusToolbox.Services.ExternalServices;
 
-namespace RainbusToolbox.Utilities.RepositoryServices;
+namespace RainbusToolbox.Services.RepositoryServices;
 
 public partial class MassReplacementService
 {

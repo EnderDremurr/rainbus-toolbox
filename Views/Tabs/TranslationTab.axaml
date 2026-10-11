@@ -6,11 +6,11 @@
     x:DataType="vm:TranslationTabViewModel"
     x:Name="TopLevelControl"
     xmlns="https://github.com/avaloniaui"
-    xmlns:conv="clr-namespace:RainbusToolbox.Utilities.Converters"
+    xmlns:conv="clr-namespace:RainbusToolbox.Services.ExternalServices.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:data="clr-namespace:RainbusToolbox.Utilities.Data"
+    xmlns:data="clr-namespace:RainbusToolbox.Services.ExternalServices.Data"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="clr-namespace:RainbusToolbox.Models"
+    xmlns:models="clr-namespace:RainbusToolbox.Services.ExternalServices"
     xmlns:vm="clr-namespace:RainbusToolbox.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 

@@ -3,10 +3,10 @@ using System.IO;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using RainbusToolbox.Models.Managers;
+using RainbusToolbox.Services.ExternalServices;
 using WeCantSpell.Hunspell;
 
-namespace RainbusToolbox.Utilities.ExternalServices;
+namespace RainbusToolbox.Services.ExternalServices;
 
 public sealed class SpellCheckerService
 {

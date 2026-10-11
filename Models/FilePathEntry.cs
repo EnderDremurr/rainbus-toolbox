@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace RainbusToolbox.Models;
+namespace RainbusToolbox.Services.ExternalServices;
 
 public partial class FilePathEntry : ObservableObject
 {

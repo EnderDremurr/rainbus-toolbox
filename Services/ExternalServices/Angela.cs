@@ -2,10 +2,10 @@ using System.Threading;
 using Avalonia.Controls.ApplicationLifetimes;
 using DeepSeek.Core;
 using DeepSeek.Core.Models;
-using RainbusToolbox.Models.Managers;
+using RainbusToolbox.Services.ExternalServices;
 using RainbusToolbox.Views.Misc;
 
-namespace RainbusToolbox.Utilities;
+namespace RainbusToolbox.Services.ExternalServices;
 
 public sealed class Angela(PersistentDataManager dataManager)
 {
