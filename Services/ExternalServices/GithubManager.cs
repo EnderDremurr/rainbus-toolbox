@@ -1,4 +1,5 @@
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -54,8 +55,10 @@ public sealed partial class GithubManager
         return (owner, repo);
     }
 
-
-    // TODO: slopreview
+    /// <summary>
+    ///     returns a link or an empty string if release succeeded (empty if something's wrong with the link) and null if it's
+    ///     failed
+    /// </summary>
     public async Task<string?>
         CreateReleaseAsync(string releaseName, string releaseDescription,
             string pathToZip, bool appendReleaseFooter) // return link to the release if successful
@@ -103,15 +106,16 @@ public sealed partial class GithubManager
             return null;
         }
 
-        // prepare release data and try creating a release at the remote
+        // prepare release data and try creating a release draft at the remote
         var releaseContent = new
         {
             tag_name = sanitizedTag, // must be sanitized
             name = releaseName, // display name can have spaces
             body = releaseDescription,
-            draft = false,
+            draft = true,
             prerelease = false
-        }; // TODO: make release a draft first, then publish if it didn't throw (later)
+        };
+
         var releaseJson =
             new StringContent(JsonSerializer.Serialize(releaseContent), Encoding.UTF8, "application/json");
         var releaseResponse =
@@ -123,65 +127,143 @@ public sealed partial class GithubManager
             return null;
         }
 
-        var releaseData = JsonDocument.Parse(releaseBody);
-        var uploadUrlTemplate = releaseData.RootElement.GetProperty("upload_url").GetString();
-        var uploadUrl = uploadUrlTemplate.Substring(0, uploadUrlTemplate.IndexOf("{")); // Remove template part
-        await using var fileStream = File.OpenRead(pathToZip);
-        using var content = new StreamContent(fileStream);
-        content.Headers.ContentType = new MediaTypeHeaderValue("application/zip");
-        var assetResponse = await _httpClient.PostAsync($"{uploadUrl}?name={Path.GetFileName(pathToZip)}", content);
-        var assetBody = await assetResponse.Content.ReadAsStringAsync();
-        if (!assetResponse.IsSuccessStatusCode) throw new Exception($"Failed to upload ZIP asset: {assetBody}");
+        long?
+            releaseId = null; // store release id outside of try so i can use it in the catch (tho i'm cooked if it can't parse the id)
+        var published = false;
 
-
-        // upload a Readme.md (required by the launcher) containing the release description + a special footer copy if user has enabled it
-        var readmeString = $"# Release: {releaseName}\n\n{releaseDescription}";
-
-        if (appendReleaseFooter)
+        try
         {
-            var readmeFooterPath = Path.Combine(repoPath, ReleaseFooterFileName);
+            using var releaseData = JsonDocument.Parse(releaseBody);
 
-            if (!File.Exists(readmeFooterPath))
+            releaseId = releaseData.RootElement.GetProperty("id").GetInt64();
+
+            var uploadUrlTemplate = releaseData.RootElement.GetProperty("upload_url").GetString();
+            var uploadUrl = uploadUrlTemplate?[..uploadUrlTemplate.IndexOf('{')]; // remove template part
+
+            await using var fileStream = File.OpenRead(pathToZip);
+            using var content = new StreamContent(fileStream);
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/zip");
+            var assetResponse =
+                await _httpClient.PostAsync($"{uploadUrl}?name={Uri.EscapeDataString(Path.GetFileName(pathToZip))}",
+                    content);
+            var assetBody = await assetResponse.Content.ReadAsStringAsync();
+            if (!assetResponse.IsSuccessStatusCode) throw new Exception($"Failed to upload ZIP asset: {assetBody}");
+
+
+            // upload a Readme.md (required by the launcher) containing the release description + a special footer copy if user has enabled it
+
+            #region Readme
+
+            var readmeString = $"# Release: {releaseName}\n\n{releaseDescription}";
+
+            if (appendReleaseFooter)
+            {
+                var readmeFooterPath = Path.Combine(repoPath, ReleaseFooterFileName);
+
+                if (!File.Exists(readmeFooterPath))
+                    _ = App.Current.HandleNonFatalExceptionAsync(
+                        new Exception(
+                            $"Была указана опция добавить футер к README.md, однако файл футера отсутствует! Требуется файл по пути {readmeFooterPath}!" +
+                            $"\nБудет использовано обычное описание релиза."));
+                else
+                    try
+                    {
+                        var footerText = await File.ReadAllTextAsync(readmeFooterPath);
+                        footerText = footerText.Trim();
+                        if (!string.IsNullOrEmpty(footerText))
+                            readmeString += $"\n\n---\n\n{footerText}";
+                        else
+                            _ = App.Current.HandleNonFatalExceptionAsync(
+                                new Exception("Твой файл с футером для README.md пустой!!!"));
+                    }
+                    catch (Exception e)
+                    {
+                        _ = App.Current.HandleNonFatalExceptionAsync(
+                            new Exception("Произошла ошибка при чтении футера! Это не помешает релизу!", e));
+                    }
+            }
+
+            var readmeBytes = Encoding.UTF8.GetBytes(readmeString);
+            using var readmeStream = new MemoryStream(readmeBytes);
+            using var readmeContent = new StreamContent(readmeStream);
+            readmeContent.Headers.ContentType = new MediaTypeHeaderValue("text/markdown");
+
+            var readmeResponse = await _httpClient.PostAsync($"{uploadUrl}?name=README.md", readmeContent);
+            var readmeResponseBody = await readmeResponse.Content.ReadAsStringAsync();
+            if (!readmeResponse.IsSuccessStatusCode)
                 _ = App.Current.HandleNonFatalExceptionAsync(
                     new Exception(
-                        $"Была указана опция добавить футер к README.md, однако файл футера отсутствует! Требуется файл по пути {readmeFooterPath}!" +
-                        $"\nБудет использовано обычное описание релиза."));
-            else
-                try
-                {
-                    var footerText = await File.ReadAllTextAsync(readmeFooterPath);
-                    footerText = footerText.Trim();
-                    if (!string.IsNullOrEmpty(footerText))
-                        readmeString += $"\n\n---\n\n{footerText}";
-                    else
-                        _ = App.Current.HandleNonFatalExceptionAsync(
-                            new Exception("Твой файл с футером для README.md пустой!!!"));
-                }
-                catch (Exception e)
-                {
-                    _ = App.Current.HandleNonFatalExceptionAsync(
-                        new Exception("Произошла ошибка при чтении футера! Это не помешает релизу!", e));
-                }
+                        $"Не удалось загрузить README.md для релиза! Информация: {readmeResponseBody}\nСам релиз будет успешно выложен!"));
+
+            #endregion
+
+            // publish the draft (just make draft = false)
+            var publishResponse = await _httpClient.PatchAsync(
+                $"https://api.github.com/repos/{owner}/{repo}/releases/{releaseId}",
+                new StringContent("{\"draft\":false}", Encoding.UTF8, "application/json"));
+
+            if (publishResponse.IsSuccessStatusCode)
+                published = true;
+
+            var publishedReleaseBody = await publishResponse.Content.ReadAsStringAsync();
+            using var publishedReleaseData = JsonDocument.Parse(publishedReleaseBody);
+
+            if (!publishResponse.IsSuccessStatusCode)
+                throw new Exception($"Не удалось опубликовать релиз!!! Ответ запроса: {publishedReleaseBody}");
+
+
+            // try finding release link and returning it
+            if (publishedReleaseData.RootElement.TryGetProperty("html_url", out var urlElement))
+                return urlElement.GetString();
+            _ = App.Current.HandleNonFatalExceptionAsync(new Exception(
+                $"Релиз был успешно выложен, но не удалось получить ссылку релиза, это не страшно! Информация: {publishedReleaseBody}"));
+            return string.Empty;
         }
+        catch (Exception e)
+        {
+            if (published)
+            {
+                _ = App.Current.HandleNonFatalExceptionAsync(new Exception(
+                    "Ошибка при создании релиза! Релиз был создан, но что-то сломалось после его публикации.",
+                    e));
+                return string.Empty;
+            }
 
-        var readmeBytes = Encoding.UTF8.GetBytes(readmeString);
-        using var readmeStream = new MemoryStream(readmeBytes);
-        using var readmeContent = new StreamContent(readmeStream);
-        readmeContent.Headers.ContentType = new MediaTypeHeaderValue("text/markdown");
+            if (releaseId is null)
+            {
+                _ = App.Current.HandleNonFatalExceptionAsync(new Exception(
+                    "Ошибка при создании релиза! Релиз отменён, и не успел создать мусора.",
+                    e));
+                return null;
+            }
 
-        var readmeResponse = await _httpClient.PostAsync($"{uploadUrl}?name=README.md", readmeContent);
-        var readmeResponseBody = await readmeResponse.Content.ReadAsStringAsync();
-        if (!readmeResponse.IsSuccessStatusCode)
-            _ = App.Current.HandleNonFatalExceptionAsync(
-                new Exception(
-                    $"Не удалось загрузить README.md для релиза! Информация: {readmeResponseBody}\nСам релиз был успешно выложен!"));
+            try
+            {
+                var cleanupResponse =
+                    await _httpClient.DeleteAsync(
+                        $"https://api.github.com/repos/{owner}/{repo}/releases/{releaseId}");
 
-        if (releaseData.RootElement.TryGetProperty("html_url", out var urlElement))
-            return urlElement.GetString();
-        _ = App.Current.HandleNonFatalExceptionAsync(new Exception(
-            $"Релиз был успешно выложен, но не удалось получить ссылку релиза, это не страшно! Информация: {releaseBody}"));
-        return string.Empty;
-        // returns link or empty string if release succeeded (empty if something's wrong with the link) and null if it's failed
+                if (cleanupResponse.StatusCode != HttpStatusCode.NoContent)
+                    throw new Exception($"Гитхаб не удалил драфт! Код ответа: {cleanupResponse.StatusCode}");
+
+                _ = App.Current.HandleNonFatalExceptionAsync(new Exception(
+                    "Ошибка при создании релиза! Релиз отменён, и плохой релиз был автоматически очищен.",
+                    e));
+            }
+            catch (Exception cleanupEx)
+            {
+                _ = App.Current.HandleNonFatalExceptionAsync(new Exception(
+                    "Произошла ошибка при автоматической очистке оборвавшегося релиза! Пожалуйста, проверь и исправь релизы руками на сайте гитхаба.",
+                    cleanupEx));
+                _ = App.Current.HandleNonFatalExceptionAsync(new Exception(
+                    "Основная ошибка неудавшегося релиза:",
+                    e));
+                return null;
+            }
+
+
+            return null;
+        }
     }
 
     public static async Task<bool> IsTokenValidAsync(string? token)
