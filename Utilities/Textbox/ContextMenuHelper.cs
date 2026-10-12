@@ -198,7 +198,7 @@ public static class ContextMenuHelper
             #region Styles
 
             var stylesMenu = new MenuItem { Header = "Стили" };
-            //TODO: Fill when enough styles are discovered
+            // fill when enough styles are discovered
 
             #endregion
 
