@@ -15,7 +15,7 @@ using RainbusToolbox.Utilities;
 
 namespace RainbusToolbox.ViewModels.Tabs;
 
-public partial class TranslationTabViewModel : ObservableObject
+public partial class TranslationTabViewModel : ObservableObject, IMainWindowTab
 {
     private readonly ConfigProvider _configProvider;
 
@@ -67,6 +67,17 @@ public partial class TranslationTabViewModel : ObservableObject
             GroupShortcuts();
         }
     }
+
+
+    #region Events
+
+    public Task OnTabOpened()
+    {
+        _discordRpcService.SetState("Готовится делать перевоз");
+        return Task.CompletedTask;
+    }
+
+    #endregion
 
     [RelayCommand]
     public async Task SelectFile()
@@ -240,14 +251,4 @@ public partial class TranslationTabViewModel : ObservableObject
 
         GroupedShortcuts = new ObservableCollection<ShortcutTypeGroup>(groupedShortcuts);
     }
-
-
-    #region Events
-
-    public void OnTabOpened()
-    {
-        _discordRpcService.SetState("Готовится делать перевоз");
-    }
-
-    #endregion
 }

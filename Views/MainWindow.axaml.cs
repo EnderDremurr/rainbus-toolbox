@@ -4,10 +4,7 @@ using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using RainbusToolbox.Views.Tabs;
-using FilesTabViewModel = RainbusToolbox.ViewModels.Tabs.FilesTabViewModel;
-using ReleaseTabViewModel = RainbusToolbox.ViewModels.Tabs.ReleaseTabViewModel;
-using TranslationTabViewModel = RainbusToolbox.ViewModels.Tabs.TranslationTabViewModel;
+using RainbusToolbox.ViewModels.Tabs;
 
 namespace RainbusToolbox.Views;
 
@@ -39,7 +36,8 @@ public partial class MainWindow : Window
                 _bg.Source = new Bitmap(stream);
             }
 
-            if (_mainTabs != null) _mainTabs.SelectionChanged += MainTabs_OnSelectionChanged;
+            if (_mainTabs != null)
+                _mainTabs.SelectionChanged += MainTabs_OnSelectionChanged;
         };
     }
 
@@ -48,31 +46,31 @@ public partial class MainWindow : Window
         if (_bg == null || _mainTabs == null)
             return;
 
+        if (!Equals(e.Source, _mainTabs))
+            return;
+
         var uri = _mainTabs!.SelectedIndex switch
         {
             0 => "avares://RainbusToolbox/Assets/Backgrounds/TranslationBG.png",
-            1 => "avares://RainbusToolbox/Assets/Backgrounds/ReleaseBG.png",
-            2 => "avares://RainbusToolbox/Assets/Backgrounds/FilesBG.png",
+            4 => "avares://RainbusToolbox/Assets/Backgrounds/ReleaseBG.png",
+            1 => "avares://RainbusToolbox/Assets/Backgrounds/FilesBG.png",
             _ => "avares://RainbusToolbox/Assets/Backgrounds/TranslationBG.png"
         };
 
         using var stream = AssetLoader.Open(new Uri(uri));
         _bg.Source = new Bitmap(stream);
 
-        switch (_mainTabs.SelectedIndex)
+        var content = (_mainTabs.SelectedItem as TabItem)?.Content as Control;
+        if (content?.DataContext is not IMainWindowTab tab)
+            return;
+
+        try
         {
-            case 0:
-                var t0 = (_mainTabs.Items[0] as TabItem)?.Content as TranslationTab;
-                (t0?.DataContext as TranslationTabViewModel)?.OnTabOpened();
-                break;
-            case 1:
-                var t1 = (_mainTabs.Items[1] as TabItem)?.Content as ReleaseTab;
-                (t1?.DataContext as ReleaseTabViewModel)?.OnTabOpened();
-                break;
-            case 2:
-                var t2 = (_mainTabs.Items[2] as TabItem)?.Content as FilesTab;
-                (t2?.DataContext as FilesTabViewModel)?.OnTabOpened();
-                break;
+            tab.OnTabOpened();
+        }
+        catch (Exception ex)
+        {
+            _ = App.Current.HandleNonFatalExceptionAsync(ex);
         }
     }
 

@@ -193,21 +193,18 @@
                         Text="Тип версии: "
                         VerticalAlignment="Center" />
                     <RadioButton
-                        Content="Global "
+                        Content="Major"
                         GroupName="VersionRadio"
-                        IsChecked="{Binding GlobalVersion}"
-                        Name="GlobalVersionRadio" />
+                        IsChecked="{Binding MajorVersion}" />
                     <RadioButton
-                        Content="Major "
-                        GroupName="VersionRadio"
-                        IsChecked="{Binding MajorVersion}"
-                        Name="MajorVersionRadio" />
-                    <RadioButton
-                        Content="Minor "
+                        Content="Minor"
                         GroupName="VersionRadio"
                         IsChecked="{Binding MinorVersion}"
-                        IsDefault="True"
-                        Name="MinorVersionRadio" />
+                        IsDefault="True" />
+                    <RadioButton
+                        Content="Patch"
+                        GroupName="VersionRadio"
+                        IsChecked="{Binding BuildVersion}" />
                 </StackPanel>
 
                 <!--  Submit button  -->

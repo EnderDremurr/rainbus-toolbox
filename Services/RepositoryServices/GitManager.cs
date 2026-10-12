@@ -1,7 +1,7 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using LibGit2Sharp;
-using RainbusToolbox.Services.ExternalServices;
+using RainbusToolbox.Models.LimbusSerialization;
 using Version = System.Version;
 
 
@@ -370,64 +370,51 @@ public sealed class GitManager(PersistentDataManager persistentDataManager)
         }
     }
 
-    public string GetLatestReleaseSemantic()
+    public Version? GetLatestVersion()
     {
         if (Repository == null)
-            return "1.0.0";
+            return null;
 
         try
         {
-            var semanticVersionPattern = @"(\d+)\.(\d+)\.(\d+)";
+            var latest = Repository.Tags
+                .Select(t => (Tag: t, Match: Regex.Match(t.FriendlyName, @"\d+\.\d+\.\d+")))
+                .Where(x => x.Match.Success && Version.TryParse(x.Match.Value, out _))
+                .Select(x => (x.Tag, Version: Version.Parse(x.Match.Value)))
+                .OrderByDescending(x => x.Version)
+                .FirstOrDefault();
 
-            // Get all tags with valid semantic versions
-            var tags = Repository.Tags
-                .Select(t => new
-                {
-                    Tag = t,
-                    Match = Regex.Match(t.FriendlyName, semanticVersionPattern)
-                })
-                .Where(m => m.Match.Success)
-                .Select(t =>
-                {
-                    try
-                    {
-                        return new
-                        {
-                            t.Tag,
-                            Version = new Version(
-                                int.Parse(t.Match.Groups[1].Value),
-                                int.Parse(t.Match.Groups[2].Value),
-                                int.Parse(t.Match.Groups[3].Value)
-                            ),
-                            VersionString = t.Match.Groups[0].Value,
-                            IsValid = true
-                        };
-                    }
-                    catch
-                    {
-                        Log.Debug("Skipping tag {FriendlyName} - invalid version format", t.Tag.FriendlyName);
-                        return new { t.Tag, Version = new Version(), VersionString = "", IsValid = false };
-                    }
-                })
-                .Where(t => t.IsValid)
-                .OrderByDescending(v => v.Version)
-                .ToList();
-
-            if (tags.Count == 0)
+            if (latest.Tag == null)
             {
-                Log.Debug("No tags found in repository. Defaulting to 1.0.0");
-                return "1.0.0";
+                Log.Debug("No valid version tags found. returning version 1.0.0 as a fallback!");
+                return new Version("1.0.0");
             }
 
-            var latest = tags.First();
-            Log.Debug("Found latest release: {FriendlyName} as {VersionString}", latest.Tag.FriendlyName,
-                latest.VersionString);
-            return latest.VersionString;
+            Log.Debug("Latest release: {Tag} as {Version}", latest.Tag.FriendlyName, latest.Version);
+            return latest.Version;
         }
         catch (Exception ex)
         {
-            Log.Debug("Failed to get latest release: {ExMessage}. Defaulting to 1.0.0", ex.Message);
-            return "1.0.0";
+            _ = App.Current.HandleNonFatalExceptionAsync(new Exception("There was an error during version fetch!", ex));
+            return null;
         }
+    }
+
+    public Version GetNextVersionByType(VersionType versionType)
+    {
+        var currentVersion = GetLatestVersion();
+
+        if (currentVersion == null)
+            throw new Exception("Произошла ошибка при парсинге предыдущих версий!");
+
+        var nextVersion = versionType switch
+        {
+            VersionType.Major => new Version(currentVersion.Major + 1, currentVersion.Minor, currentVersion.Build),
+            VersionType.Minor => new Version(currentVersion.Major, currentVersion.Minor + 1, currentVersion.Build),
+            VersionType.Build => new Version(currentVersion.Major, currentVersion.Minor, currentVersion.Build + 1),
+            _ => throw new ArgumentOutOfRangeException(nameof(versionType))
+        };
+
+        return nextVersion;
     }
 }

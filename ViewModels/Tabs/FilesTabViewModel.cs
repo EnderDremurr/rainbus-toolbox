@@ -12,11 +12,23 @@ namespace RainbusToolbox.ViewModels.Tabs;
 public partial class FilesTabViewModel(
     LocalizationManager localizationManager,
     KeywordProcessingService keywordProcessingService)
-    : ObservableObject
+    : ObservableObject, IMainWindowTab
 {
     private CancellationTokenSource? _cancellationTokenSource;
 
     [ObservableProperty] private bool _showRegexEditor;
+
+    #region Events
+
+    public Task OnTabOpened()
+    {
+        var rpc = App.Current.ServiceProvider.GetService(typeof(DiscordRPCService)) as DiscordRPCService;
+
+        rpc!.SetState("Люто обновляет файлы");
+        return Task.CompletedTask;
+    }
+
+    #endregion
 
 
     [RelayCommand]
@@ -195,15 +207,4 @@ public partial class FilesTabViewModel(
     {
         await keywordProcessingService.AskToDefineKeywords();
     }
-
-    #region Events
-
-    public void OnTabOpened()
-    {
-        var rpc = App.Current.ServiceProvider.GetService(typeof(DiscordRPCService)) as DiscordRPCService;
-
-        rpc!.SetState("Люто обновляет файлы");
-    }
-
-    #endregion
 }

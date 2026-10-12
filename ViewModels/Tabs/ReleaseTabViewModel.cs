@@ -8,6 +8,7 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
+using RainbusToolbox.Models.LimbusSerialization;
 using RainbusToolbox.Services;
 using RainbusToolbox.Services.ExternalServices;
 using RainbusToolbox.Services.RepositoryServices;
@@ -18,7 +19,7 @@ using ReplacementEntry = RainbusToolbox.Models.ReplacementEntry;
 
 namespace RainbusToolbox.ViewModels.Tabs;
 
-public partial class ReleaseTabViewModel : ObservableObject
+public partial class ReleaseTabViewModel : ObservableObject, IMainWindowTab
 {
     #region Constructor
 
@@ -58,7 +59,15 @@ public partial class ReleaseTabViewModel : ObservableObject
             return;
         }
 
-        VersionDisplay = _gitManager.GetLatestReleaseSemantic();
+        try
+        {
+            VersionDisplay = _gitManager.GetLatestVersion()?.ToString() ?? "Error";
+        }
+        catch (Exception e)
+        {
+            _ = App.Current.HandleGlobalExceptionAsync(e);
+            throw;
+        }
     }
 
     #endregion
@@ -78,7 +87,8 @@ public partial class ReleaseTabViewModel : ObservableObject
             var pathToRegexJson = _localizationManager.PathToRegexJson;
             if (!File.Exists(pathToRegexJson)) return;
 
-            var entries = JsonConvert.DeserializeObject<List<ReplacementEntry>>(File.ReadAllText(pathToRegexJson));
+            var entries =
+                JsonConvert.DeserializeObject<List<ReplacementEntry>>(await File.ReadAllTextAsync(pathToRegexJson));
             if (entries is null) return;
 
             await _massReplacementService.RunAllRegexesForAllFilesAsync(entries, progress, CancellationToken.None);
@@ -98,7 +108,6 @@ public partial class ReleaseTabViewModel : ObservableObject
     private readonly LocalizationManager _localizationManager;
     private readonly KeywordProcessingService _keywordProcessingService;
     private readonly MassReplacementService _massReplacementService;
-    private CancellationTokenSource? _cancellationTokenSource;
 
     #endregion
 
@@ -137,13 +146,13 @@ public partial class ReleaseTabViewModel : ObservableObject
     private Bitmap? _selectedImagePreview;
 
     [ObservableProperty]
-    private bool _globalVersion;
-
-    [ObservableProperty]
     private bool _majorVersion;
 
     [ObservableProperty]
     private bool _minorVersion = true;
+
+    [ObservableProperty]
+    private bool _buildVersion;
 
     [ObservableProperty]
     private string _versionDisplay;
@@ -228,33 +237,12 @@ public partial class ReleaseTabViewModel : ObservableObject
             await _keywordProcessingService.ReplaceEveryTagWithMesh(_localizationManager
                 .PathToLocalization); // TODO: don't forget to change this after i move to new keyword conversion pipeline
 
-            var currentVersion =
-                _gitManager
-                    .GetLatestReleaseSemantic(); // TODO: this section should probably be moved to github manager, so this command will only get next verion
-            // i guess, like have an enum for version types and then string GetNextSemanticVersion(VersionType type) with major minor patch
-            var parts = currentVersion.Split('.');
-            var major = int.Parse(parts[0]);
-            var minor = int.Parse(parts[1]);
-            var patch = int.Parse(parts[2]);
-
-            if (GlobalVersion)
-            {
-                major++;
-                minor = 0;
-                patch = 0;
-            }
-            else if (MajorVersion)
-            {
-                minor++;
-                patch = 0;
-            }
-            else if (MinorVersion)
-            {
-                patch++;
-            }
-
-            var nextVersion = $"{major}.{minor}.{patch}";
-            // down to here
+            // defaults to build
+            var versionTypeToGet =
+                MajorVersion ? VersionType.Major
+                : MinorVersion ? VersionType.Minor
+                : VersionType.Build;
+            var nextVersion = _gitManager.GetNextVersionByType(versionTypeToGet).ToString();
 
             // commit and sync release version, dunno what i didn't think of doing that back then
 
@@ -310,7 +298,7 @@ public partial class ReleaseTabViewModel : ObservableObject
         }
         finally
         {
-            VersionDisplay = _gitManager.GetLatestReleaseSemantic();
+            VersionDisplay = _gitManager.GetLatestVersion()?.ToString() ?? "Error";
             LoadingScreenViewModel.FinishLoading();
         }
     }
