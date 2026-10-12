@@ -251,11 +251,7 @@ public sealed class TextMarkupProcessor
                     inlines.Add(spriteInline);
             }
         }
-        else if (tag.StartsWith("link="))
-        {
-            // TODO: Implement proper link functionality later
-            // For now, just ignore link tags
-        }
+        // link handling is removed as the new keyword system won't let them exits
         else if (tag == "u")
         {
             formatStack.Push(currentFormat.Clone());
