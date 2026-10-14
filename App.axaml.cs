@@ -168,8 +168,8 @@ public class App : Application
                     PersistentDataManager.ValidateLimbusPath(dataManager.Settings.PathToLimbus) != null;
 
                 var isSavedTokenPresent =
-                    dataManager.Settings.GitHubToken !=
-                    null; // i can't really verify the token cuz method is async and im afraid this method will explode if i make it a task
+                    !string.IsNullOrEmpty(dataManager.Settings
+                        .GitHubToken); // i can't really verify the token cuz method is async and im afraid this method will explode if i make it a task
 
                 if (isSavedRepoValid && isSavedGamePathValid && isSavedTokenPresent)
                 {

@@ -57,12 +57,12 @@ public sealed class LocalizationManager
 
     // Repo paths
 
-    public string PathToLocalization { get; private set; }
-    public string PathToReferenceLocalization;
+    public string PathToLocalization { get; private set; } = string.Empty;
+    public string PathToReferenceLocalization { get; private set; } = string.Empty;
 
 
     public string PathToKeywordColorList =>
-        Path.Combine(_persistentDataManager.Settings.RepositoryPath!, "keyword_colors.json");
+        Path.Combine(_gitManager.RepositoryRootPath, "keyword_colors.json");
 
     public string PathToDistribution => Path.Combine(_gitManager.RepositoryRootPath, DistPath);
     public string PathToVSCodeSettings => Path.Combine(_gitManager.RepositoryRootPath, ".vscode/settings.json");
@@ -72,15 +72,13 @@ public sealed class LocalizationManager
 
     // Game paths
 
-    public required string PathToGameRoot;
+    public string PathToGameRoot { get; private set; } = string.Empty;
 
     #endregion
 
     #region Global files
 
     // translations + references that are required to be constantly available for some other editors
-
-
     public string PathToEgoNames => Path.Combine(PathToLocalization, "Egos.json");
     public required EgoLocalizationFile EgoNames { get; set; }
     public required EgoLocalizationFile EgoNamesReference { get; set; }
@@ -97,7 +95,7 @@ public sealed class LocalizationManager
     public required AnnouncerVoiceTypeLocalizationFile AnnouncerVoiceTypes { get; set; }
 
 
-    public string PathToFileMap { get; private set; }
+    public string PathToFileMap { get; private set; } = string.Empty;
     public readonly Dictionary<string, string> DeveloperFileTypeMap = new();
 
     #endregion
@@ -106,18 +104,81 @@ public sealed class LocalizationManager
 
     public void TryInitializeLocalization()
     {
-        Directory.CreateDirectory(Path.Combine(_gitManager.RepositoryRootPath,
-            DistPath)); // just ensure dist for now, cuz i'm not sure what to init here? or no, i actually do -
-        // TODO: make all constant paths be retrieved here instead of anon funcs, so they will be ensured to exist
+        try
+        {
+            Directory.CreateDirectory(Path.Combine(_gitManager.RepositoryRootPath,
+                DistPath)); // this will be moved outisde too, bit later
 
-        PathToLocalization = Path.Combine(_gitManager.RepositoryRootPath, LocalizationFolder);
-        Directory.CreateDirectory(PathToLocalization);
-        // tbh since this folder is very variable, i don't think i should to really check anything? i just have to make sure localize folder is present
-        // and other checks are mmm
-        // or i can? but then this thing won't allow empty new translations, and people would need to make the first init manually (or should i add such function into init window later?
-        // yeah tbh i feel that'd be better, so i'll global files retrieval into two inits instead of a unified method
-        // actually, i've tried that but there's still was a problem cuz i needed localized files first to get their references, so i still have to init them in one place
-        // for now i think they'd better sit here
+            PathToLocalization = Path.Combine(_gitManager.RepositoryRootPath, LocalizationFolder);
+            Directory.CreateDirectory(PathToLocalization);
+            // tbh since this folder is very variable, i don't think i should to really check anything? i just have to make sure localize folder is present
+            // and other checks are kinda don't fit here
+
+
+            _isLocalizationValid = true;
+            LoadGlobalFiles();
+            EnsureInitNotification();
+        }
+        catch (Exception e)
+        {
+            _ = App.Current.HandleGlobalExceptionAsync(
+                new Exception("Something went wrong during game file initialization!", e));
+        }
+    }
+
+    public void TryInitializeGameFiles()
+    {
+        var oldLimbusPath = PathToGameRoot;
+        var originalLimbusPath = _persistentDataManager.Settings.PathToLimbus;
+
+        try
+        {
+            var validatedGamePath = PersistentDataManager.ValidateLimbusPath(originalLimbusPath);
+            if (validatedGamePath == null)
+                throw new InvalidOperationException("Path to game is invalid!");
+
+            if (validatedGamePath != originalLimbusPath)
+                _persistentDataManager.Settings.PathToLimbus = validatedGamePath;
+
+            PathToGameRoot = validatedGamePath;
+            PathToReferenceLocalization = Path.Combine(validatedGamePath, ReferenceLangFolder);
+
+            PathToFileMap = Path.Combine(PathToGameRoot, RemoteLocalizeFileListPath);
+            UpdateSavedFileMap();
+
+            _areGameFilesValid = true;
+            LoadGlobalFiles();
+            EnsureInitNotification();
+        }
+        catch (Exception ex)
+        {
+            if (!string.IsNullOrEmpty(oldLimbusPath))
+            {
+                _ = App.Current
+                    .HandleNonFatalExceptionAsync(
+                        ex); // message is only when old path exists cuz init window ensures there would be working path when first launching
+                _persistentDataManager.Settings.PathToLimbus = oldLimbusPath;
+                // revert old game path
+            }
+        }
+    }
+
+    // this is called from game path validator, so i don't need to make additional guards here ig?
+    private void UpdateSavedFileMap()
+    {
+        var json = File.ReadAllText(PathToFileMap);
+        var parsed = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(json);
+        DeveloperFileTypeMap.Clear();
+
+        foreach (var (type, fileNames) in parsed!)
+        foreach (var fileName in fileNames)
+            DeveloperFileTypeMap.TryAdd(fileName, type);
+    }
+
+    private void LoadGlobalFiles()
+    {
+        if (!IsValid)
+            return;
 
         #region Global files init (localized)
 
@@ -156,57 +217,6 @@ public sealed class LocalizationManager
         AnnouncerNamesReference = referenceAnnouncerNames;
 
         #endregion
-
-        _isLocalizationValid = true;
-        EnsureInitNotification();
-    }
-
-    public void TryInitializeGameFiles()
-    {
-        var oldLimbusPath = PathToGameRoot;
-        var originalLimbusPath = _persistentDataManager.Settings.PathToLimbus;
-
-        try
-        {
-            var validatedGamePath = PersistentDataManager.ValidateLimbusPath(originalLimbusPath);
-            if (validatedGamePath == null)
-                throw new InvalidOperationException("Path to game is invalid!");
-
-            if (validatedGamePath != originalLimbusPath)
-                _persistentDataManager.Settings.PathToLimbus = validatedGamePath;
-
-            PathToGameRoot = validatedGamePath;
-            PathToReferenceLocalization = Path.Combine(validatedGamePath, ReferenceLangFolder);
-
-            PathToFileMap = Path.Combine(PathToGameRoot, RemoteLocalizeFileListPath);
-            UpdateSavedFileMap();
-
-            _areGameFilesValid = true;
-            EnsureInitNotification();
-        }
-        catch (Exception ex)
-        {
-            if (!string.IsNullOrEmpty(oldLimbusPath))
-            {
-                _ = App.Current
-                    .HandleNonFatalExceptionAsync(
-                        ex); // message is only when old path exists cuz init window ensures there would be working path when first launching
-                _persistentDataManager.Settings.PathToLimbus = oldLimbusPath;
-                // revert old game path
-            }
-        }
-    }
-
-    // this is called from game path validator, so i don't need to make additional guards here ig?
-    private void UpdateSavedFileMap()
-    {
-        var json = File.ReadAllText(PathToFileMap);
-        var parsed = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(json);
-        DeveloperFileTypeMap.Clear();
-
-        foreach (var (type, fileNames) in parsed!)
-        foreach (var fileName in fileNames)
-            DeveloperFileTypeMap.TryAdd(fileName, type);
     }
 
     private void EnsureInitNotification()
