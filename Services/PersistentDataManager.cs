@@ -10,6 +10,8 @@ public sealed class PersistentDataManager
 {
     private readonly string _filePath;
 
+    private SettingsData _settings;
+
     public PersistentDataManager()
     {
         var folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -17,13 +19,30 @@ public sealed class PersistentDataManager
         Directory.CreateDirectory(folder);
         _filePath = Path.Combine(folder, "settings.json");
 
-        Settings = new SettingsData();
-        Read();
+        _settings = new SettingsData();
+        ReadFromFile();
     }
 
-    public SettingsData Settings { get; set; }
+    public SettingsData Settings
+    {
+        get => _settings;
+        set
+        {
+            var oldValue = _settings;
+            _settings = value;
 
-    public void Read()
+            if (oldValue.PathToLimbus != _settings.PathToLimbus)
+                OnLimbusPathChanged?.Invoke();
+
+            if (oldValue.RepositoryPath != _settings.RepositoryPath)
+                OnRepositoryPathChanged?.Invoke();
+        }
+    }
+
+    public event Action? OnLimbusPathChanged;
+    public event Action? OnRepositoryPathChanged;
+
+    public void ReadFromFile()
     {
         if (!File.Exists(_filePath)) return;
         try
@@ -39,7 +58,7 @@ public sealed class PersistentDataManager
         }
     }
 
-    public void Save()
+    public void SaveToFile()
     {
         var json = JsonSerializer.Serialize(Settings, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(_filePath, json);
@@ -96,6 +115,8 @@ public sealed class PersistentDataManager
             return false;
         }
     }
+
+    // TODO: both validations are kinda the same, i can merge them later
 
     public static string? ValidateLimbusPath(string? inputPath)
     {

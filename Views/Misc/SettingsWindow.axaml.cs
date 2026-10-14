@@ -119,7 +119,7 @@ public partial class SettingsWindow : Window
         }
 
         _dataManager.Settings.GitHubToken = newToken;
-        _dataManager.Save();
+        _dataManager.SaveToFile();
 
         GitHubTokenStatusTextBlock.Text = "Ты залогинен";
     }
@@ -169,7 +169,7 @@ public partial class SettingsWindow : Window
         }
 
         if (isDirty)
-            _dataManager.Save();
+            _dataManager.SaveToFile();
 
         if (didRepoChange)
             _localizationManager.TryInitialize();

@@ -51,7 +51,7 @@ public partial class InitializationWindowViewModel : ObservableObject
             }
 
             _dataManager.Settings.GitHubToken = newToken;
-            _dataManager.Save();
+            _dataManager.SaveToFile();
 
             GitHubTokenStatus = "Ты залогинен";
         }
@@ -124,6 +124,6 @@ public partial class InitializationWindowViewModel : ObservableObject
     [RelayCommand]
     public void Save()
     {
-        _dataManager.Save();
+        _dataManager.SaveToFile();
     }
 }
