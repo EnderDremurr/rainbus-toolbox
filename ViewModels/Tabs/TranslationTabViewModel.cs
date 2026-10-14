@@ -136,30 +136,33 @@ public partial class TranslationTabViewModel : ObservableObject, IMainWindowTab
             return;
         }
 
-        var detectedType = FileToObjectCaster.GetType(filePath, _localizationManager.DeveloperFileTypeMap) ??
-                           typeof(UnknownFile);
-
-
-        FileName = Path.GetFileName(filePath);
-        FileType = detectedType.Name;
-        IsFileLoaded = true;
-
-        var file = _localizationManager.GetObjectFromPath(filePath);
-        var refFile = _localizationManager.GetReference(file);
-
-        if (file == null || refFile == null)
+        try
         {
-            _ = App.Current.HandleNonFatalExceptionAsync(new FileNotFoundException(
-                $"Референс для {filePath} не удалось найти в игре. Редактор не сможет открыться!", fileName));
-            return;
+            var detectedType = FileToObjectCaster.GetType(filePath, _localizationManager.DeveloperFileTypeMap) ??
+                               typeof(UnknownFile);
+            var file = _localizationManager.GetObjectFromPath(filePath);
+
+            if (file == null)
+                throw new ArgumentException($"Файл {filePath} не удалось прочесть! Проверь файл руками.");
+
+            var refFile = _localizationManager.GetReference(file);
+
+            FileName = Path.GetFileName(filePath);
+            FileType = detectedType.Name;
+
+            var newEditor = _editorFactory.CreateFileEditor(detectedType);
+            newEditor.SetFileToEdit(file);
+            newEditor.SetReferenceFile(refFile);
+
+            CurrentEditor = newEditor;
+            IsFileLoaded = true;
+
+            _discordRpcService.SetState($"Делает перевоз файла {FileName} ({file.GetSanityName()})");
         }
-
-        var newEditor = _editorFactory.CreateFileEditor(detectedType);
-        newEditor.SetFileToEdit(file);
-        newEditor.SetReferenceFile(refFile);
-        CurrentEditor = newEditor;
-
-        _discordRpcService.SetState($"Делает перевоз файла {FileName} ({file.GetSanityName()})");
+        catch (Exception e)
+        {
+            _ = App.Current.HandleNonFatalExceptionAsync(e);
+        }
     }
 
     [RelayCommand]
@@ -192,7 +195,8 @@ public partial class TranslationTabViewModel : ObservableObject, IMainWindowTab
         var fileShortcuts = _configProvider.GetYamlConfig<ObservableCollection<FileShortcut>>("shortcut-files");
         // shortcuts are currently with no fullpath, so i add it:
         foreach (var fileShortcut in fileShortcuts)
-            fileShortcut.FullPath = Path.Combine(root, fileShortcut.PathRelativeToRoot);
+            if (!string.IsNullOrEmpty(fileShortcut.PathRelativeToRoot))
+                fileShortcut.FullPath = Path.Combine(root, fileShortcut.PathRelativeToRoot);
         fileShortcuts = new ObservableCollectionExtended<FileShortcut>(fileShortcuts.OrderBy(f => f.Alias));
 
         // categories init here

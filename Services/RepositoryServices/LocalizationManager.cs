@@ -283,36 +283,32 @@ public sealed class LocalizationManager
         return deserialized;
     }
 
-
-    // TODO: check nullables on these later, cuz if i think about it, reference should never be null, as it's pulled from the game, or dunno tbh
-    public LocalizationFileBase? GetReference(LocalizationFileBase? refTo)
+    public LocalizationFileBase GetReference(LocalizationFileBase refTo)
     {
-        if (refTo == null)
-            return null;
+        if (!IsValid)
+            throw new Exception(
+                "App has tried to fetch a file reference before service has initialized! This should never happen!");
 
-        if (string.IsNullOrWhiteSpace(refTo.FileName) || string.IsNullOrWhiteSpace(refTo.FullPath))
-            return null;
-
-        if (!Directory.Exists(PathToReferenceLocalization))
-            return null;
-
-        var referenceFileName = "EN_" + refTo.FileName;
+        var referenceFileName =
+            "EN_" + refTo.FileName; // TODO: for future, use a var here when i start supporting other reference locales
         var files = Directory.GetFiles(PathToReferenceLocalization, referenceFileName, SearchOption.AllDirectories);
 
-        switch (files.Length)
-        {
-            case 0:
-                Log.Debug("No reference files found");
-                return null;
-            case > 1:
-                Log.Debug("Multiple files found. This should not happen, taking the first found file");
-                break;
-        }
+        if (files == null || files.Length == 0)
+            throw new Exception(
+                $"Не удалось найти референс к файлу {refTo.FileName}! Возможно, ты забыл обновить игру!");
+
+        if (files.Length > 1)
+            Log.Debug("Multiple files found. This should not happen, taking the first found file");
 
         var referencePath =
             files.FirstOrDefault(); // Parse one file, as in 100% of cases there must be only one matching file.
 
-        return referencePath == null ? null : GetObjectFromPath(referencePath, refTo);
+        var referenceFile = GetObjectFromPath(referencePath!, refTo);
+
+        if (referenceFile == null)
+            throw new Exception($"Произошла ошибка при сериализации файла {referencePath}");
+
+        return referenceFile;
     }
 
     public static bool SaveObjectToFile(LocalizationFileBase obj)
