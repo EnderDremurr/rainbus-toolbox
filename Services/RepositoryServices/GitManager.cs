@@ -19,7 +19,7 @@ public sealed class GitManager
         persistentDataManager.OnRepositoryPathChanged += TryInitializeRepository;
     }
 
-    public string RepositoryRootPath { get; private set; }
+    public string RepositoryRootPath { get; private set; } = string.Empty;
     public bool IsValid { get; private set; }
 
     public Repository Repository { get; private set; } =
@@ -52,7 +52,8 @@ public sealed class GitManager
 
             RepositoryRootPath = validatedRepoPath;
 
-            var oldRepository = Repository;
+            var oldRepository =
+                IsValid ? Repository : null; // assign null here for the first init, as there'd be no old repository
             Repository = tempRepository;
 
             didSucceed = true;
@@ -92,11 +93,11 @@ public sealed class GitManager
     public string GetCurrentRepoDisplayName()
     {
         var remoteName = Repository.Head.RemoteName;
-        if (string.IsNullOrWhiteSpace(remoteName)) remoteName = Repository?.Network.Remotes.FirstOrDefault()?.Name;
+        if (string.IsNullOrWhiteSpace(remoteName)) remoteName = Repository.Network.Remotes.FirstOrDefault()?.Name;
 
         if (string.IsNullOrWhiteSpace(remoteName)) return string.Empty;
 
-        var remote = Repository?.Network.Remotes[remoteName];
+        var remote = Repository.Network.Remotes[remoteName];
         if (remote == null) return string.Empty;
 
         var url = remote.Url;
@@ -120,7 +121,7 @@ public sealed class GitManager
         };
     }
 
-    private Branch? GetTrackedBranch(Branch branch, Remote remote)
+    private Branch GetTrackedBranch(Branch branch, Remote remote)
     {
         var tracked = branch.TrackedBranch;
 
@@ -163,12 +164,6 @@ public sealed class GitManager
 
         branch = Repository.Head;
         var tracked = GetTrackedBranch(branch, remote);
-
-        if (tracked == null)
-        {
-            _ = App.Current.HandleNonFatalExceptionAsync(new Exception("No tracked branch! Defaulting to 0,0"));
-            return (0, 0);
-        }
 
         Log.Debug("Tracked branch tip: {TipSha}", tracked.Tip.Sha);
 
