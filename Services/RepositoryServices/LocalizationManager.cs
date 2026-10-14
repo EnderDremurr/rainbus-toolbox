@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using LibGit2Sharp;
 using Newtonsoft.Json;
 using RainbusToolbox.Models.LimbusSerialization;
 using RainbusToolbox.Utilities;
@@ -10,14 +9,12 @@ namespace RainbusToolbox.Services.RepositoryServices;
 
 public sealed class LocalizationManager
 {
-    private bool _areGameFilesValid = false;
     private readonly GitManager _gitManager;
-
-
-    private bool _isLocalizationValid = false;
     private readonly PersistentDataManager _persistentDataManager;
+    private bool _areGameFilesValid;
 
-    public readonly string LocalizationFolder = "localize";
+
+    private bool _isLocalizationValid;
 
 
     // Constructor
@@ -27,15 +24,11 @@ public sealed class LocalizationManager
         _persistentDataManager = persistentDataManager;
         _gitManager = gitManager;
 
-        PathToLocalization = Path.Combine(_gitManager.RepositoryRootPath, LocalizationFolder);
-        
-        TryInitializeLocalization();
-        persistentDataManager.OnRepositoryPathChanged += TryInitializeLocalization;
-
-        TryInitializeGameFiles();
+        TryInitializeGameFiles(); // game files init first, because they contain file type map that's needed further
         persistentDataManager.OnLimbusPathChanged += TryInitializeGameFiles;
 
-        ParseFileMap();
+        TryInitializeLocalization();
+        _gitManager.OnInitializedSuccessfully += TryInitializeLocalization;
     }
 
     public bool IsValid => _isLocalizationValid && _areGameFilesValid;
@@ -46,13 +39,17 @@ public sealed class LocalizationManager
 
     #endregion
 
-    #region Folders
+    #region Path constants
 
     // Relative to repo root
     private const string DistPath = ".dist/";
+    public const string LocalizationFolder = "localize";
 
     // Relative to game root
-    private const string ReferenceLangAppendage = "LimbusCompany_Data/Assets/Resources_moved/Localize/en/";
+    private const string ReferenceLangFolder = "LimbusCompany_Data/Assets/Resources_moved/Localize/en/";
+
+    private const string RemoteLocalizeFileListPath =
+        "LimbusCompany_Data/Assets/Resources_moved/Localize/RemoteLocalizeFileList.json";
 
     #endregion
 
@@ -60,11 +57,18 @@ public sealed class LocalizationManager
 
     // Repo paths
 
-    public string PathToLocalization { get; }
-    public required string PathToReferenceLocalization = null!;
+    public string PathToLocalization { get; private set; }
+    public string PathToReferenceLocalization;
+
+
+    public string PathToKeywordColorList =>
+        Path.Combine(_persistentDataManager.Settings.RepositoryPath!, "keyword_colors.json");
+
     public string PathToDistribution => Path.Combine(_gitManager.RepositoryRootPath, DistPath);
     public string PathToVSCodeSettings => Path.Combine(_gitManager.RepositoryRootPath, ".vscode/settings.json");
+
     public string PathToRegexJson => Path.Combine(_gitManager.RepositoryRootPath, "regexes.json");
+    // i wonder do these four need to be here? maybe i should move those paths to be resolved where they're actually are used TODO: probably move these to the places they're accessed from
 
     // Game paths
 
@@ -72,10 +76,10 @@ public sealed class LocalizationManager
 
     #endregion
 
-    #region ConstantItems
+    #region Global files
 
-    public string PathToKeywordColorList =>
-        Path.Combine(_persistentDataManager.Settings.RepositoryPath!, "keyword_colors.json");
+    // translations + references that are required to be constantly available for some other editors
+
 
     public string PathToEgoNames => Path.Combine(PathToLocalization, "Egos.json");
     public required EgoLocalizationFile EgoNames { get; set; }
@@ -92,9 +96,8 @@ public sealed class LocalizationManager
     public string PathToAnnouncerVoiceTypes => Path.Combine(PathToLocalization, "AnnouncerVoiceType.json");
     public required AnnouncerVoiceTypeLocalizationFile AnnouncerVoiceTypes { get; set; }
 
-    public string PathToFileMap => Path.Combine(PathToGameRoot,
-        "LimbusCompany_Data/Assets/Resources_moved/Localize/RemoteLocalizeFileList.json");
 
+    public string PathToFileMap { get; private set; }
     public readonly Dictionary<string, string> DeveloperFileTypeMap = new();
 
     #endregion
@@ -104,47 +107,99 @@ public sealed class LocalizationManager
     public void TryInitializeLocalization()
     {
         Directory.CreateDirectory(Path.Combine(_gitManager.RepositoryRootPath,
-            DistPath)); // just esnure dist for now, cuz i'm not sure what to init here? or no, i actually do -
-                        // TODO: make all constant paths be retrieved here instead of anon funcs, so they will be ensured to exist
-                        
+            DistPath)); // just ensure dist for now, cuz i'm not sure what to init here? or no, i actually do -
+        // TODO: make all constant paths be retrieved here instead of anon funcs, so they will be ensured to exist
+
+        PathToLocalization = Path.Combine(_gitManager.RepositoryRootPath, LocalizationFolder);
+        Directory.CreateDirectory(PathToLocalization);
+        // tbh since this folder is very variable, i don't think i should to really check anything? i just have to make sure localize folder is present
+        // and other checks are mmm
+        // or i can? but then this thing won't allow empty new translations, and people would need to make the first init manually (or should i add such function into init window later?
+        // yeah tbh i feel that'd be better, so i'll global files retrieval into two inits instead of a unified method
+        // actually, i've tried that but there's still was a problem cuz i needed localized files first to get their references, so i still have to init them in one place
+        // for now i think they'd better sit here
+
+        #region Global files init (localized)
+
+        var localizedEgoNames = (EgoLocalizationFile?)GetObjectFromPath(PathToEgoNames);
+        var localizedScenarioModelCodes = (ScenarioModelCodesLocalizationFile?)GetObjectFromPath(PathToModelCodes);
+        var localizedAnnouncerNames = (AnnouncerLocalizationFile?)GetObjectFromPath(PathToAnnouncerNames);
+        var announcerVoiceTypes = (AnnouncerVoiceTypeLocalizationFile?)GetObjectFromPath(PathToAnnouncerVoiceTypes);
+
+        if (localizedEgoNames == null || localizedScenarioModelCodes == null ||
+            localizedAnnouncerNames == null ||
+            announcerVoiceTypes == null)
+            throw new InvalidOperationException(
+                "Некоторые из обязательных файлов перевода отсутствуют или были испорчены!");
+
+        EgoNames = localizedEgoNames;
+        ScenarioModelCodes = localizedScenarioModelCodes;
+        AnnouncerNames = localizedAnnouncerNames;
+        AnnouncerVoiceTypes = announcerVoiceTypes;
+
+        #endregion
+
+        #region Global files init (reference)
+
+        var egoNamesReference = (EgoLocalizationFile?)GetReference(EgoNames);
+        var referenceScenarioModelCodes =
+            (ScenarioModelCodesLocalizationFile?)GetReference(ScenarioModelCodes);
+        var referenceAnnouncerNames = (AnnouncerLocalizationFile?)GetReference(AnnouncerNames);
+
+        if (egoNamesReference == null ||
+            referenceScenarioModelCodes == null || referenceAnnouncerNames == null)
+            throw new InvalidOperationException(
+                "Некоторые из обязательных файлов перевода отсутствуют или были испорчены!");
+
+        EgoNamesReference = egoNamesReference;
+        ScenarioModelCodesReference = referenceScenarioModelCodes;
+        AnnouncerNamesReference = referenceAnnouncerNames;
+
+        #endregion
+
         _isLocalizationValid = true;
+        EnsureInitNotification();
     }
 
     public void TryInitializeGameFiles()
     {
         var oldLimbusPath = PathToGameRoot;
         var originalLimbusPath = _persistentDataManager.Settings.PathToLimbus;
-        
+
         try
         {
             var validatedGamePath = PersistentDataManager.ValidateLimbusPath(originalLimbusPath);
             if (validatedGamePath == null)
-                throw new InvalidOperationException("Path to localization game!");
-            
+                throw new InvalidOperationException("Path to game is invalid!");
+
             if (validatedGamePath != originalLimbusPath)
                 _persistentDataManager.Settings.PathToLimbus = validatedGamePath;
 
             PathToGameRoot = validatedGamePath;
-            PathToReferenceLocalization = Path.Combine(validatedGamePath, ReferenceLangAppendage);
+            PathToReferenceLocalization = Path.Combine(validatedGamePath, ReferenceLangFolder);
+
+            PathToFileMap = Path.Combine(PathToGameRoot, RemoteLocalizeFileListPath);
+            UpdateSavedFileMap();
+
             _areGameFilesValid = true;
+            EnsureInitNotification();
         }
         catch (Exception ex)
         {
-            
             if (!string.IsNullOrEmpty(oldLimbusPath))
             {
-                _ = App.Current.HandleNonFatalExceptionAsync(ex);
+                _ = App.Current
+                    .HandleNonFatalExceptionAsync(
+                        ex); // message is only when old path exists cuz init window ensures there would be working path when first launching
                 _persistentDataManager.Settings.PathToLimbus = oldLimbusPath;
                 // revert old game path
             }
         }
     }
 
-    public void ParseFileMap()
+    // this is called from game path validator, so i don't need to make additional guards here ig?
+    private void UpdateSavedFileMap()
     {
-        if (!IsValid)
-            return;
-
         var json = File.ReadAllText(PathToFileMap);
         var parsed = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(json);
         DeveloperFileTypeMap.Clear();
@@ -152,36 +207,14 @@ public sealed class LocalizationManager
         foreach (var (type, fileNames) in parsed!)
         foreach (var fileName in fileNames)
             DeveloperFileTypeMap.TryAdd(fileName, type);
+    }
 
-        var localizedEgoNames = (EgoLocalizationFile?)GetObjectFromPath(PathToEgoNames);
-        var egoNamesReference = (EgoLocalizationFile?)GetReference(localizedEgoNames);
+    private void EnsureInitNotification()
+    {
+        if (!IsValid)
+            return;
 
-        var localizedScenarioModelCodes = (ScenarioModelCodesLocalizationFile?)GetObjectFromPath(PathToModelCodes);
-        var referenceScenarioModelCodes =
-            (ScenarioModelCodesLocalizationFile?)GetReference(localizedScenarioModelCodes);
-
-        var localizedAnnouncerNames = (AnnouncerLocalizationFile?)GetObjectFromPath(PathToAnnouncerNames);
-        var referenceAnnouncerNames = (AnnouncerLocalizationFile?)GetReference(localizedAnnouncerNames);
-
-        var announcerVoiceTypes = (AnnouncerVoiceTypeLocalizationFile?)GetObjectFromPath(PathToAnnouncerVoiceTypes);
-
-        if (localizedEgoNames == null || egoNamesReference == null || localizedScenarioModelCodes == null ||
-            referenceScenarioModelCodes == null || localizedAnnouncerNames == null || referenceAnnouncerNames == null ||
-            announcerVoiceTypes == null)
-            throw new InvalidOperationException(
-                "Некоторые из обязательных файлов перевода отсутствуют или были испорчены!");
-
-        EgoNames = localizedEgoNames;
-        EgoNamesReference = egoNamesReference;
-
-        ScenarioModelCodes = localizedScenarioModelCodes;
-        ScenarioModelCodesReference = referenceScenarioModelCodes;
-
-        AnnouncerNames = localizedAnnouncerNames;
-        AnnouncerNamesReference = referenceAnnouncerNames;
-
-        AnnouncerVoiceTypes = announcerVoiceTypes;
-        
+        Log.Debug("Both paths were successfully validated! Invoking init event!");
         OnInitializedSuccessfully?.Invoke(); // moved this here so it'd fire only where everything is actually set up
     }
 

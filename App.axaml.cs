@@ -160,12 +160,18 @@ public class App : Application
 
             try
             {
-                var repoManager = ServiceProvider.GetRequiredService<LocalizationManager>();
                 var dataManager = ServiceProvider.GetRequiredService<PersistentDataManager>();
-                var githubManager = ServiceProvider.GetRequiredService<GithubManager>();
 
-                if (repoManager.IsValid && !string.IsNullOrWhiteSpace(dataManager.Settings.GitHubToken) &&
-                    !string.IsNullOrWhiteSpace(dataManager.Settings.PathToLimbus))
+                var isSavedRepoValid =
+                    PersistentDataManager.ValidateRepoPath(dataManager.Settings.RepositoryPath) != null;
+                var isSavedGamePathValid =
+                    PersistentDataManager.ValidateLimbusPath(dataManager.Settings.PathToLimbus) != null;
+
+                var isSavedTokenPresent =
+                    dataManager.Settings.GitHubToken !=
+                    null; // i can't really verify the token cuz method is async and im afraid this method will explode if i make it a task
+
+                if (isSavedRepoValid && isSavedGamePathValid && isSavedTokenPresent)
                 {
                     var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
                     mainWindow.DataContext = ServiceProvider.GetRequiredService<MainWindowViewModel>();

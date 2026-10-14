@@ -9,7 +9,6 @@ using InitializationWindowViewModel = RainbusToolbox.ViewModels.Misc.Initializat
 
 namespace RainbusToolbox.Views.Misc;
 
-// TODO: SUPER TODO, THIS SHIT SHOULD BE IN THE VIEW MODEL, NOT THE VIEW!!!!
 public partial class InitializationWindow : Window
 {
     public InitializationWindow(InitializationWindowViewModel viewModel)

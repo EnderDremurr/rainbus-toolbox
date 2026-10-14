@@ -181,12 +181,10 @@ public partial class TranslationTabViewModel : ObservableObject, IMainWindowTab
 
     private void InitShortcuts()
     {
-        //TODO: I made a mistake by moving log messages to lang resource, as logs need only english anyway
-        // i need to check other files for those too, later
+        Log.Debug("Starting shortcut initialization");
 
         _fileShortcuts = [];
 
-        Log.Debug("Getting root");
         var root = _localizationManager.PathToLocalization;
         Log.Debug("Repository root: {Root}", root);
 

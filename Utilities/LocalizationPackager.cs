@@ -19,7 +19,7 @@ public static class LocalizationPackager
             File.Delete(zipPath);
 
         using var zip = ZipFile.Open(zipPath, ZipArchiveMode.Create);
-        var localizePath = Path.Combine(repoPath, localizationManager.LocalizationFolder);
+        var localizePath = Path.Combine(repoPath, LocalizationManager.LocalizationFolder);
 
         if (!Directory.Exists(localizePath))
             return zipPath;
