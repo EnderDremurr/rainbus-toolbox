@@ -7,14 +7,75 @@ using Version = System.Version;
 
 namespace RainbusToolbox.Services.RepositoryServices;
 
-public sealed class GitManager(PersistentDataManager persistentDataManager)
+public sealed class GitManager
 {
-    // TODO: review logic later, i believe none of those should be actually nullable because of initialization, but currently this is super weird so i'll see later
-    public Repository? Repository { get; private set; }
+    private readonly PersistentDataManager _persistentDataManager;
 
-    public void SetRepository(Repository repository)
+    public GitManager(PersistentDataManager persistentDataManager)
     {
-        Repository = repository;
+        _persistentDataManager = persistentDataManager;
+
+        TryInitializeRepository();
+        persistentDataManager.OnRepositoryPathChanged += TryInitializeRepository;
+    }
+
+    public string RepositoryRootPath { get; private set; }
+    public bool IsValid { get; private set; }
+
+    public Repository Repository { get; private set; } =
+        null!; // repo is null only after the start, after that it shouldn't ever be null
+
+    public event Action? OnInitializedSuccessfully;
+
+    public void TryInitializeRepository()
+    {
+        var oldRepoPath = RepositoryRootPath;
+
+        var newRepoPath = _persistentDataManager.Settings.RepositoryPath;
+
+        Repository? tempRepository = null;
+
+        var didSucceed = false;
+
+        try
+        {
+            var validatedRepoPath = PersistentDataManager.ValidateRepoPath(newRepoPath);
+            if (validatedRepoPath == null)
+                throw new InvalidOperationException("Repo path is invalid!");
+
+            // try creating a repo into local first, to not override if th throws
+            tempRepository = new Repository(validatedRepoPath);
+
+            // overwrite only if nothing threw
+            if (validatedRepoPath != newRepoPath)
+                _persistentDataManager.Settings.RepositoryPath = validatedRepoPath;
+
+            RepositoryRootPath = validatedRepoPath;
+
+            var oldRepository = Repository;
+            Repository = tempRepository;
+
+            didSucceed = true;
+            IsValid = true;
+
+            tempRepository = null;
+            oldRepository?.Dispose();
+        }
+        catch (Exception ex)
+        {
+            tempRepository?.Dispose();
+
+
+            if (!string.IsNullOrEmpty(oldRepoPath))
+            {
+                _ = App.Current.HandleNonFatalExceptionAsync(ex);
+                _persistentDataManager.Settings.RepositoryPath = oldRepoPath;
+            }
+            // revert old repo path
+        }
+
+        if (didSucceed)
+            OnInitializedSuccessfully?.Invoke();
     }
 
     public static Signature GetLocalSignature(Repository repo)
@@ -30,7 +91,7 @@ public sealed class GitManager(PersistentDataManager persistentDataManager)
 
     public string GetCurrentRepoDisplayName()
     {
-        var remoteName = Repository?.Head?.RemoteName;
+        var remoteName = Repository.Head.RemoteName;
         if (string.IsNullOrWhiteSpace(remoteName)) remoteName = Repository?.Network.Remotes.FirstOrDefault()?.Name;
 
         if (string.IsNullOrWhiteSpace(remoteName)) return string.Empty;
@@ -54,16 +115,13 @@ public sealed class GitManager(PersistentDataManager persistentDataManager)
                 new UsernamePasswordCredentials
                 {
                     Username = "token",
-                    Password = persistentDataManager.Settings.GitHubToken
+                    Password = _persistentDataManager.Settings.GitHubToken
                 }
         };
     }
 
     private Branch? GetTrackedBranch(Branch branch, Remote remote)
     {
-        if (Repository == null)
-            return null;
-
         var tracked = branch.TrackedBranch;
 
         if (tracked != null)
@@ -77,9 +135,6 @@ public sealed class GitManager(PersistentDataManager persistentDataManager)
 
     public (int Behind, int Ahead) CheckRepositoryChanges()
     {
-        if (Repository == null)
-            return (0, 0);
-
         var branch = Repository.Head;
         Log.Debug("Current branch: {BranchFriendlyName}", branch.FriendlyName);
 
@@ -109,7 +164,12 @@ public sealed class GitManager(PersistentDataManager persistentDataManager)
         branch = Repository.Head;
         var tracked = GetTrackedBranch(branch, remote);
 
-        Log.Debug("Local branch tip: ");
+        if (tracked == null)
+        {
+            _ = App.Current.HandleNonFatalExceptionAsync(new Exception("No tracked branch! Defaulting to 0,0"));
+            return (0, 0);
+        }
+
         Log.Debug("Tracked branch tip: {TipSha}", tracked.Tip.Sha);
 
         var divergence = Repository.ObjectDatabase.CalculateHistoryDivergence(branch.Tip, tracked.Tip);
@@ -121,9 +181,6 @@ public sealed class GitManager(PersistentDataManager persistentDataManager)
 
     public async Task SynchronizeWithOriginAsync()
     {
-        if (Repository == null)
-            return;
-
         try
         {
             if (Repository.RetrieveStatus().IsDirty)
@@ -235,9 +292,6 @@ public sealed class GitManager(PersistentDataManager persistentDataManager)
 
     public void FetchFromOrigin()
     {
-        if (Repository == null)
-            return;
-
         var remote = Repository.Network.Remotes["origin"];
         var fetchOptions = CreateFetchOptions();
         Commands.Fetch(Repository, remote.Name, remote.FetchRefSpecs.Select(x => x.Specification), fetchOptions,
@@ -247,9 +301,6 @@ public sealed class GitManager(PersistentDataManager persistentDataManager)
 
     public void CommitLocalChanges(string comment)
     {
-        if (Repository == null)
-            return;
-
         Commands.Stage(Repository, "*");
 
         if (!Repository.RetrieveStatus().Any(entry => entry.State.HasFlag(FileStatus.NewInIndex) ||
@@ -265,9 +316,6 @@ public sealed class GitManager(PersistentDataManager persistentDataManager)
 
     public void PushToOrigin(bool force = false)
     {
-        if (Repository == null)
-            return;
-
         try
         {
             var currentBranch = Repository.Head;
@@ -296,7 +344,7 @@ public sealed class GitManager(PersistentDataManager persistentDataManager)
                     new UsernamePasswordCredentials
                     {
                         Username = "token",
-                        Password = persistentDataManager.Settings.GitHubToken
+                        Password = _persistentDataManager.Settings.GitHubToken
                     }
             };
 
@@ -372,9 +420,6 @@ public sealed class GitManager(PersistentDataManager persistentDataManager)
 
     public Version? GetLatestVersion()
     {
-        if (Repository == null)
-            return null;
-
         try
         {
             var latest = Repository.Tags

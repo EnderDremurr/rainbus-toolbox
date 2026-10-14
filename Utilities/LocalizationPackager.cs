@@ -11,7 +11,7 @@ public static class LocalizationPackager
     {
         await gitManager.SynchronizeWithOriginAsync(); // i dunno if this should happen here? but i'll leave it for now
 
-        var repoPath = localizationManager.RepositoryRoot;
+        var repoPath = gitManager.RepositoryRootPath;
         var zipFileName = $"{gitManager.GetCurrentRepoDisplayName()} v{version}.zip";
         var zipPath = Path.Combine(localizationManager.PathToDistribution, zipFileName);
 

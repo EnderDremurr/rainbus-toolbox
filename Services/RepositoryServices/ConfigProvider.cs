@@ -1,13 +1,14 @@
 using System.IO;
 using Avalonia.Platform;
-using RainbusToolbox.Services.ExternalServices;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
 namespace RainbusToolbox.Services.RepositoryServices;
 
 public sealed class
-    ConfigProvider(LocalizationManager localizationManager) // repo manager is required for future override handling
+    ConfigProvider(
+        LocalizationManager localizationManager,
+        GitManager gitManager) // repo manager is required for future override handling
 {
     private const string BaseAvaresPath = "avares://RainbusToolbox/Assets/Configs/";
 
@@ -59,7 +60,7 @@ public sealed class
 
     private T? GetOverride<T>(string sanitizedFileNameWithExtension) where T : class
     {
-        if (string.IsNullOrEmpty(localizationManager.RepositoryRoot))
+        if (string.IsNullOrEmpty(gitManager.RepositoryRootPath))
             throw new NullReferenceException("Path to localization repo is null! This is a dev error!");
 
 

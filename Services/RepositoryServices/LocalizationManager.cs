@@ -10,23 +10,35 @@ namespace RainbusToolbox.Services.RepositoryServices;
 
 public sealed class LocalizationManager
 {
+    private bool _areGameFilesValid = false;
     private readonly GitManager _gitManager;
+
+
+    private bool _isLocalizationValid = false;
     private readonly PersistentDataManager _persistentDataManager;
 
     public readonly string LocalizationFolder = "localize";
 
 
     // Constructor
-    public LocalizationManager(PersistentDataManager persistentDataManager, GitManager gitManager)
+    public LocalizationManager(PersistentDataManager persistentDataManager,
+        GitManager gitManager) // this service now requires proper working git first
     {
         _persistentDataManager = persistentDataManager;
         _gitManager = gitManager;
 
-        TryInitialize(); // TODO: ig it won't hurt to split this into game path initializer and repo and shi, cuz right now changing any would reset both
+        PathToLocalization = Path.Combine(_gitManager.RepositoryRootPath, LocalizationFolder);
+        
+        TryInitializeLocalization();
+        persistentDataManager.OnRepositoryPathChanged += TryInitializeLocalization;
+
+        TryInitializeGameFiles();
+        persistentDataManager.OnLimbusPathChanged += TryInitializeGameFiles;
+
+        ParseFileMap();
     }
 
-
-    public bool IsValid { get; private set; }
+    public bool IsValid => _isLocalizationValid && _areGameFilesValid;
 
     #region Events
 
@@ -47,12 +59,12 @@ public sealed class LocalizationManager
     #region AbsolutePaths
 
     // Repo paths
-    public required string RepositoryRoot;
-    public string PathToLocalization => Path.Combine(RepositoryRoot, LocalizationFolder);
+
+    public string PathToLocalization { get; }
     public required string PathToReferenceLocalization = null!;
-    public string PathToDistribution => Path.Combine(RepositoryRoot, DistPath);
-    public string PathToVSCodeSettings => Path.Combine(RepositoryRoot, ".vscode/settings.json");
-    public string PathToRegexJson => Path.Combine(RepositoryRoot, "regexes.json");
+    public string PathToDistribution => Path.Combine(_gitManager.RepositoryRootPath, DistPath);
+    public string PathToVSCodeSettings => Path.Combine(_gitManager.RepositoryRootPath, ".vscode/settings.json");
+    public string PathToRegexJson => Path.Combine(_gitManager.RepositoryRootPath, "regexes.json");
 
     // Game paths
 
@@ -89,71 +101,43 @@ public sealed class LocalizationManager
 
     #region Initialization
 
-    public bool TryInitialize()
+    public void TryInitializeLocalization()
     {
-        var oldRepoPath = RepositoryRoot;
+        Directory.CreateDirectory(Path.Combine(_gitManager.RepositoryRootPath,
+            DistPath)); // just esnure dist for now, cuz i'm not sure what to init here? or no, i actually do -
+                        // TODO: make all constant paths be retrieved here instead of anon funcs, so they will be ensured to exist
+                        
+        _isLocalizationValid = true;
+    }
+
+    public void TryInitializeGameFiles()
+    {
         var oldLimbusPath = PathToGameRoot;
-
-        var originalRepoPath = _persistentDataManager.Settings.RepositoryPath;
         var originalLimbusPath = _persistentDataManager.Settings.PathToLimbus;
-
-        Repository? tempRepository = null;
-
-        var didSucceed = false;
-
+        
         try
         {
-            var validatedRepoPath = PersistentDataManager.ValidateRepoPath(originalRepoPath);
             var validatedGamePath = PersistentDataManager.ValidateLimbusPath(originalLimbusPath);
-            if (validatedRepoPath == null || validatedGamePath == null)
-                throw new InvalidOperationException("Path to localization repo or game is not valid!");
-
-            // TODO: this will be split later cuz right now this shit is too tangled ngl
-
-            // try creating a repo into local first, to not override if th throws
-            tempRepository = new Repository(validatedRepoPath);
-            Directory.CreateDirectory(Path.Combine(validatedRepoPath,
-                DistPath)); // i think this all should be moved into git manager, and also
-            // TODO: add persistent data manager events so i can properly subscribe my shit to changes!!!
-
-            // overwrite only if nothing threw
-            if (validatedRepoPath != originalRepoPath)
-                _persistentDataManager.Settings.RepositoryPath = validatedRepoPath;
+            if (validatedGamePath == null)
+                throw new InvalidOperationException("Path to localization game!");
+            
             if (validatedGamePath != originalLimbusPath)
                 _persistentDataManager.Settings.PathToLimbus = validatedGamePath;
 
-            RepositoryRoot = validatedRepoPath;
             PathToGameRoot = validatedGamePath;
             PathToReferenceLocalization = Path.Combine(validatedGamePath, ReferenceLangAppendage);
-
-
-            var oldRepository = _gitManager.Repository;
-            _gitManager.SetRepository(tempRepository);
-
-            didSucceed = true;
-            IsValid = true;
-
-            tempRepository = null;
-            oldRepository?.Dispose();
-
-            ParseFileMap();
+            _areGameFilesValid = true;
         }
         catch (Exception ex)
         {
-            tempRepository?.Dispose();
-            _ = App.Current.HandleNonFatalExceptionAsync(ex);
-
-            if (!string.IsNullOrEmpty(oldLimbusPath) && !string.IsNullOrEmpty(oldRepoPath))
+            
+            if (!string.IsNullOrEmpty(oldLimbusPath))
             {
+                _ = App.Current.HandleNonFatalExceptionAsync(ex);
                 _persistentDataManager.Settings.PathToLimbus = oldLimbusPath;
-                _persistentDataManager.Settings.RepositoryPath = oldRepoPath;
-                // revert old paths
+                // revert old game path
             }
         }
-
-        if (didSucceed)
-            OnInitializedSuccessfully?.Invoke();
-        return didSucceed;
     }
 
     public void ParseFileMap()
@@ -197,6 +181,8 @@ public sealed class LocalizationManager
         AnnouncerNamesReference = referenceAnnouncerNames;
 
         AnnouncerVoiceTypes = announcerVoiceTypes;
+        
+        OnInitializedSuccessfully?.Invoke(); // moved this here so it'd fire only where everything is actually set up
     }
 
     #endregion

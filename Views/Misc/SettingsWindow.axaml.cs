@@ -127,7 +127,6 @@ public partial class SettingsWindow : Window
     private void SaveSettings()
     {
         var isDirty = false;
-        var didRepoChange = false;
 
         var settingsCache = _dataManager.Settings;
         if (settingsCache.DiscordWebHook != DiscordWebHookBox.Text &&
@@ -141,7 +140,6 @@ public partial class SettingsWindow : Window
         {
             _dataManager.Settings.RepositoryPath = RepoPathTextBox.Text;
             isDirty = true;
-            didRepoChange = true;
         }
 
         if (settingsCache.PathToLimbus != LimbusPathTextBox.Text)
@@ -170,9 +168,6 @@ public partial class SettingsWindow : Window
 
         if (isDirty)
             _dataManager.SaveToFile();
-
-        if (didRepoChange)
-            _localizationManager.TryInitialize();
     }
 
     private void ToggleWebhookVisibility_Click(object sender, RoutedEventArgs e)
