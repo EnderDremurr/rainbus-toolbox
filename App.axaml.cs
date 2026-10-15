@@ -210,6 +210,7 @@ public class App : Application
         services.AddSingleton<ConfigProvider>();
         services.AddSingleton<EditorFactory>();
         services.AddSingleton<DialogService>();
+        services.AddSingleton<ClipboardService>();
     }
 
     private static void RegisterUIServices(ServiceCollection services)
