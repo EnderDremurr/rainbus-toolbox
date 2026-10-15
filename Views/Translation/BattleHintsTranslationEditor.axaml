@@ -8,6 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:data="clr-namespace:RainbusToolbox.Models.LimbusSerialization"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:misc="clr-namespace:RainbusToolbox.Views.Misc"
     xmlns:translation="clr-namespace:RainbusToolbox.ViewModels.Translation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
@@ -21,7 +22,7 @@
             VerticalScrollBarVisibility="Visible"
             x:Name="BattleHintsScrollViewer">
 
-            <ItemsControl ItemsSource="{Binding ObservableDataList}">
+            <ItemsControl ItemsSource="{Binding CurrentPageHintsList}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="data:GenericIdContent">
                         <Border
@@ -96,7 +97,7 @@
             Margin="0,0,0,10"
             Orientation="Horizontal"
             Spacing="10">
-
+            <misc:NavigationBar />
             <Button
                 Command="{Binding AddHintCommand}"
                 Content="Добавить"

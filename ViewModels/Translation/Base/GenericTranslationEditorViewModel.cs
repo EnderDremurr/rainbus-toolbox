@@ -14,7 +14,7 @@ public partial class GenericTranslationEditorViewModel<TFile, TItem> : Translati
     public TFile? ReferenceFile { get; protected set; }
 
 
-    public bool IsFileLoaded => EditableFile != null && EditableFile.DataList.Count > 0;
+    public bool IsFileLoaded => EditableFile is { DataList.Count: > 0 };
 
     public override int ItemCount { get; protected set; }
 
@@ -22,9 +22,7 @@ public partial class GenericTranslationEditorViewModel<TFile, TItem> : Translati
     {
         EditableFile = file;
         CurrentIndex = 0;
-        UpdateCurrentItem();
-        UpdateReferenceItem();
-        UpdateNavigation();
+        OnIndexChanged();
         OnPropertyChanged(nameof(IsFileLoaded));
     }
 
@@ -65,7 +63,7 @@ public partial class GenericTranslationEditorViewModel<TFile, TItem> : Translati
 
     public virtual void GoCustom()
     {
-        var index = int.Parse((string)(NavigationText ?? throw new InvalidOperationException())) - 1;
+        var index = int.Parse(NavigationText ?? throw new InvalidOperationException()) - 1;
         var sanitizedStep = index;
         if (index < 0) index = 0;
         if (index > EditableFile.DataList.Count - 1) index = EditableFile.DataList.Count - 1;
