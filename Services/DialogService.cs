@@ -10,20 +10,18 @@ namespace RainbusToolbox.Services;
 
 public class DialogService
 {
-    private static Window? GetOwner()
+    private static Window GetOwner()
     {
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
             throw new Exception("Couldn't get any owner window!");
 
-        return desktop.Windows.FirstOrDefault(w => w.IsActive)
-               ?? desktop.MainWindow;
+        return (desktop.Windows.FirstOrDefault(w => w.IsActive)
+                ?? desktop.MainWindow) ?? throw new InvalidOperationException();
     }
 
     public async Task<string?> PickSingleFolderAsync(FolderPickerOpenOptions options)
     {
         var owner = GetOwner();
-        if (owner is null)
-            return null;
 
         var folders = await owner.StorageProvider.OpenFolderPickerAsync(options);
         return folders.ToList().FirstOrDefault()?.TryGetLocalPath();
@@ -32,8 +30,6 @@ public class DialogService
     public async Task<List<string>?> PickMultipleFoldersAsync(FolderPickerOpenOptions options)
     {
         var owner = GetOwner();
-        if (owner is null)
-            return null;
 
         var folders = await owner.StorageProvider.OpenFolderPickerAsync(options);
         var nonNullFolderPaths = folders.Select(f => f.TryGetLocalPath()).OfType<string>().ToList();
@@ -43,8 +39,6 @@ public class DialogService
     public async Task<string?> PickSingleFileAsync(FilePickerOpenOptions options)
     {
         var owner = GetOwner();
-        if (owner is null)
-            return null;
 
         var files = await owner.StorageProvider.OpenFilePickerAsync(options);
         return files.ToList().FirstOrDefault()?.TryGetLocalPath();
@@ -53,8 +47,6 @@ public class DialogService
     public async Task<List<string>?> PickMultipleFilesAsync(FilePickerOpenOptions options)
     {
         var owner = GetOwner();
-        if (owner is null)
-            return null;
 
         var files = await owner.StorageProvider.OpenFilePickerAsync(options);
         var nonNullFilePaths = files.Select(f => f.TryGetLocalPath()).OfType<string>().ToList();
@@ -69,8 +61,6 @@ public class DialogService
         params PopupButton[] buttons)
     {
         var owner = GetOwner();
-        if (owner is null)
-            return null;
 
         return await PopUpWindow.ShowAsync(owner, title, message, hasInput, inputPlaceholder, initialValue, buttons);
     }
