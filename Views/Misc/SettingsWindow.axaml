@@ -1,14 +1,23 @@
 <Window
-    Height="566"
+    Height="720"
     SystemDecorations="None"
     Title="SettingsWindow"
-    Width="888"
+    Width="1080"
     mc:Ignorable="d"
     x:Class="RainbusToolbox.Views.Misc.SettingsWindow"
+    x:DataType="misc:SettingsWindowViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:misc="clr-namespace:RainbusToolbox.ViewModels.Misc"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+    <Interaction.Behaviors>
+        <EventTriggerBehavior EventName="Closing">
+            <InvokeCommandAction Command="{Binding SaveSettingsCommand}" />
+        </EventTriggerBehavior>
+    </Interaction.Behaviors>
 
     <Grid>
         <!--  Background  -->
@@ -62,15 +71,14 @@
                         Spacing="10"
                         VerticalAlignment="Center">
                         <Button
-                            Click="SetGitHubToken_Click"
+                            Command="{Binding AskSetGitHubTokenCommand}"
                             Content="Залогиниться"
                             Height="60"
                             Width="200" />
                         <TextBlock
                             Foreground="White"
-                            Text="Ты не залогинился"
-                            VerticalAlignment="Center"
-                            x:Name="GitHubTokenStatusTextBlock" />
+                            Text="{Binding GitHubAuthState}"
+                            VerticalAlignment="Center" />
                     </StackPanel>
 
                     <!--  Discord WebHook  -->
@@ -86,15 +94,11 @@
                             Classes="framed"
                             Height="60"
                             PasswordChar="*"
-                            Width="500"
-                            x:Name="DiscordWebHookBox" />
-                        <Button
-                            Click="ToggleWebhookVisibility_Click"
-                            Content="Показать"
-                            Height="60"
-                            VerticalAlignment="Center"
-                            Width="150"
-                            x:Name="ToggleWebhookButton" />
+                            RevealPassword="{Binding IsWebhookVisible}"
+                            Text="{Binding DiscordWebhook}"
+                            Width="500" />
+
+                        <ToggleButton Content="{Binding WebhookToggleText}" IsChecked="{Binding IsWebhookVisible}" />
                     </StackPanel>
 
                     <StackPanel
@@ -108,8 +112,8 @@
                         <TextBox
                             Classes="framed"
                             Height="60"
-                            Width="500"
-                            x:Name="DiscordRoleToPingBox" />
+                            Text="{Binding DiscordRoleToPing}"
+                            Width="500" />
                     </StackPanel>
 
                     <!--  Path to localization's repo  -->
@@ -126,10 +130,10 @@
                             Classes="framed"
                             Height="60"
                             IsReadOnly="True"
-                            Width="500"
-                            x:Name="RepoPathTextBox" />
+                            Text="{Binding RepoPath}"
+                            Width="500" />
                         <Button
-                            Click="BrowseFolder_Click"
+                            Command="{Binding BrowseRepoFolderCommand}"
                             Content="Выбрать"
                             Height="60"
                             Width="150" />
@@ -149,10 +153,10 @@
                             Classes="framed"
                             Height="60"
                             IsReadOnly="True"
-                            Width="500"
-                            x:Name="LimbusPathTextBox" />
+                            Text="{Binding LimbusPath}"
+                            Width="500" />
                         <Button
-                            Click="BrowseLimbusFolder_Click"
+                            Command="{Binding BrowseLimbusFolderCommand}"
                             Content="Выбрать"
                             Height="60"
                             Width="150" />
@@ -170,8 +174,8 @@
                             Classes="framed"
                             Height="60"
                             PasswordChar="*"
-                            Width="500"
-                            x:Name="AngelaTokenBox" />
+                            Text="{Binding AngelaToken}"
+                            Width="500" />
                     </StackPanel>
 
                     <StackPanel
@@ -186,9 +190,9 @@
                             AcceptsReturn="True"
                             Classes="framed"
                             Height="500"
+                            Text="{Binding AngelaPrompt}"
                             TextWrapping="Wrap"
-                            Width="500"
-                            x:Name="AngelaPromptBox" />
+                            Width="500" />
                     </StackPanel>
 
                     <StackPanel
@@ -200,7 +204,7 @@
                             VerticalAlignment="Center"
                             Width="150" />
                         <Button
-                            Click="OpenFolderWithLogs_Click"
+                            Command="{Binding OpenFolderWithLogsCommand}"
                             Content="Открыть папку с логами"
                             Height="60"
                             Width="500" />
