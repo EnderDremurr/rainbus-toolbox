@@ -209,6 +209,7 @@ public class App : Application
         services.AddSingleton<MassReplacementService>();
         services.AddSingleton<ConfigProvider>();
         services.AddSingleton<EditorFactory>();
+        services.AddSingleton<DialogService>();
     }
 
     private static void RegisterUIServices(ServiceCollection services)
@@ -221,6 +222,7 @@ public class App : Application
         services.AddSingleton<InitializationWindowViewModel>();
 
         services.AddTransient<SettingsWindow>();
+        services.AddTransient<SettingsWindowViewModel>();
 
         // tab viewmodels
         services.AddSingleton<TranslationTabViewModel>();
