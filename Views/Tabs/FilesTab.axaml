@@ -1,6 +1,6 @@
 <UserControl
     d:DesignHeight="450"
-    d:DesignWidth="800"
+    d:DesignWidth="900"
     mc:Ignorable="d"
     x:Class="RainbusToolbox.Views.Tabs.FilesTab"
     x:DataType="tabs:FilesTabViewModel"
@@ -12,53 +12,101 @@
 
     <Panel>
         <!--  Main menu  -->
-        <StackPanel
+        <Grid
+            ColumnDefinitions="*,*,*,*"
             IsVisible="{Binding !ShowRegexEditor}"
-            Margin="20"
-            Spacing="10">
-            <Button
-                Classes="header"
-                Command="{Binding ParseFilesCommand}"
-                Content="Добавить новые файлы из игры"
-                Height="80"
-                HorizontalAlignment="Center"
-                Width="480" />
-            <Button
-                Classes="header"
-                Command="{Binding ReplaceAllTagsWithMeshesAsync}"
-                Content="Заменить все теги формата [Key:'Value'] на html/TMPro"
-                Height="80"
-                HorizontalAlignment="Center"
-                Width="720" />
-            <Button
-                Classes="header"
-                Command="{Binding PullNewKeywordsFromTheGame}"
-                Content="Добавить новые кейворды из игры"
-                Height="80"
-                HorizontalAlignment="Center"
-                Width="720" />
-            <Button
-                Classes="header"
-                Command="{Binding DefineNewKeywordsFromTheGame}"
-                Content="Определить цвета новых кейвордов"
-                Height="80"
-                HorizontalAlignment="Center"
-                Width="720" />
-            <Button
-                Classes="header"
-                Command="{Binding OverrideCurrentKeywordsWithMTL}"
-                Content="Скачать кейворды от MTL (Перезаписывает то, что есть)"
-                Height="80"
-                HorizontalAlignment="Center"
-                Width="720" />
-            <Button
-                Classes="header"
-                Command="{Binding OpenRegexEditor}"
-                Content="Редактор автозамен"
-                Height="80"
-                HorizontalAlignment="Center"
-                Width="720" />
-        </StackPanel>
+            Margin="20">
+
+            <StackPanel
+                Grid.Column="0"
+                Margin="20"
+                Orientation="Vertical"
+                Spacing="10">
+
+                <TextBlock
+                    Classes="header"
+                    Text="Манипуляции с игрой"
+                    TextAlignment="Center" />
+
+                <Button
+                    Classes="header"
+                    Command="{Binding ParseFilesCommand}"
+                    Content="Добавить новые файлы из игры"
+                    Height="90"
+                    HorizontalAlignment="Center" />
+                <Button
+                    Classes="header"
+                    Command="{Binding PullNewKeywordsFromTheGame}"
+                    Content="Добавить новые&#10;кейворды из игры"
+                    Height="90"
+                    HorizontalAlignment="Center" />
+
+            </StackPanel>
+
+            <StackPanel
+                Grid.Column="1"
+                Margin="20"
+                Orientation="Vertical"
+                Spacing="10">
+
+                <TextBlock
+                    Classes="header"
+                    Text="Манипуляции с кейвордами"
+                    TextAlignment="Center" />
+
+                <Button
+                    Classes="header"
+                    Command="{Binding DefineNewKeywordsFromTheGame}"
+                    Content="Определить цвета&#10;новых кейвордов"
+                    Height="90"
+                    HorizontalAlignment="Center" />
+                <Button
+                    Classes="header"
+                    Command="{Binding OverrideCurrentKeywordsWithMTL}"
+                    Content="Скачать кейворды от MTL&#10;(Перезаписывает то, что есть)"
+                    Height="90"
+                    HorizontalAlignment="Center" />
+                <Button
+                    Classes="header"
+                    Command="{Binding ReplaceAllTagsWithMeshesAsync}"
+                    Content="Заменить все теги формата&#10;[Key:'Value'] на html/TMPro"
+                    Height="90"
+                    HorizontalAlignment="Center" />
+            </StackPanel>
+
+            <StackPanel
+                Grid.Column="2"
+                Margin="20"
+                Orientation="Vertical"
+                Spacing="10">
+
+                <TextBlock
+                    Classes="header"
+                    Text="Другое"
+                    TextAlignment="Center" />
+
+            </StackPanel>
+
+            <StackPanel
+                Grid.Column="3"
+                Margin="20"
+                Orientation="Vertical"
+                Spacing="10">
+
+                <TextBlock
+                    Classes="header"
+                    Text="Автозамены"
+                    TextAlignment="Center" />
+                <Button
+                    Classes="header"
+                    Command="{Binding OpenRegexEditor}"
+                    Content="Редактор автозамен"
+                    Height="90"
+                    HorizontalAlignment="Center" />
+
+            </StackPanel>
+
+        </Grid>
 
         <!--  Regex editor  -->
         <DockPanel IsVisible="{Binding ShowRegexEditor}">
