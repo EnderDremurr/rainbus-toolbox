@@ -29,7 +29,8 @@ public partial class ReleaseTabViewModel : ObservableObject, IMainWindowTab
         LocalizationManager localizationManager,
         KeywordProcessingService keywordProcessingService,
         MassReplacementService massReplacementService,
-        GitManager gitManager)
+        GitManager gitManager,
+        DialogService dialogService)
     {
         _dataManager = dataManager;
         PingSetRole = !string.IsNullOrWhiteSpace(_dataManager.Settings.DiscordRoleToPing);
@@ -38,6 +39,7 @@ public partial class ReleaseTabViewModel : ObservableObject, IMainWindowTab
         _localizationManager = localizationManager;
         _keywordProcessingService = keywordProcessingService;
         _massReplacementService = massReplacementService;
+        _dialogService = dialogService;
     }
 
     #endregion
@@ -108,6 +110,7 @@ public partial class ReleaseTabViewModel : ObservableObject, IMainWindowTab
     private readonly LocalizationManager _localizationManager;
     private readonly KeywordProcessingService _keywordProcessingService;
     private readonly MassReplacementService _massReplacementService;
+    private readonly DialogService _dialogService;
 
     #endregion
 
@@ -179,16 +182,15 @@ public partial class ReleaseTabViewModel : ObservableObject, IMainWindowTab
         var storage = top.StorageProvider;
 
 
-        var files = await storage.OpenFilePickerAsync(new FilePickerOpenOptions
+        var file = await _dialogService.PickSingleFileAsync(new FilePickerOpenOptions
         {
             Title = "Выбери картиночку пупсик",
             AllowMultiple = false,
             FileTypeFilter = [FilePickerFileTypes.ImageAll]
         });
 
-        if (files.Count == 0) return;
-
-        var file = files[0].Path.LocalPath;
+        if (file == null)
+            return;
 
         _selectedFilePath = file;
         SelectedFileName = Path.GetFileName(_selectedFilePath);

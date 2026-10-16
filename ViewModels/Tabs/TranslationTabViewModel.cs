@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.Input;
 using DynamicData.Binding;
 using RainbusToolbox.Models;
 using RainbusToolbox.Models.LimbusSerialization;
+using RainbusToolbox.Services;
 using RainbusToolbox.Services.ExternalServices;
 using RainbusToolbox.Services.RepositoryServices;
 using RainbusToolbox.Utilities;
@@ -18,6 +19,7 @@ namespace RainbusToolbox.ViewModels.Tabs;
 public partial class TranslationTabViewModel : ObservableObject, IMainWindowTab
 {
     private readonly ConfigProvider _configProvider;
+    private readonly DialogService _dialogService;
 
     private readonly DiscordRPCService _discordRpcService;
 
@@ -44,12 +46,13 @@ public partial class TranslationTabViewModel : ObservableObject, IMainWindowTab
     private bool _isFileLoaded;
 
     public TranslationTabViewModel(LocalizationManager localizationManager, ConfigProvider configProvider,
-        DiscordRPCService discordRpcService, EditorFactory editorFactory)
+        DiscordRPCService discordRpcService, EditorFactory editorFactory, DialogService dialogService)
     {
         _discordRpcService = discordRpcService;
         _configProvider = configProvider;
         _localizationManager = localizationManager;
         _editorFactory = editorFactory;
+        _dialogService = dialogService;
 
         _localizationManager.OnInitializedSuccessfully += InitShortcuts;
 
@@ -100,16 +103,15 @@ public partial class TranslationTabViewModel : ObservableObject, IMainWindowTab
             FilePickerFileTypes.All
         };
 
-        var files = await storage.OpenFilePickerAsync(new FilePickerOpenOptions
+        var file = await _dialogService.PickSingleFileAsync(new FilePickerOpenOptions
         {
             Title = "Выбери файлик пупсик",
             AllowMultiple = false,
             FileTypeFilter = fileTypes
         });
 
-        if (files.Count == 0) return;
-
-        var file = files[0].Path.LocalPath;
+        if (file == null)
+            return;
 
 
         LoadFile(file);

@@ -11,7 +11,9 @@ namespace RainbusToolbox.ViewModels.Misc;
 
 public partial class InitializationWindowViewModel : ObservableObject
 {
+    private readonly ClipboardService _clipboardService;
     private readonly PersistentDataManager _dataManager;
+    private readonly DialogService _dialogService;
 
     [ObservableProperty]
     private string _gitHubTokenStatus = "Ты не залогинен";
@@ -22,26 +24,37 @@ public partial class InitializationWindowViewModel : ObservableObject
     [ObservableProperty]
     private string _repoPath = @"C:\Path\To\Repo";
 
-    public InitializationWindowViewModel(PersistentDataManager dataManager)
+    public InitializationWindowViewModel(PersistentDataManager dataManager, DialogService dialogService,
+        ClipboardService clipboardService)
     {
         _dataManager = dataManager;
+        _dialogService = dialogService;
+        _clipboardService = clipboardService;
 
         LoadPathsAndTokenStatus();
     }
-
-    // events for view
-    public event Func<string, Task<IStorageFolder?>>? RequestFolderPicker;
-    public event Action<string>? RequestGithubAuthPopup;
 
     [RelayCommand]
     private async Task SetGitHubTokenCommand()
     {
         try
         {
-            var newToken = await GithubAuthHelper.RequestGithubAuthAsync(userCode =>
+            var newToken = await GithubAuthHelper.RequestGithubAuthAsync(async userCode =>
             {
-                RequestGithubAuthPopup?.Invoke(userCode);
-                return Task.CompletedTask;
+                await _dialogService.ShowPopupAsync("Нужна авторизация",
+                    $"Проге нужен токен с GitHub.\nВведи этот код на открытой странице:\n\n{userCode}\n\nЗатем нажми ОК",
+                    false,
+                    "",
+                    null,
+                    new PopupButton
+                    {
+                        Label = "Скопировать код",
+                        ResultValue = "copy",
+                        KeepOpen = true,
+                        OnClick = () => _ = _clipboardService.SetClipboardTextAsync(userCode)
+                    },
+                    new PopupButton { Label = "OK", ResultValue = "ok" }
+                );
             });
 
             if (!await GithubManager.IsTokenValidAsync(newToken))
@@ -64,12 +77,15 @@ public partial class InitializationWindowViewModel : ObservableObject
     [RelayCommand]
     public async Task BrowseFolder()
     {
-        if (RequestFolderPicker == null) return;
-        var pickedFolder = await RequestFolderPicker.Invoke("Выбери папку с репозиторием");
-        if (pickedFolder == null) return;
-        var result = pickedFolder.Path.LocalPath;
+        var folder = await _dialogService.PickSingleFolderAsync(new FolderPickerOpenOptions
+        {
+            Title = "Выбери папку с репозиторием",
+            AllowMultiple = false
+        });
+        if (folder == null)
+            return;
 
-        var validatedPath = PersistentDataManager.ValidateRepoPath(result);
+        var validatedPath = PersistentDataManager.ValidateRepoPath(folder);
         if (validatedPath != null)
         {
             _dataManager.Settings.RepositoryPath = validatedPath;
@@ -80,12 +96,15 @@ public partial class InitializationWindowViewModel : ObservableObject
     [RelayCommand]
     public async Task BrowseLimbusFolder()
     {
-        if (RequestFolderPicker == null) return;
-        var pickedFolder = await RequestFolderPicker.Invoke("Выбери папку с лимбусом");
-        if (pickedFolder == null) return;
-        var result = pickedFolder.Path.LocalPath;
+        var folder = await _dialogService.PickSingleFolderAsync(new FolderPickerOpenOptions
+        {
+            Title = "Выбери папку с лимбусом",
+            AllowMultiple = false
+        });
+        if (folder == null)
+            return;
 
-        var validatedPath = PersistentDataManager.ValidateLimbusPath(result);
+        var validatedPath = PersistentDataManager.ValidateLimbusPath(folder);
         if (validatedPath != null)
         {
             _dataManager.Settings.PathToLimbus = validatedPath;
