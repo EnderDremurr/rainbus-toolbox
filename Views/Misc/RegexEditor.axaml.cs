@@ -1,19 +1,17 @@
 using Avalonia.Controls;
-using RainbusToolbox.Services.RepositoryServices;
 using RegexEditorViewModel = RainbusToolbox.ViewModels.Misc.RegexEditorViewModel;
 
 namespace RainbusToolbox.Views.Misc;
 
 public partial class RegexEditor : UserControl
 {
-    private RegexEditorViewModel _viewModel;
-
     public RegexEditor()
     {
         InitializeComponent();
-        DataContext = _viewModel =
-            new RegexEditorViewModel(
-                (LocalizationManager)App.Current.ServiceProvider.GetService(typeof(LocalizationManager)),
-                (MassReplacementService)App.Current.ServiceProvider.GetService(typeof(MassReplacementService)));
+    }
+
+    public RegexEditor(RegexEditorViewModel vm) : this()
+    {
+        DataContext = vm;
     }
 }

@@ -8,7 +8,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Newtonsoft.Json;
 using RainbusToolbox.Models.LimbusSerialization;
 using RainbusToolbox.ViewModels.Misc;
-using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.Services.RepositoryServices;
 
@@ -128,7 +127,7 @@ public sealed partial class KeywordProcessingService(
 
         if (_keywordColorList.All(c => c.Value != "Unknown"))
         {
-            await PopUpWindow.ShowAsync(parent!, "Определение цвета кейвордов",
+            await dialogService.ShowPopupAsync("Определение цвета кейвордов",
                 "Все кейворды имеют цвет, ничего делать не нужно!");
             return;
         }
@@ -161,7 +160,7 @@ public sealed partial class KeywordProcessingService(
 
         await File.WriteAllTextAsync(localizationManager.PathToKeywordColorList,
             JsonConvert.SerializeObject(_keywordColorList, Formatting.Indented));
-        await PopUpWindow.ShowAsync(parent!, "Определение цвета кейвордов",
+        await dialogService.ShowPopupAsync("Определение цвета кейвордов",
             "Все кейворды были определены!");
     }
 

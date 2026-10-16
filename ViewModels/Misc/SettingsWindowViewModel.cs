@@ -109,11 +109,14 @@ public partial class SettingsWindowViewModel : ObservableObject
         var isDirty = false;
 
         var settingsCache = _dataManager.Settings;
-        if (settingsCache.DiscordWebHook != DiscordWebhook &&
-            DiscordManager.ValidateWebhook(DiscordWebhook))
+        if (settingsCache.DiscordWebHook != DiscordWebhook)
         {
-            _dataManager.Settings.DiscordWebHook = DiscordWebhook;
-            isDirty = true;
+            var discordManager = new DiscordManager(settingsCache.DiscordWebHook!, _dialogService);
+            if (discordManager.ValidateWebhook(DiscordWebhook))
+            {
+                _dataManager.Settings.DiscordWebHook = DiscordWebhook;
+                isDirty = true;
+            }
         }
 
         if (settingsCache.RepositoryPath != RepoPath)

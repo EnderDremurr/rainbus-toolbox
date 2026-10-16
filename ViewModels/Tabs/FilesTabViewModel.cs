@@ -2,6 +2,7 @@ using System.Threading;
 using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using RainbusToolbox.Services;
 using RainbusToolbox.Services.ExternalServices;
 using RainbusToolbox.Services.RepositoryServices;
@@ -13,12 +14,17 @@ namespace RainbusToolbox.ViewModels.Tabs;
 public partial class FilesTabViewModel(
     LocalizationManager localizationManager,
     KeywordProcessingService keywordProcessingService,
-    DialogService dialogService)
+    DialogService dialogService,
+    IServiceProvider serviceProvider)
     : ObservableObject, IMainWindowTab
 {
     private CancellationTokenSource? _cancellationTokenSource;
 
-    [ObservableProperty] private bool _showRegexEditor;
+    [ObservableProperty]
+    private RegexEditor? _regexEditor;
+
+    [ObservableProperty]
+    private bool _showRegexEditor;
 
     #region Events
 
@@ -77,7 +83,7 @@ public partial class FilesTabViewModel(
             var totalFiles = result[2];
 
             var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
-            await PopUpWindow.ShowAsync(parent!, "Готово!",
+            await dialogService.ShowPopupAsync("Готово!",
                 $"Добавлено файлов: {newFiles}, Объединено файлов: {mergedFiles}, Всего обработано: {totalFiles}");
         }
         catch (OperationCanceledException)
@@ -106,12 +112,26 @@ public partial class FilesTabViewModel(
     [RelayCommand]
     public void OpenRegexEditor()
     {
+        var regexEditor = serviceProvider.GetRequiredService<RegexEditor>();
+        RegexEditor = regexEditor;
         ShowRegexEditor = true;
+    }
+
+    [RelayCommand]
+    public void CloseRegexEditorWithSave()
+    {
+        if (RegexEditor == null)
+            return;
+        var regexEditorVm = RegexEditor.DataContext as RegexEditorViewModel;
+        regexEditorVm?.SaveCurrentJsons();
+        RegexEditor = null;
+        ShowRegexEditor = false;
     }
 
     [RelayCommand]
     public void CloseRegexEditor()
     {
+        RegexEditor = null;
         ShowRegexEditor = false;
     }
 
@@ -152,7 +172,7 @@ public partial class FilesTabViewModel(
 
 
             var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
-            await PopUpWindow.ShowAsync(parent!, "Готово!",
+            await dialogService.ShowPopupAsync("Готово!",
                 $"Теги были заменены в {finalProcessed} файлов.");
         }
         catch (OperationCanceledException)

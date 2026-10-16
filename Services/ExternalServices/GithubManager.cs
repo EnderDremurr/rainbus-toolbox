@@ -5,9 +5,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using Avalonia.Controls.ApplicationLifetimes;
 using RainbusToolbox.Services.RepositoryServices;
-using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.Services.ExternalServices;
 
@@ -17,16 +15,18 @@ public sealed partial class GithubManager
 
 
     private const string ReleaseFooterFileName = "RELEASE_FOOTER.md";
+    private readonly DialogService _dialogService;
     private readonly GitManager _gitManager;
 
     private readonly HttpClient _httpClient = new();
     private readonly PersistentDataManager _persistentDataManager;
 
     public GithubManager(PersistentDataManager persistentDataManager,
-        GitManager gitManager)
+        GitManager gitManager, DialogService dialogService)
     {
         _persistentDataManager = persistentDataManager;
         _gitManager = gitManager;
+        _dialogService = dialogService;
 
         _httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RainbusToolbox", "1.0"));
     }
@@ -65,8 +65,7 @@ public sealed partial class GithubManager
     {
         if (!await IsConnectionValid())
         {
-            var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
-            await PopUpWindow.ShowAsync(parent!, "Ты в оффлайн режиме!",
+            await _dialogService.ShowPopupAsync("Ты в оффлайн режиме!",
                 "Не удаётся подключится к гитхабу, поэтому увы!");
             return null;
         }

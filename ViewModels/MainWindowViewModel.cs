@@ -188,7 +188,7 @@ public partial class MainWindowViewModel : ObservableObject
         if (!await _githubManager.IsConnectionValid())
         {
             var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
-            await PopUpWindow.ShowAsync(parent!, "Ты в оффлайн режиме!",
+            await _dialogService.ShowPopupAsync("Ты в оффлайн режиме!",
                 "Не удаётся подключится к гитхабу, поэтому увы!");
             return;
         }

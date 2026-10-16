@@ -7,7 +7,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:misc="clr-namespace:RainbusToolbox.Views.Misc"
     xmlns:tabs="clr-namespace:RainbusToolbox.ViewModels.Tabs"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
@@ -63,17 +62,26 @@
 
         <!--  Regex editor  -->
         <DockPanel IsVisible="{Binding ShowRegexEditor}">
-            <Button
-                Command="{Binding CloseRegexEditorCommand}"
-                Content="Назад"
+            <StackPanel
                 DockPanel.Dock="Top"
-                Height="70"
-                HorizontalAlignment="Left"
                 Margin="8,4"
-                Padding="12,4"
-                VerticalAlignment="Center"
-                Width="200" />
-            <misc:RegexEditor />
+                Orientation="Horizontal"
+                Spacing="8">
+                <Button
+                    Command="{Binding CloseRegexEditorWithSaveCommand}"
+                    Content="Сохранить и закрыть"
+                    Height="70"
+                    Padding="12,4"
+                    Width="600" />
+                <Button
+                    Command="{Binding CloseRegexEditorCommand}"
+                    Content="Закрыть (Без сохранения)"
+                    Height="70"
+                    Padding="12,4"
+                    Width="600" />
+            </StackPanel>
+
+            <ContentControl Content="{Binding RegexEditor}" />
         </DockPanel>
     </Panel>
 </UserControl>

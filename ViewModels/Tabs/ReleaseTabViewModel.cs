@@ -14,7 +14,6 @@ using RainbusToolbox.Services.ExternalServices;
 using RainbusToolbox.Services.RepositoryServices;
 using RainbusToolbox.Utilities;
 using RainbusToolbox.ViewModels.Misc;
-using RainbusToolbox.Views.Misc;
 using ReplacementEntry = RainbusToolbox.Models.ReplacementEntry;
 
 namespace RainbusToolbox.ViewModels.Tabs;
@@ -55,7 +54,7 @@ public partial class ReleaseTabViewModel : ObservableObject, IMainWindowTab
         if (!await _githubManager.IsConnectionValid())
         {
             var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
-            await PopUpWindow.ShowAsync(parent!, "Ты в оффлайн режиме!",
+            await _dialogService.ShowPopupAsync("Ты в оффлайн режиме!",
                 "Не удаётся подключится к гитхабу, поэтому увы!");
             VersionDisplay = "Оффлайн режим!";
             return;
@@ -204,21 +203,21 @@ public partial class ReleaseTabViewModel : ObservableObject, IMainWindowTab
 
         if (!await _githubManager.IsConnectionValid())
         {
-            await PopUpWindow.ShowAsync(parent!, "Ты в оффлайн режиме!",
+            await _dialogService.ShowPopupAsync("Ты в оффлайн режиме!",
                 "Не удаётся подключится к гитхабу, поэтому увы!");
             return;
         }
 
         if (string.IsNullOrWhiteSpace(_dataManager.Settings.GitHubToken))
         {
-            await PopUpWindow.ShowAsync(parent!, "Ошибка!",
+            await _dialogService.ShowPopupAsync("Ошибка!",
                 "Для создания релиза необходимо залогиниться в аккаунт гитхаб");
             return;
         }
 
         if (EditorText.Length > 1800)
         {
-            await PopUpWindow.ShowAsync(parent!, "Ошибка!",
+            await _dialogService.ShowPopupAsync("Ошибка!",
                 $"Длина описания не должна составлять больше 1800 символов. Сейчас символов - {EditorText.Length}");
             return;
         }
@@ -269,11 +268,12 @@ public partial class ReleaseTabViewModel : ObservableObject, IMainWindowTab
 
             if (releaseLink == null) throw new Exception("Релиз провалился!");
 
-            // Handle Discord section options - only send if SendToDiscord is checked
-            if (SendToDiscord && DiscordManager.ValidateWebhook(_dataManager.Settings.DiscordWebHook))
+            var discordManager = new DiscordManager(_dataManager.Settings.DiscordWebHook!, _dialogService);
+            // if send to discord is checked + service tells the hook is good
+            if (SendToDiscord && discordManager.ValidateWebhook(_dataManager.Settings.DiscordWebHook))
             {
                 LoadingScreenViewModel.StartLoading("Отправляется сообщение в дискорд...");
-                var discordManager = new DiscordManager(_dataManager.Settings.DiscordWebHook!);
+
 
                 var discordMessage = $"# {localizationName} v{nextVersion}!!!\n" + EditorText;
 
@@ -291,7 +291,7 @@ public partial class ReleaseTabViewModel : ObservableObject, IMainWindowTab
 
             LoadingScreenViewModel.SetText("Готово!");
             // Success message
-            await PopUpWindow.ShowAsync(parent!, "Успешно!",
+            await _dialogService.ShowPopupAsync("Успешно!",
                 string.Format(AppLang.ReleaseCreationSuccess, nextVersion));
         }
         catch (Exception ex)

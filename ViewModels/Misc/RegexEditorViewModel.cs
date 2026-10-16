@@ -2,28 +2,30 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
-using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using RainbusToolbox.Models;
+using RainbusToolbox.Services;
 using RainbusToolbox.Services.RepositoryServices;
-using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.ViewModels.Misc;
 
 public partial class RegexEditorViewModel : ObservableObject
 {
+    private readonly DialogService _dialogService;
     private readonly MassReplacementService _massReplacementService;
     private readonly string _pathToRegexJson;
 
     private CancellationTokenSource? _cancellationTokenSource;
 
 
-    public RegexEditorViewModel(LocalizationManager localizationManager, MassReplacementService massReplacementService)
+    public RegexEditorViewModel(LocalizationManager localizationManager, MassReplacementService massReplacementService,
+        DialogService dialogService)
     {
         _pathToRegexJson = localizationManager.PathToRegexJson;
         _massReplacementService = massReplacementService;
+        _dialogService = dialogService;
 
         if (!File.Exists(_pathToRegexJson)) return;
 
@@ -82,8 +84,7 @@ public partial class RegexEditorViewModel : ObservableObject
             await _massReplacementService.RunOneRegexForAllFilesAsync(
                 entry, progress, _cancellationTokenSource.Token);
 
-            var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
-            await PopUpWindow.ShowAsync(parent!, "Готово!", $"Замена \"{entry.Target}\" завершена.");
+            await _dialogService.ShowPopupAsync("Готово!", $"Замена \"{entry.Target}\" завершена.");
         }
         catch (OperationCanceledException)
         {
@@ -118,8 +119,7 @@ public partial class RegexEditorViewModel : ObservableObject
             await _massReplacementService.RunAllRegexesForAllFilesAsync(
                 Entries.ToList(), progress, _cancellationTokenSource.Token);
 
-            var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
-            await PopUpWindow.ShowAsync(parent!, "Готово!", "Все замены завершены.");
+            await _dialogService.ShowPopupAsync("Готово!", "Все замены завершены.");
         }
         catch (OperationCanceledException)
         {

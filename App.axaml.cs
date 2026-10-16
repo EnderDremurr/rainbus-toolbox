@@ -225,6 +225,9 @@ public class App : Application
         services.AddTransient<SettingsWindow>();
         services.AddTransient<SettingsWindowViewModel>();
 
+        services.AddTransient<RegexEditor>();
+        services.AddTransient<RegexEditorViewModel>();
+
         // tab viewmodels
         services.AddSingleton<TranslationTabViewModel>();
         services.AddSingleton<FilesTabViewModel>();

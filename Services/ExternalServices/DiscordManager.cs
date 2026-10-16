@@ -1,17 +1,18 @@
 using System.IO;
-using Avalonia.Controls.ApplicationLifetimes;
 using Discord.Webhook;
-using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.Services.ExternalServices;
 
 public sealed class DiscordManager
 {
-    public DiscordManager(string webhookUrl)
+    private readonly DialogService _dialogService;
+
+    public DiscordManager(string webhookUrl, DialogService dialogService)
     {
         if (!ValidateWebhook(webhookUrl))
             return;
 
+        _dialogService = dialogService;
         Client = new DiscordWebhookClient(webhookUrl);
     }
 
@@ -20,10 +21,9 @@ public sealed class DiscordManager
 
     public async Task SendMessageAsync(string message, string? imagePath = null)
     {
-        var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
         if (Client == null)
         {
-            _ = PopUpWindow.ShowAsync(parent!, "Ошибка",
+            _ = _dialogService.ShowPopupAsync("Ошибка",
                 "Ошибка при отправке сообщения, чето поломалась. Проверь вебхук в настройках");
             return;
         }
@@ -35,23 +35,21 @@ public sealed class DiscordManager
     }
 
 
-    public static bool ValidateWebhook(string? webhookUrl)
+    public bool ValidateWebhook(string? webhookUrl)
     {
-        var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
-
         if (string.IsNullOrWhiteSpace(webhookUrl))
         {
-            _ = PopUpWindow.ShowAsync(parent!, "Ошибка", "Не указан вебхук");
+            _ = _dialogService.ShowPopupAsync("Ошибка", "Не указан вебхук");
             return false;
         }
 
         try
         {
-            var cl = new DiscordWebhookClient(webhookUrl);
+            var unused = new DiscordWebhookClient(webhookUrl);
         }
         catch
         {
-            _ = PopUpWindow.ShowAsync(parent!, "Ошибка", "Вебхук что ты вписал хуйня ебаная, поставь другой");
+            _ = _dialogService.ShowPopupAsync("Ошибка", "Вебхук что ты вписал хуйня ебаная, поставь другой");
             return false;
         }
 

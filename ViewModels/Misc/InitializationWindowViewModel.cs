@@ -5,7 +5,6 @@ using CommunityToolkit.Mvvm.Input;
 using RainbusToolbox.Services;
 using RainbusToolbox.Services.ExternalServices;
 using RainbusToolbox.Utilities.NetworkUtilities;
-using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.ViewModels.Misc;
 
@@ -118,7 +117,7 @@ public partial class InitializationWindowViewModel : ObservableObject
         Save();
 
         var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
-        _ = PopUpWindow.ShowAsync(parent!, "Сохранено!",
+        _ = _dialogService.ShowPopupAsync("Сохранено!",
             "Настройки были успешно сохранены, теперь нужно просто перезапустить прогу!");
     }
 
