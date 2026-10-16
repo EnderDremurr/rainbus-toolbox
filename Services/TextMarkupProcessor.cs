@@ -13,6 +13,11 @@ namespace RainbusToolbox.Services;
 
 public sealed class TextMarkupProcessor
 {
+    // TODO: parse tags + their colors from keyword_colors.json, color "built in" tags green (find where are they stored too)
+    // [] texts without spaces - tags
+    // [key:*value*] - translated tags, with colors from json (make : and * be some timid color like slightly gray)
+    // [] texts that hase space inside are just texts, no need to color them
+
     // TODO: slopreview
     public static List<Inline> ConvertRawToRich(string raw)
     {

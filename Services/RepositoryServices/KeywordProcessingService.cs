@@ -87,7 +87,7 @@ public sealed partial class KeywordProcessingService(
         }
     }
 
-    public async Task<Dictionary<string, string>?> DownloadMTLKeywordColorsAsync()
+    public async Task DownloadMTLKeywordColorsAndOverrideCurrentAsync()
     {
         try
         {
@@ -98,22 +98,25 @@ public sealed partial class KeywordProcessingService(
             using var reader = new StringReader(content);
             while (await reader.ReadLineAsync() is { } line)
             {
-                if (string.IsNullOrWhiteSpace(line)) continue;
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+
                 var parts = line.Split('¤', StringSplitOptions.RemoveEmptyEntries);
-                if (parts.Length == 2)
-                {
-                    var key = parts[0].Trim();
-                    var value = parts[1].Trim();
-                    dict.TryAdd(key, value);
-                }
+                if (parts.Length != 2)
+                    continue;
+
+                var key = parts[0].Trim();
+                var value = GetColorName(parts[1].Trim());
+                dict.TryAdd(key, value);
             }
 
-            return dict;
+            var keywordColorPath = localizationManager.PathToKeywordColorList;
+            File.Delete(keywordColorPath);
+            await File.WriteAllTextAsync(keywordColorPath, JsonConvert.SerializeObject(dict, Formatting.Indented));
         }
         catch (Exception e)
         {
             await App.Current.HandleNonFatalExceptionAsync(e);
-            return null;
         }
     }
 
@@ -293,9 +296,14 @@ public sealed partial class KeywordProcessingService(
 
         var pathToGameLocalization = localizationManager.PathToReferenceLocalization;
 
+        Log.Debug("Starting to add new keywords from the game. " +
+                  "Path to origin: {PathToGameLocalization}, " +
+                  "does exist: {Exists}",
+            pathToGameLocalization, Directory.Exists(pathToGameLocalization));
+
         // find all files of BattleKeywords*.json
         var filesToScan =
-            Directory.GetFiles(pathToGameLocalization, "BattleKeywords*.json", SearchOption.AllDirectories);
+            Directory.GetFiles(pathToGameLocalization, "*BattleKeywords*.json", SearchOption.AllDirectories);
 
         progress?.Report($"Found {filesToScan.Length} keyword files");
         var oldKeywordCount = _keywordColorList.Count;
@@ -303,17 +311,35 @@ public sealed partial class KeywordProcessingService(
         // parse parse parse
         foreach (var file in filesToScan)
         {
+            Log.Debug("Scanning file {File}", file);
             cancellationToken.ThrowIfCancellationRequested();
             var deserialized =
                 JsonConvert.DeserializeObject<BufLocalizationFile>(
                     await File.ReadAllTextAsync(file, cancellationToken));
             var ids = deserialized?.DataList.Select(x => x.Id) ?? [];
-            foreach (var id in ids) _keywordColorList.TryAdd(id, "Unknown");
+            foreach (var id in ids)
+            {
+                Log.Debug("Found new keyword: {Id}", id);
+                _keywordColorList.TryAdd(id, "Unknown");
+            }
         }
 
         await File.WriteAllTextAsync(localizationManager.PathToKeywordColorList,
             JsonConvert.SerializeObject(_keywordColorList, Formatting.Indented), cancellationToken);
         progress?.Report($"Added {_keywordColorList.Count - oldKeywordCount} keywords");
+    }
+
+    public string GetColorName(string hex)
+    {
+        var color = hex switch
+        {
+            "#f8c200" => "Buff",
+            "#e30000" => "Debuff",
+            "#9f6a3a" => "Status",
+            _ => "Unknown"
+        };
+
+        return color;
     }
 
     public string? GetKeywordColor(string keyword)

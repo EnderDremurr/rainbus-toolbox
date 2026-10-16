@@ -2,6 +2,7 @@ using System.Threading;
 using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using RainbusToolbox.Services;
 using RainbusToolbox.Services.ExternalServices;
 using RainbusToolbox.Services.RepositoryServices;
 using RainbusToolbox.ViewModels.Misc;
@@ -11,7 +12,8 @@ namespace RainbusToolbox.ViewModels.Tabs;
 
 public partial class FilesTabViewModel(
     LocalizationManager localizationManager,
-    KeywordProcessingService keywordProcessingService)
+    KeywordProcessingService keywordProcessingService,
+    DialogService dialogService)
     : ObservableObject, IMainWindowTab
 {
     private CancellationTokenSource? _cancellationTokenSource;
@@ -206,5 +208,15 @@ public partial class FilesTabViewModel(
     public async Task DefineNewKeywordsFromTheGame()
     {
         await keywordProcessingService.AskToDefineKeywords();
+    }
+
+    [RelayCommand]
+    public async Task OverrideCurrentKeywordsWithMTL()
+    {
+        LoadingScreenViewModel.StartLoading("Скачивание кейвордов MTL...");
+        await keywordProcessingService.DownloadMTLKeywordColorsAndOverrideCurrentAsync();
+        await dialogService.ShowPopupAsync("Готово!",
+            "Старый список цветов кейвордов был перезаписан на список цветов MTL");
+        LoadingScreenViewModel.FinishLoading();
     }
 }

@@ -47,6 +47,13 @@
                 Width="720" />
             <Button
                 Classes="header"
+                Command="{Binding OverrideCurrentKeywordsWithMTL}"
+                Content="Скачать кейворды от MTL (Перезаписывает то, что есть)"
+                Height="80"
+                HorizontalAlignment="Center"
+                Width="720" />
+            <Button
+                Classes="header"
                 Command="{Binding OpenRegexEditor}"
                 Content="Редактор автозамен"
                 Height="80"

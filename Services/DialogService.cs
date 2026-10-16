@@ -64,4 +64,13 @@ public class DialogService
 
         return await PopUpWindow.ShowAsync(owner, title, message, hasInput, inputPlaceholder, initialValue, buttons);
     }
+
+    // this one is just a basic popup with and "ok" button
+    public async Task<PopUpWindowViewModel?> ShowPopupAsync(string title,
+        string message)
+    {
+        var owner = GetOwner();
+
+        return await PopUpWindow.ShowAsync(owner, title, message);
+    }
 }
