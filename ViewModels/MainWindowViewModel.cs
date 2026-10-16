@@ -30,7 +30,8 @@ public partial class MainWindowViewModel : ObservableObject
         FilesTabViewModel filesTabViewModel,
         OverviewTabViewModel overviewTabViewModel,
         ReleaseTabViewModel releaseTabViewModel,
-        DiscordRPCService discordRPCService)
+        DiscordRPCService discordRPCService,
+        DialogService dialogService)
     {
         _dataManager = dataManager;
         _githubManager = githubManager;
@@ -38,6 +39,7 @@ public partial class MainWindowViewModel : ObservableObject
         _localizationManager = localizationManager;
         _serviceProvider = serviceProvider;
         _discordRPCService = discordRPCService;
+        _dialogService = dialogService;
 
         TranslationTabViewModel = translationTabViewModel;
         FilesTabViewModel = filesTabViewModel;
@@ -116,6 +118,7 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly LocalizationManager _localizationManager;
     private readonly IServiceProvider _serviceProvider;
     private readonly DiscordRPCService _discordRPCService;
+    private readonly DialogService _dialogService;
 
     // viewmodels for tabs
 
@@ -211,8 +214,7 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private async Task Commit(Window ownerWindow)
     {
-        var vm = await PopUpWindow.ShowAsync(
-            ownerWindow,
+        var vm = await _dialogService.ShowPopupAsync(
             "Создание коммита",
             "Гит обязательно требует хотя бы 1 символ как описание коммита",
             true,

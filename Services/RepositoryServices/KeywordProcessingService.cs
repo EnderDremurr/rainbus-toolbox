@@ -12,7 +12,9 @@ using RainbusToolbox.Views.Misc;
 
 namespace RainbusToolbox.Services.RepositoryServices;
 
-public sealed partial class KeywordProcessingService(LocalizationManager localizationManager)
+public sealed partial class KeywordProcessingService(
+    LocalizationManager localizationManager,
+    DialogService dialogService)
 {
     private const string RCRKeywordColorsLink =
         "https://raw.githubusercontent.com/Let-It-Rain/RCR-LCB/refs/heads/main/keyword_colors.json";
@@ -131,7 +133,7 @@ public sealed partial class KeywordProcessingService(LocalizationManager localiz
         var colorlessKeywords = _keywordColorList.Where(c => c.Value == "Unknown");
         foreach (var colorlessKeyword in colorlessKeywords)
         {
-            var response = await PopUpWindow.ShowAsync(parent!, "Определение цвета кейвордов",
+            var response = await dialogService.ShowPopupAsync("Определение цвета кейвордов",
                 $"Обнаружен новый кейворд {colorlessKeyword.Key}, укажи его цвет",
                 false,
                 "",
@@ -237,17 +239,11 @@ public sealed partial class KeywordProcessingService(LocalizationManager localiz
                     Log.Debug($"Found {matches.Count} matches in {Path.GetFileName(file)}");
                 var replacedContent = _tagRegex.Replace(content, match =>
                 {
-                    Log.Debug($"Processing match: '{match.Value}'");
                     var result = GetMeshFromTag(match.Value);
                     Log.Debug($"Original: '{match.Value}'");
                     Log.Debug($"Result:   '{result}'");
-                    Log.Debug($"Are they equal? {match.Value == result}");
                     return result;
                 });
-
-                Log.Debug($"Content changed: {content != replacedContent}");
-                Log.Debug($"Original content length: {content.Length}");
-                Log.Debug($"Replaced content length: {replacedContent.Length}");
 
 
                 if (Math.Abs(content.Length - replacedContent.Length) < 100)

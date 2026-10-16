@@ -4,6 +4,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Platform.Storage;
+using RainbusToolbox.Services;
 using RainbusToolbox.ViewModels.Misc;
 using InitializationWindowViewModel = RainbusToolbox.ViewModels.Misc.InitializationWindowViewModel;
 
@@ -11,7 +12,8 @@ namespace RainbusToolbox.Views.Misc;
 
 public partial class InitializationWindow : Window
 {
-    public InitializationWindow(InitializationWindowViewModel viewModel)
+    public InitializationWindow(InitializationWindowViewModel viewModel, DialogService dialogService,
+        ClipboardService clipboardService)
     {
         InitializeComponent();
         SetupBackgroundSize();
@@ -32,7 +34,7 @@ public partial class InitializationWindow : Window
         {
             var clipboard = Clipboard;
 
-            await PopUpWindow.ShowAsync(this, "Нужна авторизация",
+            await dialogService.ShowPopupAsync("Нужна авторизация",
                 $"Проге нужен токен с GitHub.\nВведи этот код на открытой странице:\n\n{userCode}\n\nЗатем нажми ОК",
                 false,
                 "",
@@ -42,7 +44,7 @@ public partial class InitializationWindow : Window
                     Label = "Скопировать код",
                     ResultValue = "copy",
                     KeepOpen = true,
-                    OnClick = () => clipboard?.SetTextAsync(userCode)
+                    OnClick = () => _ = clipboardService.SetClipboardTextAsync(userCode)
                 },
                 new PopupButton { Label = "OK", ResultValue = "ok" }
             );
