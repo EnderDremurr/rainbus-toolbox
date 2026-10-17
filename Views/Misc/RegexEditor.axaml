@@ -11,12 +11,13 @@
 
     <DockPanel>
         <!--  Top toolbar  -->
-        <Border
+        <Grid
             Background="Transparent"
-            BorderThickness="0,0,0,1"
-            DockPanel.Dock="Top"
-            Padding="8,6">
+            ColumnDefinitions="Auto,*,Auto"
+            DockPanel.Dock="Top">
+
             <StackPanel
+                Grid.Column="0"
                 HorizontalAlignment="Stretch"
                 Orientation="Horizontal"
                 Spacing="6">
@@ -25,26 +26,124 @@
                     Content="Добавить замену"
                     Height="64"
                     Padding="14,0"
-                    Width="400" />
-                <Button
-                    Command="{Binding SaveCurrentJsonsCommand}"
-                    Content="Сохранить"
-                    Height="64"
-                    Padding="14,0"
-                    Width="400" />
+                    Width="320" />
                 <Button
                     Command="{Binding RunAllEntriesCommand}"
                     Content="Прогнать все"
                     Height="64"
-                    HorizontalAlignment="Right"
                     Padding="14,0"
-                    Width="400" />
+                    Width="320" />
+
+                <!--  Copy of loc. editor navigation bar  -->
             </StackPanel>
-        </Border>
+
+            <Border
+                Background="Transparent"
+                Grid.Column="2"
+                Height="100"
+                Padding="12">
+                <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
+
+                    <!--  Left Section  -->
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="6"
+                        VerticalAlignment="Center">
+                        <Button
+                            Command="{Binding StepIndex}"
+                            CommandParameter="-10"
+                            Content="◀ 10"
+                            Height="60"
+                            Width="90" />
+                        <Button
+                            Command="{Binding StepIndex}"
+                            CommandParameter="-5"
+                            Content="◀ 5"
+                            Height="60"
+                            Width="90" />
+                        <Button
+                            Command="{Binding StepIndex}"
+                            CommandParameter="-1"
+                            Content="◀ 1"
+                            Height="60"
+                            Width="90" />
+                    </StackPanel>
+
+                    <!--  Center Section  -->
+                    <Border
+                        Background="Transparent"
+                        CornerRadius="4"
+                        Grid.Column="1"
+                        Padding="8"
+                        VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox
+                                Background="Transparent"
+                                BorderThickness="0"
+                                FontFamily="{StaticResource MikodacsFont}"
+                                FontSize="20"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="{Binding NavigationText}"
+                                TextAlignment="Right"
+                                VerticalAlignment="Center"
+                                Width="80" />
+                            <TextBlock
+                                FontFamily="{StaticResource MikodacsFont}"
+                                FontSize="20"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text=" / "
+                                TextAlignment="Center"
+                                VerticalAlignment="Center"
+                                Width="20" />
+                            <TextBlock
+                                FontFamily="{StaticResource MikodacsFont}"
+                                FontSize="20"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="{Binding NavigationCountText}"
+                                TextAlignment="Left"
+                                VerticalAlignment="Center"
+                                Width="80" />
+                        </StackPanel>
+
+
+                    </Border>
+
+                    <!--  Right Section  -->
+                    <StackPanel
+                        Grid.Column="2"
+                        Orientation="Horizontal"
+                        Spacing="6"
+                        VerticalAlignment="Center">
+                        <Button
+                            Command="{Binding StepIndex}"
+                            CommandParameter="1"
+                            Content="1 ▶"
+                            Height="60"
+                            Width="90" />
+                        <Button
+                            Command="{Binding StepIndex}"
+                            CommandParameter="5"
+                            Content="5 ▶"
+                            Height="60"
+                            Width="90" />
+                        <Button
+                            Command="{Binding StepIndex}"
+                            CommandParameter="10"
+                            Content="10 ▶"
+                            Height="60"
+                            Width="90" />
+                    </StackPanel>
+
+                </Grid>
+            </Border>
+        </Grid>
 
         <!--  Entry list  -->
         <ScrollViewer>
-            <ItemsControl ItemsSource="{Binding Entries}" x:Name="EntriesControl">
+            <ItemsControl ItemsSource="{Binding CurrentPageEntries}" x:Name="EntriesControl">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="models1:ReplacementEntry">
                         <Border
@@ -184,5 +283,6 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
+
     </DockPanel>
 </UserControl>

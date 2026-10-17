@@ -239,4 +239,13 @@ public partial class FilesTabViewModel(
             "Старый список цветов кейвордов был перезаписан на список цветов MTL");
         LoadingScreenViewModel.FinishLoading();
     }
+
+    [RelayCommand]
+    public async Task AskRegexEditorToSave()
+    {
+        if (RegexEditor == null)
+            return;
+        var regexEditorVm = RegexEditor.DataContext as RegexEditorViewModel;
+        regexEditorVm?.SaveCurrentJsons();
+    }
 }

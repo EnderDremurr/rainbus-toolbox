@@ -56,6 +56,7 @@ public partial class GenericTranslationEditorViewModel<TFile, TItem> : Translati
         UpdateNavigation();
     }
 
+    // TODO: Make this work again, later
     private void OnNavigationTextChanged(string value)
     {
         if (int.TryParse(value, out var userIndex) && userIndex > 0) GoCustom();

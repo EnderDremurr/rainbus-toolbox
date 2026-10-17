@@ -110,24 +110,32 @@
 
         <!--  Regex editor  -->
         <DockPanel IsVisible="{Binding ShowRegexEditor}">
-            <StackPanel
+
+            <Grid
+                ColumnDefinitions="*,*,*"
+                ColumnSpacing="8"
                 DockPanel.Dock="Top"
-                Margin="8,4"
-                Orientation="Horizontal"
-                Spacing="8">
+                Margin="8,4">
+
                 <Button
                     Command="{Binding CloseRegexEditorWithSaveCommand}"
                     Content="Сохранить и закрыть"
+                    Grid.Column="0"
                     Height="70"
-                    Padding="12,4"
-                    Width="600" />
+                    Padding="12,4" />
+                <Button
+                    Command="{Binding AskRegexEditorToSaveCommand}"
+                    Content="Сохранить"
+                    Grid.Column="1"
+                    Height="70"
+                    Padding="12,4" />
                 <Button
                     Command="{Binding CloseRegexEditorCommand}"
-                    Content="Закрыть (Без сохранения)"
+                    Content="Закрыть"
+                    Grid.Column="2"
                     Height="70"
-                    Padding="12,4"
-                    Width="600" />
-            </StackPanel>
+                    Padding="12,4" />
+            </Grid>
 
             <ContentControl Content="{Binding RegexEditor}" />
         </DockPanel>
