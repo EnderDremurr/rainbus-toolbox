@@ -3,7 +3,6 @@ name: Release Rainbus Toolbox
 on:
   release:
     types: [created]
-  workflow_dispatch:
 
 jobs:
   build:
@@ -12,6 +11,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
@@ -71,15 +72,58 @@ jobs:
           gh release upload "$TAG" RainbusToolbox-osx-x64-${VERSION}.tar.gz --clobber
           gh release upload "$TAG" RainbusToolbox-osx-arm64-${VERSION}.tar.gz --clobber
 
-      - name: Notify Discord
-        uses: SethCohen/github-releases-to-discord@v1.13.1
-        with:
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
-          color: "9444642"
-          username: "Елена Дилдо"
-          avatar_url: "https://cdn.discordapp.com/attachments/1507019573080231938/1531590904455106790/3hh6b35.jpeg?ex=6a69c4af&is=6a68732f&hm=aeac1458eadb21b73b2e1330fc55dfd17494d370846fc38c3adf36ad358177c0&"
-          content: |
-            # Новый релиз Тулбокса!
-            @here 
-            ### Ссылки для скачивания:
-            [Windows](https://github.com/${{ github.repository }}/releases/download/${{ env.TAG }}/RainbusToolbox-win-x64-${{ env.VERSION }}.zip) **|** [Linux](https://github.com/${{ github.repository }}/releases/download/${{ env.TAG }}/RainbusToolbox-linux-x64-${{ env.VERSION }}.tar.gz) **|** [macOS Intel](https://github.com/${{ github.repository }}/releases/download/${{ env.TAG }}/RainbusToolbox-osx-x64-${{ env.VERSION }}.tar.gz) **|** [macOS Apple Silicon](https://github.com/${{ github.repository }}/releases/download/${{ env.TAG }}/RainbusToolbox-osx-arm64-${{ env.VERSION }}.tar.gz)
+      - name: Find previous tag
+        run: | 
+          PREV=$(git describe --tags --abbrev=0 "$TAG^" 2>/dev/null || true)
+          echo "PREV=$PREV" >> $GITHUB_ENV
+
+      - name: Add changelog
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          BODY: ${{ github.event.release.body }}
+        run: |
+          printf '%s\n\n# Changes:\n\n' "$BODY" > notes.md
+          git log "$PREV..$TAG" --no-merges \
+          --pretty=format:"* [%s](https://github.com/${{ github.repository }}/commit/%H)" >> notes.md
+          gh release edit "$TAG" --notes-file notes.md
+
+
+      - name: Discord release message
+        env:
+          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          RELEASE_NAME: ${{ github.event.release.name || github.event.release.tag_name }}
+          TAG: ${{ github.event.release.tag_name }}
+          VERSION: ${{ env.VERSION }}
+        run: |
+          set -euo pipefail
+
+          BASE="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}"
+
+          LINKS_TEXT="[Windows](${BASE}/RainbusToolbox-win-x64-${VERSION}.zip) **|** [Linux](${BASE}/RainbusToolbox-linux-x64-${VERSION}.tar.gz) **|** [macOS Intel](${BASE}/RainbusToolbox-osx-x64-${VERSION}.tar.gz) **|** [macOS Apple Silicon](${BASE}/RainbusToolbox-osx-arm64-${VERSION}.tar.gz)"
+
+          CONTENT=$(printf '# Новый релиз Тулбокса!\n@here\n### Ссылки для скачивания:\n%s' "$LINKS_TEXT")
+
+          jq -n \
+            --arg username "Елена Дилдо" \
+            --arg avatar_url "https://cdn.discordapp.com/attachments/1507019573080231938/1531590904455106790/3hh6b35.jpeg?ex=6a69c4af&is=6a68732f&hm=aeac1458eadb21b73b2e1330fc55dfd17494d370846fc38c3adf36ad358177c0&" \
+            --arg content "$CONTENT" \
+            --arg title "$RELEASE_NAME" \
+            --arg color "9444642" \
+            --rawfile description notes.md \
+            '{
+              username: $username,
+              avatar_url: $avatar_url,
+              content: $content,
+              embeds: [
+                {
+                  title: $title,
+                  description: $description[0:4000],
+                  color: ($color | tonumber)
+                }
+              ]
+            }' |
+            curl --fail-with-body --silent --show-error \
+              -H "Content-Type: application/json" \
+              --data-binary @- \
+              "$WEBHOOK"
+
