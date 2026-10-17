@@ -266,7 +266,8 @@ public partial class ReleaseTabViewModel : ObservableObject, IMainWindowTab
                 await _githubManager.CreateReleaseAsync($"{localizationName} v{nextVersion}", EditorText, package,
                     AppendReleaseFooter);
 
-            if (releaseLink == null) throw new Exception("Релиз провалился!");
+            if (releaseLink == null)
+                throw new Exception("Релиз провалился!");
 
             var discordManager = new DiscordManager(_dataManager.Settings.DiscordWebHook!, _dialogService);
             // if send to discord is checked + service tells the hook is good
@@ -281,7 +282,7 @@ public partial class ReleaseTabViewModel : ObservableObject, IMainWindowTab
                     discordMessage +=
                         $"\n\n[{AppLang.LocalizationManagerHyperlink}](<https://github.com/kimght/LimbusLocalizationManager/releases>)";
                 if (AppendReleaseLink)
-                    discordMessage += $"\n\n[Ссылка на релиз]({releaseLink})";
+                    discordMessage += $"[Ссылка на релиз]({releaseLink})";
 
                 if (PingSetRole && !string.IsNullOrWhiteSpace(_dataManager.Settings.DiscordRoleToPing))
                     discordMessage += $"\n<@&{_dataManager.Settings.DiscordRoleToPing}>";

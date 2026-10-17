@@ -449,8 +449,8 @@ public sealed class GitManager
 
         var nextVersion = versionType switch
         {
-            VersionType.Major => new Version(currentVersion.Major + 1, currentVersion.Minor, currentVersion.Build),
-            VersionType.Minor => new Version(currentVersion.Major, currentVersion.Minor + 1, currentVersion.Build),
+            VersionType.Major => new Version(currentVersion.Major + 1, 0, 0),
+            VersionType.Minor => new Version(currentVersion.Major, currentVersion.Minor + 1, 0),
             VersionType.Build => new Version(currentVersion.Major, currentVersion.Minor, currentVersion.Build + 1),
             _ => throw new ArgumentOutOfRangeException(nameof(versionType))
         };
