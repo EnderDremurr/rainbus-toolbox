@@ -5,17 +5,28 @@ namespace RainbusToolbox.Services.ExternalServices;
 
 public sealed class DiscordRPCService : IDisposable
 {
+    public const int MaxAssets = 37; // type how much images are currently added to the rpc, absolute max is 300
     private readonly DiscordRpcClient _client;
 
+    private readonly PersistentDataManager _persistentDataManager;
+
     private CancellationTokenSource? _rpcDebounce;
+
+    private int _selectedAsset; // assets are numerated from 1
     public string ProjectName = "Unknown";
 
     public string ProjectUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
 
-    public DiscordRPCService()
+    public DiscordRPCService(PersistentDataManager persistentDataManager)
     {
+        _persistentDataManager = persistentDataManager;
+        _selectedAsset = _persistentDataManager.Settings.SelectedDiscordRPCAssetId;
+
         _client = new DiscordRpcClient("1477335960785260676");
         _client.Initialize();
+
+        _persistentDataManager.OnRPCAssetIdChanged += () =>
+            SetActiveAssetKey(_persistentDataManager.Settings.SelectedDiscordRPCAssetId);
     }
 
     public void Dispose()
@@ -24,6 +35,14 @@ public sealed class DiscordRPCService : IDisposable
         _rpcDebounce?.Dispose();
         _client.Dispose();
     }
+
+    public void SetActiveAssetKey(int assetId)
+    {
+        Log.Debug("Got an event call to change Discord RPC large asset");
+        _selectedAsset = Math.Clamp(assetId, 0, MaxAssets);
+        _client.UpdateLargeAsset($"{_selectedAsset}");
+    }
+
 
     public async void SetState(string? state)
     {
@@ -42,9 +61,9 @@ public sealed class DiscordRPCService : IDisposable
                     : state,
                 Assets = new Assets
                 {
-                    LargeImageKey = "icon",
-                    LargeImageUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                    LargeImageText = "Нажми сюда"
+                    LargeImageKey = $"{_selectedAsset}",
+                    LargeImageUrl = "https://github.com/EnderDremurr/rainbus-toolbox",
+                    LargeImageText = "Rainbus Toolbox"
                 },
                 Buttons =
                 [

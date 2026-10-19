@@ -28,6 +28,8 @@ public sealed class PersistentDataManager
         get => _settings;
         set
         {
+            Log.Debug("Settings object was changed");
+
             var oldValue = _settings;
             _settings = value;
 
@@ -36,11 +38,16 @@ public sealed class PersistentDataManager
 
             if (oldValue.RepositoryPath != _settings.RepositoryPath)
                 OnRepositoryPathChanged?.Invoke();
+
+            if (oldValue.SelectedDiscordRPCAssetId != _settings.SelectedDiscordRPCAssetId)
+                OnRPCAssetIdChanged?.Invoke();
         }
     }
 
     public event Action? OnLimbusPathChanged;
     public event Action? OnRepositoryPathChanged;
+
+    public event Action? OnRPCAssetIdChanged;
 
     public void ReadFromFile()
     {

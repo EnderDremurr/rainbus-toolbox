@@ -12,6 +12,7 @@ namespace RainbusToolbox.ViewModels.Misc;
 
 public partial class SettingsWindowViewModel : ObservableObject
 {
+    private static readonly Random _random = new();
     private readonly ClipboardService _clipboardService;
     private readonly PersistentDataManager _dataManager;
     private readonly DialogService _dialogService;
@@ -109,48 +110,63 @@ public partial class SettingsWindowViewModel : ObservableObject
         var isDirty = false;
 
         var settingsCache = _dataManager.Settings;
+        var clonedSettings = _dataManager.Settings.Clone();
         if (settingsCache.DiscordWebHook != DiscordWebhook)
         {
             var discordManager = new DiscordManager(settingsCache.DiscordWebHook!, _dialogService);
             if (discordManager.ValidateWebhook(DiscordWebhook))
             {
-                _dataManager.Settings.DiscordWebHook = DiscordWebhook;
+                clonedSettings.DiscordWebHook = DiscordWebhook;
                 isDirty = true;
             }
         }
 
         if (settingsCache.RepositoryPath != RepoPath)
         {
-            _dataManager.Settings.RepositoryPath = RepoPath;
+            clonedSettings.RepositoryPath = RepoPath;
             isDirty = true;
         }
 
         if (settingsCache.PathToLimbus != LimbusPath)
         {
-            _dataManager.Settings.PathToLimbus = LimbusPath;
+            clonedSettings.PathToLimbus = LimbusPath;
             isDirty = true;
         }
 
         if (AngelaToken != settingsCache.DeepSeekToken)
         {
-            _dataManager.Settings.DeepSeekToken = AngelaToken;
+            clonedSettings.DeepSeekToken = AngelaToken;
             isDirty = true;
         }
 
         if (AngelaPrompt != settingsCache.AngelaPrompt)
         {
-            _dataManager.Settings.AngelaPrompt = AngelaPrompt;
+            clonedSettings.AngelaPrompt = AngelaPrompt;
             isDirty = true;
         }
 
         if (DiscordRoleToPing != settingsCache.DiscordRoleToPing)
         {
-            _dataManager.Settings.DiscordRoleToPing = DiscordRoleToPing;
+            clonedSettings.DiscordRoleToPing = DiscordRoleToPing;
             isDirty = true;
         }
 
+        if (DiscordRPCAssetId != settingsCache.SelectedDiscordRPCAssetId)
+        {
+            clonedSettings.SelectedDiscordRPCAssetId = DiscordRPCAssetId;
+            isDirty = true;
+        }
+
+
         if (isDirty)
+        {
+            _dataManager.Settings = clonedSettings;
             _dataManager.SaveToFile();
+            Log.Debug("User had changed one of the settings before closing the settings window. Saving new settings");
+            return;
+        }
+
+        Log.Debug("User didn't change any settings before closing the settings window");
     }
 
 
@@ -165,6 +181,7 @@ public partial class SettingsWindowViewModel : ObservableObject
             AngelaPrompt = data.AngelaPrompt ?? "";
             AngelaToken = data.DeepSeekToken ?? "";
             DiscordRoleToPing = data.DiscordRoleToPing ?? "";
+            DiscordRPCAssetId = data.SelectedDiscordRPCAssetId;
 
             GitHubAuthState = string.IsNullOrWhiteSpace(data.GitHubToken)
                 ? "Ты не залогинен"
@@ -175,6 +192,13 @@ public partial class SettingsWindowViewModel : ObservableObject
             _ = App.Current.HandleGlobalExceptionAsync(ex);
         }
     }
+
+    [RelayCommand]
+    public void RandomizeRPCAssetID()
+    {
+        DiscordRPCAssetId = _random.Next(1, DiscordRPCService.MaxAssets + 1);
+    }
+
 
     #region Variables
 
@@ -204,6 +228,9 @@ public partial class SettingsWindowViewModel : ObservableObject
 
     [ObservableProperty]
     public string _gitHubAuthState = "";
+
+    [ObservableProperty]
+    public int _discordRPCAssetId;
 
     #endregion
 }

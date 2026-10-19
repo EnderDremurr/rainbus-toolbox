@@ -101,6 +101,28 @@
                         <ToggleButton Content="{Binding WebhookToggleText}" IsChecked="{Binding IsWebhookVisible}" />
                     </StackPanel>
 
+                    <!--  Discord RPC asset selector  -->
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="10"
+                        VerticalAlignment="Center">
+                        <TextBlock
+                            Text="Номер ДС картинки:"
+                            VerticalAlignment="Center"
+                            Width="150" />
+                        <TextBox
+                            Classes="framed"
+                            Height="60"
+                            Text="{Binding DiscordRPCAssetId}"
+                            TextChanging="OnIdTextChanging"
+                            Width="500" />
+                        <Button
+                            Command="{Binding RandomizeRPCAssetIDCommand}"
+                            Content="Рандом"
+                            Height="60"
+                            Width="150" />
+                    </StackPanel>
+
                     <StackPanel
                         Orientation="Horizontal"
                         Spacing="10"

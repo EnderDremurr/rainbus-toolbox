@@ -13,4 +13,13 @@ public class SettingsData
 
     public string? DeepSeekToken { get; set; } = "";
     public string? AngelaPrompt { get; set; } = "";
+
+    public int SelectedDiscordRPCAssetId { get; set; } = 1;
+    public bool ShouldRandomizeRPCAssetsByTimer { get; set; } = false;
+    public int RPCAssetRandomizationTimerSeconds { get; set; } = 300;
+
+    public SettingsData Clone()
+    {
+        return (SettingsData)MemberwiseClone();
+    }
 }
