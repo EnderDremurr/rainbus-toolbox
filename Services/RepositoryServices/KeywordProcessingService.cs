@@ -328,7 +328,7 @@ public sealed partial class KeywordProcessingService(
         progress?.Report($"Added {_keywordColorList.Count - oldKeywordCount} keywords");
     }
 
-    public string GetColorName(string hex)
+    public static string GetColorName(string hex)
     {
         var color = hex switch
         {

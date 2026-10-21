@@ -83,6 +83,12 @@ public static class FileToObjectCaster
 
     public static Type? GetType(string pathToFile, Dictionary<string, string> fileTypeMap)
     {
+        if (Path.GetExtension(pathToFile).ToLower() != ".json")
+        {
+            Log.Debug("Object caster got a non-json file, returning null");
+            return null;
+        }
+
         Log.Debug("Received a cast request for file <{Path}>", pathToFile);
         var fileName = Path.GetFileNameWithoutExtension(pathToFile);
         var isKnownFile = fileTypeMap.TryGetValue(fileName, out var knownFileType);
