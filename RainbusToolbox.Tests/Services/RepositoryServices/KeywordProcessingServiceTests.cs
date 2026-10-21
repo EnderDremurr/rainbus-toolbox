@@ -11,7 +11,7 @@ public class KeywordProcessingServiceTests
     [InlineData("<sprite name=\\\"Agility\\\"><color=#f8c200><u><link=\\\"Agility\\\">Спешки</link></u></color>",
         "[Agility:*Спешки*]")]
     [InlineData(
-        "<sprite name=\\\"Breath\\\"><color=#f8c200><u><link=\\\"Breath\\\"><noparse>Дыхание</noparse>  </link></u></color>",
+        "<sprite name=\\\"Breath\\\"> <color=#f8c200><u> <link=\\\"Breath\\\"><noparse>Дыхание</noparse>  </link></u></color>",
         "[Breath:*Дыхание*]")]
     public void GetType_RevertMeshToTag_ReturnsProperTag(string mesh, string expected)
     {

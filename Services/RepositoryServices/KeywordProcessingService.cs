@@ -29,6 +29,8 @@ public sealed partial class KeywordProcessingService(
         @"(?:<noparse>)?(?<fill>.*?)(?:</noparse>)?</link></u></color>",
         RegexOptions.Singleline | RegexOptions.Compiled);
 
+    private static readonly Regex SpacesBetweenTagsRegex = new(@">\s+<", RegexOptions.Compiled);
+
     private readonly HttpClient _httpClient = new();
 
     private readonly Regex _tagRegex = TagRegex();
@@ -189,6 +191,7 @@ public sealed partial class KeywordProcessingService(
     // TODO: Slopreview
     public string GetMeshFromTag(string tag)
     {
+        // TODO: replace this shit with a proper regex later, cuz this fucker is huge 
         // Validate the tag format
         if (string.IsNullOrWhiteSpace(tag) || tag.Length < 2 || tag[0] != '[' || tag[^1] != ']')
             throw new ArgumentException("Invalid tag format");
@@ -293,7 +296,9 @@ public sealed partial class KeywordProcessingService(
         if (string.IsNullOrEmpty(mesh))
             return mesh;
 
-        return MeshRegex.Replace(mesh, ConvertMeshMatch);
+        var cleanedMesh = SpacesBetweenTagsRegex.Replace(mesh, "><"); // remove spaces between tags cuz it breaks shit
+
+        return MeshRegex.Replace(cleanedMesh, ConvertMeshMatch);
     }
     //TODO: do the progress reporting more cleanly, this shit sucks ass
 
