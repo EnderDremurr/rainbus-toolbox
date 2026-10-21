@@ -5,6 +5,7 @@
 [![Latest Release](https://img.shields.io/github/v/release/enderdremurr/rainbus-toolbox?color=blue)](https://github.com/enderdremurr/rainbus-toolbox/releases)
 [![Downloads](https://img.shields.io/github/downloads/enderdremurr/rainbus-toolbox/total?color=green)](https://github.com/enderdremurr/rainbus-toolbox/releases)
 [![Activity](https://img.shields.io/github/commit-activity/m/enderdremurr/rainbus-toolbox?color=orange)](https://github.com/enderdremurr/rainbus-toolbox/commits/main)
+![Tests](https://github.com/EnderDremurr/rainbus-toolbox/actions/workflows/tests.yml/badge.svg)
 
 
 ## License
