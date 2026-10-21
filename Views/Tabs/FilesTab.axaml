@@ -69,7 +69,13 @@
                 <Button
                     Classes="header"
                     Command="{Binding ReplaceAllTagsWithMeshesAsync}"
-                    Content="Заменить все теги формата&#10;[Key:'Value'] на html/TMPro"
+                    Content="Заменить все теги формата&#10;[Key:*Value*] на html/TMPro"
+                    Height="90"
+                    HorizontalAlignment="Center" />
+                <Button
+                    Classes="header"
+                    Command="{Binding ReverseTagReplacementCommand}"
+                    Content="Откатить все теги&#10;обратно в [Key:*Value*]"
                     Height="90"
                     HorizontalAlignment="Center" />
             </StackPanel>

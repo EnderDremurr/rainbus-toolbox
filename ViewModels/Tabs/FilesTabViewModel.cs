@@ -143,37 +143,52 @@ public partial class FilesTabViewModel(
         try
         {
             LoadingScreenViewModel.StartLoading("Замена тегов...");
-            var progress = new Progress<string>(message =>
-            {
-                if (message.Contains("Processed") && message.Contains("/"))
-                    try
-                    {
-                        var parts = message.Split('/');
-                        if (parts.Length >= 2)
-                        {
-                            var processed = int.Parse(parts[0].Split(' ').Last());
-                            var totalPart = parts[1].Split(' ')[0];
-                            var total = int.Parse(totalPart);
+            var progress = new Progress<(int ProcessedFiles, int TotalFiles, int ReplacementsCount)>(p =>
+                LoadingScreenViewModel.SetProgress(p.ProcessedFiles, p.TotalFiles));
 
-                            LoadingScreenViewModel.SetProgress(processed, total);
-                        }
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-            });
-
-            var finalProcessed = await keywordProcessingService.ReplaceEveryTagWithMesh(
+            var finalProcessed = await keywordProcessingService.ReplaceEveryTagWithMeshAsync(
                 localizationManager.PathToLocalization,
-                _cancellationTokenSource.Token,
-                progress
-            );
+                progress, _cancellationTokenSource.Token);
 
 
             var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
             await dialogService.ShowPopupAsync("Готово!",
                 $"Теги были заменены в {finalProcessed} файлов.");
+        }
+        catch (OperationCanceledException)
+        {
+            LoadingScreenViewModel.SetText("Операция отменена пользователем");
+        }
+        catch (Exception ex)
+        {
+            _ = App.Current.HandleNonFatalExceptionAsync(ex, "Ошибка при замене тегов");
+        }
+        finally
+        {
+            LoadingScreenViewModel.FinishLoading();
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
+        }
+    }
+
+    [RelayCommand]
+    public async Task ReverseTagReplacementAsync()
+    {
+        _cancellationTokenSource = new CancellationTokenSource();
+        try
+        {
+            LoadingScreenViewModel.StartLoading("Откат...");
+            var progress = new Progress<(int ProcessedFiles, int TotalFiles, int ReplacementsCount)>(p =>
+                LoadingScreenViewModel.SetProgress(p.ProcessedFiles, p.TotalFiles));
+
+            var finalProcessed = await keywordProcessingService.ReplaceEveryMeshWithTagAsync(
+                localizationManager.PathToLocalization,
+                progress, _cancellationTokenSource.Token);
+
+
+            var parent = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            await dialogService.ShowPopupAsync("Готово!",
+                $"Теги были откачены в {finalProcessed} файлов.");
         }
         catch (OperationCanceledException)
         {
@@ -199,10 +214,7 @@ public partial class FilesTabViewModel(
         {
             LoadingScreenViewModel.StartLoading("Начинается поиск новых кейвордов...");
             var progress = new Progress<string>(LoadingScreenViewModel.SetText);
-            await keywordProcessingService.PullNewKeywordsFromTheGame(
-                _cancellationTokenSource.Token,
-                progress
-            );
+            await keywordProcessingService.PullNewKeywordsFromTheGame(progress, _cancellationTokenSource.Token);
             LoadingScreenViewModel.SetText("Готово!");
             await Task.Delay(TimeSpan.FromSeconds(1), _cancellationTokenSource.Token); //replace with popup report later
         }

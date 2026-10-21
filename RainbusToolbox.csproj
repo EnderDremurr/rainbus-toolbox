@@ -108,4 +108,8 @@
             <LastGenOutput>AppLang.Designer.cs</LastGenOutput>
         </EmbeddedResource>
     </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="RainbusToolbox.Tests"/>
+    </ItemGroup>
 </Project>

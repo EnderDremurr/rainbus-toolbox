@@ -11,6 +11,7 @@ using RainbusToolbox.ViewModels.Misc;
 
 namespace RainbusToolbox.Services.RepositoryServices;
 
+//TODO: this entire class is a fucking mess
 public sealed partial class KeywordProcessingService(
     LocalizationManager localizationManager,
     DialogService dialogService)
@@ -21,13 +22,33 @@ public sealed partial class KeywordProcessingService(
     private const string MTLKeywordColorsLink =
         "https://raw.githubusercontent.com/kimght/LimbusCompanyRuMTL/main/data/build/keyword_colors.txt";
 
+    private static readonly Regex MeshRegex = new(
+        @"<sprite name=\\?""(?<spriteKey>[^""\\]+)\\?"">" +
+        @"<color=(?<color>[^>]+)><u>" +
+        @"<link=\\?""(?<linkKey>[^""\\]+)\\?"">" +
+        @"(?:<noparse>)?(?<fill>.*?)(?:</noparse>)?</link></u></color>",
+        RegexOptions.Singleline | RegexOptions.Compiled);
+
     private readonly HttpClient _httpClient = new();
 
-    private readonly Regex _tagRegex = MyRegex();
+    private readonly Regex _tagRegex = TagRegex();
 
     private bool _isInitialized;
 
     private Dictionary<string, string> _keywordColorList = [];
+
+    private static string ConvertMeshMatch(Match m)
+    {
+        var spriteKey = m.Groups["spriteKey"].Value;
+        if (!string.Equals(spriteKey, m.Groups["linkKey"].Value, StringComparison.Ordinal))
+            return m.Value;
+
+        var fill = m.Groups["fill"].Value;
+
+        return fill == spriteKey
+            ? $"[{spriteKey}]"
+            : $"[{spriteKey}:*{fill}*]";
+    }
 
     public async Task EnsureInitializedAsync()
     {
@@ -155,7 +176,8 @@ public sealed partial class KeywordProcessingService(
                 }
             );
 
-            _keywordColorList[colorlessKeyword.Key] = response.Result!;
+            if (response != null)
+                _keywordColorList[colorlessKeyword.Key] = response.Result!;
         }
 
         await File.WriteAllTextAsync(localizationManager.PathToKeywordColorList,
@@ -168,7 +190,7 @@ public sealed partial class KeywordProcessingService(
     public string GetMeshFromTag(string tag)
     {
         // Validate the tag format
-        if (string.IsNullOrWhiteSpace(tag) || tag.Length < 2 || tag[0] != '[' || tag[tag.Length - 1] != ']')
+        if (string.IsNullOrWhiteSpace(tag) || tag.Length < 2 || tag[0] != '[' || tag[^1] != ']')
             throw new ArgumentException("Invalid tag format");
 
         var inner = tag.Substring(1, tag.Length - 2); // strip [ and ]
@@ -207,21 +229,20 @@ public sealed partial class KeywordProcessingService(
         return mesh;
     }
 
-    // TODO: Slopreview
-    public async Task<int> ReplaceEveryTagWithMesh(string path, CancellationToken cancellationToken = default,
-        IProgress<string>? progress = null)
+
+    // TODO: this can also be made parallel like i did with regexes, should become way way faster, but it's not something i need to do right away
+    public async Task<int> ReplaceEveryTagWithMeshAsync(string path,
+        IProgress<(int ProcessedFiles, int TotalFiles, int ReplacementsCount)>? progress = null,
+        CancellationToken cancellationToken = default)
     {
         if (!Directory.Exists(path))
             throw new DirectoryNotFoundException($"Directory not found: {path}");
         await EnsureInitializedAsync();
 
+        var files = Directory.GetFiles(path, "*.json", SearchOption.AllDirectories).ToList();
+        var totalFiles = files.Count;
 
-        // Exclude JSON files from general processing to avoid corruption
-        var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories)
-            .Where(f => f.EndsWith(".json", StringComparison.OrdinalIgnoreCase));
-        var totalFiles = files.Count();
-
-        progress?.Report($"Starting replacement for {totalFiles} files...");
+        progress?.Report((0, totalFiles, 0));
 
         var processedCount = 0;
         var replacedCount = 0;
@@ -231,65 +252,118 @@ public sealed partial class KeywordProcessingService(
             cancellationToken.ThrowIfCancellationRequested();
             try
             {
-                // Preserve original encoding and timestamp
                 var encoding = GetFileEncoding(file);
-                var originalTime = File.GetLastWriteTime(file);
 
-                var content = File.ReadAllText(file, encoding);
-                var matches = _tagRegex.Matches(content);
-                if (matches.Count > 0)
-                    Log.Debug($"Found {matches.Count} matches in {Path.GetFileName(file)}");
+                var content = await File.ReadAllTextAsync(file, encoding, cancellationToken);
                 var replacedContent = _tagRegex.Replace(content, match =>
                 {
                     var result = GetMeshFromTag(match.Value);
-                    Log.Debug($"Original: '{match.Value}'");
-                    Log.Debug($"Result:   '{result}'");
                     return result;
                 });
 
-
-                if (Math.Abs(content.Length - replacedContent.Length) < 100)
-                    for (var i = 0; i < Math.Min(content.Length, replacedContent.Length); i++)
-                        if (content[i] != replacedContent[i])
-                        {
-                            Log.Debug($"First difference at position {i}:");
-                            Log.Debug(
-                                $"Original: '{content.Substring(Math.Max(0, i - 10), Math.Min(20, content.Length - i + 10))}'");
-                            Log.Debug(
-                                $"Replaced: '{replacedContent.Substring(Math.Max(0, i - 10), Math.Min(20, replacedContent.Length - i + 10))}'");
-                            break;
-                        }
-
                 if (content != replacedContent)
                 {
-                    Log.Debug($"Writing changes to {Path.GetFileName(file)}");
-                    File.WriteAllText(file, replacedContent, new UTF8Encoding(false));
+                    await File.WriteAllTextAsync(file, replacedContent, new UTF8Encoding(false), cancellationToken);
                     replacedCount++;
-                }
-                else
-                {
-                    Log.Debug($"No changes detected in {Path.GetFileName(file)} - content comparison failed");
                 }
 
                 processedCount++;
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
-                Log.Debug($"Error processing {file}: {ex.Message}");
+                _ = App.Current.HandleNonFatalExceptionAsync(new Exception($"Error processing {file}", ex));
             }
 
-            progress?.Report($"Processed {processedCount}/{totalFiles} files (Replaced: {replacedCount})");
+            progress?.Report((processedCount, totalFiles, replacedCount));
 
             if (processedCount % 10 == 0)
                 await Task.Delay(1, cancellationToken);
         }
 
-        progress?.Report($"Completed! Processed {totalFiles} files, {replacedCount} files were modified");
+        progress?.Report((processedCount, totalFiles, replacedCount));
         return replacedCount;
     }
 
-    public async Task PullNewKeywordsFromTheGame(CancellationToken cancellationToken = default,
-        IProgress<string>? progress = null)
+    public static string RevertMeshToTag(string mesh)
+    {
+        if (string.IsNullOrEmpty(mesh))
+            return mesh;
+
+        return MeshRegex.Replace(mesh, ConvertMeshMatch);
+    }
+    //TODO: do the progress reporting more cleanly, this shit sucks ass
+
+    public async Task<int> ReplaceEveryMeshWithTagAsync(
+        string path,
+        IProgress<(int ProcessedFiles, int TotalFiles, int ReplacementsCount)>? progress = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (!Directory.Exists(path))
+            throw new DirectoryNotFoundException($"Directory not found: {path}");
+
+        await EnsureInitializedAsync();
+
+        var files = Directory.GetFiles(path, "*.json", SearchOption.AllDirectories).ToList();
+        var totalFiles = files.Count;
+
+        progress?.Report((0, totalFiles, 0));
+
+        var processedCount = 0;
+        var replacedCount = 0;
+
+        foreach (var file in files)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            try
+            {
+                var encoding = GetFileEncoding(file);
+
+                var content = await File.ReadAllTextAsync(
+                    file, encoding, cancellationToken);
+
+                var replacedContent = RevertMeshToTag(content);
+
+                if (content != replacedContent)
+                {
+                    await File.WriteAllTextAsync(
+                        file,
+                        replacedContent,
+                        new UTF8Encoding(false),
+                        cancellationToken);
+
+                    replacedCount++;
+                }
+
+                processedCount++;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _ = App.Current.HandleNonFatalExceptionAsync(
+                    new Exception($"Error processing {file}", ex));
+            }
+
+            progress?.Report((processedCount, totalFiles, replacedCount));
+
+            if (processedCount % 10 == 0 && processedCount > 0)
+                await Task.Delay(1, cancellationToken);
+        }
+
+        progress?.Report((processedCount, totalFiles, replacedCount));
+        return replacedCount;
+    }
+
+
+    public async Task PullNewKeywordsFromTheGame(IProgress<string>? progress = null,
+        CancellationToken cancellationToken = default)
     {
         await EnsureInitializedAsync();
 
@@ -363,5 +437,5 @@ public sealed partial class KeywordProcessingService(
     }
 
     [GeneratedRegex(@"\[[^:\]]+:[`*'][^`*']+[`*']\]", RegexOptions.Compiled)]
-    private static partial Regex MyRegex();
+    private static partial Regex TagRegex();
 }

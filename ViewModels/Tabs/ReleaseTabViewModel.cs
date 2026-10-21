@@ -235,7 +235,7 @@ public partial class ReleaseTabViewModel : ObservableObject, IMainWindowTab
             }
 
             LoadingScreenViewModel.StartLoading("Начинается замена кейвордов перед релизом...");
-            await _keywordProcessingService.ReplaceEveryTagWithMesh(_localizationManager
+            await _keywordProcessingService.ReplaceEveryTagWithMeshAsync(_localizationManager
                 .PathToLocalization); // TODO: don't forget to change this after i move to new keyword conversion pipeline
 
             // defaults to build
