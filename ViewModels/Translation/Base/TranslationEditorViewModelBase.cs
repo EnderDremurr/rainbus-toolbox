@@ -25,4 +25,7 @@ public abstract partial class TranslationEditorViewModelBase : ObservableObject,
 
     [RelayCommand]
     public abstract void StepIndex(int step);
+
+    [RelayCommand]
+    public abstract void ManualNavigationUpdate(string newValue);
 }

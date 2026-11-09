@@ -122,7 +122,7 @@ public partial class
         OnIndexChanged();
     }
 
-    public override void GoCustom()
+    public override void GoToCustom(int newIndex)
     {
         var index = int.Parse(NavigationText ?? throw new InvalidOperationException()) - 1;
         var sanitizedStep = index;

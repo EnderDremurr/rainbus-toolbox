@@ -61,7 +61,19 @@
                         Text="{Binding NavigationText}"
                         TextAlignment="Right"
                         VerticalAlignment="Center"
-                        Width="80" />
+                        Width="80">
+                        <TextBox.KeyBindings>
+                            <KeyBinding
+                                Command="{Binding ManualNavigationUpdateCommand}"
+                                CommandParameter="{Binding NavigationText}"
+                                Gesture="Enter" />
+                        </TextBox.KeyBindings>
+                        <Interaction.Behaviors>
+                            <EventTriggerBehavior EventName="LostFocus">
+                                <InvokeCommandAction Command="{Binding ManualNavigationUpdateCommand}" CommandParameter="{Binding NavigationText}" />
+                            </EventTriggerBehavior>
+                        </Interaction.Behaviors>
+                    </TextBox>
                     <TextBlock
                         FontFamily="{StaticResource MikodacsFont}"
                         FontSize="20"

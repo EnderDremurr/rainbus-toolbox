@@ -56,24 +56,26 @@ public partial class GenericTranslationEditorViewModel<TFile, TItem> : Translati
         UpdateNavigation();
     }
 
-    // TODO: Make this work again, later
-    private void OnNavigationTextChanged(string value)
+    public override void ManualNavigationUpdate(string value)
     {
-        if (int.TryParse(value, out var userIndex) && userIndex > 0) GoCustom();
+        if (int.TryParse(value, out var userIndex) && userIndex > 0) GoToCustom(userIndex - 1);
     }
 
-    public virtual void GoCustom()
+    public virtual void GoToCustom(int newIndex)
     {
-        var index = int.Parse(NavigationText ?? throw new InvalidOperationException()) - 1;
-        var sanitizedStep = index;
-        if (index < 0) index = 0;
-        if (index > EditableFile.DataList.Count - 1) index = EditableFile.DataList.Count - 1;
+        if (EditableFile == null)
+            return;
 
-        if (CurrentIndex != index)
-        {
-            CurrentIndex = index;
-            OnIndexChanged();
-        }
+        var sanitizedIndex = newIndex;
+        if (sanitizedIndex < 0) sanitizedIndex = 0;
+        if (sanitizedIndex > EditableFile.DataList.Count - 1)
+            sanitizedIndex = EditableFile.DataList.Count - 1;
+
+        if (CurrentIndex == sanitizedIndex)
+            return;
+
+        CurrentIndex = sanitizedIndex;
+        OnIndexChanged(); // this updates navigation text too, so it'd show proper numba
     }
 
 
