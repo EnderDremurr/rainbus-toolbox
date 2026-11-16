@@ -16,7 +16,7 @@ public sealed class GitManager
         _persistentDataManager = persistentDataManager;
 
         TryInitializeRepository();
-        persistentDataManager.OnRepositoryPathChanged += TryInitializeRepository;
+        persistentDataManager.Watch(s => s.RepositoryPath, _ => TryInitializeRepository());
     }
 
     public string RepositoryRootPath { get; private set; } = string.Empty;

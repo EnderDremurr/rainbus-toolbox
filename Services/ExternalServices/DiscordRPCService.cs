@@ -25,8 +25,7 @@ public sealed class DiscordRPCService : IDisposable
         _client = new DiscordRpcClient("1477335960785260676");
         _client.Initialize();
 
-        _persistentDataManager.OnRPCAssetIdChanged += () =>
-            SetActiveAssetKey(_persistentDataManager.Settings.SelectedDiscordRPCAssetId);
+        _persistentDataManager.Watch(s => s.SelectedDiscordRPCAssetId, SetActiveAssetKey);
     }
 
     public void Dispose()

@@ -10,6 +10,8 @@ public sealed class PersistentDataManager
 {
     private readonly string _filePath;
 
+    private readonly List<Action<SettingsData, SettingsData>> _watchers = new();
+
     private SettingsData _settings;
 
     public PersistentDataManager()
@@ -28,26 +30,35 @@ public sealed class PersistentDataManager
         get => _settings;
         set
         {
-            Log.Debug("Settings object was changed");
-
             var oldValue = _settings;
+            if (oldValue == value)
+                return;
+            Log.Debug("Settings object was changed");
             _settings = value;
 
-            if (oldValue.PathToLimbus != _settings.PathToLimbus)
-                OnLimbusPathChanged?.Invoke();
 
-            if (oldValue.RepositoryPath != _settings.RepositoryPath)
-                OnRepositoryPathChanged?.Invoke();
-
-            if (oldValue.SelectedDiscordRPCAssetId != _settings.SelectedDiscordRPCAssetId)
-                OnRPCAssetIdChanged?.Invoke();
+            foreach (var watcher in _watchers.ToArray())
+                try
+                {
+                    watcher.Invoke(oldValue, value);
+                }
+                catch (Exception e)
+                {
+                    Log.Error("{E}", e.ToString());
+                }
         }
     }
 
-    public event Action? OnLimbusPathChanged;
-    public event Action? OnRepositoryPathChanged;
-
-    public event Action? OnRPCAssetIdChanged;
+    public void Watch<T>(Func<SettingsData, T> selector, Action<T> onChanged)
+    {
+        _watchers.Add((oldSetting, newSetting) =>
+        {
+            var before = selector(oldSetting);
+            var after = selector(newSetting);
+            if (!EqualityComparer<T>.Default.Equals(before, after))
+                onChanged(after);
+        });
+    }
 
     public void ReadFromFile()
     {
@@ -72,8 +83,8 @@ public sealed class PersistentDataManager
     }
 
     //these 2 return path if they could find it, otherwise null
-
-    //validates path of localization, cuz it must be a git repo and contain /localize/ folder at root
+    //TODO: move this shit to a separate static helper
+    //validates path of the localization, cuz it must be a git repo and contain /localize/ folder at the root
     public static string? ValidateRepoPath(string? inputPath)
     {
         // basically, to fix error if user selected wrong level directory, it's better to start searching paths 2 above (recursively) and 1 below to make sure i can find the repo like that

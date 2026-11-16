@@ -25,7 +25,7 @@ public sealed class LocalizationManager
         _gitManager = gitManager;
 
         TryInitializeGameFiles(); // game files init first, because they contain file type map that's needed further
-        persistentDataManager.OnLimbusPathChanged += TryInitializeGameFiles;
+        persistentDataManager.Watch(s => s.PathToLimbus, _ => TryInitializeGameFiles());
 
         TryInitializeLocalization();
         _gitManager.OnInitializedSuccessfully += TryInitializeLocalization;
