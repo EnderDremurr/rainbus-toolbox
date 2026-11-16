@@ -77,7 +77,7 @@
                             Width="200" />
                         <TextBlock
                             Foreground="White"
-                            Text="{Binding GitHubAuthState}"
+                            Text="{Binding GithubAuthState}"
                             VerticalAlignment="Center" />
                     </StackPanel>
 
@@ -95,7 +95,7 @@
                             Height="60"
                             PasswordChar="*"
                             RevealPassword="{Binding IsWebhookVisible}"
-                            Text="{Binding DiscordWebhook}"
+                            Text="{Binding LocalSettingsCopy.DiscordWebHook}"
                             Width="500" />
 
                         <ToggleButton Content="{Binding WebhookToggleText}" IsChecked="{Binding IsWebhookVisible}" />
@@ -113,7 +113,7 @@
                         <TextBox
                             Classes="framed"
                             Height="60"
-                            Text="{Binding DiscordRPCAssetId}"
+                            Text="{Binding LocalSettingsCopy.SelectedDiscordRPCAssetId}"
                             TextChanging="OnIdTextChanging"
                             Width="500" />
                         <Button
@@ -134,7 +134,7 @@
                         <TextBox
                             Classes="framed"
                             Height="60"
-                            Text="{Binding DiscordRoleToPing}"
+                            Text="{Binding LocalSettingsCopy.DiscordRoleToPing}"
                             Width="500" />
                     </StackPanel>
 
@@ -152,7 +152,7 @@
                             Classes="framed"
                             Height="60"
                             IsReadOnly="True"
-                            Text="{Binding RepoPath}"
+                            Text="{Binding LocalSettingsCopy.RepositoryPath}"
                             Width="500" />
                         <Button
                             Command="{Binding BrowseRepoFolderCommand}"
@@ -175,7 +175,7 @@
                             Classes="framed"
                             Height="60"
                             IsReadOnly="True"
-                            Text="{Binding LimbusPath}"
+                            Text="{Binding LocalSettingsCopy.PathToLimbus}"
                             Width="500" />
                         <Button
                             Command="{Binding BrowseLimbusFolderCommand}"
@@ -196,7 +196,7 @@
                             Classes="framed"
                             Height="60"
                             PasswordChar="*"
-                            Text="{Binding AngelaToken}"
+                            Text="{Binding LocalSettingsCopy.DeepSeekToken}"
                             Width="500" />
                     </StackPanel>
 
@@ -212,7 +212,7 @@
                             AcceptsReturn="True"
                             Classes="framed"
                             Height="500"
-                            Text="{Binding AngelaPrompt}"
+                            Text="{Binding LocalSettingsCopy.AngelaPrompt}"
                             TextWrapping="Wrap"
                             Width="500" />
                     </StackPanel>

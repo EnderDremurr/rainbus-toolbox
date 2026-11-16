@@ -3,9 +3,9 @@ using System.IO;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using RainbusToolbox.Models;
 using RainbusToolbox.Services;
 using RainbusToolbox.Services.ExternalServices;
-using RainbusToolbox.Services.RepositoryServices;
 using RainbusToolbox.Utilities.NetworkUtilities;
 
 namespace RainbusToolbox.ViewModels.Misc;
@@ -16,19 +16,19 @@ public partial class SettingsWindowViewModel : ObservableObject
     private readonly ClipboardService _clipboardService;
     private readonly PersistentDataManager _dataManager;
     private readonly DialogService _dialogService;
-    private readonly GithubManager _githubManager;
-    private readonly LocalizationManager _localizationManager;
 
-    public SettingsWindowViewModel(PersistentDataManager manager, GithubManager githubManager,
-        LocalizationManager localizationManager, DialogService dialogService, ClipboardService clipboardService)
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(GithubAuthState))]
+    private SettingsData _localSettingsCopy;
+
+    public SettingsWindowViewModel(PersistentDataManager dataManager, DialogService dialogService,
+        ClipboardService clipboardService)
     {
-        _dataManager = manager;
-        _githubManager = githubManager;
-        _localizationManager = localizationManager;
+        _dataManager = dataManager;
         _dialogService = dialogService;
         _clipboardService = clipboardService;
 
-        LoadSettings();
+        _localSettingsCopy = _dataManager.Settings.Copy();
     }
 
 
@@ -41,7 +41,7 @@ public partial class SettingsWindowViewModel : ObservableObject
         });
 
         if (folder != null)
-            RepoPath = folder;
+            LocalSettingsCopy = LocalSettingsCopy with { RepositoryPath = folder };
     }
 
     [RelayCommand]
@@ -53,7 +53,7 @@ public partial class SettingsWindowViewModel : ObservableObject
         });
 
         if (folder != null)
-            LimbusPath = folder;
+            LocalSettingsCopy = LocalSettingsCopy with { PathToLimbus = folder };
     }
 
     [RelayCommand]
@@ -98,69 +98,24 @@ public partial class SettingsWindowViewModel : ObservableObject
             return;
         }
 
-        _dataManager.Settings.GitHubToken = newToken;
+        _dataManager.Settings = _dataManager.Settings with { GitHubToken = newToken };
         _dataManager.SaveToFile();
-
-        GitHubAuthState = "Ты залогинен";
+        LocalSettingsCopy = LocalSettingsCopy with { GitHubToken = newToken };
     }
 
     [RelayCommand]
     private void SaveSettings()
     {
-        var isDirty = false;
-
-        var settingsCache = _dataManager.Settings;
-        var clonedSettings = _dataManager.Settings.Clone();
-        if (settingsCache.DiscordWebHook != DiscordWebhook)
+        if (LocalSettingsCopy.DiscordWebHook != _dataManager.Settings.DiscordWebHook)
         {
-            var discordManager = new DiscordManager(settingsCache.DiscordWebHook!, _dialogService);
-            if (discordManager.ValidateWebhook(DiscordWebhook))
-            {
-                clonedSettings.DiscordWebHook = DiscordWebhook;
-                isDirty = true;
-            }
+            var manager = new DiscordManager(_dataManager.Settings.DiscordWebHook!, _dialogService);
+            if (!manager.ValidateWebhook(LocalSettingsCopy.DiscordWebHook))
+                LocalSettingsCopy = LocalSettingsCopy with { DiscordWebHook = _dataManager.Settings.DiscordWebHook };
         }
 
-        if (settingsCache.RepositoryPath != RepoPath)
+        if (LocalSettingsCopy != _dataManager.Settings)
         {
-            clonedSettings.RepositoryPath = RepoPath;
-            isDirty = true;
-        }
-
-        if (settingsCache.PathToLimbus != LimbusPath)
-        {
-            clonedSettings.PathToLimbus = LimbusPath;
-            isDirty = true;
-        }
-
-        if (AngelaToken != settingsCache.DeepSeekToken)
-        {
-            clonedSettings.DeepSeekToken = AngelaToken;
-            isDirty = true;
-        }
-
-        if (AngelaPrompt != settingsCache.AngelaPrompt)
-        {
-            clonedSettings.AngelaPrompt = AngelaPrompt;
-            isDirty = true;
-        }
-
-        if (DiscordRoleToPing != settingsCache.DiscordRoleToPing)
-        {
-            clonedSettings.DiscordRoleToPing = DiscordRoleToPing;
-            isDirty = true;
-        }
-
-        if (DiscordRPCAssetId != settingsCache.SelectedDiscordRPCAssetId)
-        {
-            clonedSettings.SelectedDiscordRPCAssetId = DiscordRPCAssetId;
-            isDirty = true;
-        }
-
-
-        if (isDirty)
-        {
-            _dataManager.Settings = clonedSettings;
+            _dataManager.Settings = LocalSettingsCopy.Copy();
             _dataManager.SaveToFile();
             Log.Debug("User had changed one of the settings before closing the settings window. Saving new settings");
             return;
@@ -169,34 +124,11 @@ public partial class SettingsWindowViewModel : ObservableObject
         Log.Debug("User didn't change any settings before closing the settings window");
     }
 
-
-    private void LoadSettings()
-    {
-        try
-        {
-            var data = _dataManager.Settings;
-            DiscordWebhook = data.DiscordWebHook ?? "";
-            RepoPath = data.RepositoryPath ?? "";
-            LimbusPath = data.PathToLimbus ?? "";
-            AngelaPrompt = data.AngelaPrompt ?? "";
-            AngelaToken = data.DeepSeekToken ?? "";
-            DiscordRoleToPing = data.DiscordRoleToPing ?? "";
-            DiscordRPCAssetId = data.SelectedDiscordRPCAssetId;
-
-            GitHubAuthState = string.IsNullOrWhiteSpace(data.GitHubToken)
-                ? "Ты не залогинен"
-                : "Ты залогинен";
-        }
-        catch (Exception ex)
-        {
-            _ = App.Current.HandleGlobalExceptionAsync(ex);
-        }
-    }
-
     [RelayCommand]
     public void RandomizeRPCAssetID()
     {
-        DiscordRPCAssetId = _random.Next(1, DiscordRPCService.MaxAssets + 1);
+        var randomId = _random.Next(1, DiscordRPCService.MaxAssets + 1);
+        LocalSettingsCopy = LocalSettingsCopy with { SelectedDiscordRPCAssetId = randomId };
     }
 
 
@@ -208,29 +140,9 @@ public partial class SettingsWindowViewModel : ObservableObject
 
     public string WebhookToggleText => IsWebhookVisible ? "Скрыть" : "Показать";
 
-    [ObservableProperty]
-    public string _discordWebhook = "";
-
-    [ObservableProperty]
-    public string _repoPath = "";
-
-    [ObservableProperty]
-    public string _limbusPath = "";
-
-    [ObservableProperty]
-    public string _angelaPrompt = "";
-
-    [ObservableProperty]
-    public string _angelaToken = "";
-
-    [ObservableProperty]
-    public string _discordRoleToPing = "";
-
-    [ObservableProperty]
-    public string _gitHubAuthState = "";
-
-    [ObservableProperty]
-    public int _discordRPCAssetId;
+    public string GithubAuthState => string.IsNullOrWhiteSpace(LocalSettingsCopy.GitHubToken)
+        ? "Ты не залогинен"
+        : "Аккаунт найден";
 
     #endregion
 }

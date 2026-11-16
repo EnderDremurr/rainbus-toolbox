@@ -1,6 +1,6 @@
 namespace RainbusToolbox.Models;
 
-public class SettingsData
+public record SettingsData
 {
     public string? GitHubToken { get; set; } = "";
     public string? DiscordWebHook { get; set; } = "";
@@ -18,8 +18,8 @@ public class SettingsData
     public bool ShouldRandomizeRPCAssetsByTimer { get; set; } = false;
     public int RPCAssetRandomizationTimerSeconds { get; set; } = 300;
 
-    public SettingsData Clone()
+    public SettingsData Copy()
     {
-        return (SettingsData)MemberwiseClone();
+        return this with { };
     }
 }
