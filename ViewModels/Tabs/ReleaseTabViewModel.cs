@@ -280,7 +280,7 @@ public partial class ReleaseTabViewModel : ObservableObject, IMainWindowTab
                     discordMessage +=
                         $"\n\n[{AppLang.LocalizationManagerHyperlink}](<https://github.com/kimght/LimbusLocalizationManager/releases>)";
                 if (AppendReleaseLink)
-                    discordMessage += $"[Ссылка на релиз]({releaseLink})";
+                    discordMessage += $"\n[Ссылка на релиз]({releaseLink})";
 
                 if (PingSetRole && !string.IsNullOrWhiteSpace(_dataManager.Settings.DiscordRoleToPing))
                     discordMessage += $"\n<@&{_dataManager.Settings.DiscordRoleToPing}>";
