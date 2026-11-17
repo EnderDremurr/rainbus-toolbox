@@ -19,11 +19,12 @@ public class ClipboardService
     {
         var owner = GetOwner();
         var clipboard = owner.Clipboard;
-        if(clipboard is null)
+        if (clipboard is null)
         {
             _ = App.Current.HandleNonFatalExceptionAsync(new Exception("Couldn't access clipboard!"));
             return;
         }
+
         await clipboard.SetTextAsync(text);
     }
 }

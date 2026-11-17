@@ -2,7 +2,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Media;
-using RainbusToolbox.Models;
 using RainbusToolbox.Services.ExternalServices;
 using RainbusToolbox.Utilities.Textbox;
 

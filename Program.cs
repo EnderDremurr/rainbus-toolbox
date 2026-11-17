@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using Avalonia;
-using Serilog;
 
 namespace RainbusToolbox;
 

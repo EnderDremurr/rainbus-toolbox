@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using Avalonia;
@@ -12,7 +11,6 @@ using RainbusToolbox.Models.LimbusSerialization;
 using RainbusToolbox.Services;
 using RainbusToolbox.Services.ExternalServices;
 using RainbusToolbox.Services.RepositoryServices;
-using RainbusToolbox.Utilities;
 using RainbusToolbox.ViewModels.Misc;
 using ReplacementEntry = RainbusToolbox.Models.ReplacementEntry;
 

@@ -7,6 +7,6 @@
 [![Activity](https://img.shields.io/github/commit-activity/m/enderdremurr/rainbus-toolbox?color=orange)](https://github.com/enderdremurr/rainbus-toolbox/commits/main)
 ![Tests](https://github.com/EnderDremurr/rainbus-toolbox/actions/workflows/tests.yml/badge.svg)
 
-
 ## License
+
 Project is licensed under [GPL v3 License](LICENSE).

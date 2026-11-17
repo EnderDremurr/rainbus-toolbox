@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace RainbusToolbox.Models.LimbusSerialization;
 
 public class ShortcutFolderGroup
