@@ -230,9 +230,5 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
-    [RelayCommand] private void History()
-    {
-    }
-
     #endregion
 }

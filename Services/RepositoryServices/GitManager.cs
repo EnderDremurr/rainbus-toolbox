@@ -2,6 +2,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using LibGit2Sharp;
 using RainbusToolbox.Models.LimbusSerialization;
+using RainbusToolbox.ViewModels.Misc;
 using Version = System.Version;
 
 
@@ -9,11 +10,13 @@ namespace RainbusToolbox.Services.RepositoryServices;
 
 public sealed class GitManager
 {
+    private readonly DialogService _dialogService;
     private readonly PersistentDataManager _persistentDataManager;
 
-    public GitManager(PersistentDataManager persistentDataManager)
+    public GitManager(PersistentDataManager persistentDataManager, DialogService dialogService)
     {
         _persistentDataManager = persistentDataManager;
+        _dialogService = dialogService;
 
         TryInitializeRepository();
         persistentDataManager.Watch(s => s.RepositoryPath, _ => TryInitializeRepository());
@@ -236,12 +239,54 @@ public sealed class GitManager
 
                 if (rebaseStatus == RebaseStatus.Conflicts)
                 {
-                    _ = App.Current.HandleNonFatalExceptionAsync(
-                        new Exception("Обнаружены конфликты. Синхронизация остановлена.")
+                    var response = await _dialogService.ShowPopupAsync("Случился мердж конфликт!",
+                        "Во время синхронизации были выявлены конфликты, выбери действие:",
+                        false,
+                        "",
+                        null,
+                        new PopupButton
+                        {
+                            Label = "Принять все чужие изменения",
+                            ResultValue = "Remote"
+                        }, new PopupButton
+                        {
+                            Label = "Принять все свои изменения",
+                            ResultValue = "Local"
+                        }, new PopupButton
+                        {
+                            Label = "Отменить синхронизацию",
+                            ResultValue = "Cancel"
+                        }
                     );
 
-                    await Task.Run(() => Repository.Rebase.Abort());
-                    return;
+
+                    if (response?.Result is null or "Cancel")
+                    {
+                        await Task.Run(() => Repository.Rebase.Abort());
+                        return;
+                    }
+
+                    while (rebaseStatus == RebaseStatus.Conflicts)
+                    {
+                        if (!Repository.Index.Conflicts.Any())
+                        {
+                            _ = App.Current.HandleNonFatalExceptionAsync(
+                                new Exception("Conflict resolution was stuck with no conflict, aborting rebase."));
+                            await Task.Run(() => Repository.Rebase.Abort());
+                            return;
+                        }
+
+                        var resolveResult = await Task.Run(() =>
+                            response.Result == "Local" ? AcceptAllLocal() : AcceptAllRemote());
+
+                        if (resolveResult is null)
+                        {
+                            await Task.Run(() => Repository.Rebase.Abort());
+                            return;
+                        }
+
+                        rebaseStatus = resolveResult.Value;
+                    }
                 }
 
                 if (rebaseStatus != RebaseStatus.Complete)
@@ -456,5 +501,77 @@ public sealed class GitManager
         };
 
         return nextVersion;
+    }
+
+    private RebaseStatus? ResolveAll(Func<Conflict, IndexEntry?> pickSide)
+    {
+        var op = Repository.Info.CurrentOperation;
+        var inRebase = op is CurrentOperation.Rebase
+            or CurrentOperation.RebaseInteractive
+            or CurrentOperation.RebaseMerge;
+
+        if (!inRebase)
+            return null;
+
+        foreach (var conflict in Repository.Index.Conflicts.ToList())
+        {
+            var entry = pickSide(conflict);
+            var path = (entry ?? conflict.Ours ?? conflict.Theirs ?? conflict.Ancestor).Path;
+
+            var fullPath = Path.Combine(Repository.Info.WorkingDirectory, path);
+            try
+            {
+                if (entry != null)
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!); // make sure it's there
+                    var blob = Repository.Lookup<Blob>(entry.Id);
+
+                    using (var blobStream = blob.GetContentStream())
+                    using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        blobStream.CopyTo(fileStream);
+                    }
+
+                    Commands.Stage(Repository, path);
+                    continue;
+                }
+
+                if (File.Exists(fullPath))
+                    File.Delete(fullPath);
+                Commands.Remove(Repository, path, false);
+            }
+            catch (Exception e)
+            {
+                _ = App.Current.HandleNonFatalExceptionAsync(
+                    new Exception($"Error during conflict resolution of {path}", e));
+                return null;
+            }
+        }
+
+        try
+        {
+            var signature = GetLocalSignature(Repository);
+            var commiter = new Identity(signature.Name, signature.Email);
+            var result = Repository.Rebase.Continue(commiter, new RebaseOptions());
+            Log.Debug("{Result}", result.Status);
+            return result.Status;
+        }
+        catch (Exception e)
+        {
+            _ = App.Current.HandleNonFatalExceptionAsync(e);
+            return null;
+        }
+    }
+
+    // app forces rebase, Ours = tracked branch
+    public RebaseStatus? AcceptAllRemote()
+    {
+        return ResolveAll(c => c.Ours);
+    }
+
+
+    public RebaseStatus? AcceptAllLocal()
+    {
+        return ResolveAll(c => c.Theirs);
     }
 }
