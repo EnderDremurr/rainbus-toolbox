@@ -30,6 +30,7 @@ public partial class MainWindowViewModel : ObservableObject
         FilesTabViewModel filesTabViewModel,
         OverviewTabViewModel overviewTabViewModel,
         ReleaseTabViewModel releaseTabViewModel,
+        SearchTabViewModel searchTabViewModel,
         DiscordRPCService discordRPCService,
         DialogService dialogService)
     {
@@ -45,6 +46,7 @@ public partial class MainWindowViewModel : ObservableObject
         FilesTabViewModel = filesTabViewModel;
         OverviewTabViewModel = overviewTabViewModel;
         ReleaseTabViewModel = releaseTabViewModel;
+        SearchTabViewModel = searchTabViewModel;
 
 
         // Initial parse
@@ -126,6 +128,7 @@ public partial class MainWindowViewModel : ObservableObject
     public FilesTabViewModel FilesTabViewModel { get; }
     public OverviewTabViewModel OverviewTabViewModel { get; }
     public ReleaseTabViewModel ReleaseTabViewModel { get; }
+    public SearchTabViewModel SearchTabViewModel { get; }
 
     // ReSharper disable once NotAccessedField.Local
     private Timer? _reparseTimer;

@@ -51,6 +51,10 @@
             <Setter Property="Background" Value="Transparent" />
         </Style>
 
+        <Style Selector="Control">
+            <Setter Property="ToolTip.ShowDelay" Value="1000" />
+        </Style>
+
 
     </Application.Styles>
 

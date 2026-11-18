@@ -36,6 +36,7 @@
         <entry key="Views/Tabs/FilesTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Tabs/OverviewTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Tabs/ReleaseTab.axaml" value="RainbusToolbox.csproj" />
+        <entry key="Views/Tabs/SearchTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Tabs/TranslationTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Tabs/UpdaterTab.axaml" value="RainbusToolbox.csproj" />
         <entry key="Views/Translation/AbnormalityGuideTranslationEditor.axaml" value="RainbusToolbox.csproj" />

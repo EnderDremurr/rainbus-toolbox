@@ -155,7 +155,7 @@ public partial class ReleaseTabViewModel : ObservableObject, IMainWindowTab
     private bool _buildVersion;
 
     [ObservableProperty]
-    private string _versionDisplay;
+    private string _versionDisplay = "Loading...";
 
 
     [ObservableProperty]
@@ -175,9 +175,6 @@ public partial class ReleaseTabViewModel : ObservableObject, IMainWindowTab
                 ? desktop.MainWindow
                 : null;
         if (top == null) return;
-
-        var storage = top.StorageProvider;
-
 
         var file = await _dialogService.PickSingleFileAsync(new FilePickerOpenOptions
         {
@@ -243,7 +240,7 @@ public partial class ReleaseTabViewModel : ObservableObject, IMainWindowTab
                 : VersionType.Build;
             var nextVersion = _gitManager.GetNextVersionByType(versionTypeToGet).ToString();
 
-            // commit and sync release version, dunno what i didn't think of doing that back then
+            // commit and sync release version, dunno why i didn't think of doing that back then
 
             _gitManager.CommitLocalChanges($"Automatic commit of release version {nextVersion}");
             await _gitManager

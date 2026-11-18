@@ -231,6 +231,7 @@ public class App : Application
         services.AddSingleton<FilesTabViewModel>();
         services.AddSingleton<ReleaseTabViewModel>();
         services.AddSingleton<OverviewTabViewModel>();
+        services.AddSingleton<SearchTabViewModel>();
     }
 
     private static void RegisterTranslationEditorVMs(ServiceCollection services)

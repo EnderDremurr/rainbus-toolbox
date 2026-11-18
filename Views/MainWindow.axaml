@@ -158,6 +158,8 @@
                                     <RowDefinition Height="64" />
                                     <RowDefinition Height="22" />
                                     <RowDefinition Height="64" />
+                                    <RowDefinition Height="22" />
+                                    <RowDefinition Height="64" />
                                 </Grid.RowDefinitions>
                                 <RadioButton
                                     Classes="tabnav"
@@ -176,7 +178,7 @@
                                     Height="64"
                                     Margin="0,0,0,0"
                                     Width="64"
-                                    x:Name="TabFiles" />
+                                    x:Name="TabSearch" />
                                 <RadioButton
                                     Classes="tabnav"
                                     Content=""
@@ -185,11 +187,20 @@
                                     Height="64"
                                     Margin="0,0,0,0"
                                     Width="64"
-                                    x:Name="TabHistory" />
+                                    x:Name="TabFiles" />
                                 <RadioButton
                                     Classes="tabnav"
                                     Content=""
                                     Grid.Row="6"
+                                    GroupName="Tabs"
+                                    Height="64"
+                                    Margin="0,0,0,0"
+                                    Width="64"
+                                    x:Name="TabHistory" />
+                                <RadioButton
+                                    Classes="tabnav"
+                                    Content=""
+                                    Grid.Row="8"
                                     GroupName="Tabs"
                                     Height="64"
                                     Width="64"
@@ -197,7 +208,7 @@
                                 <RadioButton
                                     Classes="tabnav"
                                     Content=""
-                                    Grid.Row="8"
+                                    Grid.Row="10"
                                     GroupName="Tabs"
                                     Height="64"
                                     Width="64"
@@ -232,6 +243,9 @@
                             </TabControl.Styles>
                             <TabItem IsSelected="{Binding #TabTranslation.IsChecked}">
                                 <tabs:TranslationTab DataContext="{Binding TranslationTabViewModel}" x:Name="TranslationTabControl" />
+                            </TabItem>
+                            <TabItem IsSelected="{Binding #TabSearch.IsChecked}">
+                                <tabs:SearchTab DataContext="{Binding SearchTabViewModel}" x:Name="SearchTabControl" />
                             </TabItem>
                             <TabItem IsSelected="{Binding #TabFiles.IsChecked}">
                                 <tabs:FilesTab DataContext="{Binding FilesTabViewModel}" x:Name="FilesTabControl" />

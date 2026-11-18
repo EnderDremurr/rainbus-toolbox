@@ -10,6 +10,11 @@
                 <RadioButton
                     Classes="tabnav"
                     Height="60"
+                    Name="TabSearch"
+                    Width="60" />
+                <RadioButton
+                    Classes="tabnav"
+                    Height="60"
                     Name="TabFiles"
                     Width="60" />
                 <RadioButton
@@ -84,5 +89,14 @@
     </Style>
     <Style Selector="RadioButton#TabRelease:checked Image#btnImage">
         <Setter Property="Source" Value="/Assets/Buttons/NavButtonReleaseSelected.png" />
+    </Style>
+    <Style Selector="RadioButton#TabSearch Image#btnImage">
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonSearch.png" />
+    </Style>
+    <Style Selector="RadioButton#TabSearch:pointerover Image#btnImage">
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonSearchHov.png" />
+    </Style>
+    <Style Selector="RadioButton#TabSearch:checked Image#btnImage">
+        <Setter Property="Source" Value="/Assets/Buttons/NavButtonSearchSelected.png" />
     </Style>
 </Styles>
