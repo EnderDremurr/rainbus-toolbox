@@ -1,11 +1,19 @@
 <Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Design.PreviewWith>
-        <TextBox
-            Classes="framed"
-            Height="300"
-            MaxWidth="600"
-            Text="Skibid toilet             zzzzzzzzzzzzzzzzz                 zzzzzzzzzzzzzz             asdasdasdasdasdasda             asdasdadasdas                 d             ssssssasdasdasdddddddddddddddddddddddd                 dddasdasdasdasdadsdsdasdasds"
-            TextWrapping="Wrap" />
+        <StackPanel>
+            <TextBox
+                Classes="framed"
+                Height="300"
+                MaxWidth="600"
+                Text="Skibid toilet             zzzzzzzzzzzzzzzzz                 zzzzzzzzzzzzzz             asdasdasdasdasdasda             asdasdadasdas                 d             ssssssasdasdasdddddddddddddddddddddddd                 dddasdasdasdasdadsdsdasdasds"
+                TextWrapping="Wrap" />
+            <TextBox
+                Classes="framed"
+                Height="300"
+                MaxWidth="600"
+                TextWrapping="Wrap"
+                Watermark="Text here 123123123123;....sdasdasd;sdjfaf[j;[asdf" />
+        </StackPanel>
 
     </Design.PreviewWith>
 
@@ -84,6 +92,18 @@
                         Padding="{TemplateBinding Padding}"
                         VerticalScrollBarVisibility="Hidden">
                         <Grid Name="PART_ContentPresenterHost">
+                            <TextBlock
+                                Foreground="White"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                IsVisible="{TemplateBinding Text,
+                                                            Converter={x:Static StringConverters.IsNullOrEmpty}}"
+                                Name="PART_Watermark"
+                                Opacity="1"
+                                Text="{TemplateBinding Watermark}"
+                                TextAlignment="{TemplateBinding TextAlignment}"
+                                TextWrapping="{TemplateBinding TextWrapping}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+
                             <TextPresenter
                                 CaretBrush="{TemplateBinding CaretBrush}"
                                 CaretIndex="{TemplateBinding CaretIndex}"
@@ -108,5 +128,8 @@
                 </Grid>
             </ControlTemplate>
         </Setter>
+    </Style>
+    <Style Selector="TextBox.framed /template/ TextBlock#PART_Watermark">
+        <Setter Property="Foreground" Value="Gray" />
     </Style>
 </Styles>
